@@ -352,9 +352,9 @@
       if (!resultTextArea.value) return;
       try {
         const paragraphs = resultTextArea.value.split('\n').map(line => {
-          return { type: 'p', text: line };
+          return { type: 'paragraph', text: line };
         });
-        const docxBlob = MiniDocx.createDocx(paragraphs);
+        const docxBlob = DocxBuilder.createDocxFromContent(paragraphs, { title: 'OCR Transcription' });
         const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
         UIUtils.downloadBlob(docxBlob, `${baseName}-ocr.docx`);
         UIUtils.showToast("Word document downloaded!", "success");

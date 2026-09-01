@@ -233,6 +233,7 @@
 
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/tools/organize.js"></script>
 
@@ -274,46 +275,56 @@
     async function loadDocumentPages() {
       try {
         const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
-        totalDocPages = pdfDoc.getPageCount();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        totalDocPages = pdf.numPages;
         pageRotations = {};
         for (let i = 0; i < totalDocPages; i++) pageRotations[i] = 0;
 
-        renderThumbnails();
+        pagesGrid.innerHTML = '';
+        galleryWrap.style.display = 'block';
+
+        // Render card skeletons with real canvas placeholders
+        for (let i = 0; i < totalDocPages; i++) {
+          const pNum = i + 1;
+          const card = document.createElement("div");
+          card.className = "page-thumb-card";
+          card.id = `thumb-card-${i}`;
+
+          card.innerHTML = `
+            <div class="page-thumb-img-wrap" style="padding:12px; height:180px; display:flex; align-items:center; justify-content:center; background:var(--bg-body); overflow:hidden;">
+              <div id="thumb-preview-${i}" style="max-width:120px; max-height:150px; display:flex; align-items:center; justify-content:center; transition:transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin:center center;">
+                <canvas id="thumb-canvas-${i}" style="max-width:100%; max-height:140px; border-radius:3px; box-shadow:0 3px 10px rgba(0,0,0,0.18); background:#fff;"></canvas>
+              </div>
+            </div>
+            <div class="page-thumb-footer" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); border-top:1px solid var(--line);">
+              <span style="font-weight:700; font-size:0.85rem;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-weight:800; font-size:0.75rem;">(0°)</small></span>
+              <div class="page-thumb-actions" style="display:flex; gap:4px;">
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, 90)">↻ 90°</button>
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, -90)">↺</button>
+              </div>
+            </div>
+          `;
+          pagesGrid.appendChild(card);
+        }
+
+        // Render actual PDF page contents onto each canvas
+        for (let i = 0; i < totalDocPages; i++) {
+          const page = await pdf.getPage(i + 1);
+          const viewport = page.getViewport({ scale: 0.35 });
+          const canvas = document.getElementById(`thumb-canvas-${i}`);
+          if (canvas) {
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+          }
+        }
       } catch (e) {
-        console.error(e);
+        console.error("Failed to load PDF pages for rotation view:", e);
+        UIUtils.showToast("Could not render page previews: " + e.message, "error");
       }
-    }
-
-    function renderThumbnails() {
-      pagesGrid.innerHTML = '';
-      for (let i = 0; i < totalDocPages; i++) {
-        const pNum = i + 1;
-        const angle = pageRotations[i] || 0;
-
-        const card = document.createElement("div");
-        card.className = "page-thumb-card";
-        card.id = `thumb-card-${i}`;
-
-        card.innerHTML = `
-          <div class="page-thumb-img-wrap" style="padding:16px;">
-            <div id="thumb-preview-${i}" style="width:100px; height:130px; background:#f8fafc; border:1px solid var(--line); border-radius:3px; display:flex; align-items:center; justify-content:center; transform:rotate(${angle}deg); transition:transform 0.2s ease;">
-              <span style="font-size:1.2rem; font-weight:800; color:var(--text-muted);">P${pNum}</span>
-            </div>
-          </div>
-          <div class="page-thumb-footer">
-            <span style="font-weight:700;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-size:0.7rem;">(${angle}°)</small></span>
-            <div class="page-thumb-actions">
-              <button type="button" class="page-thumb-btn" onclick="rotateSinglePage(${i}, 90)">↻ 90°</button>
-              <button type="button" class="page-thumb-btn" onclick="rotateSinglePage(${i}, -90)">↺</button>
-            </div>
-          </div>
-        `;
-
-        pagesGrid.appendChild(card);
-      }
-
-      galleryWrap.style.display = 'block';
     }
 
     window.rotateSinglePage = function(idx, deg) {

@@ -146,10 +146,36 @@ const PDFOrganize = {
     if (onProgress) onProgress(15, 'Loading PDF document into memory...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
 
+    // Helper: Local fallback rasterizer if PDFConvert is absent
+    const renderPDFPages = async (f, scale, progressFn) => {
+      if (typeof PDFConvert !== 'undefined' && PDFConvert.pdfToImages) {
+        return PDFConvert.pdfToImages(f, 'image/jpeg', scale, progressFn);
+      }
+      const arrBuf = await UIUtils.readFileAsArrayBuffer(f);
+      const pdf = await pdfjsLib.getDocument({ data: arrBuf }).promise;
+      const numPages = pdf.numPages;
+      const imgs = [];
+      for (let i = 1; i <= numPages; i++) {
+        if (progressFn) progressFn((i / numPages) * 100, `Rasterizing Page ${i} of ${numPages}...`);
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        imgs.push({ pageNumber: i, dataUrl, width: viewport.width, height: viewport.height });
+      }
+      return imgs;
+    };
+
     if (level === 'extreme') {
       // Extreme Compression: Re-render pages at 72 DPI with 55% JPEG compression
       if (onProgress) onProgress(30, 'Performing Extreme Raster & Stream Compression (72 DPI)...');
-      const renderedImages = await PDFConvert.pdfToImages(file, 'image/jpeg', 1.0, (pct, status) => {
+      const renderedImages = await renderPDFPages(file, 1.0, (pct, status) => {
         if (onProgress) onProgress(30 + Math.round(pct * 0.45), status);
       });
 
@@ -179,12 +205,13 @@ const PDFOrganize = {
         compressedSize,
         savedBytes,
         percentSaved,
+        savedPercentage: percentSaved,
         level: 'Extreme'
       };
     } else if (level === 'recommended') {
       // Recommended Compression: Re-render at 150 DPI with 75% JPEG compression
       if (onProgress) onProgress(30, 'Performing Balanced Optimization & Image Resampling (150 DPI)...');
-      const renderedImages = await PDFConvert.pdfToImages(file, 'image/jpeg', 1.6, (pct, status) => {
+      const renderedImages = await renderPDFPages(file, 1.5, (pct, status) => {
         if (onProgress) onProgress(30 + Math.round(pct * 0.45), status);
       });
 
@@ -192,12 +219,12 @@ const PDFOrganize = {
       for (let i = 0; i < renderedImages.length; i++) {
         const img = renderedImages[i];
         const jpgImage = await compressedDoc.embedJpg(img.dataUrl);
-        const page = compressedDoc.addPage([img.width / 1.6, img.height / 1.6]);
+        const page = compressedDoc.addPage([img.width / 1.5, img.height / 1.5]);
         page.drawImage(jpgImage, {
           x: 0,
           y: 0,
-          width: img.width / 1.6,
-          height: img.height / 1.6
+          width: img.width / 1.5,
+          height: img.height / 1.5
         });
       }
 
@@ -214,10 +241,35 @@ const PDFOrganize = {
         compressedSize,
         savedBytes,
         percentSaved,
+        savedPercentage: percentSaved,
         level: 'Recommended'
       };
     } else {
       // Low Compression / Lossless Stream Defragmentation:
+      if (onProgress) onProgress(40, 'Rebuilding Object Cross-Reference Streams...');
+      const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+      const newDoc = await PDFLib.PDFDocument.create();
+      const pageIndices = srcDoc.getPageIndices();
+      const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
+      copiedPages.forEach(p => newDoc.addPage(p));
+
+      if (onProgress) onProgress(90, 'Flushing defragmented stream dictionary...');
+      const pdfBytes = await newDoc.save({ useObjectStreams: true });
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const compressedSize = pdfBytes.byteLength;
+      const savedBytes = Math.max(0, originalSize - compressedSize);
+      const percentSaved = Math.round((savedBytes / originalSize) * 100);
+
+      return {
+        pdfBlob,
+        originalSize,
+        compressedSize,
+        savedBytes,
+        percentSaved,
+        savedPercentage: percentSaved,
+        level: 'Low'
+      };
+    }
       if (onProgress) onProgress(40, 'Defragmenting cross-reference streams and removing duplicate objects...');
       const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
 

@@ -171,183 +171,285 @@
             </div>
           </div>
 
-          <!-- Live A4 Mockup Preview Column -->
-          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; text-align:center;">
-            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Live Placement Preview</h4>
-            <div class="a4-preview-mockup" id="a4-mockup">
-              <!-- Placeholder simulated text lines -->
-              <div style="position:absolute; top:40px; left:20px; right:20px; height:8px; background:#e2e8f0; border-radius:2px;"></div>
-              <div style="position:absolute; top:60px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
-              <div style="position:absolute; top:75px; left:20px; right:40px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
-              <div style="position:absolute; top:90px; left:20px; right:30px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
-              <div style="position:absolute; top:110px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
-              <div style="position:absolute; top:125px; left:20px; right:50px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
-
-              <!-- Live Number Tag -->
-              <div class="a4-preview-pn" id="mockup-pn-tag" style="bottom:15px; left:50%; transform:translateX(-50%);">
-                Page 1 of 10
+            <!-- Live A4 Real Document Mockup Preview Column -->
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; text-align:center;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">Live Document Preview</h4>
+                <div id="preview-page-pager" style="display:none; gap:6px; align-items:center;">
+                  <button type="button" class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="changePreviewPage(-1)">&larr;</button>
+                  <span id="preview-page-indicator" style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">1 / 1</span>
+                  <button type="button" class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="changePreviewPage(1)">&rarr;</button>
+                </div>
               </div>
+              <div class="a4-preview-mockup" id="a4-mockup" style="position:relative; width:220px; height:310px; margin:0 auto; background:#fff; border-radius:4px; border:1px solid var(--line); box-shadow:var(--shadow-md); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                <canvas id="a4-preview-canvas" style="max-width:100%; max-height:100%; object-fit:contain;"></canvas>
+
+                <!-- Live Number Tag Overlay -->
+                <div class="a4-preview-pn" id="mockup-pn-tag" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); background:rgba(2,132,199,0.92); color:#FFFFFF; padding:3px 10px; border-radius:4px; font-size:0.75rem; font-weight:700; box-shadow:0 2px 8px rgba(0,0,0,0.25); transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index:10; pointer-events:none; white-space:nowrap;">
+                  Page 1 of 10
+                </div>
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:12px;">Live visual rendering of stamp position on your actual PDF document</p>
             </div>
-            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:12px;">Visual simulation of placement on an A4 page</p>
           </div>
         </div>
-      </div>
 
-      <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Add Page Numbers</span> &rarr;
-        </button>
-      </div>
-
-      <!-- 3-Step Progress Workflow HUD -->
-      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
-        <div class="workflow-steps-indicator">
-          <div class="workflow-step-node workflow-step-1">
-            <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Reading Document</div>
-          </div>
-          <div class="workflow-step-node workflow-step-2">
-            <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Stamping Pages</div>
-          </div>
-          <div class="workflow-step-node workflow-step-3">
-            <div class="workflow-step-circle">3</div>
-            <div class="workflow-step-label">Ready</div>
-          </div>
-        </div>
-        <div class="workflow-progress-track">
-          <div class="workflow-progress-fill"></div>
-        </div>
-        <div class="workflow-progress-meta">
-          <span id="progress-status">Processing locally in RAM...</span>
-          <span id="progress-percent">0%</span>
-        </div>
-      </div>
-
-      <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
-          <h3 id="result-title">Page Numbers Added!</h3>
-          <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
-        </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Numbered PDF</span>
+        <!-- Action Bar -->
+        <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
+          <button class="btn btn-primary btn-lg" id="process-btn">
+            <span>Add Page Numbers</span> &rarr;
           </button>
         </div>
+
+        <!-- 3-Step Progress Workflow HUD -->
+        <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
+          <div class="workflow-steps-indicator">
+            <div class="workflow-step-node workflow-step-1">
+              <div class="workflow-step-circle">1</div>
+              <div class="workflow-step-label">Reading Document</div>
+            </div>
+            <div class="workflow-step-node workflow-step-2">
+              <div class="workflow-step-circle">2</div>
+              <div class="workflow-step-label">Stamping Pages</div>
+            </div>
+            <div class="workflow-step-node workflow-step-3">
+              <div class="workflow-step-circle">3</div>
+              <div class="workflow-step-label">Ready</div>
+            </div>
+          </div>
+          <div class="workflow-progress-track">
+            <div class="workflow-progress-fill"></div>
+          </div>
+          <div class="workflow-progress-meta">
+            <span id="progress-status">Processing locally in RAM...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="result-card" style="display:none;">
+          <div class="result-details">
+            <h3 id="result-title">Page Numbers Added!</h3>
+            <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
+          </div>
+          <div class="result-actions">
+            <button class="btn btn-primary btn-lg" id="download-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download Numbered PDF</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Deep Technical Explanation & Guide Link -->
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+        <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Page Numbering Works</h3>
+        <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc embeds a standard Helvetica or Times Roman font descriptor directly into your PDF dictionary, dynamically calculating geometry bounds for each page to stamp page numbers into browser RAM without server transfers.</p>
+        <a href="../blog/page-numbers-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Page Numbers Guide &rarr;</a>
       </div>
-    </section>
 
-    <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Page Numbering Works</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc embeds a standard Helvetica or Times Roman font descriptor directly into your PDF dictionary, dynamically calculating geometry bounds for each page to stamp page numbers into browser RAM without server transfers.</p>
-      <a href="../blog/page-numbers-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Page Numbers Guide &rarr;</a>
-    </div>
+      <!-- Related Tools -->
+      <section class="related-tools-section">
+        <h3 class="related-tools-title">Related Document Tools</h3>
+        <div class="related-tools-grid">
+          <a href="watermark.html" class="related-tool-card">
+            <img src="../assets/icons/watermark.svg" alt="Watermark PDF">
+            <div>
+              <h4>Watermark PDF</h4>
+              <p>Add text or image stamps</p>
+            </div>
+          </a>
+          <a href="edit-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/edit-pdf.svg" alt="Edit PDF">
+            <div>
+              <h4>Edit & Sign PDF</h4>
+              <p>Signatures and text stamps</p>
+            </div>
+          </a>
+          <a href="merge-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
+            <div>
+              <h4>Merge PDF</h4>
+              <p>Combine multiple documents</p>
+            </div>
+          </a>
+          <a href="compress-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+            <div>
+              <h4>Compress PDF</h4>
+              <p>Reduce PDF file size in RAM</p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
 
-    <!-- Related Tools -->
-    <section class="related-tools-section">
-      <h3 class="related-tools-title">Related Document Tools</h3>
-      <div class="related-tools-grid">
-        <a href="watermark.html" class="related-tool-card">
-          <img src="../assets/icons/watermark.svg" alt="Watermark PDF">
-          <div>
-            <h4>Watermark PDF</h4>
-            <p>Add text or image stamps</p>
-          </div>
-        </a>
-        <a href="edit-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/edit-pdf.svg" alt="Edit PDF">
-          <div>
-            <h4>Edit & Sign PDF</h4>
-            <p>Signatures and text stamps</p>
-          </div>
-        </a>
-        <a href="merge-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
-          <div>
-            <h4>Merge PDF</h4>
-            <p>Combine multiple documents</p>
-          </div>
-        </a>
-        <a href="compress-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
-          <div>
-            <h4>Compress PDF</h4>
-            <p>Reduce PDF file size in RAM</p>
-          </div>
-        </a>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+        </div>
       </div>
-    </section>
-  </main>
+    </footer>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
-      </div>
-    </div>
-  </footer>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/ui-utils.js"></script>
+    <script src="../js/lib/pdf.min.js"></script>
+    <script src="../js/lib/pdf-lib.min.js"></script>
+    <script src="../js/tools/organize.js"></script>
 
-  <script src="../js/core/i18n.js"></script>
-  <script src="../js/core/ui-utils.js"></script>
-  <script src="../js/lib/pdf-lib.min.js"></script>
-  <script src="../js/tools/organize.js"></script>
+    <script>
+      let selectedFile = null;
+      let selectedPosition = 'bottom-center';
+      let resultBlob = null;
+      let resultFilename = 'localdoc-numbered.pdf';
+      let loadedPdf = null;
+      let currentPreviewPage = 1;
+      let totalDocPages = 1;
 
-  <script>
-    let selectedFile = null;
-    let selectedPosition = 'bottom-center';
-    let resultBlob = null;
-    let resultFilename = 'localdoc-numbered.pdf';
+      const dropZone = document.getElementById("drop-zone");
+      const fileInput = document.getElementById("file-input");
+      const fileQueue = document.getElementById("file-queue");
+      const queueName = document.getElementById("queue-file-name");
+      const queueSize = document.getElementById("queue-file-size");
+      const configWrap = document.getElementById("config-wrap");
+      const formatSelect = document.getElementById("format-select");
+      const startOffsetInput = document.getElementById("start-offset");
+      const fontSizeSelect = document.getElementById("font-size-select");
+      const skipFirstChk = document.getElementById("skip-first-chk");
+      const mockupTag = document.getElementById("mockup-pn-tag");
+      const actionBar = document.getElementById("action-bar");
+      const processBtn = document.getElementById("process-btn");
+      const clearBtn = document.getElementById("clear-btn");
+      const resultCard = document.getElementById("result-card");
+      const downloadBtn = document.getElementById("download-btn");
+      const pagerEl = document.getElementById("preview-page-pager");
+      const indicatorEl = document.getElementById("preview-page-indicator");
 
-    const dropZone = document.getElementById("drop-zone");
-    const fileInput = document.getElementById("file-input");
-    const fileQueue = document.getElementById("file-queue");
-    const queueName = document.getElementById("queue-file-name");
-    const queueSize = document.getElementById("queue-file-size");
-    const configWrap = document.getElementById("config-wrap");
-    const formatSelect = document.getElementById("format-select");
-    const startOffsetInput = document.getElementById("start-offset");
-    const fontSizeSelect = document.getElementById("font-size-select");
-    const skipFirstChk = document.getElementById("skip-first-chk");
-    const mockupTag = document.getElementById("mockup-pn-tag");
-    const actionBar = document.getElementById("action-bar");
-    const processBtn = document.getElementById("process-btn");
-    const clearBtn = document.getElementById("clear-btn");
-    const resultCard = document.getElementById("result-card");
-    const downloadBtn = document.getElementById("download-btn");
-
-    // Position buttons click
-    document.querySelectorAll(".pos-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".pos-btn").forEach(b => {
-          b.classList.remove("active");
-          b.style.background = "transparent";
-          b.style.color = "var(--text-secondary)";
+      // Position buttons click
+      document.querySelectorAll(".pos-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".pos-btn").forEach(b => {
+            b.classList.remove("active");
+            b.style.background = "transparent";
+            b.style.color = "var(--text-secondary)";
+          });
+          btn.classList.add("active");
+          btn.style.background = "var(--primary)";
+          btn.style.color = "#FFFFFF";
+          selectedPosition = btn.getAttribute("data-pos");
+          updateMockupPosition();
         });
-        btn.classList.add("active");
-        btn.style.background = "var(--primary)";
-        btn.style.color = "#FFFFFF";
-        selectedPosition = btn.getAttribute("data-pos");
-        updateMockup();
       });
-    });
 
-    formatSelect.addEventListener("change", updateMockup);
-    startOffsetInput.addEventListener("input", updateMockup);
+      formatSelect.addEventListener("change", updateMockupContent);
+      startOffsetInput.addEventListener("input", updateMockupContent);
+      skipFirstChk.addEventListener("change", updateMockupContent);
 
-    function updateMockup() {
-      const fmt = formatSelect.value;
-      const start = parseInt(startOffsetInput.value, 10) || 1;
-      const sampleText = fmt.replace('{n}', start).replace('{total}', start + 9);
-      mockupTag.textContent = sampleText;
+      function updateMockupPosition() {
+        mockupTag.style.top = '';
+        mockupTag.style.bottom = '';
+        mockupTag.style.left = '';
+        mockupTag.style.right = '';
+        mockupTag.style.transform = '';
 
-      // Position mockup tag
-      mockupTag.style.top = '';
-      mockupTag.style.bottom = '';
-      mockupTag.style.left = '';
+        switch (selectedPosition) {
+          case 'top-left':
+            mockupTag.style.top = '14px';
+            mockupTag.style.left = '14px';
+            break;
+          case 'top-center':
+            mockupTag.style.top = '14px';
+            mockupTag.style.left = '50%';
+            mockupTag.style.transform = 'translateX(-50%)';
+            break;
+          case 'top-right':
+            mockupTag.style.top = '14px';
+            mockupTag.style.right = '14px';
+            break;
+          case 'bottom-left':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.left = '14px';
+            break;
+          case 'bottom-center':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.left = '50%';
+            mockupTag.style.transform = 'translateX(-50%)';
+            break;
+          case 'bottom-right':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.right = '14px';
+            break;
+        }
+      }
+
+      function updateMockupContent() {
+        if (skipFirstChk.checked && currentPreviewPage === 1) {
+          mockupTag.style.display = 'none';
+          return;
+        }
+        mockupTag.style.display = 'block';
+
+        const fmt = formatSelect.value;
+        const start = parseInt(startOffsetInput.value, 10) || 1;
+        const pageNum = start + (currentPreviewPage - 1);
+        const totalNum = start + (totalDocPages - 1);
+        const sampleText = fmt.replace('{n}', pageNum).replace('{total}', totalNum);
+        mockupTag.textContent = sampleText;
+      }
+
+      async function renderCurrentPreviewPage() {
+        if (!loadedPdf) return;
+        try {
+          const page = await loadedPdf.getPage(currentPreviewPage);
+          const viewport = page.getViewport({ scale: 0.45 });
+          const canvas = document.getElementById("a4-preview-canvas");
+          if (canvas) {
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+          }
+          if (indicatorEl) indicatorEl.textContent = `${currentPreviewPage} / ${totalDocPages}`;
+          updateMockupContent();
+          updateMockupPosition();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      window.changePreviewPage = function(delta) {
+        let next = currentPreviewPage + delta;
+        if (next >= 1 && next <= totalDocPages) {
+          currentPreviewPage = next;
+          renderCurrentPreviewPage();
+        }
+      };
+
+      UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
+        if (files.length > 0) {
+          selectedFile = files[0];
+          queueName.textContent = selectedFile.name;
+          queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+          fileQueue.style.display = "block";
+          configWrap.style.display = "block";
+          actionBar.style.display = "flex";
+          resultCard.style.display = "none";
+
+          try {
+            const arrBuf = await UIUtils.readFileAsArrayBuffer(selectedFile);
+            loadedPdf = await pdfjsLib.getDocument({ data: arrBuf }).promise;
+            totalDocPages = loadedPdf.numPages;
+            currentPreviewPage = 1;
+            if (pagerEl && totalDocPages > 1) pagerEl.style.display = 'inline-flex';
+            await renderCurrentPreviewPage();
+          } catch (e) {
+            console.error("Failed to render preview canvas:", e);
+          }
+        }
+      });
       mockupTag.style.right = '';
       mockupTag.style.transform = '';
 

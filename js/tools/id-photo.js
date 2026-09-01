@@ -100,29 +100,44 @@ const OCRUtils = {
   // Neural OCR Web Worker Recognition
   async imageToText(imageFile, onProgress = null) {
     if (typeof Tesseract === 'undefined') {
-      throw new Error('Tesseract OCR engine is loading. Please verify internet or local script connectivity.');
+      throw new Error('Tesseract OCR engine is loading. Please ensure your device has internet access to download the language model on initial run.');
     }
 
     if (onProgress) onProgress(15, 'Enhancing image contrast for OCR recognition...');
     const preprocessed = await this.preprocessImageForOCR(imageFile);
 
-    if (onProgress) onProgress(30, 'Initializing OCR neural worker...');
+    if (onProgress) onProgress(30, 'Initializing OCR neural engine in RAM...');
 
-    const worker = await Tesseract.createWorker({
-      logger: m => {
-        if (onProgress && m.status === 'recognizing text') {
-          const p = Math.round(30 + m.progress * 65);
-          onProgress(p, `Recognizing Text (${Math.round(m.progress * 100)}%)...`);
+    try {
+      // Method 1: Direct Tesseract.recognize
+      const result = await Tesseract.recognize(preprocessed, 'eng', {
+        logger: m => {
+          if (onProgress && m.status === 'recognizing text') {
+            const p = Math.round(30 + (m.progress || 0) * 65);
+            onProgress(p, `Recognizing Text (${Math.round((m.progress || 0) * 100)}%)...`);
+          }
         }
+      });
+      return result && result.data && result.data.text ? result.data.text.trim() : '';
+    } catch (err1) {
+      console.warn('Tesseract.recognize failed, attempting createWorker fallback:', err1);
+      try {
+        const worker = await Tesseract.createWorker('eng', 1, {
+          logger: m => {
+            if (onProgress && m.status === 'recognizing text') {
+              const p = Math.round(30 + (m.progress || 0) * 65);
+              onProgress(p, `Recognizing Text (${Math.round((m.progress || 0) * 100)}%)...`);
+            }
+          }
+        });
+        const ret = await worker.recognize(preprocessed);
+        await worker.terminate();
+        return ret && ret.data && ret.data.text ? ret.data.text.trim() : '';
+      } catch (err2) {
+        console.error('All OCR methods failed:', err2);
+        throw new Error('OCR recognition failed. Please ensure internet access is available on first use to download the neural language weights.');
       }
-    });
-
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-    const ret = await worker.recognize(preprocessed);
-    await worker.terminate();
-
-    return ret.data.text ? ret.data.text.trim() : '';
+    }
   }
 };
 

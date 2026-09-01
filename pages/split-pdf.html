@@ -316,15 +316,15 @@
     async function loadDocumentThumbnails() {
       try {
         const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
-        totalDocPages = pdfDoc.getPageCount();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        totalDocPages = pdf.numPages;
         totalPagesCountEl.textContent = totalDocPages;
 
         selectedPagesSet.clear();
         for (let i = 1; i <= totalDocPages; i++) selectedPagesSet.add(i);
         updateSelectionUI();
 
-        // Render page cards
+        // Render page cards with canvas elements
         pageGrid.innerHTML = '';
         for (let p = 1; p <= totalDocPages; p++) {
           const card = document.createElement("div");
@@ -333,8 +333,8 @@
           card.onclick = () => togglePageSelection(p);
 
           card.innerHTML = `
-            <div style="aspect-ratio:1/1.414; background:#f8fafc; border-radius:3px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line);">
-              <span style="font-size:1.5rem; font-weight:800; color:var(--text-muted);">P${p}</span>
+            <div style="aspect-ratio:1/1.414; background:#f8fafc; border-radius:3px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); overflow:hidden; padding:4px;">
+              <canvas id="split-canvas-${p}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.1); background:#fff;"></canvas>
             </div>
             <div class="page-select-badge">
               <input type="checkbox" id="chk-p-${p}" checked onclick="event.stopPropagation(); togglePageSelection(${p});">
@@ -345,8 +345,24 @@
         }
 
         selectionGridWrap.style.display = 'block';
+
+        // Render real visual content on each page canvas
+        for (let p = 1; p <= totalDocPages; p++) {
+          const page = await pdf.getPage(p);
+          const viewport = page.getViewport({ scale: 0.35 });
+          const canvas = document.getElementById(`split-canvas-${p}`);
+          if (canvas) {
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+          }
+        }
       } catch (e) {
-        console.error(e);
+        console.error("Failed to load PDF pages for split view:", e);
+        UIUtils.showToast("Could not render page previews: " + e.message, "error");
       }
     }
 

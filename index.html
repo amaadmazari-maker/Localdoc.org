@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LocalDoc — 20 Free Zero-Upload Client-Side Document & PDF Tools</title>
   <meta name="description" content="The world's premier client-side document suite. 20 free tools for PDF conversion, merge, split, compression, scanning, OCR, and biometric ID photos. 100% private in-browser execution.">
-  <meta name="keywords" content="pdf tools online, zero upload pdf, compress pdf, merge pdf, pdf to word, cnic photo maker, passport photo online, client side document tools, free pdf editor">
+  <meta name="keywords" content="pdf tools online, zero upload pdf, compress pdf, merge pdf, pdf to word, cnic photo maker, passport photo online, client side document tools, free pdf editor, camscanner online">
   <link rel="canonical" href="https://localdoc.org/">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -58,6 +58,7 @@
 
       <ul class="nav-links">
         <li><a href="index.html" class="nav-link active" data-i18n="nav_all_tools">All 20 Tools</a></li>
+        <li><a href="pages/scan.html" class="nav-link" style="color:var(--accent-emerald); font-weight:700;">📷 CamScanner</a></li>
         <li><a href="blog/index.html" class="nav-link" data-i18n="nav_blog">Blog & Guides</a></li>
         <li><a href="privacy.html" class="nav-link" data-i18n="nav_privacy">Privacy Architecture</a></li>
         <li><a href="about.html" class="nav-link" data-i18n="nav_about">About</a></li>
@@ -103,20 +104,32 @@
         
         <p style="font-size:1.15rem; color:var(--text-secondary); margin-bottom:32px; line-height:1.6; max-width:720px; margin-left:auto; margin-right:auto;" data-i18n="hero_subtitle">Convert, compress, organize, scan, OCR, and create biometric ID photos in your local device RAM. No server uploads. No subscriptions. Completely free forever.</p>
 
-        <!-- Smart Drop Zone -->
-        <div class="drop-zone" id="home-drop-zone" style="max-width:720px; margin:0 auto 24px; box-shadow:var(--shadow-md);">
+        <!-- Smart Drop Zone with File Intent Router -->
+        <div class="drop-zone" id="home-drop-zone" style="max-width:740px; margin:0 auto 24px; box-shadow:var(--shadow-md);">
           <div class="drop-zone-icon">
             <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </div>
           <div class="drop-zone-text">
             <h3 data-i18n="drop_title" style="font-size:1.25rem;">Drop ANY Document, PDF, or Photo Here</h3>
-            <p data-i18n="drop_sub">Our client-side inspector instantly analyzes your file and recommends the fastest offline transformation.</p>
+            <p data-i18n="drop_sub">Our client-side inspector instantly recognizes your file type and recommends the fastest offline tools.</p>
           </div>
           <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
             <button class="btn btn-primary btn-lg" id="home-browse-btn" data-i18n="browse_btn">Browse Local Files</button>
-            <button class="btn btn-outline btn-lg" onclick="document.getElementById('tools-container').scrollIntoView({behavior:'smooth'})">Explore 20 Tools ↓</button>
+            <a href="pages/scan.html" class="btn btn-success btn-lg" style="background:#059669; color:#FFFFFF; border-color:#059669; display:inline-flex; align-items:center; gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <span>Open CamScanner Studio</span>
+            </a>
           </div>
           <input type="file" id="home-file-input" style="display:none;">
+
+          <!-- Interactive Smart Router Strip (Revealed when file dropped) -->
+          <div id="smart-router-box" class="smart-router-overlay">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <span id="router-file-name" style="font-weight:700; color:var(--text-primary);">Document Detected</span>
+              <span id="router-file-size" style="font-size:0.8rem; color:var(--text-muted); background:var(--bg-body); padding:2px 8px; border-radius:var(--radius-full);"></span>
+            </div>
+            <div id="router-actions" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+          </div>
         </div>
 
         <!-- Live Client-Side Security Telemetry HUD -->
@@ -128,38 +141,181 @@
       </div>
     </section>
 
-    <!-- Interactive Category Filter Tabs & 20 Tools Grid -->
-    <section class="container" style="padding:56px 20px;">
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px; flex-wrap:wrap; gap:20px;">
+    <!-- CamScanner Mobile Web Studio Feature Showcase -->
+    <section class="container" style="padding:0 20px;">
+      <div class="camscanner-feature-banner">
         <div>
-          <div class="tool-workspace-badge">⚡ 100% In-Browser Speed</div>
-          <h2 style="font-size:2.2rem; color:var(--text-primary); font-weight:800; letter-spacing:-0.02em;">All 20 Production Tools</h2>
-          <p style="color:var(--text-secondary); font-size:1.05rem;">Real client-side JavaScript transformations. No fake tools. No file uploads.</p>
+          <div class="camscanner-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>CamScanner Studio Mode — In-Browser Mobile App</span>
+          </div>
+          <h2>Document & ID Card Scanner Studio</h2>
+          <p>Scan multi-page documents, NADRA CNIC, and international ID cards with live camera capture, automatic corner detection, <strong>Magic Color shadow removal</strong>, and 1-page A4 placement.</p>
+          
+          <div class="camscanner-feature-grid">
+            <div class="camscanner-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <span>Live Camera Burst Capture</span>
+            </div>
+            <div class="camscanner-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="13" y2="12"></line></svg>
+              <span>Front + Back &rarr; 1-Page A4 Mode</span>
+            </div>
+            <div class="camscanner-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+              <span>Magic Color & Sauvola B&W</span>
+            </div>
+            <div class="camscanner-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span>Instant High-Res PDF Export</span>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="pages/scan.html" class="btn btn-primary" style="background:#059669; border-color:#059669; padding:10px 22px; font-weight:700;">Open Document Scanner 📷</a>
+            <a href="pages/id-card-scanner.html" class="btn btn-outline" style="padding:10px 20px;">1-Page A4 ID Scanner 🪪</a>
+          </div>
         </div>
 
-        <!-- Filter Pills -->
-        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="category-filter-bar">
-          <button class="btn btn-primary" style="padding:8px 18px; font-size:0.85rem;" data-filter="all">All (20)</button>
-          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="convert">Conversion (8)</button>
-          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="organize">Organize & Edit (7)</button>
-          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="biometric">ID & Biometrics (3)</button>
-          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="ocr">Scanner & OCR (2)</button>
+        <!-- Scanner Viewfinder Mockup -->
+        <div class="camscanner-preview-mockup">
+          <div class="scanner-viewfinder-overlay">
+            <div class="viewfinder-laser"></div>
+            <!-- Mock Document Shape with Corner Handles -->
+            <div style="width:75%; height:75%; border:2px dashed #10B981; border-radius:4px; position:relative; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(16,185,129,0.08);">
+              <span style="font-size:0.75rem; font-weight:700; color:#10B981; text-transform:uppercase; letter-spacing:0.06em; background:rgba(0,0,0,0.6); padding:3px 10px; border-radius:12px;">Auto Corner Detect Active</span>
+              <div style="position:absolute; top:-4px; left:-4px; width:10px; height:10px; background:#10B981; border-radius:50%;"></div>
+              <div style="position:absolute; top:-4px; right:-4px; width:10px; height:10px; background:#10B981; border-radius:50%;"></div>
+              <div style="position:absolute; bottom:-4px; left:-4px; width:10px; height:10px; background:#10B981; border-radius:50%;"></div>
+              <div style="position:absolute; bottom:-4px; right:-4px; width:10px; height:10px; background:#10B981; border-radius:50%;"></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:0.8rem; color:var(--text-muted);">
+            <span>⚡ Real-Time Edge Tracing</span>
+            <span style="color:#059669; font-weight:700;">Zero Cloud Processing</span>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Interactive Category Filter Tabs & 20 Tools Grid (iLovePDF & PDF24 Inspired) -->
+    <section class="container" style="padding:20px 20px 60px;">
+      <div style="margin-bottom:24px;">
+        <div class="tool-workspace-badge">⚡ 100% In-Browser Speed</div>
+        <h2 style="font-size:2.2rem; color:var(--text-primary); font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">All 20 Production Tools</h2>
+        <p style="color:var(--text-secondary); font-size:1.05rem;">Real client-side JavaScript transformations. Star your favorite tools for instant access.</p>
+      </div>
+
+      <!-- Multi-Category Filter Bar -->
+      <div class="filter-tabs-bar" id="category-filter-bar">
+        <button class="filter-tab-btn active" data-filter="all">
+          <span>✨ All Tools</span>
+          <span class="filter-count-badge">20</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="popular">
+          <span>🔥 Most Popular</span>
+          <span class="filter-count-badge">6</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="to-pdf">
+          <span>🔄 Convert to PDF</span>
+          <span class="filter-count-badge">4</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="from-pdf">
+          <span>📑 Convert from PDF</span>
+          <span class="filter-count-badge">4</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="organize">
+          <span>✂️ Organize & Edit</span>
+          <span class="filter-count-badge">7</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="scanner">
+          <span>📷 CamScanner Studio</span>
+          <span class="filter-count-badge">2</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="biometric">
+          <span>🪪 ID & Biometrics</span>
+          <span class="filter-count-badge">3</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="ocr">
+          <span>🧠 Neural OCR</span>
+          <span class="filter-count-badge">1</span>
+        </button>
+        <button class="filter-tab-btn" data-filter="favorites" style="border-color:#F59E0B; color:#D97706;">
+          <span>⭐ My Favorites</span>
+          <span class="filter-count-badge" id="fav-count-badge">0</span>
+        </button>
       </div>
 
       <div class="tools-grid" id="tools-container">
-        <!-- 1. PDF to Word -->
-        <a href="pages/pdf-to-word.html" class="tool-card" data-cat="convert">
+        <!-- 1. Compress PDF (Top Traffic 5.3M) -->
+        <a href="pages/compress-pdf.html" class="tool-card" data-cat="organize" data-tool="compress-pdf" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('compress-pdf');">★</button>
+          <span class="tool-card-badge">📉 -85% Size</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/compress-pdf.svg" alt="Compress PDF" class="tool-card-icon">
+          </div>
+          <h3>Compress PDF <span class="traffic-chip">🔥 5.3M/mo</span></h3>
+          <p>Reduce PDF file sizes drastically with 3 compression tiers while preserving crisp text.</p>
+        </a>
+
+        <!-- 2. PDF to Word (Top Traffic 4.4M) -->
+        <a href="pages/pdf-to-word.html" class="tool-card" data-cat="from-pdf" data-tool="pdf-to-word" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('pdf-to-word');">★</button>
           <span class="tool-card-badge">✨ DOCX</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/pdf-to-word.svg" alt="PDF to Word" class="tool-card-icon">
           </div>
-          <h3>PDF to Word</h3>
+          <h3>PDF to Word <span class="traffic-chip">🔥 4.4M/mo</span></h3>
           <p>Extract structured text, headings, and layouts into Microsoft Word (.docx) files.</p>
         </a>
 
-        <!-- 2. Word to PDF -->
-        <a href="pages/word-to-pdf.html" class="tool-card" data-cat="convert">
+        <!-- 3. JPG to PDF (Top Traffic 5.7M) -->
+        <a href="pages/jpg-to-pdf.html" class="tool-card" data-cat="to-pdf" data-tool="jpg-to-pdf" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('jpg-to-pdf');">★</button>
+          <span class="tool-card-badge">📸 Multi-Image</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/jpg-to-pdf.svg" alt="JPG to PDF" class="tool-card-icon">
+          </div>
+          <h3>JPG to PDF <span class="traffic-chip">🔥 5.7M/mo</span></h3>
+          <p>Combine JPG photos and mobile scans into a clean, printable A4 PDF document.</p>
+        </a>
+
+        <!-- 4. Merge PDF (Top Traffic 2.8M) -->
+        <a href="pages/merge-pdf.html" class="tool-card" data-cat="organize" data-tool="merge-pdf" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('merge-pdf');">★</button>
+          <span class="tool-card-badge">📑 Combine</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/merge-pdf.svg" alt="Merge PDF" class="tool-card-icon">
+          </div>
+          <h3>Merge PDF <span class="traffic-chip">🔥 2.8M/mo</span></h3>
+          <p>Combine multiple PDF documents, receipts, and reports into a single file with zero uploads.</p>
+        </a>
+
+        <!-- 5. CamScanner Studio -->
+        <a href="pages/scan.html" class="tool-card" data-cat="scanner" data-tool="scan" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('scan');">★</button>
+          <span class="tool-card-badge">📷 CamStudio</span>
+          <div class="tool-card-icon-wrap cat-ocr">
+            <img src="assets/icons/scan.svg" alt="Document Scanner" class="tool-card-icon">
+          </div>
+          <h3>CamScanner Studio <span class="traffic-chip">✨ Magic Color</span></h3>
+          <p>Scan documents and receipts with live camera, Sauvola shadow lift, and high-DPI PDF.</p>
+        </a>
+
+        <!-- 6. CNIC Photo Maker -->
+        <a href="pages/cnic-photo-maker.html" class="tool-card" data-cat="biometric" data-tool="cnic-photo-maker" data-popular="true">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('cnic-photo-maker');">★</button>
+          <span class="tool-card-badge">🪪 NADRA Spec</span>
+          <div class="tool-card-icon-wrap cat-biometric">
+            <img src="assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker" class="tool-card-icon">
+          </div>
+          <h3>CNIC Photo Maker <span class="traffic-chip">🪪 #1 Tool</span></h3>
+          <p>Crop photos to exact 354x472 px NADRA Pakistan specifications + 4x6" printable sheet.</p>
+        </a>
+
+        <!-- 7. Word to PDF -->
+        <a href="pages/word-to-pdf.html" class="tool-card" data-cat="to-pdf" data-tool="word-to-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('word-to-pdf');">★</button>
           <span class="tool-card-badge">⚡ Instant</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/word-to-pdf.svg" alt="Word to PDF" class="tool-card-icon">
@@ -168,8 +324,9 @@
           <p>Convert DOCX documents to standardized, printable A4 PDF documents with Unicode support.</p>
         </a>
 
-        <!-- 3. PDF to Excel -->
-        <a href="pages/pdf-to-excel.html" class="tool-card" data-cat="convert">
+        <!-- 8. PDF to Excel -->
+        <a href="pages/pdf-to-excel.html" class="tool-card" data-cat="from-pdf" data-tool="pdf-to-excel">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('pdf-to-excel');">★</button>
           <span class="tool-card-badge">📊 XLSX</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/pdf-to-excel.svg" alt="PDF to Excel" class="tool-card-icon">
@@ -178,8 +335,9 @@
           <p>Extract tabular grids, financial statements, and receipts into Excel (.xlsx) workbooks.</p>
         </a>
 
-        <!-- 4. Excel to PDF -->
-        <a href="pages/excel-to-pdf.html" class="tool-card" data-cat="convert">
+        <!-- 9. Excel to PDF -->
+        <a href="pages/excel-to-pdf.html" class="tool-card" data-cat="to-pdf" data-tool="excel-to-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('excel-to-pdf');">★</button>
           <span class="tool-card-badge">📄 A4 Table</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/excel-to-pdf.svg" alt="Excel to PDF" class="tool-card-icon">
@@ -188,8 +346,9 @@
           <p>Render spreadsheet tables to A4 landscape PDF documents with custom gridlines.</p>
         </a>
 
-        <!-- 5. PDF to JPG -->
-        <a href="pages/pdf-to-jpg.html" class="tool-card" data-cat="convert">
+        <!-- 10. PDF to High-Res JPG -->
+        <a href="pages/pdf-to-jpg.html" class="tool-card" data-cat="from-pdf" data-tool="pdf-to-jpg">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('pdf-to-jpg');">★</button>
           <span class="tool-card-badge">🖼️ 300 DPI</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/pdf-to-jpg.svg" alt="PDF to JPG" class="tool-card-icon">
@@ -198,18 +357,9 @@
           <p>Render PDF pages into 300 DPI high-definition JPEG images with ZIP downloads.</p>
         </a>
 
-        <!-- 6. JPG to PDF -->
-        <a href="pages/jpg-to-pdf.html" class="tool-card" data-cat="convert">
-          <span class="tool-card-badge">📸 Multi-Image</span>
-          <div class="tool-card-icon-wrap cat-convert">
-            <img src="assets/icons/jpg-to-pdf.svg" alt="JPG to PDF" class="tool-card-icon">
-          </div>
-          <h3>JPG to PDF</h3>
-          <p>Combine JPG photos and mobile scans into a clean, printable A4 PDF document.</p>
-        </a>
-
-        <!-- 7. PDF to PNG -->
-        <a href="pages/pdf-to-png.html" class="tool-card" data-cat="convert">
+        <!-- 11. PDF to PNG -->
+        <a href="pages/pdf-to-png.html" class="tool-card" data-cat="from-pdf" data-tool="pdf-to-png">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('pdf-to-png');">★</button>
           <span class="tool-card-badge">💎 Lossless</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/pdf-to-png.svg" alt="PDF to PNG" class="tool-card-icon">
@@ -218,8 +368,9 @@
           <p>Export crisp, lossless PNG images with transparent backgrounds from PDF documents.</p>
         </a>
 
-        <!-- 8. PNG to PDF -->
-        <a href="pages/png-to-pdf.html" class="tool-card" data-cat="convert">
+        <!-- 12. PNG to PDF -->
+        <a href="pages/png-to-pdf.html" class="tool-card" data-cat="to-pdf" data-tool="png-to-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('png-to-pdf');">★</button>
           <span class="tool-card-badge">🔒 Vector</span>
           <div class="tool-card-icon-wrap cat-convert">
             <img src="assets/icons/png-to-pdf.svg" alt="PNG to PDF" class="tool-card-icon">
@@ -228,28 +379,9 @@
           <p>Convert PNG screenshots and graphics into clean vector-embedded PDF documents.</p>
         </a>
 
-        <!-- 9. Compress PDF -->
-        <a href="pages/compress-pdf.html" class="tool-card" data-cat="organize">
-          <span class="tool-card-badge">📉 -85% Size</span>
-          <div class="tool-card-icon-wrap cat-organize">
-            <img src="assets/icons/compress-pdf.svg" alt="Compress PDF" class="tool-card-icon">
-          </div>
-          <h3>Compress PDF</h3>
-          <p>Reduce PDF file sizes drastically with 3 compression tiers while preserving crisp text.</p>
-        </a>
-
-        <!-- 10. Merge PDF -->
-        <a href="pages/merge-pdf.html" class="tool-card" data-cat="organize">
-          <span class="tool-card-badge">📑 Combine</span>
-          <div class="tool-card-icon-wrap cat-organize">
-            <img src="assets/icons/merge-pdf.svg" alt="Merge PDF" class="tool-card-icon">
-          </div>
-          <h3>Merge PDF</h3>
-          <p>Combine multiple PDF documents, receipts, and reports into a single file with zero uploads.</p>
-        </a>
-
-        <!-- 11. Split PDF -->
-        <a href="pages/split-pdf.html" class="tool-card" data-cat="organize">
+        <!-- 13. Split PDF -->
+        <a href="pages/split-pdf.html" class="tool-card" data-cat="organize" data-tool="split-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('split-pdf');">★</button>
           <span class="tool-card-badge">✂️ Extract</span>
           <div class="tool-card-icon-wrap cat-organize">
             <img src="assets/icons/split-pdf.svg" alt="Split PDF" class="tool-card-icon">
@@ -258,8 +390,9 @@
           <p>Extract specific page ranges (e.g. 1-3, 5, 8-10) or burst all pages into a ZIP.</p>
         </a>
 
-        <!-- 12. Rotate PDF -->
-        <a href="pages/rotate-pdf.html" class="tool-card" data-cat="organize">
+        <!-- 14. Rotate PDF -->
+        <a href="pages/rotate-pdf.html" class="tool-card" data-cat="organize" data-tool="rotate-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('rotate-pdf');">★</button>
           <span class="tool-card-badge">↻ 90° / 180°</span>
           <div class="tool-card-icon-wrap cat-organize">
             <img src="assets/icons/rotate-pdf.svg" alt="Rotate PDF" class="tool-card-icon">
@@ -268,8 +401,9 @@
           <p>Permanently rotate sideways PDF pages with interactive visual thumbnail orientation.</p>
         </a>
 
-        <!-- 13. Edit PDF & Sign -->
-        <a href="pages/edit-pdf.html" class="tool-card" data-cat="organize">
+        <!-- 15. Edit PDF & Sign -->
+        <a href="pages/edit-pdf.html" class="tool-card" data-cat="organize" data-tool="edit-pdf">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('edit-pdf');">★</button>
           <span class="tool-card-badge">✍️ Signature</span>
           <div class="tool-card-icon-wrap cat-organize">
             <img src="assets/icons/edit-pdf.svg" alt="Edit PDF" class="tool-card-icon">
@@ -278,8 +412,9 @@
           <p>Draw electronic signatures, add text annotations, certified date stamps, and modify pages.</p>
         </a>
 
-        <!-- 14. Add Watermark -->
-        <a href="pages/watermark.html" class="tool-card" data-cat="organize">
+        <!-- 16. Add Watermark -->
+        <a href="pages/watermark.html" class="tool-card" data-cat="organize" data-tool="watermark">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('watermark');">★</button>
           <span class="tool-card-badge">🛡️ Protect</span>
           <div class="tool-card-icon-wrap cat-organize">
             <img src="assets/icons/watermark.svg" alt="Add Watermark" class="tool-card-icon">
@@ -288,8 +423,9 @@
           <p>Stamp custom confidential text watermarks with custom angle, color, and opacity sliders.</p>
         </a>
 
-        <!-- 15. Add Page Numbers -->
-        <a href="pages/page-numbers.html" class="tool-card" data-cat="organize">
+        <!-- 17. Add Page Numbers -->
+        <a href="pages/page-numbers.html" class="tool-card" data-cat="organize" data-tool="page-numbers">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('page-numbers');">★</button>
           <span class="tool-card-badge">🔢 6 Positions</span>
           <div class="tool-card-icon-wrap cat-organize">
             <img src="assets/icons/page-numbers.svg" alt="Add Page Numbers" class="tool-card-icon">
@@ -298,18 +434,20 @@
           <p>Number PDF pages automatically with 5 format templates and custom header alignments.</p>
         </a>
 
-        <!-- 16. Document Scanner (CamScanner) -->
-        <a href="pages/scan.html" class="tool-card" data-cat="ocr">
-          <span class="tool-card-badge">📷 CamStudio</span>
+        <!-- 18. ID Card 1-Page A4 Scanner -->
+        <a href="pages/id-card-scanner.html" class="tool-card" data-cat="scanner" data-tool="id-card-scanner">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('id-card-scanner');">★</button>
+          <span class="tool-card-badge">🪪 1-Page A4</span>
           <div class="tool-card-icon-wrap cat-ocr">
-            <img src="assets/icons/scan.svg" alt="Document Scanner" class="tool-card-icon">
+            <img src="assets/icons/id-card-scanner.svg" alt="ID Card Scanner" class="tool-card-icon">
           </div>
-          <h3>CamScanner Studio</h3>
-          <p>Scan documents and ID cards with Magic Color shadow lift, A4 placement, and OCR.</p>
+          <h3>ID Card 1-Page A4 Scanner</h3>
+          <p>Scan ID Front & Back side and composite both cleanly onto a single printable A4 page.</p>
         </a>
 
-        <!-- 17. Image to Text OCR -->
-        <a href="pages/image-to-text.html" class="tool-card" data-cat="ocr">
+        <!-- 19. Image to Text OCR -->
+        <a href="pages/image-to-text.html" class="tool-card" data-cat="ocr" data-tool="image-to-text">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('image-to-text');">★</button>
           <span class="tool-card-badge">🧠 Neural OCR</span>
           <div class="tool-card-icon-wrap cat-ocr">
             <img src="assets/icons/image-to-text.svg" alt="Image to Text OCR" class="tool-card-icon">
@@ -318,34 +456,15 @@
           <p>Extract editable text from images with pre-processing contrast and DOCX export.</p>
         </a>
 
-        <!-- 18. CNIC Photo Maker -->
-        <a href="pages/cnic-photo-maker.html" class="tool-card" data-cat="biometric">
-          <span class="tool-card-badge">🪪 NADRA Spec</span>
-          <div class="tool-card-icon-wrap cat-biometric">
-            <img src="assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker" class="tool-card-icon">
-          </div>
-          <h3>CNIC Photo Maker</h3>
-          <p>Crop photos to exact 354x472 px NADRA Pakistan specifications + 4x6" printable sheet.</p>
-        </a>
-
-        <!-- 19. Passport Photo Maker -->
-        <a href="pages/passport-photo-maker.html" class="tool-card" data-cat="biometric">
+        <!-- 20. Passport & Visa Photo Maker -->
+        <a href="pages/passport-photo-maker.html" class="tool-card" data-cat="biometric" data-tool="passport-photo-maker">
+          <button class="tool-fav-star" title="Add to Favorites" onclick="event.preventDefault(); toggleFav('passport-photo-maker');">★</button>
           <span class="tool-card-badge">🛂 US & Schengen</span>
           <div class="tool-card-icon-wrap cat-biometric">
             <img src="assets/icons/passport-photo-maker.svg" alt="Passport Photo Maker" class="tool-card-icon">
           </div>
           <h3>Passport Photo Maker</h3>
           <p>Crop biometric passport photos to US (2x2") and Schengen (35x45mm) standards with 8-photo grid.</p>
-        </a>
-
-        <!-- 20. Visa Photo Maker -->
-        <a href="pages/visa-photo-maker.html" class="tool-card" data-cat="biometric">
-          <span class="tool-card-badge">✈️ Global Embassy</span>
-          <div class="tool-card-icon-wrap cat-biometric">
-            <img src="assets/icons/visa-photo-maker.svg" alt="Visa Photo Maker" class="tool-card-icon">
-          </div>
-          <h3>Visa Photo Maker</h3>
-          <p>Create biometric visa photos for US DS-160, Schengen, UK, China, and Dubai visas.</p>
         </a>
       </div>
     </section>
@@ -502,53 +621,157 @@
   <script src="js/core/seo.js"></script>
 
   <script>
-    // Category Filter Handler
-    const filterBtns = document.querySelectorAll('#category-filter-bar button');
+    // ==========================================
+    // 1. Favorites System (PDF24 & iLovePDF Style)
+    // ==========================================
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem('localdoc_favs') || '["compress-pdf","pdf-to-word","scan"]');
+      } catch (e) {
+        return ["compress-pdf","pdf-to-word","scan"];
+      }
+    }
+
+    function saveFavorites(favs) {
+      localStorage.setItem('localdoc_favs', JSON.stringify(favs));
+      updateFavUI();
+    }
+
+    function toggleFav(toolId) {
+      let favs = getFavorites();
+      if (favs.includes(toolId)) {
+        favs = favs.filter(id => id !== toolId);
+      } else {
+        favs.push(toolId);
+      }
+      saveFavorites(favs);
+      
+      // If currently on favorites tab, re-filter
+      const activeTab = document.querySelector('.filter-tab-btn.active');
+      if (activeTab && activeTab.getAttribute('data-filter') === 'favorites') {
+        applyCategoryFilter('favorites');
+      }
+    }
+
+    function updateFavUI() {
+      const favs = getFavorites();
+      const countEl = document.getElementById('fav-count-badge');
+      if (countEl) countEl.textContent = favs.length;
+
+      document.querySelectorAll('.tool-card').forEach(card => {
+        const toolId = card.getAttribute('data-tool');
+        const star = card.querySelector('.tool-fav-star');
+        if (star) {
+          if (favs.includes(toolId)) {
+            star.classList.add('active');
+          } else {
+            star.classList.remove('active');
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // 2. Category Filter Navigation (iLovePDF Style)
+    // ==========================================
+    const filterBtns = document.querySelectorAll('.filter-tab-btn');
     const toolCards = document.querySelectorAll('#tools-container .tool-card');
+
+    function applyCategoryFilter(filter) {
+      const favs = getFavorites();
+
+      toolCards.forEach(card => {
+        const cat = card.getAttribute('data-cat');
+        const toolId = card.getAttribute('data-tool');
+        const isPopular = card.getAttribute('data-popular') === 'true';
+
+        let show = false;
+        if (filter === 'all') {
+          show = true;
+        } else if (filter === 'popular') {
+          show = isPopular;
+        } else if (filter === 'favorites') {
+          show = favs.includes(toolId);
+        } else if (filter === 'to-pdf') {
+          show = (cat === 'to-pdf');
+        } else if (filter === 'from-pdf') {
+          show = (cat === 'from-pdf');
+        } else if (filter === 'organize') {
+          show = (cat === 'organize');
+        } else if (filter === 'scanner') {
+          show = (cat === 'scanner');
+        } else if (filter === 'biometric') {
+          show = (cat === 'biometric');
+        } else if (filter === 'ocr') {
+          show = (cat === 'ocr');
+        }
+
+        card.style.display = show ? 'flex' : 'none';
+      });
+    }
 
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterBtns.forEach(b => {
-          b.classList.remove('btn-primary');
-          b.classList.add('btn-outline');
-        });
-        btn.classList.add('btn-primary');
-        btn.classList.remove('btn-outline');
-
-        const cat = btn.getAttribute('data-filter');
-        toolCards.forEach(card => {
-          if (cat === 'all' || card.getAttribute('data-cat') === cat) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyCategoryFilter(btn.getAttribute('data-filter'));
       });
     });
 
-    // Smart Drag-and-Drop Inspector
+    // Initialize favorites state
+    updateFavUI();
+
+    // ==========================================
+    // 3. Smart Drag-and-Drop Intent Router
+    // ==========================================
     const homeDrop = document.getElementById('home-drop-zone');
     const homeInput = document.getElementById('home-file-input');
     const homeBrowse = document.getElementById('home-browse-btn');
+    const routerBox = document.getElementById('smart-router-box');
+    const routerName = document.getElementById('router-file-name');
+    const routerSize = document.getElementById('router-file-size');
+    const routerActions = document.getElementById('router-actions');
 
     UIUtils.setupDropZone(homeDrop, homeInput, (files) => {
       if (files.length > 0) {
         const file = files[0];
         const name = file.name.toLowerCase();
-        UIUtils.showToast(`Analyzed ${file.name} (${UIUtils.formatBytes(file.size)}). Routing to tool...`, 'success');
-        setTimeout(() => {
-          if (name.endsWith('.pdf')) {
-            window.location.href = 'pages/compress-pdf.html';
-          } else if (name.endsWith('.docx') || name.endsWith('.doc')) {
-            window.location.href = 'pages/word-to-pdf.html';
-          } else if (name.endsWith('.xlsx') || name.endsWith('.xls') || name.endsWith('.csv')) {
-            window.location.href = 'pages/excel-to-pdf.html';
-          } else if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) {
-            window.location.href = 'pages/cnic-photo-maker.html';
-          } else {
-            window.location.href = 'pages/pdf-to-word.html';
-          }
-        }, 800);
+        
+        routerName.textContent = `📄 ${file.name}`;
+        routerSize.textContent = UIUtils.formatBytes(file.size);
+        routerActions.innerHTML = '';
+
+        if (name.endsWith('.pdf')) {
+          routerActions.innerHTML = `
+            <a href="pages/compress-pdf.html" class="btn btn-primary" style="font-size:0.82rem; padding:6px 14px;">📉 Compress (-85%)</a>
+            <a href="pages/pdf-to-word.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">📝 PDF to Word</a>
+            <a href="pages/pdf-to-excel.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">📊 PDF to Excel</a>
+            <a href="pages/edit-pdf.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">✍️ Edit & Sign</a>
+            <a href="pages/merge-pdf.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">📑 Merge PDF</a>
+          `;
+        } else if (name.endsWith('.docx') || name.endsWith('.doc')) {
+          routerActions.innerHTML = `
+            <a href="pages/word-to-pdf.html" class="btn btn-primary" style="font-size:0.82rem; padding:6px 14px;">📄 Convert to A4 PDF</a>
+          `;
+        } else if (name.endsWith('.xlsx') || name.endsWith('.xls') || name.endsWith('.csv')) {
+          routerActions.innerHTML = `
+            <a href="pages/excel-to-pdf.html" class="btn btn-primary" style="font-size:0.82rem; padding:6px 14px;">📊 Convert to Table PDF</a>
+          `;
+        } else if (name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png')) {
+          routerActions.innerHTML = `
+            <a href="pages/jpg-to-pdf.html" class="btn btn-primary" style="font-size:0.82rem; padding:6px 14px;">📄 Convert to PDF</a>
+            <a href="pages/cnic-photo-maker.html" class="btn btn-success" style="background:#059669; color:#fff; font-size:0.82rem; padding:6px 14px;">🪪 NADRA CNIC Photo</a>
+            <a href="pages/passport-photo-maker.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">🛂 Passport Photo</a>
+            <a href="pages/image-to-text.html" class="btn btn-outline" style="font-size:0.82rem; padding:6px 14px;">🧠 Extract Text (OCR)</a>
+          `;
+        } else {
+          routerActions.innerHTML = `
+            <a href="pages/pdf-to-word.html" class="btn btn-primary" style="font-size:0.82rem; padding:6px 14px;">Open in Converter</a>
+          `;
+        }
+
+        routerBox.style.display = 'block';
+        UIUtils.showToast(`Analyzed ${file.name} — Select desired action above`, 'info');
       }
     });
   </script>
