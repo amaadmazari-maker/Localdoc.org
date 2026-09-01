@@ -173,27 +173,30 @@ const UIUtils = {
 
   // Global Quick Search (Cmd+K)
   initQuickSearch() {
+    const isSub = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
+    const prefix = isSub ? '../pages/' : 'pages/';
+
     const tools = [
-      { name: "Compress PDF", url: "/pages/compress-pdf.html", category: "Organize" },
-      { name: "Merge PDF", url: "/pages/merge-pdf.html", category: "Organize" },
-      { name: "Split PDF", url: "/pages/split-pdf.html", category: "Organize" },
-      { name: "Rotate PDF", url: "/pages/rotate-pdf.html", category: "Organize" },
-      { name: "Edit PDF & Sign", url: "/pages/edit-pdf.html", category: "Edit" },
-      { name: "PDF to Word (DOCX)", url: "/pages/pdf-to-word.html", category: "Convert" },
-      { name: "Word to PDF", url: "/pages/word-to-pdf.html", category: "Convert" },
-      { name: "PDF to Excel (XLSX)", url: "/pages/pdf-to-excel.html", category: "Convert" },
-      { name: "Excel to PDF", url: "/pages/excel-to-pdf.html", category: "Convert" },
-      { name: "PDF to High-Res JPG", url: "/pages/pdf-to-jpg.html", category: "Convert" },
-      { name: "JPG to PDF", url: "/pages/jpg-to-pdf.html", category: "Convert" },
-      { name: "PDF to PNG", url: "/pages/pdf-to-png.html", category: "Convert" },
-      { name: "PNG to PDF", url: "/pages/png-to-pdf.html", category: "Convert" },
-      { name: "Document Scanner", url: "/pages/scan.html", category: "Scanner" },
-      { name: "CNIC Photo Maker", url: "/pages/cnic-photo-maker.html", category: "Biometric ID" },
-      { name: "Passport Photo Maker", url: "/pages/passport-photo-maker.html", category: "Biometric ID" },
-      { name: "Visa Photo Maker", url: "/pages/visa-photo-maker.html", category: "Biometric ID" },
-      { name: "Image to Text (OCR)", url: "/pages/image-to-text.html", category: "OCR" },
-      { name: "Add Watermark", url: "/pages/watermark.html", category: "Security" },
-      { name: "Add Page Numbers", url: "/pages/page-numbers.html", category: "Organize" }
+      { name: "Compress PDF", slug: "compress-pdf.html", category: "Organize" },
+      { name: "Merge PDF", slug: "merge-pdf.html", category: "Organize" },
+      { name: "Split PDF", slug: "split-pdf.html", category: "Organize" },
+      { name: "Rotate PDF", slug: "rotate-pdf.html", category: "Organize" },
+      { name: "Edit PDF & Sign", slug: "edit-pdf.html", category: "Edit" },
+      { name: "PDF to Word (DOCX)", slug: "pdf-to-word.html", category: "Convert" },
+      { name: "Word to PDF", slug: "word-to-pdf.html", category: "Convert" },
+      { name: "PDF to Excel (XLSX)", slug: "pdf-to-excel.html", category: "Convert" },
+      { name: "Excel to PDF", slug: "excel-to-pdf.html", category: "Convert" },
+      { name: "PDF to High-Res JPG", slug: "pdf-to-jpg.html", category: "Convert" },
+      { name: "JPG to PDF", slug: "jpg-to-pdf.html", category: "Convert" },
+      { name: "PDF to PNG", slug: "pdf-to-png.html", category: "Convert" },
+      { name: "PNG to PDF", slug: "png-to-pdf.html", category: "Convert" },
+      { name: "Document Scanner", slug: "scan.html", category: "Scanner" },
+      { name: "CNIC Photo Maker", slug: "cnic-photo-maker.html", category: "Biometric ID" },
+      { name: "Passport Photo Maker", slug: "passport-photo-maker.html", category: "Biometric ID" },
+      { name: "Visa Photo Maker", slug: "visa-photo-maker.html", category: "Biometric ID" },
+      { name: "Image to Text (OCR)", slug: "image-to-text.html", category: "OCR" },
+      { name: "Add Watermark", slug: "watermark.html", category: "Security" },
+      { name: "Add Page Numbers", slug: "page-numbers.html", category: "Organize" }
     ];
 
     let backdrop = document.getElementById('search-modal-backdrop');
@@ -205,7 +208,7 @@ const UIUtils = {
         <div class="search-modal">
           <div class="search-modal-input-wrap">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="global-search-input" class="search-modal-input" placeholder="Search 20 tools & 25 guides... (ESC to exit)" autofocus>
+            <input type="text" id="global-search-input" class="search-modal-input" placeholder="Search 20 tools & 25 guides... (ESC to exit)">
             <span class="kbd-shortcut">ESC</span>
           </div>
           <ul id="global-search-results" class="search-results-list"></ul>
@@ -225,7 +228,7 @@ const UIUtils = {
         const filtered = tools.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
         results.innerHTML = filtered.map(t => `
           <li class="search-result-item">
-            <a href="${t.url}">
+            <a href="${prefix}${t.slug}">
               <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);"></div>
               <strong style="flex:1;">${t.name}</strong>
               <span style="font-size:0.75rem;color:var(--text-muted);border:1px solid var(--line);padding:2px 8px;border-radius:4px;">${t.category}</span>
@@ -237,6 +240,15 @@ const UIUtils = {
       input.addEventListener('input', () => render(input.value));
       render();
     }
+
+    // Connect any search trigger buttons on the page
+    document.querySelectorAll('.search-trigger-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        backdrop.classList.add('open');
+        setTimeout(() => backdrop.querySelector('#global-search-input')?.focus(), 60);
+      });
+    });
 
     // Keyboard trigger
     window.addEventListener('keydown', (e) => {
