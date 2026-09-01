@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -78,6 +78,7 @@
         </button>
 
         <div class="privacy-pill">
+          <span class="radar-dot"></span>
           <span data-i18n="offline_badge">100% Local RAM</span>
         </div>
 
@@ -89,26 +90,29 @@
   </header>
 
   <main>
-    <!-- Hero Section -->
-    <section style="background:radial-gradient(circle at 50% 10%, rgba(16,185,129,0.12) 0%, transparent 60%); padding:70px 0 50px; border-bottom:1px solid var(--line);">
-      <div class="container" style="text-align:center; max-width:880px;">
-        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(16,185,129,0.12); color:var(--primary); padding:8px 20px; border-radius:var(--radius-full); font-size:0.88rem; font-weight:700; margin-bottom:24px; border:1px solid rgba(16,185,129,0.3); box-shadow:0 0 20px var(--primary-glow);">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    <!-- Aurora Animated Hero Section -->
+    <section class="hero-aurora-wrap">
+      <div class="hero-aurora-bg"></div>
+      <div class="container hero-content">
+        <div style="display:inline-flex; align-items:center; gap:8px; background:var(--primary-subtle); color:var(--primary); padding:6px 18px; border-radius:var(--radius-full); font-size:0.84rem; font-weight:700; margin-bottom:20px; border:1px solid rgba(2,132,199,0.3); box-shadow:0 0 20px var(--primary-glow);">
+          <span class="radar-dot"></span>
           <span data-i18n="hero_badge">Zero-Upload Client Architecture — Zero Cloud Servers</span>
         </div>
-        <h1 style="font-size:3.4rem; color:var(--text-primary); line-height:1.15; margin-bottom:20px; font-weight:800; letter-spacing:-0.03em;" data-i18n="hero_title">Next-Gen Document Privacy.<br><span style="background:linear-gradient(90deg, #10B981, #F59E0B); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">100% In-Browser Execution.</span></h1>
-        <p style="font-size:1.2rem; color:var(--text-secondary); margin-bottom:36px; line-height:1.7;" data-i18n="hero_subtitle">Convert, compress, organize, scan, OCR, and create biometric ID photos in your local device RAM. No server uploads. No subscriptions. Completely free forever.</p>
+        
+        <h1 style="font-size:3.2rem; line-height:1.15; margin-bottom:18px; font-weight:800; letter-spacing:-0.03em;" class="hero-title-gradient" data-i18n="hero_title">Next-Gen Document Privacy.<br><span>100% In-Browser RAM Execution.</span></h1>
+        
+        <p style="font-size:1.15rem; color:var(--text-secondary); margin-bottom:32px; line-height:1.6; max-width:720px; margin-left:auto; margin-right:auto;" data-i18n="hero_subtitle">Convert, compress, organize, scan, OCR, and create biometric ID photos in your local device RAM. No server uploads. No subscriptions. Completely free forever.</p>
 
         <!-- Smart Drop Zone -->
         <div class="drop-zone" id="home-drop-zone" style="max-width:720px; margin:0 auto 24px; box-shadow:var(--shadow-md);">
           <div class="drop-zone-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           </div>
           <div class="drop-zone-text">
-            <h3 data-i18n="drop_title">Drop ANY Document, PDF, or Photo Here</h3>
+            <h3 data-i18n="drop_title" style="font-size:1.25rem;">Drop ANY Document, PDF, or Photo Here</h3>
             <p data-i18n="drop_sub">Our client-side inspector instantly analyzes your file and recommends the fastest offline transformation.</p>
           </div>
-          <div style="display:flex; gap:12px;">
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
             <button class="btn btn-primary btn-lg" id="home-browse-btn" data-i18n="browse_btn">Browse Local Files</button>
             <button class="btn btn-outline btn-lg" onclick="document.getElementById('tools-container').scrollIntoView({behavior:'smooth'})">Explore 20 Tools ↓</button>
           </div>
@@ -116,172 +120,300 @@
         </div>
 
         <!-- Live Client-Side Security Telemetry HUD -->
-        <div style="display:inline-flex; align-items:center; gap:20px; background:var(--bg-surface); padding:10px 24px; border-radius:var(--radius-full); border:1px solid var(--line); font-size:0.85rem; color:var(--text-muted); flex-wrap:wrap; justify-content:center;">
-          <span>⚡ <strong>Status:</strong> Air-Gapped Ready</span>
+        <div style="display:inline-flex; align-items:center; gap:20px; background:var(--bg-surface); padding:10px 24px; border-radius:var(--radius-full); border:1px solid var(--line); font-size:0.84rem; color:var(--text-secondary); flex-wrap:wrap; justify-content:center; box-shadow:var(--shadow-sm);">
+          <span style="display:inline-flex; align-items:center; gap:6px;"><span class="radar-dot"></span> <strong>Status:</strong> Air-Gapped Ready</span>
           <span>🔒 <strong>Network Requests:</strong> 0 Bytes Outbound</span>
-          <span>💻 <strong>Engine:</strong> WebAssembly + Web Workers</span>
+          <span>⚡ <strong>Engine:</strong> WebAssembly + Web Workers</span>
         </div>
       </div>
     </section>
 
     <!-- Interactive Category Filter Tabs & 20 Tools Grid -->
-    <section class="container" style="padding:50px 24px;">
+    <section class="container" style="padding:56px 20px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px; flex-wrap:wrap; gap:20px;">
         <div>
+          <div class="tool-workspace-badge">⚡ 100% In-Browser Speed</div>
           <h2 style="font-size:2.2rem; color:var(--text-primary); font-weight:800; letter-spacing:-0.02em;">All 20 Production Tools</h2>
           <p style="color:var(--text-secondary); font-size:1.05rem;">Real client-side JavaScript transformations. No fake tools. No file uploads.</p>
         </div>
 
         <!-- Filter Pills -->
         <div style="display:flex; gap:8px; flex-wrap:wrap;" id="category-filter-bar">
-          <button class="btn btn-primary" style="padding:6px 16px; font-size:0.85rem;" data-filter="all">All (20)</button>
-          <button class="btn btn-outline" style="padding:6px 16px; font-size:0.85rem;" data-filter="convert">Conversion (8)</button>
-          <button class="btn btn-outline" style="padding:6px 16px; font-size:0.85rem;" data-filter="organize">Organize (6)</button>
-          <button class="btn btn-outline" style="padding:6px 16px; font-size:0.85rem;" data-filter="biometric">ID & Biometrics (4)</button>
-          <button class="btn btn-outline" style="padding:6px 16px; font-size:0.85rem;" data-filter="ocr">Scanner & OCR (2)</button>
+          <button class="btn btn-primary" style="padding:8px 18px; font-size:0.85rem;" data-filter="all">All (20)</button>
+          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="convert">Conversion (8)</button>
+          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="organize">Organize & Edit (7)</button>
+          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="biometric">ID & Biometrics (3)</button>
+          <button class="btn btn-outline" style="padding:8px 18px; font-size:0.85rem;" data-filter="ocr">Scanner & OCR (2)</button>
         </div>
       </div>
 
       <div class="tools-grid" id="tools-container">
-        <!-- PDF to Word -->
+        <!-- 1. PDF to Word -->
         <a href="pages/pdf-to-word.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/pdf-to-word.svg" alt="PDF to Word" class="tool-card-icon" width="48" height="48">
-          <h3>PDF to Word (DOCX)</h3>
+          <span class="tool-card-badge">✨ DOCX</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/pdf-to-word.svg" alt="PDF to Word" class="tool-card-icon">
+          </div>
+          <h3>PDF to Word</h3>
           <p>Extract structured text, headings, and layouts into Microsoft Word (.docx) files.</p>
         </a>
 
-        <!-- Word to PDF -->
+        <!-- 2. Word to PDF -->
         <a href="pages/word-to-pdf.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/word-to-pdf.svg" alt="Word to PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">⚡ Instant</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/word-to-pdf.svg" alt="Word to PDF" class="tool-card-icon">
+          </div>
           <h3>Word to PDF</h3>
-          <p>Convert DOCX documents to standardized, printable A4 PDF documents in seconds.</p>
+          <p>Convert DOCX documents to standardized, printable A4 PDF documents with Unicode support.</p>
         </a>
 
-        <!-- PDF to Excel -->
+        <!-- 3. PDF to Excel -->
         <a href="pages/pdf-to-excel.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/pdf-to-excel.svg" alt="PDF to Excel" class="tool-card-icon" width="48" height="48">
-          <h3>PDF to Excel (XLSX)</h3>
-          <p>Extract tabular grids, financial statements, and receipts into Excel workbooks.</p>
+          <span class="tool-card-badge">📊 XLSX</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/pdf-to-excel.svg" alt="PDF to Excel" class="tool-card-icon">
+          </div>
+          <h3>PDF to Excel</h3>
+          <p>Extract tabular grids, financial statements, and receipts into Excel (.xlsx) workbooks.</p>
         </a>
 
-        <!-- Excel to PDF -->
+        <!-- 4. Excel to PDF -->
         <a href="pages/excel-to-pdf.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/excel-to-pdf.svg" alt="Excel to PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">📄 A4 Table</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/excel-to-pdf.svg" alt="Excel to PDF" class="tool-card-icon">
+          </div>
           <h3>Excel to PDF</h3>
-          <p>Render spreadsheet tables to A4 landscape PDF documents with zero cloud uploads.</p>
+          <p>Render spreadsheet tables to A4 landscape PDF documents with custom gridlines.</p>
         </a>
 
-        <!-- PDF to JPG -->
+        <!-- 5. PDF to JPG -->
         <a href="pages/pdf-to-jpg.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/pdf-to-jpg.svg" alt="PDF to JPG" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🖼️ 300 DPI</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/pdf-to-jpg.svg" alt="PDF to JPG" class="tool-card-icon">
+          </div>
           <h3>PDF to High-Res JPG</h3>
-          <p>Render PDF pages into 300 DPI high-definition JPEG images in device RAM.</p>
+          <p>Render PDF pages into 300 DPI high-definition JPEG images with ZIP downloads.</p>
         </a>
 
-        <!-- JPG to PDF -->
+        <!-- 6. JPG to PDF -->
         <a href="pages/jpg-to-pdf.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/jpg-to-pdf.svg" alt="JPG to PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">📸 Multi-Image</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/jpg-to-pdf.svg" alt="JPG to PDF" class="tool-card-icon">
+          </div>
           <h3>JPG to PDF</h3>
           <p>Combine JPG photos and mobile scans into a clean, printable A4 PDF document.</p>
         </a>
 
-        <!-- PDF to PNG -->
+        <!-- 7. PDF to PNG -->
         <a href="pages/pdf-to-png.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/pdf-to-png.svg" alt="PDF to PNG" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">💎 Lossless</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/pdf-to-png.svg" alt="PDF to PNG" class="tool-card-icon">
+          </div>
           <h3>PDF to PNG</h3>
           <p>Export crisp, lossless PNG images with transparent backgrounds from PDF documents.</p>
         </a>
 
-        <!-- PNG to PDF -->
+        <!-- 8. PNG to PDF -->
         <a href="pages/png-to-pdf.html" class="tool-card" data-cat="convert">
-          <img src="assets/icons/png-to-pdf.svg" alt="PNG to PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🔒 Vector</span>
+          <div class="tool-card-icon-wrap cat-convert">
+            <img src="assets/icons/png-to-pdf.svg" alt="PNG to PDF" class="tool-card-icon">
+          </div>
           <h3>PNG to PDF</h3>
           <p>Convert PNG screenshots and graphics into clean vector-embedded PDF documents.</p>
         </a>
 
-        <!-- Compress PDF -->
+        <!-- 9. Compress PDF -->
         <a href="pages/compress-pdf.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/compress-pdf.svg" alt="Compress PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">📉 -85% Size</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/compress-pdf.svg" alt="Compress PDF" class="tool-card-icon">
+          </div>
           <h3>Compress PDF</h3>
-          <p>Reduce PDF file sizes drastically with stream optimization while preserving crisp print quality.</p>
+          <p>Reduce PDF file sizes drastically with 3 compression tiers while preserving crisp text.</p>
         </a>
 
-        <!-- Merge PDF -->
+        <!-- 10. Merge PDF -->
         <a href="pages/merge-pdf.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/merge-pdf.svg" alt="Merge PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">📑 Combine</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/merge-pdf.svg" alt="Merge PDF" class="tool-card-icon">
+          </div>
           <h3>Merge PDF</h3>
           <p>Combine multiple PDF documents, receipts, and reports into a single file with zero uploads.</p>
         </a>
 
-        <!-- Split PDF -->
+        <!-- 11. Split PDF -->
         <a href="pages/split-pdf.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/split-pdf.svg" alt="Split PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">✂️ Extract</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/split-pdf.svg" alt="Split PDF" class="tool-card-icon">
+          </div>
           <h3>Split PDF</h3>
-          <p>Extract specific page ranges (e.g. 1-3, 5, 8-10) into separate documents.</p>
+          <p>Extract specific page ranges (e.g. 1-3, 5, 8-10) or burst all pages into a ZIP.</p>
         </a>
 
-        <!-- Rotate PDF -->
+        <!-- 12. Rotate PDF -->
         <a href="pages/rotate-pdf.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/rotate-pdf.svg" alt="Rotate PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">↻ 90° / 180°</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/rotate-pdf.svg" alt="Rotate PDF" class="tool-card-icon">
+          </div>
           <h3>Rotate PDF</h3>
-          <p>Permanently rotate upside-down or sideways PDF pages by 90°, 180°, or 270°.</p>
+          <p>Permanently rotate sideways PDF pages with interactive visual thumbnail orientation.</p>
         </a>
 
-        <!-- Edit PDF & Sign -->
+        <!-- 13. Edit PDF & Sign -->
         <a href="pages/edit-pdf.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/edit-pdf.svg" alt="Edit PDF" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">✍️ Signature</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/edit-pdf.svg" alt="Edit PDF" class="tool-card-icon">
+          </div>
           <h3>Edit PDF & Sign</h3>
-          <p>Draw electronic signatures, add text annotations, rotate pages, and preview changes.</p>
+          <p>Draw electronic signatures, add text annotations, certified date stamps, and modify pages.</p>
         </a>
 
-        <!-- Add Watermark -->
+        <!-- 14. Add Watermark -->
         <a href="pages/watermark.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/watermark.svg" alt="Add Watermark" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🛡️ Protect</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/watermark.svg" alt="Add Watermark" class="tool-card-icon">
+          </div>
           <h3>Add Watermark</h3>
-          <p>Stamp custom confidential text watermarks with custom rotation and opacity.</p>
+          <p>Stamp custom confidential text watermarks with custom angle, color, and opacity sliders.</p>
         </a>
 
-        <!-- Add Page Numbers -->
+        <!-- 15. Add Page Numbers -->
         <a href="pages/page-numbers.html" class="tool-card" data-cat="organize">
-          <img src="assets/icons/page-numbers.svg" alt="Add Page Numbers" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🔢 6 Positions</span>
+          <div class="tool-card-icon-wrap cat-organize">
+            <img src="assets/icons/page-numbers.svg" alt="Add Page Numbers" class="tool-card-icon">
+          </div>
           <h3>Add Page Numbers</h3>
-          <p>Number PDF pages automatically with custom bottom/top header alignments.</p>
+          <p>Number PDF pages automatically with 5 format templates and custom header alignments.</p>
         </a>
 
-        <!-- Document Scanner -->
+        <!-- 16. Document Scanner (CamScanner) -->
         <a href="pages/scan.html" class="tool-card" data-cat="ocr">
-          <img src="assets/icons/scan.svg" alt="Document Scanner" class="tool-card-icon" width="48" height="48">
-          <h3>Document Scanner</h3>
-          <p>Scan physical documents using your webcam or phone camera with B&W contrast filters.</p>
+          <span class="tool-card-badge">📷 CamStudio</span>
+          <div class="tool-card-icon-wrap cat-ocr">
+            <img src="assets/icons/scan.svg" alt="Document Scanner" class="tool-card-icon">
+          </div>
+          <h3>CamScanner Studio</h3>
+          <p>Scan documents and ID cards with Magic Color shadow lift, A4 placement, and OCR.</p>
         </a>
 
-        <!-- Image to Text OCR -->
+        <!-- 17. Image to Text OCR -->
         <a href="pages/image-to-text.html" class="tool-card" data-cat="ocr">
-          <img src="assets/icons/image-to-text.svg" alt="Image to Text OCR" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🧠 Neural OCR</span>
+          <div class="tool-card-icon-wrap cat-ocr">
+            <img src="assets/icons/image-to-text.svg" alt="Image to Text OCR" class="tool-card-icon">
+          </div>
           <h3>Image to Text (OCR)</h3>
-          <p>Extract editable text from images and receipts using Neural Tesseract OCR.</p>
+          <p>Extract editable text from images with pre-processing contrast and DOCX export.</p>
         </a>
 
-        <!-- CNIC Photo Maker -->
+        <!-- 18. CNIC Photo Maker -->
         <a href="pages/cnic-photo-maker.html" class="tool-card" data-cat="biometric">
-          <img src="assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🪪 NADRA Spec</span>
+          <div class="tool-card-icon-wrap cat-biometric">
+            <img src="assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker" class="tool-card-icon">
+          </div>
           <h3>CNIC Photo Maker</h3>
-          <p>Crop passport photos to exact 354x472 px NADRA Pakistan specifications + 4x6 print grid.</p>
+          <p>Crop photos to exact 354x472 px NADRA Pakistan specifications + 4x6" printable sheet.</p>
         </a>
 
-        <!-- Passport Photo Maker -->
+        <!-- 19. Passport Photo Maker -->
         <a href="pages/passport-photo-maker.html" class="tool-card" data-cat="biometric">
-          <img src="assets/icons/passport-photo-maker.svg" alt="Passport Photo Maker" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">🛂 US & Schengen</span>
+          <div class="tool-card-icon-wrap cat-biometric">
+            <img src="assets/icons/passport-photo-maker.svg" alt="Passport Photo Maker" class="tool-card-icon">
+          </div>
           <h3>Passport Photo Maker</h3>
-          <p>Crop and align biometric passport photos to US (2x2") and Schengen (35x45mm) standards.</p>
+          <p>Crop biometric passport photos to US (2x2") and Schengen (35x45mm) standards with 8-photo grid.</p>
         </a>
 
-        <!-- Visa Photo Maker -->
+        <!-- 20. Visa Photo Maker -->
         <a href="pages/visa-photo-maker.html" class="tool-card" data-cat="biometric">
-          <img src="assets/icons/visa-photo-maker.svg" alt="Visa Photo Maker" class="tool-card-icon" width="48" height="48">
+          <span class="tool-card-badge">✈️ Global Embassy</span>
+          <div class="tool-card-icon-wrap cat-biometric">
+            <img src="assets/icons/visa-photo-maker.svg" alt="Visa Photo Maker" class="tool-card-icon">
+          </div>
           <h3>Visa Photo Maker</h3>
-          <p>Create compliant biometric visa photos for US DS-160, Schengen, UK, China, and Dubai visas.</p>
+          <p>Create biometric visa photos for US DS-160, Schengen, UK, China, and Dubai visas.</p>
         </a>
+      </div>
+    </section>
+
+    <!-- Competitor Comparison Table (LocalDoc vs iLovePDF vs PDF24 vs Smallpdf) -->
+    <section class="container" style="padding:20px 20px 70px;">
+      <div style="text-align:center; max-width:760px; margin:0 auto 28px;">
+        <div class="tool-workspace-badge">⚖️ Architectural Comparison</div>
+        <h2 style="font-size:2.2rem; font-weight:800; color:var(--text-primary); letter-spacing:-0.02em;">Why LocalDoc Outperforms Cloud Tools</h2>
+        <p style="color:var(--text-secondary); font-size:1.02rem;">Comparing client-side zero-upload privacy with traditional server-based platforms.</p>
+      </div>
+
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature / Metric</th>
+              <th class="col-highlight">LocalDoc (Client-Side)</th>
+              <th>iLovePDF (Cloud)</th>
+              <th>PDF24 (Cloud)</th>
+              <th>Smallpdf (Cloud)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cloud File Uploads</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">● Zero (100% In-RAM)</span></td>
+              <td>❌ Yes (Uploaded to Server)</td>
+              <td>❌ Yes (Uploaded to Server)</td>
+              <td>❌ Yes (Uploaded to Server)</td>
+            </tr>
+            <tr>
+              <td><strong>Processing Speed</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">⚡ Instant (Zero Upload Lag)</span></td>
+              <td>⏳ Upload + Download Delay</td>
+              <td>⏳ Upload + Download Delay</td>
+              <td>⏳ Upload + Download Delay</td>
+            </tr>
+            <tr>
+              <td><strong>Daily Conversion Limits</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">♾️ Unlimited & Free</span></td>
+              <td>❌ 2 tasks / day (Free tier)</td>
+              <td>⚠️ Ad-supported queues</td>
+              <td>❌ 2 tasks / day</td>
+            </tr>
+            <tr>
+              <td><strong>Air-Gapped Offline Support</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">✅ Full PWA Offline</span></td>
+              <td>❌ Requires Internet</td>
+              <td>❌ Requires Internet</td>
+              <td>❌ Requires Internet</td>
+            </tr>
+            <tr>
+              <td><strong>CamScanner & ID A4 Studio</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">✅ Built-in (Magic Color + 1-Page)</span></td>
+              <td>❌ No Camera Studio</td>
+              <td>❌ No Camera Studio</td>
+              <td>❌ No Camera Studio</td>
+            </tr>
+            <tr>
+              <td><strong>Data Harvesting & Retention</strong></td>
+              <td class="col-highlight"><span style="color:var(--accent-emerald);">🛡️ 0 Bytes Stored</span></td>
+              <td>⚠️ Stored for hours on cloud</td>
+              <td>⚠️ Stored for hours on cloud</td>
+              <td>⚠️ Stored for hours on cloud</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -294,18 +426,18 @@
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:28px;">
-          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line);">
+          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line); box-shadow:var(--shadow-sm);">
             <div style="color:var(--primary); font-size:2rem; margin-bottom:12px;">🛡️ Zero Data Transit</div>
             <h3 style="color:var(--text-primary); font-size:1.25rem; margin-bottom:8px;">Local Memory Execution</h3>
             <p style="color:var(--text-secondary); font-size:0.95rem; line-height:1.6;">Documents never leave your local physical device. All parsing, rendering, and vector modifications happen strictly in browser RAM.</p>
           </div>
-          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line);">
+          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line); box-shadow:var(--shadow-sm);">
             <div style="color:var(--amber); font-size:2rem; margin-bottom:12px;">⚡ Hardware Acceleration</div>
             <h3 style="color:var(--text-primary); font-size:1.25rem; margin-bottom:8px;">Multi-Threaded Workers</h3>
             <p style="color:var(--text-secondary); font-size:0.95rem; line-height:1.6;">Heavy operations (such as Tesseract OCR and PDF rasterization) run in dedicated background Web Workers without freezing your browser tab.</p>
           </div>
-          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line);">
-            <div style="color:var(--indigo); font-size:2rem; margin-bottom:12px;">📱 Air-Gapped Offline PWA</div>
+          <div style="background:var(--bg-card); padding:32px; border-radius:var(--radius-lg); border:1px solid var(--line); box-shadow:var(--shadow-sm);">
+            <div style="color:var(--accent-emerald); font-size:2rem; margin-bottom:12px;">📱 Air-Gapped Offline PWA</div>
             <h3 style="color:var(--text-primary); font-size:1.25rem; margin-bottom:8px;">100% Offline Support</h3>
             <p style="color:var(--text-secondary); font-size:0.95rem; line-height:1.6;">Install LocalDoc as a Progressive Web App (PWA) and use all 20 tools anytime, anywhere without an active internet connection.</p>
           </div>
@@ -422,4 +554,3 @@
   </script>
 </body>
 </html>
-

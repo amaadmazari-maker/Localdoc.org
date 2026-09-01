@@ -1,18 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CNIC Photo Maker Online â€” 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Crop passport photos to exact 354x472 px NADRA Pakistan specifications + 4x6 inch printable sheet.">
+  <title>CNIC Photo Maker Online (NADRA 354x472 & 35x45mm) — 100% Zero-Upload | LocalDoc</title>
+  <meta name="description" content="Crop and format official Pakistan NADRA CNIC and NICOP biometric photos (354x472 px / 35x45mm) with printable 4x6 inch 8-photo sheet generator. 100% zero-upload in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/cnic-photo-maker.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CNIC Photo Maker Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Generate official NADRA CNIC passport photos and printable sheets in browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/pages/cnic-photo-maker.html">
+  <meta property="og:image" content="../assets/icons/cnic-photo-maker.svg">
+
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc CNIC Photo Maker",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side biometric CNIC and NADRA photo crop and printable sheet generator."
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -36,6 +55,9 @@
       </ul>
 
       <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div class="privacy-pill">
           <span>100% Local RAM</span>
         </div>
@@ -46,46 +68,74 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:28px; padding-bottom:60px;">
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">ID & Biometric Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>CNIC Photo Maker</span>
+    </nav>
+
     <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>100% Client-Side RAM Processing</span>
+          <span>100% Client-Side NADRA Cropper</span>
         </div>
-        <h1>CNIC Photo Maker Online</h1>
-        <p class="tool-desc">Crop passport photos to exact 354x472 px NADRA Pakistan specifications + 4x6 inch printable sheet.</p>
+        <h1>CNIC & NADRA Photo Maker Online</h1>
+        <p class="tool-desc">Format portrait photos to exact NADRA Pak-Identity specifications (354x472 px / 35x45mm) with printable 4x6" 8-photo grid generator.</p>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker Online Icon" width="40" height="40">
+          <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker" width="48" height="48">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your file here</h3>
-          <p>Or click to browse from your device. 100% in-browser processing.</p>
+          <h3>Drop your portrait photo here</h3>
+          <p>Or click to browse from your device. Supports JPG, PNG, and WebP.</p>
         </div>
-        <button class="btn btn-primary" id="browse-btn">Select Passport Photo</button>
-        <input type="file" id="file-input" accept="image/jpeg,image/png" style="display:none;" multiple>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select Portrait Image</button>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;">
       </div>
 
       <!-- File Queue Item -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="../assets/icons/cnic-photo-maker.svg" width="28" height="28" alt="File">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/cnic-photo-maker.svg" width="32" height="32" alt="Photo">
             <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document</h4>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">photo.jpg</h4>
               <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 10px; font-size:0.78rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Biometric Settings Bar -->
+      <div class="tool-controls-bar" id="photo-controls-bar" style="display:none; margin-top:20px;">
+        <div class="control-group">
+          <span class="control-label">NADRA Standard:</span>
+          <select class="control-select" id="standard-select">
+            <option value="nadra-online" selected>Pak-Identity Online Upload (354x472 px)</option>
+            <option value="nadra-print">NADRA Print Standard (35x45 mm / 413x531 px)</option>
+            <option value="nicop">NICOP / Smart Card (35x45 mm)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <span class="control-label">Output Layout:</span>
+          <select class="control-select" id="layout-select">
+            <option value="sheet" selected>4x6" Printable Sheet (8 Photos)</option>
+            <option value="single">Single Digital Upload Photo</option>
+          </select>
         </div>
       </div>
 
       <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
           <span>Crop for NADRA CNIC</span> &rarr;
         </button>
@@ -96,11 +146,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading RAM</div>
+            <div class="workflow-step-label">Loading Photo</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Processing</div>
+            <div class="workflow-step-label">NADRA Align</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -119,24 +169,59 @@
       <!-- Result Card -->
       <div class="result-card" id="result-card" style="display:none;">
         <div class="result-details">
-          <h3 id="result-title">Operation Complete!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+          <h3 id="result-title">CNIC Photo Ready!</h3>
+          <p id="result-meta">Ready for instant download. 100% private in browser memory.</p>
         </div>
         <div class="result-actions">
           <button class="btn btn-primary btn-lg" id="download-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Result File</span>
+            <span>Download CNIC Photo (.jpg)</span>
           </button>
         </div>
       </div>
     </section>
 
     <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:28px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How This Zero-Upload Tool Operates</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">All parsing, rendering, and vector modifications execute strictly inside your local device RAM sandbox. Zero documents are uploaded to cloud servers.</p>
-      <a href="../blog/cnic-photo-maker-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Technical Guide &rarr;</a>
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">Official NADRA Pak-Identity Requirements</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">NADRA Pak-Identity requires photos with a plain white background, neutral facial expression, clear eye visibility, and dimensions matching 354x472 pixels at a crisp 300 DPI.</p>
+      <a href="../blog/cnic-photo-maker-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full CNIC Photo Guide &rarr;</a>
     </div>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Biometric & Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="passport-photo-maker.html" class="related-tool-card">
+          <img src="../assets/icons/passport-photo-maker.svg" alt="Passport Photo Maker">
+          <div>
+            <h4>Passport Photo Maker</h4>
+            <p>Biometric 2x2 & Schengen crop</p>
+          </div>
+        </a>
+        <a href="visa-photo-maker.html" class="related-tool-card">
+          <img src="../assets/icons/visa-photo-maker.svg" alt="Visa Photo Maker">
+          <div>
+            <h4>Visa Photo Maker</h4>
+            <p>Official visa specifications</p>
+          </div>
+        </a>
+        <a href="scan.html" class="related-tool-card">
+          <img src="../assets/icons/scan.svg" alt="CamScanner Studio">
+          <div>
+            <h4>CamScanner Studio</h4>
+            <p>Scan ID cards & documents</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce scan file size in RAM</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -152,7 +237,6 @@
   <script src="../js/tools/id-photo.js"></script>
 
   <script>
-    let selectedFiles = [];
     let selectedFile = null;
     let resultBlob = null;
 
@@ -161,6 +245,9 @@
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const controlsBar = document.getElementById("photo-controls-bar");
+    const standardSelect = document.getElementById("standard-select");
+    const layoutSelect = document.getElementById("layout-select");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
@@ -169,58 +256,64 @@
 
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
-        selectedFiles = files;
         selectedFile = files[0];
-        queueName.textContent = selectedFiles.length > 1 ? (selectedFiles.length + " files selected") : selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFiles.reduce(function(acc, f) { return acc + f.size; }, 0));
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         fileQueue.style.display = "block";
+        controlsBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
       }
     });
 
-    clearBtn.addEventListener("click", function() {
-      selectedFiles = [];
+    clearBtn.addEventListener("click", () => {
       selectedFile = null;
       resultBlob = null;
       fileQueue.style.display = "none";
+      controlsBar.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
       document.getElementById("workflow-progress").style.display = "none";
     });
 
-    function progressCb(pct, status) {
-      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
-      UIUtils.setWorkflowStep(step, pct, status);
-    }
+    processBtn.addEventListener("click", async () => {
+      if (!selectedFile) return;
 
-    processBtn.addEventListener("click", async function() {
-      if (!selectedFile && selectedFiles.length === 0) return;
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        const res = await IDPhoto.cropPhoto(selectedFile, 354, 472, true); resultBlob = res.sheetBlob || res.singleBlob;
+        UIUtils.setWorkflowStep(0, 20, "Loading photo in local RAM sandbox...");
 
-        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        let targetW = 354;
+        let targetH = 472;
+        if (standardSelect.value === 'nadra-print' || standardSelect.value === 'nicop') {
+          targetW = 413;
+          targetH = 531;
+        }
+
+        const isSheet = layoutSelect.value === 'sheet';
+        UIUtils.setWorkflowStep(1, 60, "Formatting for NADRA Pak-Identity...");
+        const res = await IDPhoto.cropPhoto(selectedFile, targetW, targetH, isSheet);
+
+        resultBlob = isSheet ? res.sheetBlob : res.singleBlob;
+        UIUtils.setWorkflowStep(3, 100, "Photo Generated Successfully!");
+
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = "Size: " + UIUtils.formatBytes(resultBlob.size) + " â€¢ 354x472 px Biometric Photo Sheet (.jpg)";
-        UIUtils.showToast("Operation completed successfully!", "success");
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${isSheet ? '4x6" 300 DPI Printable Grid (8 Photos)' : 'Single NADRA Photo (354x472 px)'}`;
+        UIUtils.showToast("CNIC photo ready!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.showToast(err.message || "Failed to generate photo", "error");
       } finally {
         processBtn.disabled = false;
       }
     });
 
-    downloadBtn.addEventListener("click", function() {
+    downloadBtn.addEventListener("click", () => {
       if (resultBlob) {
-        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
-        UIUtils.downloadBlob(resultBlob, baseName + ".jpg");
+        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "cnic-photo";
+        UIUtils.downloadBlob(resultBlob, `${baseName}-cnic.jpg`);
       }
     });
   </script>
 </body>
 </html>
-

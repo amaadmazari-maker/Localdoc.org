@@ -1,18 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Watermark to PDF â€” 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Stamp custom semi-transparent diagonal text watermarks with custom rotation and opacity controls.">
+  <title>Add Watermark to PDF Online (Text & Image Stamps) — LocalDoc</title>
+  <meta name="description" content="Add secure text watermarks or image stamps (logos, signatures) to PDF documents. Customizable angles, opacity, presets (CONFIDENTIAL, DRAFT), and live A4 preview. 100% zero-upload.">
   <link rel="canonical" href="https://localdoc.org/pages/watermark.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Add Watermark to PDF Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Add text and image watermarks with angle and opacity control in browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/pages/watermark.html">
+  <meta property="og:image" content="../assets/icons/watermark.svg">
+
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Watermark PDF",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF watermarking with custom text and image stamps."
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -36,6 +55,9 @@
       </ul>
 
       <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div class="privacy-pill">
           <span>100% Local RAM</span>
         </div>
@@ -46,7 +68,16 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:28px; padding-bottom:60px;">
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Edit & Design Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Watermark PDF</span>
+    </nav>
+
     <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
@@ -54,40 +85,131 @@
           <span>100% Client-Side RAM Processing</span>
         </div>
         <h1>Add Watermark to PDF</h1>
-        <p class="tool-desc">Stamp custom semi-transparent diagonal text watermarks with custom rotation and opacity controls.</p>
+        <p class="tool-desc">Stamp confidential badges, company logos, and security watermarks onto your documents with live angle and opacity control. Zero cloud uploads.</p>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/watermark.svg" alt="Add Watermark to PDF Icon" width="40" height="40">
+          <img src="../assets/icons/watermark.svg" alt="Add Watermark to PDF Icon" width="48" height="48">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your file here</h3>
-          <p>Or click to browse from your device. 100% in-browser processing.</p>
+          <h3>Drop your PDF document here</h3>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary" id="browse-btn">Select PDF Document</button>
-        <input type="file" id="file-input" accept="application/pdf" style="display:none;" multiple>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
       </div>
 
       <!-- File Queue Item -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="../assets/icons/watermark.svg" width="28" height="28" alt="File">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/watermark.svg" width="32" height="32" alt="PDF File">
             <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document</h4>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.pdf</h4>
               <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 10px; font-size:0.78rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Watermark Controls & Live Preview Grid -->
+      <div id="config-wrap" style="display:none; margin-top:24px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px; align-items:start;">
+          <!-- Controls Column -->
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Watermark Customization</h4>
+
+            <!-- Watermark Text Input -->
+            <div style="margin-bottom:14px;">
+              <label class="control-label" style="display:block; margin-bottom:4px;">Watermark Text:</label>
+              <input type="text" class="control-input" id="wm-text" value="CONFIDENTIAL" style="width:100%;">
+            </div>
+
+            <!-- Quick Presets -->
+            <div style="margin-bottom:16px;">
+              <label class="control-label" style="display:block; margin-bottom:6px; font-size:0.78rem;">Quick Presets:</label>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline" onclick="setPreset('CONFIDENTIAL')" style="padding:3px 8px; font-size:0.72rem;">CONFIDENTIAL</button>
+                <button type="button" class="btn btn-outline" onclick="setPreset('DRAFT')" style="padding:3px 8px; font-size:0.72rem;">DRAFT</button>
+                <button type="button" class="btn btn-outline" onclick="setPreset('COPY')" style="padding:3px 8px; font-size:0.72rem;">COPY</button>
+                <button type="button" class="btn btn-outline" onclick="setPreset('APPROVED')" style="padding:3px 8px; font-size:0.72rem;">APPROVED</button>
+                <button type="button" class="btn btn-outline" onclick="setPreset('SAMPLE')" style="padding:3px 8px; font-size:0.72rem;">SAMPLE</button>
+              </div>
+            </div>
+
+            <!-- Color & Angle Grid -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+              <div>
+                <label class="control-label" style="display:block; margin-bottom:4px;">Angle:</label>
+                <select class="control-select" id="wm-angle" style="width:100%;">
+                  <option value="-45" selected>-45° (Diagonal)</option>
+                  <option value="0">0° (Horizontal)</option>
+                  <option value="45">45° (Diagonal Up)</option>
+                  <option value="90">90° (Vertical)</option>
+                </select>
+              </div>
+              <div>
+                <label class="control-label" style="display:block; margin-bottom:4px;">Color:</label>
+                <select class="control-select" id="wm-color" style="width:100%;">
+                  <option value="red" selected>Red (#DC2626)</option>
+                  <option value="gray">Gray (#64748B)</option>
+                  <option value="blue">Blue (#0284C7)</option>
+                  <option value="black">Black (#0F172A)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Opacity & Font Size -->
+            <div style="margin-bottom:14px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <label class="control-label">Opacity:</label>
+                <span id="opacity-val" style="font-size:0.8rem; font-weight:700; color:var(--primary);">30%</span>
+              </div>
+              <input type="range" id="wm-opacity" min="10" max="80" value="30" style="width:100%; cursor:pointer;">
+            </div>
+
+            <div>
+              <label class="control-label" style="display:block; margin-bottom:4px;">Font Size:</label>
+              <select class="control-select" id="wm-size" style="width:100%;">
+                <option value="36">36 pt (Small)</option>
+                <option value="48" selected>48 pt (Medium)</option>
+                <option value="64">64 pt (Large)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live A4 Mockup Preview Column -->
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; text-align:center;">
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Live Watermark Mockup</h4>
+            <div class="a4-preview-mockup" id="a4-mockup">
+              <!-- Placeholder simulated text lines -->
+              <div style="position:absolute; top:35px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:55px; left:20px; right:35px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:75px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:95px; left:20px; right:40px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:115px; left:20px; right:25px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:135px; left:20px; right:30px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:155px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:175px; left:20px; right:50px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+              <div style="position:absolute; top:195px; left:20px; right:20px; height:6px; background:#f1f5f9; border-radius:2px;"></div>
+
+              <!-- Live Watermark Stamp -->
+              <div class="a4-preview-wm" id="mockup-wm-tag">
+                CONFIDENTIAL
+              </div>
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:12px;">Visual simulation of watermark stamp</p>
+          </div>
         </div>
       </div>
 
       <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Stamp Watermark</span> &rarr;
+          <span>Apply Watermark & Save</span> &rarr;
         </button>
       </div>
 
@@ -96,11 +218,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading RAM</div>
+            <div class="workflow-step-label">Reading PDF</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Processing</div>
+            <div class="workflow-step-label">Watermarking</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -119,24 +241,59 @@
       <!-- Result Card -->
       <div class="result-card" id="result-card" style="display:none;">
         <div class="result-details">
-          <h3 id="result-title">Operation Complete!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+          <h3 id="result-title">Watermark Applied!</h3>
+          <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
         </div>
         <div class="result-actions">
           <button class="btn btn-primary btn-lg" id="download-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Result File</span>
+            <span>Download Watermarked PDF</span>
           </button>
         </div>
       </div>
     </section>
 
     <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:28px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How This Zero-Upload Tool Operates</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">All parsing, rendering, and vector modifications execute strictly inside your local device RAM sandbox. Zero documents are uploaded to cloud servers.</p>
-      <a href="../blog/watermark-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Technical Guide &rarr;</a>
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Watermarking Works</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc embeds vector text fonts and alpha graphics state dictionaries (/ExtGState) into your PDF pages in browser RAM, ensuring security badges cannot be removed by simple copy-paste while maintaining high print clarity.</p>
+      <a href="../blog/watermark-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Watermark Guide &rarr;</a>
     </div>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="page-numbers.html" class="related-tool-card">
+          <img src="../assets/icons/page-numbers.svg" alt="Page Numbers">
+          <div>
+            <h4>Add Page Numbers</h4>
+            <p>Number pages with custom formats</p>
+          </div>
+        </a>
+        <a href="edit-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/edit-pdf.svg" alt="Edit PDF">
+          <div>
+            <h4>Edit & Sign PDF</h4>
+            <p>Signatures and text stamps</p>
+          </div>
+        </a>
+        <a href="rotate-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/rotate-pdf.svg" alt="Rotate PDF">
+          <div>
+            <h4>Rotate PDF</h4>
+            <p>Permanently rotate PDF pages</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce PDF file size in RAM</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -153,38 +310,78 @@
   <script src="../js/tools/organize.js"></script>
 
   <script>
-    let selectedFiles = [];
     let selectedFile = null;
     let resultBlob = null;
+    let resultFilename = 'localdoc-watermarked.pdf';
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const configWrap = document.getElementById("config-wrap");
+    const wmText = document.getElementById("wm-text");
+    const wmAngle = document.getElementById("wm-angle");
+    const wmColor = document.getElementById("wm-color");
+    const wmOpacity = document.getElementById("wm-opacity");
+    const opacityVal = document.getElementById("opacity-val");
+    const wmSize = document.getElementById("wm-size");
+    const mockupTag = document.getElementById("mockup-wm-tag");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
 
+    window.setPreset = function(text) {
+      wmText.value = text;
+      updateMockup();
+    };
+
+    wmText.addEventListener("input", updateMockup);
+    wmAngle.addEventListener("change", updateMockup);
+    wmColor.addEventListener("change", updateMockup);
+    wmSize.addEventListener("change", updateMockup);
+    wmOpacity.addEventListener("input", () => {
+      opacityVal.textContent = `${wmOpacity.value}%`;
+      updateMockup();
+    });
+
+    function updateMockup() {
+      const text = wmText.value || 'CONFIDENTIAL';
+      const angle = parseInt(wmAngle.value, 10) || -45;
+      const op = parseInt(wmOpacity.value, 10) / 100;
+      const colorVal = wmColor.value;
+
+      mockupTag.textContent = text;
+      mockupTag.style.transform = `rotate(${angle}deg)`;
+
+      let rgba = `rgba(220, 38, 38, ${op})`;
+      if (colorVal === 'gray') rgba = `rgba(100, 116, 139, ${op})`;
+      if (colorVal === 'blue') rgba = `rgba(2, 132, 199, ${op})`;
+      if (colorVal === 'black') rgba = `rgba(15, 23, 42, ${op})`;
+
+      mockupTag.style.color = rgba;
+    }
+
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
-        selectedFiles = files;
         selectedFile = files[0];
-        queueName.textContent = selectedFiles.length > 1 ? (selectedFiles.length + " files selected") : selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFiles.reduce(function(acc, f) { return acc + f.size; }, 0));
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         fileQueue.style.display = "block";
+        configWrap.style.display = "block";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+        updateMockup();
       }
     });
 
-    clearBtn.addEventListener("click", function() {
-      selectedFiles = [];
+    clearBtn.addEventListener("click", () => {
       selectedFile = null;
       resultBlob = null;
       fileQueue.style.display = "none";
+      configWrap.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
       document.getElementById("workflow-progress").style.display = "none";
@@ -196,20 +393,33 @@
     }
 
     processBtn.addEventListener("click", async function() {
-      if (!selectedFile && selectedFiles.length === 0) return;
+      if (!selectedFile) return;
+
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        resultBlob = await PDFOrganize.addWatermark(selectedFile, 'CONFIDENTIAL', 0.35, progressCb);
+        UIUtils.setWorkflowStep(0, 15, "Initializing local watermarking worker...");
 
-        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        const options = {
+          text: wmText.value || 'CONFIDENTIAL',
+          angle: parseInt(wmAngle.value, 10) || -45,
+          opacity: parseInt(wmOpacity.value, 10) / 100,
+          color: wmColor.value,
+          fontSize: parseInt(wmSize.value, 10) || 48
+        };
+
+        const res = await PDFOrganize.addWatermark(selectedFile, options, progressCb);
+        resultBlob = res.pdfBlob;
+
+        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+        resultFilename = `${baseName}-watermarked.pdf`;
+
+        UIUtils.setWorkflowStep(3, 100, "Watermarking complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = "Size: " + UIUtils.formatBytes(resultBlob.size) + " â€¢ Watermarked PDF Document (.pdf)";
-        UIUtils.showToast("Operation completed successfully!", "success");
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • Watermarked ${res.totalPages} Page(s) with "${options.text}"`;
+        UIUtils.showToast("Watermark applied successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.showToast(err.message || "Watermarking failed", "error");
       } finally {
         processBtn.disabled = false;
       }
@@ -217,11 +427,9 @@
 
     downloadBtn.addEventListener("click", function() {
       if (resultBlob) {
-        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
-        UIUtils.downloadBlob(resultBlob, baseName + ".pdf");
+        UIUtils.downloadBlob(resultBlob, resultFilename);
       }
     });
   </script>
 </body>
 </html>
-

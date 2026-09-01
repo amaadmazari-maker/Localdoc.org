@@ -1,18 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rotate PDF Pages Permanently â€” 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Permanently fix upside-down or sideways scanned PDF pages by 90Â°, 180Â°, or 270Â° in local memory.">
+  <title>Rotate PDF Pages Online (Bulk & Individual Page Rotation) — LocalDoc</title>
+  <meta name="description" content="Rotate PDF pages permanently 90, 180, or 270 degrees. Visual thumbnail gallery with individual page rotate buttons and bulk odd/even page orientation actions. 100% zero-upload.">
   <link rel="canonical" href="https://localdoc.org/pages/rotate-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rotate PDF Pages Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Permanently rotate individual or all PDF pages in browser RAM. 100% private.">
+  <meta property="og:url" content="https://localdoc.org/pages/rotate-pdf.html">
+  <meta property="og:image" content="../assets/icons/rotate-pdf.svg">
+
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Rotate PDF",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF rotator with per-page orientation control."
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -36,6 +55,9 @@
       </ul>
 
       <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div class="privacy-pill">
           <span>100% Local RAM</span>
         </div>
@@ -46,48 +68,75 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:28px; padding-bottom:60px;">
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Organization Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Rotate PDF</span>
+    </nav>
+
     <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% Client-Side RAM Processing</span>
         </div>
-        <h1>Rotate PDF Pages Permanently</h1>
-        <p class="tool-desc">Permanently fix upside-down or sideways scanned PDF pages by 90Â°, 180Â°, or 270Â° in local memory.</p>
+        <h1>Rotate PDF Pages Online</h1>
+        <p class="tool-desc">Permanently rotate entire PDF documents or individual upside-down pages with instant live visual feedback. Zero cloud uploads.</p>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/rotate-pdf.svg" alt="Rotate PDF Pages Permanently Icon" width="40" height="40">
+          <img src="../assets/icons/rotate-pdf.svg" alt="Rotate PDF Pages Online Icon" width="48" height="48">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your file here</h3>
-          <p>Or click to browse from your device. 100% in-browser processing.</p>
+          <h3>Drop your PDF document here</h3>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary" id="browse-btn">Select PDF Document</button>
-        <input type="file" id="file-input" accept="application/pdf" style="display:none;" multiple>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
       </div>
 
       <!-- File Queue Item -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="../assets/icons/rotate-pdf.svg" width="28" height="28" alt="File">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/rotate-pdf.svg" width="32" height="32" alt="PDF File">
             <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document</h4>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.pdf</h4>
               <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 10px; font-size:0.78rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
         </div>
       </div>
 
+      <!-- Bulk Actions Bar -->
+      <div id="bulk-actions-bar" style="display:none; margin-top:24px; background:var(--bg-surface); padding:14px 20px; border:1px solid var(--line); border-radius:var(--radius-md); justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <span style="font-weight:700; font-size:0.88rem; color:var(--text-primary);">Bulk Rotate:</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="rotateAll(90)" style="font-size:0.8rem; padding:5px 10px;">↻ Rotate All 90° CW</button>
+          <button class="btn btn-outline" onclick="rotateAll(-90)" style="font-size:0.8rem; padding:5px 10px;">↺ Rotate All 90° CCW</button>
+          <button class="btn btn-outline" onclick="rotateAll(180)" style="font-size:0.8rem; padding:5px 10px;">180° Flip All</button>
+          <button class="btn btn-outline" onclick="rotateOdd(90)" style="font-size:0.8rem; padding:5px 10px;">Odd Pages</button>
+          <button class="btn btn-outline" onclick="rotateEven(90)" style="font-size:0.8rem; padding:5px 10px;">Even Pages</button>
+          <button class="btn btn-outline" onclick="resetAllRotations()" style="font-size:0.8rem; padding:5px 10px; color:var(--danger);">Reset All</button>
+        </div>
+      </div>
+
+      <!-- Interactive Thumbnail Page Grid with Live CSS Rotation -->
+      <div id="pages-gallery-wrap" style="display:none; margin-top:20px;">
+        <div class="page-thumbnail-grid" id="pages-grid"></div>
+      </div>
+
       <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Rotate PDF Pages</span> &rarr;
+          <span>Apply Rotations & Save PDF</span> &rarr;
         </button>
       </div>
 
@@ -96,11 +145,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading RAM</div>
+            <div class="workflow-step-label">Reading PDF</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Processing</div>
+            <div class="workflow-step-label">Rotating Pages</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -119,24 +168,59 @@
       <!-- Result Card -->
       <div class="result-card" id="result-card" style="display:none;">
         <div class="result-details">
-          <h3 id="result-title">Operation Complete!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+          <h3 id="result-title">PDF Pages Rotated!</h3>
+          <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
         </div>
         <div class="result-actions">
           <button class="btn btn-primary btn-lg" id="download-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Result File</span>
+            <span>Download Rotated PDF</span>
           </button>
         </div>
       </div>
     </section>
 
     <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:28px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How This Zero-Upload Tool Operates</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">All parsing, rendering, and vector modifications execute strictly inside your local device RAM sandbox. Zero documents are uploaded to cloud servers.</p>
-      <a href="../blog/rotate-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Technical Guide &rarr;</a>
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Rotation Works</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc modifies the dictionary rotation metadata (/Rotate tag) for each page directly in memory, ensuring instant, lossless orientation adjustment without degrading image or text resolution.</p>
+      <a href="../blog/rotate-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Rotate PDF Guide &rarr;</a>
     </div>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="merge-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
+          <div>
+            <h4>Merge PDF</h4>
+            <p>Combine multiple PDFs</p>
+          </div>
+        </a>
+        <a href="split-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/split-pdf.svg" alt="Split PDF">
+          <div>
+            <h4>Split PDF</h4>
+            <p>Extract ranges or burst pages</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce PDF file size in RAM</p>
+          </div>
+        </a>
+        <a href="page-numbers.html" class="related-tool-card">
+          <img src="../assets/icons/page-numbers.svg" alt="Add Page Numbers">
+          <div>
+            <h4>Add Page Numbers</h4>
+            <p>Number pages with custom formats</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -153,38 +237,132 @@
   <script src="../js/tools/organize.js"></script>
 
   <script>
-    let selectedFiles = [];
     let selectedFile = null;
+    let totalDocPages = 0;
+    let pageRotations = {}; // pageIndex (0-based) -> angle (0, 90, 180, 270)
     let resultBlob = null;
+    let resultFilename = 'localdoc-rotated.pdf';
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const bulkBar = document.getElementById("bulk-actions-bar");
+    const galleryWrap = document.getElementById("pages-gallery-wrap");
+    const pagesGrid = document.getElementById("pages-grid");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
+    UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
       if (files.length > 0) {
-        selectedFiles = files;
         selectedFile = files[0];
-        queueName.textContent = selectedFiles.length > 1 ? (selectedFiles.length + " files selected") : selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFiles.reduce(function(acc, f) { return acc + f.size; }, 0));
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         fileQueue.style.display = "block";
+        bulkBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+
+        await loadDocumentPages();
       }
     });
 
-    clearBtn.addEventListener("click", function() {
-      selectedFiles = [];
+    async function loadDocumentPages() {
+      try {
+        const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+        const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+        totalDocPages = pdfDoc.getPageCount();
+        pageRotations = {};
+        for (let i = 0; i < totalDocPages; i++) pageRotations[i] = 0;
+
+        renderThumbnails();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderThumbnails() {
+      pagesGrid.innerHTML = '';
+      for (let i = 0; i < totalDocPages; i++) {
+        const pNum = i + 1;
+        const angle = pageRotations[i] || 0;
+
+        const card = document.createElement("div");
+        card.className = "page-thumb-card";
+        card.id = `thumb-card-${i}`;
+
+        card.innerHTML = `
+          <div class="page-thumb-img-wrap" style="padding:16px;">
+            <div id="thumb-preview-${i}" style="width:100px; height:130px; background:#f8fafc; border:1px solid var(--line); border-radius:3px; display:flex; align-items:center; justify-content:center; transform:rotate(${angle}deg); transition:transform 0.2s ease;">
+              <span style="font-size:1.2rem; font-weight:800; color:var(--text-muted);">P${pNum}</span>
+            </div>
+          </div>
+          <div class="page-thumb-footer">
+            <span style="font-weight:700;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-size:0.7rem;">(${angle}°)</small></span>
+            <div class="page-thumb-actions">
+              <button type="button" class="page-thumb-btn" onclick="rotateSinglePage(${i}, 90)">↻ 90°</button>
+              <button type="button" class="page-thumb-btn" onclick="rotateSinglePage(${i}, -90)">↺</button>
+            </div>
+          </div>
+        `;
+
+        pagesGrid.appendChild(card);
+      }
+
+      galleryWrap.style.display = 'block';
+    }
+
+    window.rotateSinglePage = function(idx, deg) {
+      let current = pageRotations[idx] || 0;
+      current = (current + deg) % 360;
+      if (current < 0) current += 360;
+      pageRotations[idx] = current;
+
+      const preview = document.getElementById(`thumb-preview-${idx}`);
+      const tag = document.getElementById(`angle-tag-${idx}`);
+      if (preview) preview.style.transform = `rotate(${current}deg)`;
+      if (tag) tag.textContent = `(${current}°)`;
+    };
+
+    window.rotateAll = function(deg) {
+      for (let i = 0; i < totalDocPages; i++) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.rotateOdd = function(deg) {
+      for (let i = 0; i < totalDocPages; i += 2) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.rotateEven = function(deg) {
+      for (let i = 1; i < totalDocPages; i += 2) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.resetAllRotations = function() {
+      for (let i = 0; i < totalDocPages; i++) {
+        pageRotations[i] = 0;
+        const preview = document.getElementById(`thumb-preview-${i}`);
+        const tag = document.getElementById(`angle-tag-${i}`);
+        if (preview) preview.style.transform = `rotate(0deg)`;
+        if (tag) tag.textContent = `(0°)`;
+      }
+    };
+
+    clearBtn.addEventListener("click", () => {
       selectedFile = null;
       resultBlob = null;
+      pageRotations = {};
       fileQueue.style.display = "none";
+      bulkBar.style.display = "none";
+      galleryWrap.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
       document.getElementById("workflow-progress").style.display = "none";
@@ -196,20 +374,25 @@
     }
 
     processBtn.addEventListener("click", async function() {
-      if (!selectedFile && selectedFiles.length === 0) return;
+      if (!selectedFile) return;
+
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        resultBlob = await PDFOrganize.rotatePDF(selectedFile, 90, progressCb);
+        UIUtils.setWorkflowStep(0, 15, "Initializing local rotation worker...");
 
-        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        const res = await PDFOrganize.rotatePDF(selectedFile, pageRotations, progressCb);
+        resultBlob = res.pdfBlob;
+
+        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+        resultFilename = `${baseName}-rotated.pdf`;
+
+        UIUtils.setWorkflowStep(3, 100, "Rotation complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = "Size: " + UIUtils.formatBytes(resultBlob.size) + " â€¢ Rotated PDF Document (.pdf)";
-        UIUtils.showToast("Operation completed successfully!", "success");
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.rotatedPagesCount} of ${res.totalPages} Page(s) Rotated Losslessly`;
+        UIUtils.showToast("Rotations applied successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.showToast(err.message || "Rotation failed", "error");
       } finally {
         processBtn.disabled = false;
       }
@@ -217,11 +400,9 @@
 
     downloadBtn.addEventListener("click", function() {
       if (resultBlob) {
-        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
-        UIUtils.downloadBlob(resultBlob, baseName + ".pdf");
+        UIUtils.downloadBlob(resultBlob, resultFilename);
       }
     });
   </script>
 </body>
 </html>
-

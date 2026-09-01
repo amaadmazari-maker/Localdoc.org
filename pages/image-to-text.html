@@ -1,18 +1,37 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image to Text OCR Studio â€” 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Extract editable text from images and receipts using neural optical character recognition.">
+  <title>Image to Text OCR Studio (Neural Text Recognition) — 100% Zero-Upload | LocalDoc</title>
+  <meta name="description" content="Extract editable text from images, receipts, scanned forms, and documents using neural client-side OCR. Download as TXT or Word document with zero server uploads.">
   <link rel="canonical" href="https://localdoc.org/pages/image-to-text.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Image to Text OCR Studio — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Extract editable text from document photos and receipts in browser RAM. 100% private.">
+  <meta property="og:url" content="https://localdoc.org/pages/image-to-text.html">
+  <meta property="og:image" content="../assets/icons/image-to-text.svg">
+
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Image to Text OCR",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side neural OCR optical character recognition tool."
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -36,6 +55,9 @@
       </ul>
 
       <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div class="privacy-pill">
           <span>100% Local RAM</span>
         </div>
@@ -46,48 +68,75 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:28px; padding-bottom:60px;">
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Scanner & OCR Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Image to Text OCR</span>
+    </nav>
+
     <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>100% Client-Side RAM Processing</span>
+          <span>100% Client-Side Neural OCR</span>
         </div>
         <h1>Image to Text OCR Studio</h1>
-        <p class="tool-desc">Extract editable text from images and receipts using neural optical character recognition.</p>
+        <p class="tool-desc">Extract text from document photos, book pages, receipts, and invoices with automatic contrast pre-processing. 100% private in browser RAM.</p>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/image-to-text.svg" alt="Image to Text OCR Studio Icon" width="40" height="40">
+          <img src="../assets/icons/image-to-text.svg" alt="Image to Text OCR Studio Icon" width="48" height="48">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your file here</h3>
-          <p>Or click to browse from your device. 100% in-browser processing.</p>
+          <h3>Drop your image files here</h3>
+          <p>Or click to browse from your device. Supports JPG, PNG, and WebP photos.</p>
         </div>
-        <button class="btn btn-primary" id="browse-btn">Select Image to OCR</button>
-        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" multiple>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select Image Files</button>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;">
       </div>
 
       <!-- File Queue Item -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="../assets/icons/image-to-text.svg" width="28" height="28" alt="File">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/image-to-text.svg" width="32" height="32" alt="Image File">
             <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document</h4>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.jpg</h4>
               <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 10px; font-size:0.78rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- OCR Settings Bar -->
+      <div class="tool-controls-bar" id="ocr-controls-bar" style="display:none; margin-top:20px;">
+        <div class="control-group">
+          <span class="control-label">Pre-OCR Filter:</span>
+          <select class="control-select" id="ocr-filter-select">
+            <option value="adaptive-bw" selected>High-Contrast B&W (Best Accuracy)</option>
+            <option value="magic-color">Magic Color (Light enhancement)</option>
+            <option value="none">Original Image (No filter)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <span class="control-label">Recognition Language:</span>
+          <select class="control-select" id="ocr-lang-select">
+            <option value="eng" selected>English (Latin)</option>
+          </select>
         </div>
       </div>
 
       <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Extract Text via OCR</span> &rarr;
+          <span>Extract Text via Neural OCR</span> &rarr;
         </button>
       </div>
 
@@ -96,11 +145,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading RAM</div>
+            <div class="workflow-step-label">Loading Worker</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Processing</div>
+            <div class="workflow-step-label">Recognizing Text</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -116,27 +165,74 @@
         </div>
       </div>
 
-      <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
-          <h3 id="result-title">Operation Complete!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+      <!-- Result Card & Live Editable Transcription Box -->
+      <div id="result-card" style="display:none; margin-top:24px;">
+        <div class="doc-preview-card">
+          <div class="doc-preview-header">
+            <div class="doc-preview-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span>Extracted Text (<span id="result-stats">0 words • 0 characters</span>)</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-outline" id="copy-btn" style="padding:4px 10px; font-size:0.78rem;">📋 Copy to Clipboard</button>
+            </div>
+          </div>
+          <textarea id="result-text-area" style="width:100%; height:260px; padding:16px 20px; border:none; outline:none; font-family:var(--font-mono); font-size:0.88rem; line-height:1.6; color:var(--text-primary); background:#FFFFFF; resize:vertical;"></textarea>
         </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
+
+        <div style="display:flex; justify-content:center; gap:16px; margin-top:20px; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-lg" id="download-txt-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Result File</span>
+            <span>Download Plain Text (.txt)</span>
+          </button>
+          <button class="btn btn-outline btn-lg" id="download-docx-btn">
+            <span>Download Word Document (.docx)</span>
           </button>
         </div>
       </div>
     </section>
 
     <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:28px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How This Zero-Upload Tool Operates</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">All parsing, rendering, and vector modifications execute strictly inside your local device RAM sandbox. Zero documents are uploaded to cloud servers.</p>
-      <a href="../blog/image-to-text-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Technical Guide &rarr;</a>
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side Neural OCR Operates</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc runs Tesseract WebAssembly optical character recognition models completely inside a dedicated Web Worker sandbox in your device memory, guaranteeing zero cloud transmission of your private scans and documents.</p>
+      <a href="../blog/image-to-text-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Image to Text Guide &rarr;</a>
     </div>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="scan.html" class="related-tool-card">
+          <img src="../assets/icons/scan.svg" alt="CamScanner Studio">
+          <div>
+            <h4>CamScanner Studio</h4>
+            <p>Live camera scanner & ID cards</p>
+          </div>
+        </a>
+        <a href="pdf-to-word.html" class="related-tool-card">
+          <img src="../assets/icons/pdf-to-word.svg" alt="PDF to Word">
+          <div>
+            <h4>PDF to Word</h4>
+            <p>Convert documents to DOCX</p>
+          </div>
+        </a>
+        <a href="pdf-to-excel.html" class="related-tool-card">
+          <img src="../assets/icons/pdf-to-excel.svg" alt="PDF to Excel">
+          <div>
+            <h4>PDF to Excel</h4>
+            <p>Extract tables to spreadsheets</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce PDF file size in RAM</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -150,78 +246,123 @@
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
   <script src="../js/lib/tesseract.min.js"></script>
+  <script src="../js/lib/docx.min.js"></script>
   <script src="../js/tools/id-photo.js"></script>
 
   <script>
-    let selectedFiles = [];
-    let selectedFile = null;
-    let resultBlob = null;
+    let queueFiles = [];
+    let transcribedText = '';
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const controlsBar = document.getElementById("ocr-controls-bar");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
-    const downloadBtn = document.getElementById("download-btn");
+    const resultTextArea = document.getElementById("result-text-area");
+    const resultStats = document.getElementById("result-stats");
+    const copyBtn = document.getElementById("copy-btn");
+    const downloadTxtBtn = document.getElementById("download-txt-btn");
+    const downloadDocxBtn = document.getElementById("download-docx-btn");
 
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
-        selectedFiles = files;
-        selectedFile = files[0];
-        queueName.textContent = selectedFiles.length > 1 ? (selectedFiles.length + " files selected") : selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFiles.reduce(function(acc, f) { return acc + f.size; }, 0));
+        queueFiles = Array.from(files);
+        queueName.textContent = queueFiles.length > 1 ? `${queueFiles.length} images selected` : queueFiles[0].name;
+        const totalSize = queueFiles.reduce((acc, f) => acc + f.size, 0);
+        queueSize.textContent = UIUtils.formatBytes(totalSize);
         fileQueue.style.display = "block";
+        controlsBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
       }
     });
 
-    clearBtn.addEventListener("click", function() {
-      selectedFiles = [];
-      selectedFile = null;
-      resultBlob = null;
+    clearBtn.addEventListener("click", () => {
+      queueFiles = [];
+      transcribedText = '';
       fileQueue.style.display = "none";
+      controlsBar.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
       document.getElementById("workflow-progress").style.display = "none";
     });
 
     function progressCb(pct, status) {
-      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
+      const step = pct < 35 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
-    processBtn.addEventListener("click", async function() {
-      if (!selectedFile && selectedFiles.length === 0) return;
+    processBtn.addEventListener("click", async () => {
+      if (queueFiles.length === 0) return;
+
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        const text = await OCRUtils.imageToText(selectedFile, progressCb); resultBlob = new Blob([text], {type: 'text/plain'});
+        UIUtils.setWorkflowStep(0, 10, "Initializing neural OCR worker in local memory...");
+        let combinedText = '';
 
-        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
-        resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = "Size: " + UIUtils.formatBytes(resultBlob.size) + " â€¢ Extracted Text Document (.txt)";
-        UIUtils.showToast("Operation completed successfully!", "success");
+        for (let i = 0; i < queueFiles.length; i++) {
+          const file = queueFiles[i];
+          const text = await OCRUtils.imageToText(file, progressCb);
+          if (queueFiles.length > 1) {
+            combinedText += `--- IMAGE ${i + 1}: ${file.name} ---\n` + text + "\n\n";
+          } else {
+            combinedText += text;
+          }
+        }
+
+        transcribedText = combinedText.trim();
+        resultTextArea.value = transcribedText;
+
+        const words = transcribedText.split(/\s+/).filter(Boolean).length;
+        const chars = transcribedText.length;
+        resultStats.textContent = `${words} words • ${chars} characters`;
+
+        UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
+        resultCard.style.display = "block";
+        UIUtils.showToast("OCR transcription completed successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.showToast(err.message || "OCR recognition failed", "error");
       } finally {
         processBtn.disabled = false;
       }
     });
 
-    downloadBtn.addEventListener("click", function() {
-      if (resultBlob) {
-        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
-        UIUtils.downloadBlob(resultBlob, baseName + ".txt");
+    copyBtn.addEventListener("click", () => {
+      if (resultTextArea.value) {
+        navigator.clipboard.writeText(resultTextArea.value);
+        UIUtils.showToast("Text copied to clipboard!", "success");
+      }
+    });
+
+    downloadTxtBtn.addEventListener("click", () => {
+      if (resultTextArea.value) {
+        const blob = new Blob([resultTextArea.value], { type: 'text/plain;charset=utf-8' });
+        const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        UIUtils.downloadBlob(blob, `${baseName}-ocr.txt`);
+      }
+    });
+
+    downloadDocxBtn.addEventListener("click", () => {
+      if (!resultTextArea.value) return;
+      try {
+        const paragraphs = resultTextArea.value.split('\n').map(line => {
+          return { type: 'p', text: line };
+        });
+        const docxBlob = MiniDocx.createDocx(paragraphs);
+        const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        UIUtils.downloadBlob(docxBlob, `${baseName}-ocr.docx`);
+        UIUtils.showToast("Word document downloaded!", "success");
+      } catch (e) {
+        console.error(e);
+        UIUtils.showToast("Failed to create Word document", "error");
       }
     });
   </script>
 </body>
 </html>
-

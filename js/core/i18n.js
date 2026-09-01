@@ -1,10 +1,21 @@
 /**
  * localdoc.org — Multi-Language Translation Engine (js/core/i18n.js)
+ * Supports 7 Global Languages: EN, UR (RTL), AR (RTL), ES, FR, DE, ZH
  */
 
 const I18N = {
   currentLang: 'en',
   translations: {},
+
+  availableLanguages: [
+    { code: 'en', label: '🇺🇸 English', dir: 'ltr' },
+    { code: 'ur', label: '🇵🇰 اردو (Urdu)', dir: 'rtl' },
+    { code: 'ar', label: '🇸🇦 العربية (Arabic)', dir: 'rtl' },
+    { code: 'es', label: '🇪🇸 Español', dir: 'ltr' },
+    { code: 'fr', label: '🇫🇷 Français', dir: 'ltr' },
+    { code: 'de', label: '🇩🇪 Deutsch', dir: 'ltr' },
+    { code: 'zh', label: '🇨🇳 简体中文', dir: 'ltr' }
+  ],
 
   async init() {
     this.currentLang = localStorage.getItem('localdoc_lang') || 'en';
@@ -28,16 +39,18 @@ const I18N = {
   setLanguage(lang) {
     this.currentLang = lang;
     localStorage.setItem('localdoc_lang', lang);
+    const isRtl = (lang === 'ur' || lang === 'ar');
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     this.loadTranslations(lang).then(() => {
       this.applyTranslations();
     });
   },
 
   applyTranslations() {
+    const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
     document.documentElement.lang = this.currentLang;
-    document.documentElement.dir = this.currentLang === 'ur' ? 'rtl' : 'ltr';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -54,10 +67,9 @@ const I18N = {
   setupSelector() {
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => {
-      select.innerHTML = `
-        <option value="en" ${this.currentLang === 'en' ? 'selected' : ''}>🇺🇸 English</option>
-        <option value="ur" ${this.currentLang === 'ur' ? 'selected' : ''}>🇵🇰 اردو (Urdu)</option>
-      `;
+      select.innerHTML = this.availableLanguages.map(item => `
+        <option value="${item.code}" ${this.currentLang === item.code ? 'selected' : ''}>${item.label}</option>
+      `).join('');
       select.addEventListener('change', (e) => {
         this.setLanguage(e.target.value);
       });

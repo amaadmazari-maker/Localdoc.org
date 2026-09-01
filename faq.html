@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frequently Asked Questions (FAQs) | LocalDoc</title>
-  <meta name="description" content="Find answers to all frequently asked questions about LocalDoc zero-upload processing, PDF conversions, biometric photo sizes, and offline support.">
+  <title>Frequently Asked Questions (FAQs) — Zero-Upload Security & Tools | LocalDoc</title>
+  <meta name="description" content="Find comprehensive answers to questions about LocalDoc client-side document processing, zero-upload privacy verification, PDF conversions, OCR, and biometric ID photo standards.">
   <link rel="canonical" href="https://localdoc.org/faq.html">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -21,6 +21,55 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/blog.css">
   <link rel="stylesheet" href="css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does LocalDoc process documents with zero server uploads?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LocalDoc executes its document processing engines directly inside your web browser using WebAssembly, HTML5 Canvas, and Web Workers. When you select a document, it is loaded strictly into your physical device's RAM. No files or text streams are ever sent to external cloud servers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there any file size limits or daily task limits?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LocalDoc does not impose artificial daily task limits, paywalls, or subscription queues. Because processing runs on your local CPU and GPU, you can process as many documents as your hardware memory permits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use LocalDoc offline without an active internet connection?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! LocalDoc is engineered as a Progressive Web App (PWA). Once loaded, all tool scripts and WebAssembly modules are cached locally, allowing full offline, air-gapped document processing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does CamScanner Studio clean mobile document scans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CamScanner Studio uses client-side adaptive luminance thresholding and histogram stretching algorithms (Magic Color) to remove indoor phone camera shadows and enhance paper whiteness while preserving crisp black text ink."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the exact specifications for NADRA CNIC smart card photos?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "NADRA Pakistan CNIC smart card photos require a 354x472 pixel resolution (3:4 ratio) at 300 DPI with light/blue background. Our CNIC Photo Maker tool automatically crops to these specs and generates printable 4x6 inch photo sheets."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -55,6 +104,7 @@
         </button>
 
         <div class="privacy-pill">
+          <span class="radar-dot"></span>
           <span data-i18n="offline_badge">100% Local RAM</span>
         </div>
 
@@ -66,46 +116,49 @@
   </header>
 
   <main class="container" style="padding-top:40px; padding-bottom:70px;">
-    <article class="blog-article">
+    <article class="blog-article" style="max-width:880px; margin:0 auto;">
       <div class="tool-workspace-badge">❓ Knowledge Base</div>
-      <h1>Frequently Asked Questions (FAQs)</h1>
+      <h1>Frequently Asked Questions</h1>
       <p style="color:var(--text-secondary); font-size:1.05rem; margin-bottom:32px;">Clear answers regarding our client-side architecture, processing speeds, and privacy safeguards.</p>
 
-      <div class="faq-accordion">
-        <div class="faq-item">
-          <button class="faq-question">1. How is LocalDoc completely zero-upload?</button>
-          <div class="faq-answer">
-            <p>LocalDoc compiles its file transformation libraries (pdf-lib, pdf.js, SheetJS, and Tesseract.js) to pure client-side JavaScript and WebAssembly. When you drop a document into any tool, the file binary stays entirely inside your browser's private memory sandbox. No network requests are made.</p>
-          </div>
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">1. How is LocalDoc completely zero-upload?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">LocalDoc compiles its file transformation libraries (pdf-lib, pdf.js, SheetJS, and Tesseract.js) to pure client-side JavaScript and WebAssembly. When you drop a document into any tool, the file binary stays entirely inside your browser's private memory sandbox. No network requests are made.</p>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">2. Are there any daily document conversion limits?</button>
-          <div class="faq-answer">
-            <p>No! Because transformations run on your own hardware rather than expensive cloud servers, you can process unlimited files without paying anything.</p>
-          </div>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">2. Are there any daily document conversion limits?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">No! Because transformations run on your own hardware rather than expensive cloud servers, you can process unlimited files without paying anything or waiting in queues.</p>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">3. Can I use LocalDoc without an internet connection?</button>
-          <div class="faq-answer">
-            <p>Yes. After your first visit, our Progressive Web App (PWA) cache allows you to open LocalDoc and use all 20 tools completely offline in air-gapped mode.</p>
-          </div>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">3. Can I use LocalDoc without an internet connection?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">Yes. After your first visit, our Progressive Web App (PWA) cache allows you to open LocalDoc and use all 20 tools completely offline in air-gapped mode.</p>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">4. What are the exact dimensions for NADRA CNIC photos?</button>
-          <div class="faq-answer">
-            <p>Pakistani NADRA CNIC smart card photos must be exactly 354x472 pixels at 300 DPI with a blue or light background. Our CNIC Photo Maker handles this aspect ratio and 4x6" print grid generation automatically.</p>
-          </div>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">4. What are the exact dimensions for NADRA CNIC photos?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">Pakistani NADRA CNIC smart card photos must be exactly 354x472 pixels at 300 DPI with a blue or light background. Our CNIC Photo Maker handles this aspect ratio and 4x6" print grid generation automatically.</p>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">5. What libraries power PDF to Word and Excel conversion?</button>
-          <div class="faq-answer">
-            <p>PDF text extraction is handled by Mozilla's PDF.js runtime, OpenXML Word (.docx) containers are assembled by our client-side DocxBuilder, and Excel spreadsheets (.xlsx) are compiled using SheetJS.</p>
-          </div>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">5. How does the ID Card Front & Back 1-Page A4 Mode work in CamScanner?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">In CamScanner Studio, you can snap or upload both the Front and Back of any government ID card, driving license, or passport. The engine automatically lays them out on a single standard 300 DPI A4 page with 1:1 physical card slots and alignment guidelines ready for official portal submissions.</p>
         </div>
+
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:1.15rem; color:var(--text-primary); margin-bottom:8px;">6. Is my data safe if I close the browser tab?</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">Yes. Because all data is held strictly in volatile RAM, closing the browser tab permanently frees the memory, leaving zero residual traces on our servers or your hard drive.</p>
+        </div>
+      </div>
+
+      <div class="cta-banner" style="margin-top:36px;">
+        <div>
+          <h3 style="color:var(--text-primary); font-size:1.3rem; margin-bottom:4px;">Have a Question Not Listed Here?</h3>
+          <p style="color:var(--text-secondary); font-size:0.95rem; margin:0;">Reach out to our support team at support@localdoc.org.</p>
+        </div>
+        <a href="contact.html" class="btn btn-primary btn-lg">Ask a Question &rarr;</a>
       </div>
     </article>
   </main>
@@ -138,7 +191,7 @@
             <li><a href="blog/compress-pdf-guide.html" class="footer-link">Compress PDF Guide</a></li>
             <li><a href="blog/cnic-photo-maker-guide.html" class="footer-link">NADRA Photo Specs</a></li>
             <li><a href="blog/passport-photo-maker-guide.html" class="footer-link">Global Passport Rules</a></li>
-            <li><a href="faq.html" class="footer-link">FAQs</a></li>
+            <li><a href="faq.html" class="footer-link">20+ FAQs</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -165,4 +218,3 @@
   <script src="js/core/seo.js"></script>
 </body>
 </html>
-

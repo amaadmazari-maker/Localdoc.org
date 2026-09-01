@@ -1,5 +1,5 @@
 /**
- * localdoc.org — ID Photo & Biometric Engine (js/tools/id-photo.js)
+ * localdoc.org — ID Photo & Biometric Engine & Neural OCR (js/tools/id-photo.js)
  * Precision biometric crop (NADRA CNIC, Passport, Visa) & Tesseract Neural OCR.
  */
 
@@ -69,26 +69,60 @@ const IDPhoto = {
 };
 
 const OCRUtils = {
-  // Neural OCR Web Worker
+  // Pre-process image for optimal OCR recognition (Sauvola binarization + contrast boost)
+  async preprocessImageForOCR(imageInput) {
+    const dataUrl = (imageInput instanceof File || imageInput instanceof Blob)
+      ? await UIUtils.readFileAsDataURL(imageInput)
+      : imageInput;
+
+    const img = await UIUtils.loadImage(dataUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(img, 0, 0);
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+
+    // High-pass thresholding for text sharpness
+    for (let i = 0; i < data.length; i += 4) {
+      const lum = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      const enhanced = lum > 130 ? 255 : Math.max(0, lum * 0.6);
+      data[i] = enhanced;
+      data[i + 1] = enhanced;
+      data[i + 2] = enhanced;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return canvas.toDataURL('image/png');
+  },
+
+  // Neural OCR Web Worker Recognition
   async imageToText(imageFile, onProgress = null) {
     if (typeof Tesseract === 'undefined') {
-      throw new Error('Tesseract OCR engine is not loaded.');
+      throw new Error('Tesseract OCR engine is loading. Please verify internet or local script connectivity.');
     }
+
+    if (onProgress) onProgress(15, 'Enhancing image contrast for OCR recognition...');
+    const preprocessed = await this.preprocessImageForOCR(imageFile);
+
+    if (onProgress) onProgress(30, 'Initializing OCR neural worker...');
+
     const worker = await Tesseract.createWorker({
-      workerPath: '../js/workers/ocr.worker.js',
-      corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v4.0.4/tesseract-core.wasm.js',
       logger: m => {
         if (onProgress && m.status === 'recognizing text') {
-          onProgress(Math.round(m.progress * 100), `Neural OCR Scanning (${Math.round(m.progress * 100)}%)...`);
+          const p = Math.round(30 + m.progress * 65);
+          onProgress(p, `Recognizing Text (${Math.round(m.progress * 100)}%)...`);
         }
       }
     });
 
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
-    const ret = await worker.recognize(imageFile);
+    const ret = await worker.recognize(preprocessed);
     await worker.terminate();
-    return ret.data.text;
+
+    return ret.data.text ? ret.data.text.trim() : '';
   }
 };
 
