@@ -253,13 +253,16 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
+  padding: 5px 14px;
   background: var(--primary-subtle);
   color: var(--primary);
+  border: 1px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .tool-workspace h1 {
@@ -277,39 +280,69 @@ a:hover {
   margin: 0 auto;
 }
 
-/* Compact Drop Zone */
+/* Luxurious Modern Drop Zone */
 .drop-zone {
   border: 2px dashed var(--line);
-  background: var(--bg-body);
-  border-radius: var(--radius-md);
-  padding: 32px 20px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 38px 24px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.drop-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, var(--primary-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 .drop-zone:hover, .drop-zone.dragover {
   border-color: var(--primary);
+  background: var(--bg-surface);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.12), 0 0 0 1px var(--primary);
+}
+.drop-zone:hover::before, .drop-zone.dragover::before {
+  opacity: 1;
+}
+
+.drop-zone-icon {
+  margin-bottom: 12px;
+  display: inline-flex;
+  padding: 14px;
+  border-radius: 50%;
   background: var(--primary-subtle);
+  color: var(--primary);
+  transition: transform 0.25s ease;
+}
+.drop-zone:hover .drop-zone-icon {
+  transform: scale(1.08) translateY(-2px);
 }
 
 .drop-zone-icon img {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
+  width: 44px;
+  height: 44px;
 }
 
 .drop-zone-text h3 {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
 }
 
 .drop-zone-text p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 16px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
 }
 
 /* Buttons */

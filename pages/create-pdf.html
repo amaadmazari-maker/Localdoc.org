@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create PDF from Images & Scans Online (JPG, PNG, WEBP) — LocalDoc</title>
+  <meta name="description" content="Convert and combine JPG, PNG, WEBP images, photos, and scanned documents into professional vector PDF files. Reorder pages, rotate, adjust margins, and compile in browser RAM with zero uploads.">
+  <link rel="canonical" href="https://localdoc.org/pages/create-pdf.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Create PDF Online from Images & Scans — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Combine JPG, PNG, WEBP photos into clean A4 or Letter PDFs with reordering, rotation, and margin controls. 100% private in-browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/pages/create-pdf.html">
+  <meta property="og:image" content="../assets/icons/jpg-to-pdf.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Create PDF Studio",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side image to PDF compiler supporting JPG, PNG, and multi-page scanned document batching."
+  }
+  </script>
+
+  <style>
+    .page-thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .thumb-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .thumb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-glow);
+    }
+    .thumb-preview-wrap {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-body);
+      overflow: hidden;
+      padding: 8px;
+    }
+    .thumb-preview-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+    .thumb-footer {
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--line);
+      font-size: 0.8rem;
+    }
+    .thumb-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .thumb-action-btn {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.1s ease;
+    }
+    .thumb-action-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="create-pdf.html" class="nav-link active">Create PDF</a></li>
+        <li><a href="scan.html" class="nav-link">Document Scanner</a></li>
+        <li><a href="id-photo.html" class="nav-link">Scan ID & Photo</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Convert & Create Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Create PDF Studio</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          <span>Unified Image to PDF Studio</span>
+        </div>
+        <h1>Create PDF from Images & Photos</h1>
+        <p class="tool-desc">Combine JPG, PNG, WEBP, and scanned documents into a crisp, high-resolution vector PDF document. Reorder pages, rotate images, customize margins, and export in seconds.</p>
+      </div>
+
+      <!-- Modern Drop Zone -->
+      <div class="drop-zone" id="drop-zone" style="margin-top:24px;">
+        <div class="drop-zone-icon">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div class="drop-zone-text">
+          <h3>Drag & drop multiple images here, or browse files</h3>
+          <p>Supports JPG, PNG, WEBP, and BMP photos • Multiple selection enabled</p>
+        </div>
+        <button class="btn btn-primary" id="browse-btn">Browse Image Files</button>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/bmp" multiple style="display:none;">
+      </div>
+
+      <!-- Pages Reordering & Layout Workspace -->
+      <div id="pages-workspace" style="display:none; margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary);">
+            Selected Pages (<span id="total-count">0</span> images)
+          </h4>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline" id="add-more-btn" style="padding:6px 12px; font-size:0.8rem;">+ Add More Photos</button>
+            <button class="btn btn-outline" id="clear-all-btn" style="padding:6px 12px; font-size:0.8rem; color:var(--danger);">Clear All</button>
+          </div>
+        </div>
+
+        <div class="page-thumb-grid" id="pages-grid"></div>
+
+        <!-- Custom PDF Formatting Controls -->
+        <div class="tool-controls-bar" style="margin-top:24px; display:flex; flex-wrap:wrap; gap:16px;">
+          <div class="control-group">
+            <span class="control-label">Page Size:</span>
+            <select class="control-select" id="page-size-select">
+              <option value="a4" selected>Standard A4</option>
+              <option value="letter">US Letter</option>
+              <option value="auto">Fit to Image Proportions</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Page Margins:</span>
+            <select class="control-select" id="page-margin-select">
+              <option value="small" selected>Standard Margin (15pt)</option>
+              <option value="none">Zero Margins (Full Bleed)</option>
+              <option value="large">Wide Margin (30pt)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Orientation:</span>
+            <select class="control-select" id="page-orientation-select">
+              <option value="portrait" selected>Portrait</option>
+              <option value="landscape">Landscape</option>
+              <option value="auto">Auto (Match Image)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar" style="margin-top:24px; display:flex; justify-content:center; gap:16px;">
+          <button class="btn btn-primary btn-lg" id="compile-btn">
+            Create & Download PDF Document &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- 3-Step Progress Workflow HUD -->
+      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
+        <div class="workflow-steps-indicator">
+          <div class="workflow-step-node workflow-step-1">
+            <div class="workflow-step-circle">1</div>
+            <div class="workflow-step-label">Reading Images</div>
+          </div>
+          <div class="workflow-step-node workflow-step-2">
+            <div class="workflow-step-circle">2</div>
+            <div class="workflow-step-label">Generating PDF Pages</div>
+          </div>
+          <div class="workflow-step-node workflow-step-3">
+            <div class="workflow-step-circle">3</div>
+            <div class="workflow-step-label">Ready</div>
+          </div>
+        </div>
+        <div class="workflow-progress-track">
+          <div class="workflow-progress-fill"></div>
+        </div>
+        <div class="workflow-progress-meta">
+          <span id="progress-status">Compiling PDF in memory...</span>
+          <span id="progress-percent">0%</span>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card" style="display:none;">
+        <div class="result-details">
+          <h3 id="result-title">PDF Document Ready!</h3>
+          <p id="result-meta">Compiled 100% privately in browser memory.</p>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary btn-lg" id="download-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span id="download-btn-text">Download Compiled PDF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-Step How To Use Section -->
+    <section class="how-to-use-section" style="margin:48px 0 32px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">How to Create a PDF from Images</h2>
+        <p style="color:var(--text-secondary); font-size:0.92rem; max-width:600px; margin:0 auto;">Easily assemble multiple photos, receipts, or screenshots into an organized, high-quality vector PDF file.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
+        <div class="how-to-card">
+          <div class="how-to-step-num">1</div>
+          <div class="how-to-icon">🖼️</div>
+          <h3>Select Images</h3>
+          <p>Drag and drop multiple JPG, PNG, or WEBP photos into the drop zone, or browse files from your computer or phone gallery.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">2</div>
+          <div class="how-to-icon">🔄</div>
+          <h3>Reorder & Format</h3>
+          <p>Arrange page order using arrow buttons, rotate sideways images 90°, and choose your desired paper size (A4 or US Letter) and margins.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">3</div>
+          <div class="how-to-icon">📥</div>
+          <h3>Save Vector PDF</h3>
+          <p>Click "Create & Download PDF" to instantly generate a compact, shareable PDF file in browser memory without any cloud upload.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Tutorial Player -->
+    <section class="tutorial-player-section" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; margin:32px 0; box-shadow:var(--shadow-sm);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
+        <div>
+          <span class="brand-badge" style="display:inline-block; margin-bottom:6px; font-size:0.75rem;">Interactive Tutorial Demo</span>
+          <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-top:2px;">Visual Walkthrough: Creating Multi-Page PDFs</h3>
+          <p style="font-size:0.88rem; color:var(--text-secondary);">Watch how images are arranged, rotated, and converted into crisp PDF pages.</p>
+        </div>
+        <div>
+          <button class="btn btn-outline" id="tut-play-btn" style="display:inline-flex; align-items:center; gap:6px;">
+            <span id="tut-btn-icon">▶</span> <span id="tut-btn-text">Play Demo</span>
+          </button>
+        </div>
+      </div>
+      <div style="position:relative; width:100%; height:260px; background:linear-gradient(135deg, #090D16 0%, #0F172A 100%); border-radius:var(--radius-md); overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-glow);">
+        <svg width="280" height="180" viewBox="0 0 280 180" fill="none">
+          <!-- 3 Staggered Image Cards -->
+          <rect x="20" y="30" width="70" height="90" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="2" opacity="0.8"></rect>
+          <rect x="65" y="20" width="70" height="90" rx="4" fill="#1E293B" stroke="#0284C7" stroke-width="2" opacity="0.9"></rect>
+          <rect x="110" y="10" width="70" height="90" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="2"></rect>
+
+          <!-- Arrow to PDF Document -->
+          <path d="M195,55 L215,55" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"></path>
+          <polygon points="215,50 225,55 215,60" fill="#38BDF8"></polygon>
+
+          <!-- Bound PDF Document -->
+          <rect x="235" y="15" width="40" height="80" rx="3" fill="#0284C7"></rect>
+          <rect x="240" y="25" width="30" height="6" rx="2" fill="#FFFFFF"></rect>
+          <rect x="240" y="35" width="22" height="4" rx="2" fill="#BAE6FD"></rect>
+        </svg>
+        <div id="tut-caption" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.9); padding:6px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; color:#38BDF8; border:1px solid rgba(56,189,248,0.3); white-space:nowrap;">
+          Step 1: Batch import multiple JPG, PNG, or WEBP photos
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="scan.html" class="related-tool-card">
+          <img src="../assets/icons/scan.svg" alt="Document Scanner">
+          <div>
+            <h4>Document Scanner</h4>
+            <p>Live camera capture with edge detection</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Shrink file size without losing sharpness</p>
+          </div>
+        </a>
+        <a href="split-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/split-pdf.svg" alt="Split PDF">
+          <div>
+            <h4>Split PDF</h4>
+            <p>Extract specific pages into new files</p>
+          </div>
+        </a>
+        <a href="id-photo.html" class="related-tool-card">
+          <img src="../assets/icons/passport-photo.svg" alt="Scan ID & Photo">
+          <div>
+            <h4>Scan ID or Photo</h4>
+            <p>Passport, Visa & 1-page A4 ID Cards</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/core/i18n.js"></script>
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+
+  <script>
+    let imageList = []; // { id, file, dataUrl, rotation }
+    let compiledBlob = null;
+    let compiledFilename = 'LocalDoc_Document.pdf';
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const browseBtn = document.getElementById("browse-btn");
+    const addMoreBtn = document.getElementById("add-more-btn");
+    const clearAllBtn = document.getElementById("clear-all-btn");
+
+    const workspace = document.getElementById("pages-workspace");
+    const pagesGrid = document.getElementById("pages-grid");
+    const totalCount = document.getElementById("total-count");
+
+    const pageSizeSelect = document.getElementById("page-size-select");
+    const pageMarginSelect = document.getElementById("page-margin-select");
+    const pageOrientationSelect = document.getElementById("page-orientation-select");
+
+    const compileBtn = document.getElementById("compile-btn");
+    const resultCard = document.getElementById("result-card");
+    const downloadBtn = document.getElementById("download-btn");
+
+    browseBtn.addEventListener("click", () => fileInput.click());
+    addMoreBtn.addEventListener("click", () => fileInput.click());
+
+    UIUtils.setupDropZone(dropZone, fileInput, async (files) => {
+      if (!files || files.length === 0) return;
+      UIUtils.showToast(`Loading ${files.length} image(s)...`, "info");
+
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        const dataUrl = await UIUtils.readFileAsDataURL(file);
+        imageList.push({
+          id: Date.now() + Math.random().toString(36).substr(2, 5),
+          name: file.name,
+          dataUrl: dataUrl,
+          rotation: 0
+        });
+      }
+
+      renderGrid();
+      UIUtils.showToast(`Loaded ${imageList.length} page(s)!`, "success");
+    });
+
+    clearAllBtn.addEventListener("click", () => {
+      imageList = [];
+      renderGrid();
+      resultCard.style.display = 'none';
+      document.getElementById("workflow-progress").style.display = 'none';
+    });
+
+    function renderGrid() {
+      totalCount.textContent = imageList.length;
+
+      if (imageList.length === 0) {
+        workspace.style.display = 'none';
+        return;
+      }
+
+      workspace.style.display = 'block';
+      pagesGrid.innerHTML = '';
+
+      imageList.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = "thumb-card";
+        card.innerHTML = `
+          <div class="thumb-preview-wrap">
+            <img src="${item.dataUrl}" style="transform: rotate(${item.rotation}deg);" alt="Page ${idx + 1}">
+          </div>
+          <div class="thumb-footer">
+            <span style="font-weight:700;">#${idx + 1}</span>
+            <div class="thumb-actions">
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">←</button>
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, 1)" ${idx === imageList.length - 1 ? 'disabled' : ''} title="Move Right">→</button>
+              <button class="thumb-action-btn" onclick="rotateItem(${idx})" title="Rotate 90°">↻</button>
+              <button class="thumb-action-btn" style="color:var(--danger);" onclick="deleteItem(${idx})" title="Remove">✕</button>
+            </div>
+          </div>
+        `;
+        pagesGrid.appendChild(card);
+      });
+    }
+
+    window.moveItem = function(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= imageList.length) return;
+      const temp = imageList[idx];
+      imageList[idx] = imageList[target];
+      imageList[target] = temp;
+      renderGrid();
+    };
+
+    window.rotateItem = function(idx) {
+      imageList[idx].rotation = (imageList[idx].rotation + 90) % 360;
+      renderGrid();
+    };
+
+    window.deleteItem = function(idx) {
+      imageList.splice(idx, 1);
+      renderGrid();
+    };
+
+    compileBtn.addEventListener("click", async () => {
+      if (imageList.length === 0) return;
+
+      try {
+        compileBtn.disabled = true;
+        UIUtils.setWorkflowStep(0, 10, "Initializing PDF document in browser RAM...");
+
+        const pdfDoc = await PDFLib.PDFDocument.create();
+        const pageSize = pageSizeSelect.value;
+        const marginSetting = pageMarginSelect.value;
+        const orientation = pageOrientationSelect.value;
+
+        const marginMap = { 'none': 0, 'small': 15, 'large': 30 };
+        const margin = marginMap[marginSetting] ?? 15;
+
+        const standardSizes = {
+          a4: [595.28, 841.89],
+          letter: [612.0, 792.0]
+        };
+
+        const total = imageList.length;
+
+        for (let i = 0; i < total; i++) {
+          const item = imageList[i];
+          UIUtils.setWorkflowStep(2, Math.round(15 + ((i + 1) / total) * 75), `Rendering page ${i + 1} of ${total}...`);
+
+          // If rotated, render rotated on helper canvas first
+          let finalDataUrl = item.dataUrl;
+          if (item.rotation !== 0) {
+            const tempImg = await UIUtils.loadImage(item.dataUrl);
+            const is90 = (item.rotation % 180 !== 0);
+            const c = document.createElement("canvas");
+            c.width = is90 ? tempImg.naturalHeight : tempImg.naturalWidth;
+            c.height = is90 ? tempImg.naturalWidth : tempImg.naturalHeight;
+            const ctx = c.getContext("2d");
+            ctx.translate(c.width / 2, c.height / 2);
+            ctx.rotate((item.rotation * Math.PI) / 180);
+            ctx.drawImage(tempImg, -tempImg.naturalWidth / 2, -tempImg.naturalHeight / 2);
+            finalDataUrl = c.toDataURL("image/jpeg", 0.95);
+          }
+
+          let embeddedImg;
+          if (finalDataUrl.startsWith("data:image/png")) {
+            embeddedImg = await pdfDoc.embedPng(finalDataUrl);
+          } else {
+            embeddedImg = await pdfDoc.embedJpg(finalDataUrl);
+          }
+
+          let pWidth, pHeight;
+          if (pageSize === 'auto') {
+            pWidth = embeddedImg.width * 0.75;
+            pHeight = embeddedImg.height * 0.75;
+          } else {
+            const dims = standardSizes[pageSize] || standardSizes.a4;
+            pWidth = dims[0];
+            pHeight = dims[1];
+
+            if (orientation === 'landscape' || (orientation === 'auto' && embeddedImg.width > embeddedImg.height)) {
+              pWidth = dims[1];
+              pHeight = dims[0];
+            }
+          }
+
+          const page = pdfDoc.addPage([pWidth, pHeight]);
+          const availW = Math.max(10, pWidth - margin * 2);
+          const availH = Math.max(10, pHeight - margin * 2);
+
+          const scale = Math.min(availW / embeddedImg.width, availH / embeddedImg.height);
+          const drawW = embeddedImg.width * scale;
+          const drawH = embeddedImg.height * scale;
+
+          page.drawImage(embeddedImg, {
+            x: (pWidth - drawW) / 2,
+            y: (pHeight - drawH) / 2,
+            width: drawW,
+            height: drawH
+          });
+        }
+
+        UIUtils.setWorkflowStep(2, 95, "Finalizing PDF byte stream...");
+        const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+        compiledBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+        compiledFilename = `LocalDoc_Created_${new Date().toISOString().slice(0, 10)}.pdf`;
+
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledBlob.size)} • Compiled ${imageList.length} Pages into Vector PDF`;
+        document.getElementById("download-btn-text").textContent = `Download ${compiledFilename}`;
+
+        UIUtils.setWorkflowStep(3, 100, "PDF Ready!");
+        resultCard.style.display = "flex";
+        UIUtils.showToast("PDF generated successfully!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast(err.message || "Failed to create PDF", "error");
+      } finally {
+        compileBtn.disabled = false;
+      }
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      if (compiledBlob) {
+        UIUtils.downloadBlob(compiledBlob, compiledFilename);
+      }
+    });
+
+    // Tutorial demo controller
+    const tutPlayBtn = document.getElementById("tut-play-btn");
+    const tutCaption = document.getElementById("tut-caption");
+    let isPlaying = false;
+    let step = 1;
+    let tTimer = null;
+    const sList = [
+      "Step 1: Batch import multiple JPG, PNG, or WEBP photos",
+      "Step 2: Reorder pages and customize paper size and margins",
+      "Step 3: Instant client-side compile to professional vector PDF"
+    ];
+
+    tutPlayBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        clearInterval(tTimer);
+        isPlaying = false;
+        document.getElementById("tut-btn-icon").textContent = "▶";
+        document.getElementById("tut-btn-text").textContent = "Play Demo";
+      } else {
+        isPlaying = true;
+        document.getElementById("tut-btn-icon").textContent = "⏸";
+        document.getElementById("tut-btn-text").textContent = "Pause Demo";
+        tTimer = setInterval(() => {
+          step = (step % sList.length) + 1;
+          tutCaption.textContent = sList[step - 1];
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

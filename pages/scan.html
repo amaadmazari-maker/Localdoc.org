@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document Scanner & CamScanner Studio Online (100% Zero-Upload) — LocalDoc</title>
-  <meta name="description" content="Free CamScanner online alternative. Scan documents, receipts, and ID cards with live camera or gallery upload. Magic Color filter, shadow removal, multi-page batching, and instant PDF compilation.">
+  <meta name="description" content="Free CamScanner online alternative. Real-time document edge detection, Magic Color enhancement, B&W photocopy filter, batch gallery upload, and custom file naming. 100% private in-browser execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -13,7 +13,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Document Scanner & CamScanner Studio Online — 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Scan multi-page documents and ID cards in browser RAM with Magic Color shadow removal. 100% private.">
+  <meta property="og:description" content="Scan multi-page documents and ID cards in browser RAM with real-time edge detection and Magic Color enhancement. 100% private.">
   <meta property="og:url" content="https://localdoc.org/pages/scan.html">
   <meta property="og:image" content="../assets/icons/scan.svg">
 
@@ -29,9 +29,102 @@
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "Zero-upload client-side document scanner with Magic Color enhancement and ID card multi-page compilation."
+    "description": "Zero-upload client-side document scanner with real-time edge detection, Magic Color enhancement, and custom PDF compilation."
   }
   </script>
+
+  <style>
+    /* Viewfinder Edge Guides & Filter Overlays */
+    .edge-box {
+      position: absolute;
+      border: 2px solid #06B6D4;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.45);
+      border-radius: 4px;
+      pointer-events: none;
+      transition: all 0.15s ease-out;
+      z-index: 4;
+    }
+    .edge-corner-dot {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #10B981;
+      border: 2px solid #FFFFFF;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+      z-index: 5;
+    }
+    .filter-preview-magic {
+      filter: contrast(1.25) brightness(1.08) saturate(1.15);
+    }
+    .filter-preview-clean-bw {
+      filter: grayscale(1) contrast(2.2) brightness(1.1);
+    }
+    .filter-preview-grayscale {
+      filter: grayscale(1) contrast(1.15);
+    }
+    .filter-preview-light-mode {
+      filter: brightness(1.18) contrast(1.05);
+    }
+    .tag-pill {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tag-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .how-to-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .how-to-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-glow);
+    }
+    .how-to-step-num {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .how-to-icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .how-to-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .how-to-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+  </style>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -47,11 +140,11 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="../index.html" class="nav-link">All 20 Tools</a></li>
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="create-pdf.html" class="nav-link">Create PDF</a></li>
+        <li><a href="id-photo.html" class="nav-link">Scan ID & Photo</a></li>
         <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
-        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
-        <li><a href="../about.html" class="nav-link">About</a></li>
-        <li><a href="../contact.html" class="nav-link">Contact</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy</a></li>
       </ul>
 
       <div class="header-actions">
@@ -85,7 +178,7 @@
           <span>100% Client-Side CamScanner Studio</span>
         </div>
         <h1>Document Scanner & CamScanner Studio</h1>
-        <p class="tool-desc">Capture physical documents with your camera or batch import gallery photos. Apply Magic Color shadow removal, arrange pages, and export clean PDFs or OCR text.</p>
+        <p class="tool-desc">Capture physical paperwork with real-time edge detection and auto-crop. Apply CamScanner Magic Color shadow removal, batch import multiple gallery photos, and compile custom-named PDFs.</p>
       </div>
 
       <!-- Scanner Studio Mode Switcher -->
@@ -95,40 +188,60 @@
       </div>
 
       <!-- Live Camera Viewfinder Box -->
-      <div class="camscanner-viewfinder-wrap" id="viewfinder-wrap">
-        <video id="scanner-video" style="width:100%; height:100%; object-fit:cover;" autoplay playsinline muted></video>
+      <div class="camscanner-viewfinder-wrap" id="viewfinder-wrap" style="position:relative; overflow:hidden;">
+        <video id="scanner-video" class="filter-preview-magic" style="width:100%; height:100%; object-fit:cover;" autoplay playsinline muted></video>
         <canvas id="scanner-canvas" style="display:none;"></canvas>
+
+        <!-- Real-Time Edge Detection Overlay Box -->
+        <div id="live-edge-box" class="edge-box" style="display:none;">
+          <div class="edge-corner-dot" style="top:-6px; left:-6px;"></div>
+          <div class="edge-corner-dot" style="top:-6px; right:-6px;"></div>
+          <div class="edge-corner-dot" style="bottom:-6px; right:-6px;"></div>
+          <div class="edge-corner-dot" style="bottom:-6px; left:-6px;"></div>
+          <div style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#10B981; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap;">
+            ✦ Document Edge Locked
+          </div>
+        </div>
 
         <!-- Dynamic Framing Overlays -->
         <div class="camscanner-overlay-a4" id="overlay-a4"></div>
         <div class="camscanner-overlay-id" id="overlay-id" style="display:none;"></div>
 
         <!-- Offline Camera Placeholder -->
-        <div id="camera-placeholder" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; background:rgba(15,23,42,0.92); padding:24px; text-align:center;">
+        <div id="camera-placeholder" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; background:rgba(15,23,42,0.92); padding:24px; text-align:center; z-index:10;">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           <h3 style="margin:12px 0 6px; font-size:1.15rem;">Camera Viewfinder Ready</h3>
-          <p style="font-size:0.85rem; color:#94A3B8; max-width:340px;">Enable camera to snap document pages with automatic perspective guides.</p>
-          <button class="btn btn-primary" id="start-cam-btn" style="margin-top:14px;">Open Live Camera</button>
+          <p style="font-size:0.85rem; color:#94A3B8; max-width:340px;">Enable camera for live document edge detection and perspective auto-crop.</p>
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center;">
+            <button class="btn btn-primary" id="start-cam-btn">Open Live Camera</button>
+            <button class="btn btn-outline" id="placeholder-gallery-btn" style="color:#FFF; border-color:rgba(255,255,255,0.3);">Import Photos from Gallery</button>
+          </div>
         </div>
       </div>
 
       <!-- Live Shutter & Camera Controls -->
-      <div style="display:flex; justify-content:center; align-items:center; gap:20px; margin-top:16px;" id="camera-controls-bar">
-        <button class="btn btn-outline" id="switch-cam-btn" style="display:none; padding:8px 12px; font-size:0.8rem;" title="Switch Camera">🔄 Switch Cam</button>
-        <button class="camera-shutter-btn" id="snap-btn" disabled title="Snap Photo Page">
+      <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-top:16px;" id="camera-controls-bar">
+        <button class="btn btn-outline" id="quick-gallery-btn" style="padding:10px 14px; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Import photos from Gallery">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Gallery</span>
+        </button>
+
+        <button class="camera-shutter-btn" id="snap-btn" disabled title="Snap Document Page">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3" fill="#FFFFFF"></circle></svg>
         </button>
-        <button class="btn btn-outline" id="stop-cam-btn" style="display:none; padding:8px 12px; font-size:0.8rem; color:var(--danger);" title="Stop Camera">Turn Off</button>
+
+        <button class="btn btn-outline" id="switch-cam-btn" style="display:none; padding:10px 14px; font-size:0.85rem;" title="Switch Camera">🔄 Switch</button>
+        <button class="btn btn-outline" id="stop-cam-btn" style="display:none; padding:10px 14px; font-size:0.85rem; color:var(--danger);" title="Stop Camera">Turn Off</button>
       </div>
 
       <!-- CamScanner Enhancement Filter Selector -->
       <div style="margin-top:20px; text-align:center;">
-        <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">Enhancement Filter:</span>
+        <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">Real-Time Enhancement Filter:</span>
         <div class="filter-selector-bar" id="filter-pills">
           <button type="button" class="filter-pill active" data-filter="magic-color" onclick="setDefaultFilter('magic-color')">✨ Magic Color (CamScanner)</button>
-          <button type="button" class="filter-pill" data-filter="light-mode" onclick="setDefaultFilter('light-mode')">☀️ Natural Color (Light Mode)</button>
           <button type="button" class="filter-pill" data-filter="clean-bw" onclick="setDefaultFilter('clean-bw')">📄 Clean B&W (Photocopy)</button>
           <button type="button" class="filter-pill" data-filter="grayscale" onclick="setDefaultFilter('grayscale')">🏢 Grayscale</button>
+          <button type="button" class="filter-pill" data-filter="light-mode" onclick="setDefaultFilter('light-mode')">☀️ Natural Color</button>
           <button type="button" class="filter-pill" data-filter="original" onclick="setDefaultFilter('original')">📷 Original</button>
         </div>
       </div>
@@ -156,17 +269,17 @@
 
       <!-- Mode: Document Multi-Page Queue & Gallery Upload -->
       <div id="doc-mode-container">
-        <!-- Gallery / File Upload Drop Zone -->
+        <!-- Gallery / File Upload Drop Zone (Supports Multiple Files at Once) -->
         <div class="drop-zone" id="drop-zone" style="margin-top:20px;">
           <div class="drop-zone-icon">
             <img src="../assets/icons/scan.svg" alt="Upload scans from gallery" width="36" height="36">
           </div>
           <div class="drop-zone-text">
-            <h3>Or batch import photos from Gallery / PC</h3>
-            <p>Select multiple JPG/PNG receipts, invoices, or document pages</p>
+            <h3>Batch import multiple photos from Gallery or PC</h3>
+            <p>Select multiple JPG, PNG, or WEBP receipts, documents, or book pages simultaneously</p>
           </div>
-          <button class="btn btn-outline" id="browse-btn">Browse Gallery Files</button>
-          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;">
+          <button class="btn btn-outline" id="browse-btn">Browse Multiple Photos</button>
+          <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
         </div>
 
         <!-- Captured Pages Reordering & Management Queue -->
@@ -181,7 +294,7 @@
 
           <div class="page-thumbnail-grid" id="pages-grid">
             <div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--text-muted); font-size:0.85rem; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line);">
-              No pages captured yet. Click the shutter button or upload gallery photos above.
+              No pages captured yet. Click the shutter button or upload multiple gallery photos above.
             </div>
           </div>
         </div>
@@ -198,10 +311,10 @@
           </select>
         </div>
         <div class="control-group">
-          <span class="control-label">Resolution / Quality:</span>
+          <span class="control-label">Resolution Preset:</span>
           <select class="control-select" id="pdf-dpi-select">
             <option value="standard" selected>Recommended (150 DPI)</option>
-            <option value="ultra">High Print (300 DPI)</option>
+            <option value="ultra">High Print Quality (300 DPI)</option>
             <option value="compact">Compact Email (72 DPI)</option>
           </select>
         </div>
@@ -210,7 +323,7 @@
       <!-- Action Bar -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span id="process-btn-text">Compile Scans to PDF Document</span> &rarr;
+          <span id="process-btn-text">Save & Compile to PDF Document</span> &rarr;
         </button>
       </div>
 
@@ -219,11 +332,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Enhancing Images</div>
+            <div class="workflow-step-label">Enhancing Pages</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Compiling PDF</div>
+            <div class="workflow-step-label">Compiling Vector PDF</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -266,10 +379,115 @@
       </div>
     </section>
 
+    <!-- Save Document Naming Modal Dialog -->
+    <div id="naming-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+      <div class="modal-card" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; max-width:480px; width:100%; box-shadow:var(--shadow-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            <span>📝</span> Name Your Scanned Document
+          </h3>
+          <button class="modal-close-btn" id="naming-modal-close" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
+        </div>
+        <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:16px;">Specify a custom filename before compiling your pages into a single PDF document:</p>
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Filename (.pdf)</label>
+          <input type="text" id="document-name-input" class="control-input" style="width:100%; padding:10px 14px; font-size:0.95rem; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-card); color:var(--text-primary);" placeholder="LocalDoc_Scan_2026-09-04">
+        </div>
+        <div style="margin-bottom:20px;">
+          <span style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">Quick Presets:</span>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            <button type="button" class="tag-pill" onclick="setDocTag('Invoice')">🧾 Invoice</button>
+            <button type="button" class="tag-pill" onclick="setDocTag('Receipt')">💳 Receipt</button>
+            <button type="button" class="tag-pill" onclick="setDocTag('Contract')">📑 Contract</button>
+            <button type="button" class="tag-pill" onclick="setDocTag('Study_Notes')">✍️ Notes</button>
+            <button type="button" class="tag-pill" onclick="setDocTag('ID_Card')">🪪 ID Card</button>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:12px;">
+          <button class="btn btn-outline" id="naming-cancel-btn">Cancel</button>
+          <button class="btn btn-primary" id="naming-confirm-btn">Compile & Save PDF &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3-Step How To Use Section -->
+    <section class="how-to-use-section" style="margin:48px 0 32px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">How to Scan Documents with LocalDoc</h2>
+        <p style="color:var(--text-secondary); font-size:0.92rem; max-width:620px; margin:0 auto;">Follow three simple steps to digitize physical paperwork with real-time paper edge detection and automatic CamScanner Magic Color enhancement.</p>
+      </div>
+      <div class="how-to-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
+        <div class="how-to-card">
+          <div class="how-to-step-num">1</div>
+          <div class="how-to-icon">📷</div>
+          <h3>Snap or Batch Import</h3>
+          <p>Open live camera to capture documents with real-time edge detection guides, or tap <strong>Gallery</strong> to upload multiple receipts or pages at once.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">2</div>
+          <div class="how-to-icon">✨</div>
+          <h3>Enhance & Adjust</h3>
+          <p>Choose <strong>Magic Color</strong> to whiten paper backgrounds and boost ink, <strong>Clean B&W</strong> for photocopies, or rotate and reorder pages effortlessly.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">3</div>
+          <div class="how-to-icon">📥</div>
+          <h3>Name & Export PDF</h3>
+          <p>Type a custom document name, choose A4 or Letter page sizing, and instantly download a compressed, print-ready PDF compiled 100% in your browser RAM.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Animated Tutorial Player -->
+    <section class="tutorial-player-section" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; margin:32px 0; box-shadow:var(--shadow-sm);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
+        <div>
+          <span class="brand-badge" style="display:inline-block; margin-bottom:6px; font-size:0.75rem;">Interactive Tutorial Demo</span>
+          <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-top:2px;">Visual Walkthrough: How the Scanner Works</h3>
+          <p style="font-size:0.88rem; color:var(--text-secondary);">Interactive visual walkthrough demonstrating real-time edge detection, filter enhancement, and PDF export.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline" id="tutorial-play-btn" style="display:inline-flex; align-items:center; gap:6px;">
+            <span id="tutorial-btn-icon">▶</span> <span id="tutorial-btn-text">Play Demo</span>
+          </button>
+        </div>
+      </div>
+      <div class="tutorial-viewport" id="tutorial-viewport" style="position:relative; width:100%; height:280px; background:linear-gradient(135deg, #090D16 0%, #0F172A 100%); border-radius:var(--radius-md); overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-glow);">
+        <!-- Animated Mockup Stage -->
+        <div id="tutorial-stage" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative; color:#FFF;">
+          <!-- SVG Document & Scan Line Animation -->
+          <svg width="220" height="200" viewBox="0 0 220 200" fill="none">
+            <rect x="40" y="20" width="140" height="160" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="2.5" id="tut-doc"></rect>
+            <!-- Lines representing text -->
+            <rect x="60" y="45" width="80" height="8" rx="2" fill="#38BDF8" opacity="0.8"></rect>
+            <rect x="60" y="65" width="100" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
+            <rect x="60" y="80" width="90" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
+            <rect x="60" y="95" width="95" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
+            <rect x="60" y="115" width="60" height="6" rx="2" fill="#10B981" opacity="0.8"></rect>
+            
+            <!-- Animated Edge Corners -->
+            <path d="M35,35 L35,20 L50,20" stroke="#10B981" stroke-width="3" fill="none"></path>
+            <path d="M170,20 L185,20 L185,35" stroke="#10B981" stroke-width="3" fill="none"></path>
+            <path d="M185,165 L185,180 L170,180" stroke="#10B981" stroke-width="3" fill="none"></path>
+            <path d="M50,180 L35,180 L35,165" stroke="#10B981" stroke-width="3" fill="none"></path>
+
+            <!-- Animated Laser Scan Beam -->
+            <line x1="30" y1="40" x2="190" y2="40" stroke="#06B6D4" stroke-width="3" id="tut-scan-beam" filter="drop-shadow(0 0 8px #06B6D4)">
+              <animate attributeName="y1" values="30;170;30" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="y2" values="30;170;30" dur="3s" repeatCount="indefinite" />
+            </line>
+          </svg>
+          <div id="tutorial-caption" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.9); padding:6px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; color:#38BDF8; border:1px solid rgba(56,189,248,0.3); white-space:nowrap;">
+            Step 1: Real-time paper edge detection & framing
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Deep Technical Explanation & Guide Link -->
     <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
       <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side CamScanner Technology Works</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc executes real-time luminance histogram stretching and Sauvola adaptive thresholding inside HTML5 Canvas buffers. Camera frames are processed directly in browser RAM without ever sending photos to external cloud servers.</p>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc executes real-time luminance histogram stretching, adaptive Sauvola binarization, and homography perspective warping directly inside HTML5 Canvas memory buffers. No images or camera frames are ever sent to external cloud servers.</p>
       <a href="../blog/scan-to-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full CamScanner Studio Guide &rarr;</a>
     </div>
 
@@ -277,32 +495,32 @@
     <section class="related-tools-section">
       <h3 class="related-tools-title">Related Document Tools</h3>
       <div class="related-tools-grid">
-        <a href="image-to-text.html" class="related-tool-card">
-          <img src="../assets/icons/image-to-text.svg" alt="Image to Text OCR">
+        <a href="create-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/jpg-to-pdf.svg" alt="Create PDF">
           <div>
-            <h4>Image to Text OCR</h4>
-            <p>Neural optical character recognition</p>
+            <h4>Create PDF</h4>
+            <p>Combine photos & scans into clean PDF</p>
           </div>
         </a>
-        <a href="pdf-to-jpg.html" class="related-tool-card">
-          <img src="../assets/icons/pdf-to-jpg.svg" alt="PDF to JPG">
+        <a href="id-photo.html" class="related-tool-card">
+          <img src="../assets/icons/passport-photo.svg" alt="Scan ID or Photo">
           <div>
-            <h4>PDF to JPG</h4>
-            <p>Convert pages to crisp images</p>
-          </div>
-        </a>
-        <a href="merge-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
-          <div>
-            <h4>Merge PDF</h4>
-            <p>Combine multiple scans</p>
+            <h4>Scan ID or Photo</h4>
+            <p>Passport, Visa & 1-page A4 ID Cards</p>
           </div>
         </a>
         <a href="compress-pdf.html" class="related-tool-card">
           <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
           <div>
             <h4>Compress PDF</h4>
-            <p>Reduce scan file size</p>
+            <p>Reduce scan file size without quality loss</p>
+          </div>
+        </a>
+        <a href="image-to-text.html" class="related-tool-card">
+          <img src="../assets/icons/image-to-text.svg" alt="Image to Text OCR">
+          <div>
+            <h4>Image to Text OCR</h4>
+            <p>Neural optical character recognition</p>
           </div>
         </a>
       </div>
@@ -328,11 +546,12 @@
     let currentMode = 'doc'; // 'doc' or 'id'
     let currentFilter = 'magic-color';
     let currentFacingMode = 'environment';
-    let pagesList = []; // Array of { id, originalDataUrl, processedDataUrl, filter, rotation }
+    let pagesList = []; // Array of { id, originalDataUrl, processedDataUrl, filter, rotation, corners }
     let idSlots = { front: null, back: null };
     let activeIDSlot = 'front';
     let compiledResultBlob = null;
-    let compiledResultFilename = 'localdoc-scanned-document.pdf';
+    let compiledResultFilename = 'LocalDoc_Scan.pdf';
+    let edgeDetectInterval = null;
 
     const video = document.getElementById("scanner-video");
     const canvas = document.getElementById("scanner-canvas");
@@ -345,6 +564,10 @@
     const placeholder = document.getElementById("camera-placeholder");
     const overlayA4 = document.getElementById("overlay-a4");
     const overlayID = document.getElementById("overlay-id");
+    const liveEdgeBox = document.getElementById("live-edge-box");
+
+    const quickGalleryBtn = document.getElementById("quick-gallery-btn");
+    const placeholderGalleryBtn = document.getElementById("placeholder-gallery-btn");
 
     const docModeContainer = document.getElementById("doc-mode-container");
     const idModeContainer = document.getElementById("id-mode-container");
@@ -365,6 +588,13 @@
     const processBtnText = document.getElementById("process-btn-text");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
+
+    // Naming modal elements
+    const namingModal = document.getElementById("naming-modal");
+    const namingModalClose = document.getElementById("naming-modal-close");
+    const namingCancelBtn = document.getElementById("naming-cancel-btn");
+    const namingConfirmBtn = document.getElementById("naming-confirm-btn");
+    const docNameInput = document.getElementById("document-name-input");
 
     const ocrResultPanel = document.getElementById("ocr-result-panel");
     const ocrTextarea = document.getElementById("ocr-textarea");
@@ -390,12 +620,12 @@
         idModeContainer.style.display = 'none';
         overlayA4.style.display = 'block';
         overlayID.style.display = 'none';
-        processBtnText.textContent = 'Compile Scans to PDF Document';
+        processBtnText.textContent = 'Save & Compile to PDF Document';
         renderPagesGrid();
       }
     };
 
-    // 2. Camera Controls
+    // 2. Camera Stream & Live Edge Detection Loop
     startCamBtn.addEventListener("click", async () => {
       try {
         await scanner.startCamera(currentFacingMode);
@@ -403,7 +633,9 @@
         snapBtn.disabled = false;
         stopCamBtn.style.display = "inline-flex";
         switchCamBtn.style.display = "inline-flex";
-        UIUtils.showToast("Camera connected successfully!", "success");
+        liveEdgeBox.style.display = "block";
+        startLiveEdgeDetection();
+        UIUtils.showToast("Camera connected! Edge detection active.", "success");
       } catch (err) {
         alert(err.message);
       }
@@ -411,16 +643,44 @@
 
     stopCamBtn.addEventListener("click", () => {
       scanner.stopCamera();
+      if (edgeDetectInterval) clearInterval(edgeDetectInterval);
       placeholder.style.display = "flex";
       snapBtn.disabled = true;
       stopCamBtn.style.display = "none";
       switchCamBtn.style.display = "none";
+      liveEdgeBox.style.display = "none";
     });
 
     switchCamBtn.addEventListener("click", async () => {
       currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
       await scanner.startCamera(currentFacingMode);
     });
+
+    function startLiveEdgeDetection() {
+      if (edgeDetectInterval) clearInterval(edgeDetectInterval);
+      edgeDetectInterval = setInterval(() => {
+        if (!video || !video.videoWidth) return;
+        try {
+          const corners = DocumentScanner.detectDocumentEdges(video);
+          if (corners) {
+            const vWrap = document.getElementById("viewfinder-wrap");
+            const w = vWrap.clientWidth;
+            const h = vWrap.clientHeight;
+            const left = corners.topLeft.x * w;
+            const top = corners.topLeft.y * h;
+            const boxW = (corners.topRight.x - corners.topLeft.x) * w;
+            const boxH = (corners.bottomLeft.y - corners.topLeft.y) * h;
+
+            liveEdgeBox.style.left = `${Math.max(4, left)}px`;
+            liveEdgeBox.style.top = `${Math.max(4, top)}px`;
+            liveEdgeBox.style.width = `${Math.max(40, boxW)}px`;
+            liveEdgeBox.style.height = `${Math.max(40, boxH)}px`;
+          }
+        } catch (e) {
+          // Non-blocking background edge tracker
+        }
+      }, 200);
+    }
 
     snapBtn.addEventListener("click", async () => {
       try {
@@ -429,28 +689,39 @@
         video.style.opacity = '0.3';
         setTimeout(() => video.style.opacity = '1', 120);
 
+        // Detect corners on captured frame for perspective rectification
+        const tempImg = await UIUtils.loadImage(rawDataUrl);
+        const corners = DocumentScanner.detectDocumentEdges(tempImg);
+
         if (currentMode === 'id') {
-          handleIDCardCapture(rawDataUrl);
+          handleIDCardCapture(rawDataUrl, corners);
         } else {
-          await addDocumentPage(rawDataUrl);
+          await addDocumentPage(rawDataUrl, corners);
         }
       } catch (e) {
         console.error(e);
       }
     });
 
-    // 3. Filter Switching
+    // 3. Filter Switching with Real-Time Viewfinder Preview
     window.setDefaultFilter = async function(filter) {
       currentFilter = filter;
       document.querySelectorAll("#filter-pills .filter-pill").forEach(p => {
         p.classList.toggle("active", p.getAttribute("data-filter") === filter);
       });
 
+      // Update viewfinder live shader
+      video.className = '';
+      if (filter === 'magic-color') video.classList.add('filter-preview-magic');
+      else if (filter === 'clean-bw') video.classList.add('filter-preview-clean-bw');
+      else if (filter === 'grayscale') video.classList.add('filter-preview-grayscale');
+      else if (filter === 'light-mode') video.classList.add('filter-preview-light-mode');
+
       // Re-process all captured pages
       for (const item of pagesList) {
         item.filter = filter;
         const img = await UIUtils.loadImage(item.originalDataUrl);
-        item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation);
+        item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
       }
       renderPagesGrid();
 
@@ -460,28 +731,30 @@
     };
 
     // 4. Document Page Management
-    async function addDocumentPage(dataUrl) {
+    async function addDocumentPage(dataUrl, corners = null) {
       const img = await UIUtils.loadImage(dataUrl);
-      const processed = DocumentScanner.processImage(img, currentFilter, 0);
+      const detectedCorners = corners || DocumentScanner.detectDocumentEdges(img);
+      const processed = DocumentScanner.processImage(img, currentFilter, 0, detectedCorners);
 
       const pageItem = {
         id: Date.now() + Math.random().toString(36).substr(2, 5),
         originalDataUrl: dataUrl,
         processedDataUrl: processed,
         filter: currentFilter,
-        rotation: 0
+        rotation: 0,
+        corners: detectedCorners
       };
 
       pagesList.push(pageItem);
       renderPagesGrid();
-      UIUtils.showToast(`Page #${pagesList.length} captured!`, "success");
+      UIUtils.showToast(`Page #${pagesList.length} captured & enhanced!`, "success");
     }
 
     function renderPagesGrid() {
       pageCountEl.textContent = pagesList.length;
 
       if (pagesList.length === 0) {
-        pagesGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--text-muted); font-size:0.85rem; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line);">No pages captured yet. Click the shutter button or upload gallery photos above.</div>';
+        pagesGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--text-muted); font-size:0.85rem; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line);">No pages captured yet. Click the shutter button or upload multiple gallery photos above.</div>';
         exportControlsBar.style.display = 'none';
         actionBar.style.display = 'none';
         btnOcrAll.disabled = true;
@@ -530,7 +803,7 @@
       const item = pagesList[idx];
       item.rotation = (item.rotation + 90) % 360;
       const img = await UIUtils.loadImage(item.originalDataUrl);
-      item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation);
+      item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
       renderPagesGrid();
     };
 
@@ -549,18 +822,30 @@
       ocrResultPanel.style.display = "none";
     });
 
-    // 5. Gallery Ingestion
-    browseBtn.addEventListener("click", () => fileInput.click());
+    // 5. Gallery Multi-File Ingestion
+    function openGalleryPicker() {
+      fileInput.value = '';
+      fileInput.click();
+    }
+
+    quickGalleryBtn.addEventListener("click", openGalleryPicker);
+    placeholderGalleryBtn.addEventListener("click", openGalleryPicker);
+    browseBtn.addEventListener("click", openGalleryPicker);
 
     UIUtils.setupDropZone(dropZone, fileInput, async (files) => {
-      for (const file of files) {
+      if (!files || files.length === 0) return;
+      UIUtils.showToast(`Importing ${files.length} photo(s) from gallery...`, "info");
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         const dataUrl = await UIUtils.readFileAsDataURL(file);
         if (currentMode === 'id') {
-          handleIDCardCapture(dataUrl);
+          await handleIDCardCapture(dataUrl);
         } else {
           await addDocumentPage(dataUrl);
         }
       }
+      UIUtils.showToast(`Imported ${files.length} document page(s) successfully!`, "success");
     });
 
     // 6. ID Card Capture Handler
@@ -570,9 +855,9 @@
       document.getElementById("slot-back").classList.toggle("active", slot === 'back');
     };
 
-    async function handleIDCardCapture(dataUrl) {
+    async function handleIDCardCapture(dataUrl, corners = null) {
       const img = await UIUtils.loadImage(dataUrl);
-      const processed = DocumentScanner.processImage(img, currentFilter, 0);
+      const processed = DocumentScanner.processImage(img, currentFilter, 0, corners);
 
       if (activeIDSlot === 'front') {
         idSlots.front = processed;
@@ -607,22 +892,55 @@
       }
     }
 
-    // 7. Compilation Workflow
+    // 7. File Naming Modal & Compilation Workflow
+    function generateDefaultName() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (currentMode === 'id') {
+        return `LocalDoc_ID_Card_${today}`;
+      }
+      return `LocalDoc_Scan_${today}`;
+    }
+
+    window.setDocTag = function(tag) {
+      const today = new Date().toISOString().slice(0, 10);
+      docNameInput.value = `LocalDoc_${tag}_${today}`;
+    };
+
+    processBtn.addEventListener("click", () => {
+      if (currentMode === 'doc' && pagesList.length === 0) return;
+      if (currentMode === 'id' && (!idSlots.front || !idSlots.back)) {
+        UIUtils.showToast("Please capture both Front and Back sides of the ID card.", "error");
+        return;
+      }
+
+      docNameInput.value = generateDefaultName();
+      namingModal.style.display = 'flex';
+    });
+
+    namingModalClose.addEventListener("click", () => namingModal.style.display = 'none');
+    namingCancelBtn.addEventListener("click", () => namingModal.style.display = 'none');
+
+    namingConfirmBtn.addEventListener("click", async () => {
+      namingModal.style.display = 'none';
+      let customName = docNameInput.value.trim();
+      if (!customName) customName = generateDefaultName();
+      if (!customName.toLowerCase().endsWith('.pdf')) customName += '.pdf';
+      compiledResultFilename = customName;
+
+      await compileDocument();
+    });
+
     function progressCb(pct, status) {
       const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
-    processBtn.addEventListener("click", async () => {
+    async function compileDocument() {
       try {
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing CamScanner processing engine...");
 
         if (currentMode === 'id') {
-          if (!idSlots.front || !idSlots.back) {
-            UIUtils.showToast("Please capture both Front and Back sides of the ID card.", "error");
-            return;
-          }
           const sheetDataUrl = await DocumentScanner.generateIDCardA4(idSlots.front, idSlots.back, currentFilter);
           const pdfDoc = await PDFLib.PDFDocument.create();
           const img = await pdfDoc.embedJpg(sheetDataUrl);
@@ -630,19 +948,17 @@
           page.drawImage(img, { x: 0, y: 0, width: 595.28, height: 841.89 });
           const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
           compiledResultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-          compiledResultFilename = 'localdoc-id-card-a4.pdf';
-          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Standard 1-Page A4 Sheet (Front & Back)`;
+          document.getElementById("result-meta").textContent = `Filename: ${compiledResultFilename} • Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Standard 1-Page A4 Sheet`;
         } else {
-          if (pagesList.length === 0) return;
           const options = {
             pageSize: pdfSizeSelect.value,
             dpi: pdfDpiSelect.value
           };
           compiledResultBlob = await DocumentScanner.exportToPDF(pagesList, options, progressCb);
-          compiledResultFilename = `localdoc-scanned-${pagesList.length}pages.pdf`;
-          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Compiled ${pagesList.length} Enhanced Document Pages`;
+          document.getElementById("result-meta").textContent = `Filename: ${compiledResultFilename} • Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Compiled ${pagesList.length} Enhanced Document Pages`;
         }
 
+        document.getElementById("download-btn-text").textContent = `Download ${compiledResultFilename}`;
         UIUtils.setWorkflowStep(3, 100, "PDF Generated Successfully!");
         resultCard.style.display = "flex";
         UIUtils.showToast("Document compiled successfully!", "success");
@@ -652,7 +968,7 @@
       } finally {
         processBtn.disabled = false;
       }
-    });
+    }
 
     downloadBtn.addEventListener("click", () => {
       if (compiledResultBlob) {
@@ -702,6 +1018,39 @@
       if (ocrTextarea.value) {
         const blob = new Blob([ocrTextarea.value], { type: 'text/plain;charset=utf-8' });
         UIUtils.downloadBlob(blob, 'localdoc-scanned-transcription.txt');
+      }
+    });
+
+    // 9. Interactive Tutorial Demo Controller
+    const tutPlayBtn = document.getElementById("tutorial-play-btn");
+    const tutCaption = document.getElementById("tutorial-caption");
+    let isTutPlaying = false;
+    let tutStep = 1;
+    let tutTimer = null;
+
+    const tutSteps = [
+      { text: "Step 1: Real-time paper edge detection & framing", color: "#38BDF8" },
+      { text: "Step 2: CamScanner Magic Color shadow removal & whitening", color: "#10B981" },
+      { text: "Step 3: Multi-page batch compilation & custom PDF export", color: "#F59E0B" }
+    ];
+
+    tutPlayBtn.addEventListener("click", () => {
+      if (isTutPlaying) {
+        clearInterval(tutTimer);
+        isTutPlaying = false;
+        document.getElementById("tutorial-btn-icon").textContent = "▶";
+        document.getElementById("tutorial-btn-text").textContent = "Play Demo";
+      } else {
+        isTutPlaying = true;
+        document.getElementById("tutorial-btn-icon").textContent = "⏸";
+        document.getElementById("tutorial-btn-text").textContent = "Pause Demo";
+        tutTimer = setInterval(() => {
+          tutStep = (tutStep % tutSteps.length) + 1;
+          const current = tutSteps[tutStep - 1];
+          tutCaption.textContent = current.text;
+          tutCaption.style.color = current.color;
+          tutCaption.style.borderColor = current.color;
+        }, 3000);
       }
     });
   </script>

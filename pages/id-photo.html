@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan ID & Biometric Photo Maker (Passport, Visa, CNIC & Double-Sided A4) — LocalDoc</title>
+  <meta name="description" content="Free online biometric passport, visa, and ID photo creator. Crop official 2x2 inch photos, 35x45mm visa shots, NADRA CNIC sizes, and compile double-sided ID cards on a single 1-page A4 sheet with zero uploads.">
+  <link rel="canonical" href="https://localdoc.org/pages/id-photo.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Scan ID & Biometric Photo Maker — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Crop official Passport (2x2), Visa (35x45mm), CNIC photos and generate 4x6 print sheets or double-sided 1-page A4 ID cards in browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/pages/id-photo.html">
+  <meta property="og:image" content="../assets/icons/passport-photo.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Scan ID & Photo Studio",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload biometric passport, visa, and double-sided ID card generator with printable 4x6 sheet layout."
+  }
+  </script>
+
+  <style>
+    .preset-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .preset-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .preset-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .preset-card.active {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    .preset-card h4 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preset-card p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    .crop-preview-box {
+      position: relative;
+      max-width: 400px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+    }
+    .face-guide-oval {
+      position: absolute;
+      width: 55%;
+      height: 70%;
+      border: 2px dashed rgba(56, 189, 248, 0.75);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+    .biometric-center-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: rgba(56, 189, 248, 0.35);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="create-pdf.html" class="nav-link">Create PDF</a></li>
+        <li><a href="scan.html" class="nav-link">Document Scanner</a></li>
+        <li><a href="id-photo.html" class="nav-link active">Scan ID & Photo</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Scanner & Photo Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Scan ID & Photo Studio</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+          <span>100% Biometric Privacy Studio</span>
+        </div>
+        <h1>Scan ID or Photo Studio</h1>
+        <p class="tool-desc">Generate official biometric passport photos, visa applications, NADRA CNIC sizes, and double-sided ID cards formatted on printable 1-page A4 sheets.</p>
+      </div>
+
+      <!-- Presets Selector -->
+      <div class="preset-selector-grid">
+        <div class="preset-card active" onclick="selectPreset('passport', 600, 600, '2x2 in / 51x51mm')">
+          <h4>🛂 Passport Photo</h4>
+          <p>2x2" (51x51mm, 600x600px)</p>
+        </div>
+        <div class="preset-card" onclick="selectPreset('visa', 413, 531, '35x45mm Schengen / UK')">
+          <h4>✈️ Visa Photo</h4>
+          <p>35x45mm (Schengen, UK, Global)</p>
+        </div>
+        <div class="preset-card" onclick="selectPreset('cnic', 350, 450, 'NADRA CNIC Standard')">
+          <h4>🪪 CNIC Photo</h4>
+          <p>NADRA Standard 350x450px</p>
+        </div>
+        <div class="preset-card" onclick="selectPreset('id-card-a4', 1200, 756, 'Double-Sided 1-Page A4 Sheet')">
+          <h4>📄 ID Card A4 Sheet</h4>
+          <p>Front & Back on 1-Page A4</p>
+        </div>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone" style="margin-top:16px;">
+        <div class="drop-zone-icon">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+        </div>
+        <div class="drop-zone-text">
+          <h3>Upload portrait photo or ID card image</h3>
+          <p>JPG, PNG, or WEBP • Drag & drop or click browse</p>
+        </div>
+        <button class="btn btn-primary" id="browse-btn">Select Photo File</button>
+        <input type="file" id="file-input" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- Interactive Crop & Alignment Workspace -->
+      <div id="crop-workspace" style="display:none; margin-top:24px;">
+        <div style="text-align:center; margin-bottom:14px;">
+          <span style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+            Active Preset: <span id="preset-label" style="color:var(--primary);">2x2 in / 51x51mm</span>
+          </span>
+        </div>
+
+        <div class="crop-preview-box" id="preview-box">
+          <img id="source-img" style="max-width:100%; max-height:100%; object-fit:contain;" alt="Source Photo">
+          <div class="face-guide-oval"></div>
+          <div class="biometric-center-line"></div>
+        </div>
+
+        <!-- Custom Background Color Option -->
+        <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-top:20px; flex-wrap:wrap;">
+          <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Background Color:</span>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline" style="padding:4px 12px; font-size:0.8rem;" onclick="setBgColor('#FFFFFF')">⚪ Pure White</button>
+            <button class="btn btn-outline" style="padding:4px 12px; font-size:0.8rem;" onclick="setBgColor('#F1F5F9')">🌫️ Off-White</button>
+            <button class="btn btn-outline" style="padding:4px 12px; font-size:0.8rem;" onclick="setBgColor('#E0F2FE')">🔵 Light Blue</button>
+          </div>
+        </div>
+
+        <div class="action-bar" style="margin-top:24px; display:flex; justify-content:center; gap:16px;">
+          <button class="btn btn-primary btn-lg" id="generate-btn">
+            Generate Official Biometric Photos &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card" style="display:none; margin-top:28px;">
+        <div class="result-details">
+          <h3 id="result-title">Biometric Photos Ready!</h3>
+          <p id="result-meta">Generated 100% in your browser RAM with zero server uploads.</p>
+        </div>
+        <div class="result-actions" style="display:flex; flex-wrap:wrap; gap:12px;">
+          <button class="btn btn-primary" id="download-single-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Single Photo
+          </button>
+          <button class="btn btn-outline" id="download-sheet-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            Download 4x6" Printable Grid (8 Photos)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-Step How To Use Section -->
+    <section class="how-to-use-section" style="margin:48px 0 32px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">How to Create Official ID Photos</h2>
+        <p style="color:var(--text-secondary); font-size:0.92rem; max-width:600px; margin:0 auto;">Crop compliance-grade passport photos or double-sided ID cards in three easy steps.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
+        <div class="how-to-card">
+          <div class="how-to-step-num">1</div>
+          <div class="how-to-icon">🪪</div>
+          <h3>Select Specification</h3>
+          <p>Pick your required format: Passport 2x2", Visa 35x45mm, NADRA CNIC, or 1-Page A4 double-sided ID card sheet.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">2</div>
+          <div class="how-to-icon">📐</div>
+          <h3>Align Biometric Face Oval</h3>
+          <p>Upload a clear portrait. Align eyes and chin inside the biometric guide oval to ensure strict embassy & passport office compliance.</p>
+        </div>
+        <div class="how-to-card">
+          <div class="how-to-step-num">3</div>
+          <div class="how-to-icon">🖨️</div>
+          <h3>Download & Print</h3>
+          <p>Get an individual high-res image for online visa forms, or download a 300 DPI 4x6" sheet with 8 ready-to-cut physical photos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Tutorial Player -->
+    <section class="tutorial-player-section" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; margin:32px 0; box-shadow:var(--shadow-sm);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
+        <div>
+          <span class="brand-badge" style="display:inline-block; margin-bottom:6px; font-size:0.75rem;">Interactive Tutorial Demo</span>
+          <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-top:2px;">Visual Walkthrough: Passport Photo Alignment</h3>
+          <p style="font-size:0.88rem; color:var(--text-secondary);">Watch how biometric oval guides help align your photo for instant acceptance.</p>
+        </div>
+        <div>
+          <button class="btn btn-outline" id="tut-play-btn" style="display:inline-flex; align-items:center; gap:6px;">
+            <span id="tut-btn-icon">▶</span> <span id="tut-btn-text">Play Demo</span>
+          </button>
+        </div>
+      </div>
+      <div style="position:relative; width:100%; height:260px; background:linear-gradient(135deg, #090D16 0%, #0F172A 100%); border-radius:var(--radius-md); overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-glow);">
+        <svg width="220" height="200" viewBox="0 0 220 200" fill="none">
+          <rect x="45" y="20" width="130" height="150" rx="6" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"></rect>
+          <!-- Biometric Face Silhouette -->
+          <circle cx="110" cy="80" r="32" fill="#BAE6FD"></circle>
+          <path d="M70,165 C70,125 150,125 150,165" fill="#38BDF8"></path>
+          <!-- Biometric Guide Oval -->
+          <ellipse cx="110" cy="88" rx="42" ry="52" stroke="#10B981" stroke-width="2.5" stroke-dasharray="6 4"></ellipse>
+        </svg>
+        <div id="tut-caption" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.9); padding:6px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; color:#10B981; border:1px solid rgba(16,185,129,0.3); white-space:nowrap;">
+          Biometric face guide ensures strict embassy and passport office approval
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="scan.html" class="related-tool-card">
+          <img src="../assets/icons/scan.svg" alt="Document Scanner">
+          <div>
+            <h4>Document Scanner</h4>
+            <p>Live camera capture with edge detection</p>
+          </div>
+        </a>
+        <a href="create-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/jpg-to-pdf.svg" alt="Create PDF">
+          <div>
+            <h4>Create PDF</h4>
+            <p>Combine photos into A4 or Letter PDFs</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Shrink file size for portal uploads</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/core/i18n.js"></script>
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/tools/id-photo.js"></script>
+
+  <script>
+    let currentWidth = 600;
+    let currentHeight = 600;
+    let currentLabel = '2x2 in / 51x51mm';
+    let currentFile = null;
+    let singleBlob = null;
+    let sheetBlob = null;
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const browseBtn = document.getElementById("browse-btn");
+    const cropWorkspace = document.getElementById("crop-workspace");
+    const sourceImg = document.getElementById("source-img");
+    const presetLabel = document.getElementById("preset-label");
+    const generateBtn = document.getElementById("generate-btn");
+    const resultCard = document.getElementById("result-card");
+    const downloadSingleBtn = document.getElementById("download-single-btn");
+    const downloadSheetBtn = document.getElementById("download-sheet-btn");
+
+    window.selectPreset = function(type, w, h, label) {
+      currentWidth = w;
+      currentHeight = h;
+      currentLabel = label;
+      presetLabel.textContent = label;
+
+      document.querySelectorAll(".preset-card").forEach(c => c.classList.remove("active"));
+      event.currentTarget.classList.add("active");
+
+      // Adjust preview aspect ratio
+      const previewBox = document.getElementById("preview-box");
+      previewBox.style.aspectRatio = `${w} / ${h}`;
+    };
+
+    browseBtn.addEventListener("click", () => fileInput.click());
+
+    UIUtils.setupDropZone(dropZone, fileInput, async (files) => {
+      if (!files || files.length === 0) return;
+      currentFile = files[0];
+      const dataUrl = await UIUtils.readFileAsDataURL(currentFile);
+      sourceImg.src = dataUrl;
+      cropWorkspace.style.display = "block";
+      resultCard.style.display = "none";
+      UIUtils.showToast("Photo loaded! Align face in guide oval.", "info");
+    });
+
+    window.setBgColor = function(color) {
+      document.getElementById("preview-box").style.background = color;
+    };
+
+    generateBtn.addEventListener("click", async () => {
+      if (!currentFile) return;
+
+      try {
+        generateBtn.disabled = true;
+        const result = await IDPhoto.cropPhoto(currentFile, currentWidth, currentHeight, true);
+        singleBlob = result.singleBlob;
+        sheetBlob = result.sheetBlob;
+
+        resultCard.style.display = "flex";
+        UIUtils.showToast("Biometric photos generated successfully!", "success");
+      } catch (e) {
+        console.error(e);
+        UIUtils.showToast("Failed to process photo: " + e.message, "error");
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    downloadSingleBtn.addEventListener("click", () => {
+      if (singleBlob) {
+        UIUtils.downloadBlob(singleBlob, `LocalDoc_Biometric_Photo_${currentWidth}x${currentHeight}.jpg`);
+      }
+    });
+
+    downloadSheetBtn.addEventListener("click", () => {
+      if (sheetBlob) {
+        UIUtils.downloadBlob(sheetBlob, `LocalDoc_4x6_Print_Sheet_${currentWidth}x${currentHeight}.jpg`);
+      }
+    });
+
+    // Tutorial demo controller
+    const tutPlayBtn = document.getElementById("tut-play-btn");
+    let isPlaying = false;
+    let tTimer = null;
+    tutPlayBtn.addEventListener("click", () => {
+      isPlaying = !isPlaying;
+      document.getElementById("tut-btn-icon").textContent = isPlaying ? "⏸" : "▶";
+      document.getElementById("tut-btn-text").textContent = isPlaying ? "Pause Demo" : "Play Demo";
+    });
+  </script>
+</body>
+</html>
