@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotate PDF Pages Online (Bulk & Individual Page Rotation) — LocalDoc</title>
+  <meta name="description" content="Rotate PDF pages permanently 90, 180, or 270 degrees. Visual thumbnail gallery with individual page rotate buttons and bulk odd/even page orientation actions. 100% zero-upload.">
+  <link rel="canonical" href="https://localdoc.org/pages/rotate-pdf.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rotate PDF Pages Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Permanently rotate individual or all PDF pages in browser RAM. 100% private.">
+  <meta property="og:url" content="https://localdoc.org/pages/rotate-pdf.html">
+  <meta property="og:image" content="../assets/icons/rotate-pdf.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Rotate PDF",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF rotator with per-page orientation control."
+  }
+  </script>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All 20 Tools</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+        <li><a href="../contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Organization Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Rotate PDF</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% Client-Side RAM Processing</span>
+        </div>
+        <h1>Rotate PDF Pages Online</h1>
+        <p class="tool-desc">Permanently rotate entire PDF documents or individual upside-down pages with instant live visual feedback. Zero cloud uploads.</p>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-icon">
+          <img src="../assets/icons/rotate-pdf.svg" alt="Rotate PDF Pages Online Icon" width="48" height="48">
+        </div>
+        <div class="drop-zone-text">
+          <h3>Drop your PDF document here</h3>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+      </div>
+
+      <!-- File Queue Item -->
+      <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/rotate-pdf.svg" width="32" height="32" alt="PDF File">
+            <div>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.pdf</h4>
+              <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
+            </div>
+          </div>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Bulk Actions Bar -->
+      <div id="bulk-actions-bar" style="display:none; margin-top:24px; background:var(--bg-surface); padding:14px 20px; border:1px solid var(--line); border-radius:var(--radius-md); justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <span style="font-weight:700; font-size:0.88rem; color:var(--text-primary);">Bulk Rotate:</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="rotateAll(90)" style="font-size:0.8rem; padding:5px 10px;">↻ Rotate All 90° CW</button>
+          <button class="btn btn-outline" onclick="rotateAll(-90)" style="font-size:0.8rem; padding:5px 10px;">↺ Rotate All 90° CCW</button>
+          <button class="btn btn-outline" onclick="rotateAll(180)" style="font-size:0.8rem; padding:5px 10px;">180° Flip All</button>
+          <button class="btn btn-outline" onclick="rotateOdd(90)" style="font-size:0.8rem; padding:5px 10px;">Odd Pages</button>
+          <button class="btn btn-outline" onclick="rotateEven(90)" style="font-size:0.8rem; padding:5px 10px;">Even Pages</button>
+          <button class="btn btn-outline" onclick="resetAllRotations()" style="font-size:0.8rem; padding:5px 10px; color:var(--danger);">Reset All</button>
+        </div>
+      </div>
+
+      <!-- Interactive Thumbnail Page Grid with Live CSS Rotation -->
+      <div id="pages-gallery-wrap" style="display:none; margin-top:20px;">
+        <div class="page-thumbnail-grid" id="pages-grid"></div>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
+        <button class="btn btn-primary btn-lg" id="process-btn">
+          <span>Apply Rotations & Save PDF</span> &rarr;
+        </button>
+      </div>
+
+      <!-- 3-Step Progress Workflow HUD -->
+      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
+        <div class="workflow-steps-indicator">
+          <div class="workflow-step-node workflow-step-1">
+            <div class="workflow-step-circle">1</div>
+            <div class="workflow-step-label">Reading PDF</div>
+          </div>
+          <div class="workflow-step-node workflow-step-2">
+            <div class="workflow-step-circle">2</div>
+            <div class="workflow-step-label">Rotating Pages</div>
+          </div>
+          <div class="workflow-step-node workflow-step-3">
+            <div class="workflow-step-circle">3</div>
+            <div class="workflow-step-label">Ready</div>
+          </div>
+        </div>
+        <div class="workflow-progress-track">
+          <div class="workflow-progress-fill"></div>
+        </div>
+        <div class="workflow-progress-meta">
+          <span id="progress-status">Processing locally in RAM...</span>
+          <span id="progress-percent">0%</span>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card" style="display:none;">
+        <div class="result-details">
+          <h3 id="result-title">PDF Pages Rotated!</h3>
+          <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary btn-lg" id="download-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Download Rotated PDF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Technical Explanation & Guide Link -->
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Rotation Works</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc modifies the dictionary rotation metadata (/Rotate tag) for each page directly in memory, ensuring instant, lossless orientation adjustment without degrading image or text resolution.</p>
+      <a href="../blog/rotate-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Rotate PDF Guide &rarr;</a>
+    </div>
+
+    <!-- Related Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Tools</h3>
+      <div class="related-tools-grid">
+        <a href="merge-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
+          <div>
+            <h4>Merge PDF</h4>
+            <p>Combine multiple PDFs</p>
+          </div>
+        </a>
+        <a href="split-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/split-pdf.svg" alt="Split PDF">
+          <div>
+            <h4>Split PDF</h4>
+            <p>Extract ranges or burst pages</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce PDF file size in RAM</p>
+          </div>
+        </a>
+        <a href="page-numbers.html" class="related-tool-card">
+          <img src="../assets/icons/page-numbers.svg" alt="Add Page Numbers">
+          <div>
+            <h4>Add Page Numbers</h4>
+            <p>Number pages with custom formats</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/core/i18n.js"></script>
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+  <script src="../js/tools/organize.js"></script>
+
+  <script>
+    let selectedFile = null;
+    let totalDocPages = 0;
+    let pageRotations = {}; // pageIndex (0-based) -> angle (0, 90, 180, 270)
+    let resultBlob = null;
+    let resultFilename = 'localdoc-rotated.pdf';
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const fileQueue = document.getElementById("file-queue");
+    const queueName = document.getElementById("queue-file-name");
+    const queueSize = document.getElementById("queue-file-size");
+    const bulkBar = document.getElementById("bulk-actions-bar");
+    const galleryWrap = document.getElementById("pages-gallery-wrap");
+    const pagesGrid = document.getElementById("pages-grid");
+    const actionBar = document.getElementById("action-bar");
+    const processBtn = document.getElementById("process-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const resultCard = document.getElementById("result-card");
+    const downloadBtn = document.getElementById("download-btn");
+
+    UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
+      if (files.length > 0) {
+        selectedFile = files[0];
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        fileQueue.style.display = "block";
+        bulkBar.style.display = "flex";
+        actionBar.style.display = "flex";
+        resultCard.style.display = "none";
+
+        await loadDocumentPages();
+      }
+    });
+
+    async function loadDocumentPages() {
+      try {
+        const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        totalDocPages = pdf.numPages;
+        pageRotations = {};
+        for (let i = 0; i < totalDocPages; i++) pageRotations[i] = 0;
+
+        pagesGrid.innerHTML = '';
+        galleryWrap.style.display = 'block';
+
+        // Render card skeletons with real canvas placeholders
+        for (let i = 0; i < totalDocPages; i++) {
+          const pNum = i + 1;
+          const card = document.createElement("div");
+          card.className = "page-thumb-card";
+          card.id = `thumb-card-${i}`;
+
+          card.innerHTML = `
+            <div class="page-thumb-img-wrap" style="padding:12px; height:180px; display:flex; align-items:center; justify-content:center; background:var(--bg-body); overflow:hidden;">
+              <div id="thumb-preview-${i}" style="max-width:120px; max-height:150px; display:flex; align-items:center; justify-content:center; transition:transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin:center center;">
+                <canvas id="thumb-canvas-${i}" style="max-width:100%; max-height:140px; border-radius:3px; box-shadow:0 3px 10px rgba(0,0,0,0.18); background:#fff;"></canvas>
+              </div>
+            </div>
+            <div class="page-thumb-footer" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); border-top:1px solid var(--line);">
+              <span style="font-weight:700; font-size:0.85rem;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-weight:800; font-size:0.75rem;">(0°)</small></span>
+              <div class="page-thumb-actions" style="display:flex; gap:4px;">
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, 90)">↻ 90°</button>
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, -90)">↺</button>
+              </div>
+            </div>
+          `;
+          pagesGrid.appendChild(card);
+        }
+
+        // Render actual PDF page contents onto each canvas
+        for (let i = 0; i < totalDocPages; i++) {
+          const page = await pdf.getPage(i + 1);
+          const viewport = page.getViewport({ scale: 0.35 });
+          const canvas = document.getElementById(`thumb-canvas-${i}`);
+          if (canvas) {
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load PDF pages for rotation view:", e);
+        UIUtils.showToast("Could not render page previews: " + e.message, "error");
+      }
+    }
+
+    window.rotateSinglePage = function(idx, deg) {
+      let current = pageRotations[idx] || 0;
+      current = (current + deg) % 360;
+      if (current < 0) current += 360;
+      pageRotations[idx] = current;
+
+      const preview = document.getElementById(`thumb-preview-${idx}`);
+      const tag = document.getElementById(`angle-tag-${idx}`);
+      if (preview) preview.style.transform = `rotate(${current}deg)`;
+      if (tag) tag.textContent = `(${current}°)`;
+    };
+
+    window.rotateAll = function(deg) {
+      for (let i = 0; i < totalDocPages; i++) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.rotateOdd = function(deg) {
+      for (let i = 0; i < totalDocPages; i += 2) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.rotateEven = function(deg) {
+      for (let i = 1; i < totalDocPages; i += 2) {
+        rotateSinglePage(i, deg);
+      }
+    };
+
+    window.resetAllRotations = function() {
+      for (let i = 0; i < totalDocPages; i++) {
+        pageRotations[i] = 0;
+        const preview = document.getElementById(`thumb-preview-${i}`);
+        const tag = document.getElementById(`angle-tag-${i}`);
+        if (preview) preview.style.transform = `rotate(0deg)`;
+        if (tag) tag.textContent = `(0°)`;
+      }
+    };
+
+    clearBtn.addEventListener("click", () => {
+      selectedFile = null;
+      resultBlob = null;
+      pageRotations = {};
+      fileQueue.style.display = "none";
+      bulkBar.style.display = "none";
+      galleryWrap.style.display = "none";
+      actionBar.style.display = "none";
+      resultCard.style.display = "none";
+      document.getElementById("workflow-progress").style.display = "none";
+    });
+
+    function progressCb(pct, status) {
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
+      UIUtils.setWorkflowStep(step, pct, status);
+    }
+
+    processBtn.addEventListener("click", async function() {
+      if (!selectedFile) return;
+
+      try {
+        processBtn.disabled = true;
+        UIUtils.setWorkflowStep(0, 15, "Initializing local rotation worker...");
+
+        const res = await PDFOrganize.rotatePDF(selectedFile, pageRotations, progressCb);
+        resultBlob = res.pdfBlob;
+
+        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+        resultFilename = `${baseName}-rotated.pdf`;
+
+        UIUtils.setWorkflowStep(3, 100, "Rotation complete!");
+        resultCard.style.display = "flex";
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.rotatedPagesCount} of ${res.totalPages} Page(s) Rotated Losslessly`;
+        UIUtils.showToast("Rotations applied successfully!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast(err.message || "Rotation failed", "error");
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+
+    downloadBtn.addEventListener("click", function() {
+      if (resultBlob) {
+        UIUtils.downloadBlob(resultBlob, resultFilename);
+      }
+    });
+  </script>
+</body>
+</html>

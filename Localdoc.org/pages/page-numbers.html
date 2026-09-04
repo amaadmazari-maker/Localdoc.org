@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Page Numbers to PDF Online (Custom Positions & Formats) — LocalDoc</title>
+  <meta name="description" content="Add customizable page numbers and headers/footers to PDF documents. 6 position anchors, 5 format templates, cover page skip, and live A4 placement preview. 100% zero-upload.">
+  <link rel="canonical" href="https://localdoc.org/pages/page-numbers.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Add Page Numbers to PDF Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Add professional page numbers with 6 position anchors and custom formats. 100% private in browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/pages/page-numbers.html">
+  <meta property="og:image" content="../assets/icons/page-numbers.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Page Numbers",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF page number numbering with live A4 preview."
+  }
+  </script>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All 20 Tools</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+        <li><a href="../contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Edit & Design Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Page Numbers</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% Client-Side RAM Processing</span>
+        </div>
+        <h1>Add Page Numbers to PDF</h1>
+        <p class="tool-desc">Stamp customizable page numbers, footers, and headers into PDF documents with live position preview and cover page skip options.</p>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-icon">
+          <img src="../assets/icons/page-numbers.svg" alt="Add Page Numbers to PDF Icon" width="48" height="48">
+        </div>
+        <div class="drop-zone-text">
+          <h3>Drop your PDF document here</h3>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+      </div>
+
+      <!-- File Queue Item -->
+      <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/page-numbers.svg" width="32" height="32" alt="PDF File">
+            <div>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.pdf</h4>
+              <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
+            </div>
+          </div>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Configuration Controls & Live A4 Preview Grid -->
+      <div id="config-wrap" style="display:none; margin-top:24px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; align-items:start;">
+          <!-- Controls Column -->
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Position & Format Settings</h4>
+
+            <!-- Position Selector -->
+            <div style="margin-bottom:16px;">
+              <label class="control-label" style="display:block; margin-bottom:8px;">Position Anchor (6 Locations):</label>
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; max-width:240px;">
+                <button type="button" class="btn btn-outline pos-btn" data-pos="top-left" style="padding:6px; font-size:0.75rem;">↖ Top L</button>
+                <button type="button" class="btn btn-outline pos-btn" data-pos="top-center" style="padding:6px; font-size:0.75rem;">↑ Top C</button>
+                <button type="button" class="btn btn-outline pos-btn" data-pos="top-right" style="padding:6px; font-size:0.75rem;">↗ Top R</button>
+                <button type="button" class="btn btn-outline pos-btn" data-pos="bottom-left" style="padding:6px; font-size:0.75rem;">↙ Btm L</button>
+                <button type="button" class="btn btn-outline pos-btn active" data-pos="bottom-center" style="padding:6px; font-size:0.75rem; background:var(--primary); color:#fff;">↓ Btm C</button>
+                <button type="button" class="btn btn-outline pos-btn" data-pos="bottom-right" style="padding:6px; font-size:0.75rem;">↘ Btm R</button>
+              </div>
+            </div>
+
+            <!-- Format Selector -->
+            <div style="margin-bottom:16px;">
+              <label class="control-label" style="display:block; margin-bottom:6px;">Numbering Format:</label>
+              <select class="control-select" id="format-select" style="width:100%;">
+                <option value="Page {n} of {total}">Page {n} of {total} (e.g. Page 1 of 10)</option>
+                <option value="{n} / {total}">{n} / {total} (e.g. 1 / 10)</option>
+                <option value="Page {n}">Page {n} (e.g. Page 1)</option>
+                <option value="- {n} -">- {n} - (e.g. - 1 -)</option>
+                <option value="{n}">{n} (e.g. 1)</option>
+              </select>
+            </div>
+
+            <!-- Options Grid -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+              <div>
+                <label class="control-label" style="display:block; margin-bottom:4px;">First Number:</label>
+                <input type="number" class="control-input" id="start-offset" value="1" min="1" style="width:100%;">
+              </div>
+              <div>
+                <label class="control-label" style="display:block; margin-bottom:4px;">Font Size:</label>
+                <select class="control-select" id="font-size-select" style="width:100%;">
+                  <option value="9">9 pt (Small)</option>
+                  <option value="11" selected>11 pt (Standard)</option>
+                  <option value="13">13 pt (Large)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-primary); cursor:pointer;">
+                <input type="checkbox" id="skip-first-chk">
+                <span>Skip First Page (Don't number cover page)</span>
+              </label>
+            </div>
+          </div>
+
+            <!-- Live A4 Real Document Mockup Preview Column -->
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; text-align:center;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">Live Document Preview</h4>
+                <div id="preview-page-pager" style="display:none; gap:6px; align-items:center;">
+                  <button type="button" class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="changePreviewPage(-1)">&larr;</button>
+                  <span id="preview-page-indicator" style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">1 / 1</span>
+                  <button type="button" class="btn btn-outline" style="padding:2px 8px; font-size:0.75rem;" onclick="changePreviewPage(1)">&rarr;</button>
+                </div>
+              </div>
+              <div class="a4-preview-mockup" id="a4-mockup" style="position:relative; width:220px; height:310px; margin:0 auto; background:#fff; border-radius:4px; border:1px solid var(--line); box-shadow:var(--shadow-md); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                <canvas id="a4-preview-canvas" style="max-width:100%; max-height:100%; object-fit:contain;"></canvas>
+
+                <!-- Live Number Tag Overlay -->
+                <div class="a4-preview-pn" id="mockup-pn-tag" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); background:rgba(2,132,199,0.92); color:#FFFFFF; padding:3px 10px; border-radius:4px; font-size:0.75rem; font-weight:700; box-shadow:0 2px 8px rgba(0,0,0,0.25); transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index:10; pointer-events:none; white-space:nowrap;">
+                  Page 1 of 10
+                </div>
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:12px;">Live visual rendering of stamp position on your actual PDF document</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
+          <button class="btn btn-primary btn-lg" id="process-btn">
+            <span>Add Page Numbers</span> &rarr;
+          </button>
+        </div>
+
+        <!-- 3-Step Progress Workflow HUD -->
+        <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
+          <div class="workflow-steps-indicator">
+            <div class="workflow-step-node workflow-step-1">
+              <div class="workflow-step-circle">1</div>
+              <div class="workflow-step-label">Reading Document</div>
+            </div>
+            <div class="workflow-step-node workflow-step-2">
+              <div class="workflow-step-circle">2</div>
+              <div class="workflow-step-label">Stamping Pages</div>
+            </div>
+            <div class="workflow-step-node workflow-step-3">
+              <div class="workflow-step-circle">3</div>
+              <div class="workflow-step-label">Ready</div>
+            </div>
+          </div>
+          <div class="workflow-progress-track">
+            <div class="workflow-progress-fill"></div>
+          </div>
+          <div class="workflow-progress-meta">
+            <span id="progress-status">Processing locally in RAM...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="result-card" style="display:none;">
+          <div class="result-details">
+            <h3 id="result-title">Page Numbers Added!</h3>
+            <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
+          </div>
+          <div class="result-actions">
+            <button class="btn btn-primary btn-lg" id="download-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download Numbered PDF</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Deep Technical Explanation & Guide Link -->
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+        <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side PDF Page Numbering Works</h3>
+        <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc embeds a standard Helvetica or Times Roman font descriptor directly into your PDF dictionary, dynamically calculating geometry bounds for each page to stamp page numbers into browser RAM without server transfers.</p>
+        <a href="../blog/page-numbers-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Page Numbers Guide &rarr;</a>
+      </div>
+
+      <!-- Related Tools -->
+      <section class="related-tools-section">
+        <h3 class="related-tools-title">Related Document Tools</h3>
+        <div class="related-tools-grid">
+          <a href="watermark.html" class="related-tool-card">
+            <img src="../assets/icons/watermark.svg" alt="Watermark PDF">
+            <div>
+              <h4>Watermark PDF</h4>
+              <p>Add text or image stamps</p>
+            </div>
+          </a>
+          <a href="edit-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/edit-pdf.svg" alt="Edit PDF">
+            <div>
+              <h4>Edit & Sign PDF</h4>
+              <p>Signatures and text stamps</p>
+            </div>
+          </a>
+          <a href="merge-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
+            <div>
+              <h4>Merge PDF</h4>
+              <p>Combine multiple documents</p>
+            </div>
+          </a>
+          <a href="compress-pdf.html" class="related-tool-card">
+            <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+            <div>
+              <h4>Compress PDF</h4>
+              <p>Reduce PDF file size in RAM</p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/core/ui-utils.js"></script>
+    <script src="../js/lib/pdf.min.js"></script>
+    <script src="../js/lib/pdf-lib.min.js"></script>
+    <script src="../js/tools/organize.js"></script>
+
+    <script>
+      let selectedFile = null;
+      let selectedPosition = 'bottom-center';
+      let resultBlob = null;
+      let resultFilename = 'localdoc-numbered.pdf';
+      let loadedPdf = null;
+      let currentPreviewPage = 1;
+      let totalDocPages = 1;
+
+      const dropZone = document.getElementById("drop-zone");
+      const fileInput = document.getElementById("file-input");
+      const fileQueue = document.getElementById("file-queue");
+      const queueName = document.getElementById("queue-file-name");
+      const queueSize = document.getElementById("queue-file-size");
+      const configWrap = document.getElementById("config-wrap");
+      const formatSelect = document.getElementById("format-select");
+      const startOffsetInput = document.getElementById("start-offset");
+      const fontSizeSelect = document.getElementById("font-size-select");
+      const skipFirstChk = document.getElementById("skip-first-chk");
+      const mockupTag = document.getElementById("mockup-pn-tag");
+      const actionBar = document.getElementById("action-bar");
+      const processBtn = document.getElementById("process-btn");
+      const clearBtn = document.getElementById("clear-btn");
+      const resultCard = document.getElementById("result-card");
+      const downloadBtn = document.getElementById("download-btn");
+      const pagerEl = document.getElementById("preview-page-pager");
+      const indicatorEl = document.getElementById("preview-page-indicator");
+
+      // Position buttons click
+      document.querySelectorAll(".pos-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".pos-btn").forEach(b => {
+            b.classList.remove("active");
+            b.style.background = "transparent";
+            b.style.color = "var(--text-secondary)";
+          });
+          btn.classList.add("active");
+          btn.style.background = "var(--primary)";
+          btn.style.color = "#FFFFFF";
+          selectedPosition = btn.getAttribute("data-pos");
+          updateMockupPosition();
+        });
+      });
+
+      formatSelect.addEventListener("change", updateMockupContent);
+      startOffsetInput.addEventListener("input", updateMockupContent);
+      skipFirstChk.addEventListener("change", updateMockupContent);
+
+      function updateMockupPosition() {
+        mockupTag.style.top = '';
+        mockupTag.style.bottom = '';
+        mockupTag.style.left = '';
+        mockupTag.style.right = '';
+        mockupTag.style.transform = '';
+
+        switch (selectedPosition) {
+          case 'top-left':
+            mockupTag.style.top = '14px';
+            mockupTag.style.left = '14px';
+            break;
+          case 'top-center':
+            mockupTag.style.top = '14px';
+            mockupTag.style.left = '50%';
+            mockupTag.style.transform = 'translateX(-50%)';
+            break;
+          case 'top-right':
+            mockupTag.style.top = '14px';
+            mockupTag.style.right = '14px';
+            break;
+          case 'bottom-left':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.left = '14px';
+            break;
+          case 'bottom-center':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.left = '50%';
+            mockupTag.style.transform = 'translateX(-50%)';
+            break;
+          case 'bottom-right':
+            mockupTag.style.bottom = '14px';
+            mockupTag.style.right = '14px';
+            break;
+        }
+      }
+
+      function updateMockupContent() {
+        if (skipFirstChk.checked && currentPreviewPage === 1) {
+          mockupTag.style.display = 'none';
+          return;
+        }
+        mockupTag.style.display = 'block';
+
+        const fmt = formatSelect.value;
+        const start = parseInt(startOffsetInput.value, 10) || 1;
+        const pageNum = start + (currentPreviewPage - 1);
+        const totalNum = start + (totalDocPages - 1);
+        const sampleText = fmt.replace('{n}', pageNum).replace('{total}', totalNum);
+        mockupTag.textContent = sampleText;
+      }
+
+      async function renderCurrentPreviewPage() {
+        if (!loadedPdf) return;
+        try {
+          const page = await loadedPdf.getPage(currentPreviewPage);
+          const viewport = page.getViewport({ scale: 0.45 });
+          const canvas = document.getElementById("a4-preview-canvas");
+          if (canvas) {
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+          }
+          if (indicatorEl) indicatorEl.textContent = `${currentPreviewPage} / ${totalDocPages}`;
+          updateMockupContent();
+          updateMockupPosition();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      window.changePreviewPage = function(delta) {
+        let next = currentPreviewPage + delta;
+        if (next >= 1 && next <= totalDocPages) {
+          currentPreviewPage = next;
+          renderCurrentPreviewPage();
+        }
+      };
+
+      UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
+        if (files.length > 0) {
+          selectedFile = files[0];
+          queueName.textContent = selectedFile.name;
+          queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+          fileQueue.style.display = "block";
+          configWrap.style.display = "block";
+          actionBar.style.display = "flex";
+          resultCard.style.display = "none";
+
+          try {
+            const arrBuf = await UIUtils.readFileAsArrayBuffer(selectedFile);
+            loadedPdf = await pdfjsLib.getDocument({ data: arrBuf }).promise;
+            totalDocPages = loadedPdf.numPages;
+            currentPreviewPage = 1;
+            if (pagerEl && totalDocPages > 1) pagerEl.style.display = 'inline-flex';
+            await renderCurrentPreviewPage();
+          } catch (e) {
+            console.error("Failed to render preview canvas:", e);
+          }
+        }
+      });
+      mockupTag.style.right = '';
+      mockupTag.style.transform = '';
+
+      switch (selectedPosition) {
+        case 'top-left':
+          mockupTag.style.top = '15px';
+          mockupTag.style.left = '15px';
+          break;
+        case 'top-center':
+          mockupTag.style.top = '15px';
+          mockupTag.style.left = '50%';
+          mockupTag.style.transform = 'translateX(-50%)';
+          break;
+        case 'top-right':
+          mockupTag.style.top = '15px';
+          mockupTag.style.right = '15px';
+          break;
+        case 'bottom-left':
+          mockupTag.style.bottom = '15px';
+          mockupTag.style.left = '15px';
+          break;
+        case 'bottom-center':
+          mockupTag.style.bottom = '15px';
+          mockupTag.style.left = '50%';
+          mockupTag.style.transform = 'translateX(-50%)';
+          break;
+        case 'bottom-right':
+          mockupTag.style.bottom = '15px';
+          mockupTag.style.right = '15px';
+          break;
+      }
+    }
+
+    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
+      if (files.length > 0) {
+        selectedFile = files[0];
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        fileQueue.style.display = "block";
+        configWrap.style.display = "block";
+        actionBar.style.display = "flex";
+        resultCard.style.display = "none";
+        updateMockup();
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      selectedFile = null;
+      resultBlob = null;
+      fileQueue.style.display = "none";
+      configWrap.style.display = "none";
+      actionBar.style.display = "none";
+      resultCard.style.display = "none";
+      document.getElementById("workflow-progress").style.display = "none";
+    });
+
+    function progressCb(pct, status) {
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
+      UIUtils.setWorkflowStep(step, pct, status);
+    }
+
+    processBtn.addEventListener("click", async function() {
+      if (!selectedFile) return;
+
+      try {
+        processBtn.disabled = true;
+        UIUtils.setWorkflowStep(0, 15, "Initializing local stamping worker...");
+
+        const options = {
+          position: selectedPosition,
+          format: formatSelect.value,
+          startOffset: parseInt(startOffsetInput.value, 10) || 1,
+          skipFirst: skipFirstChk.checked,
+          fontSize: parseInt(fontSizeSelect.value, 10) || 11
+        };
+
+        const res = await PDFOrganize.addPageNumbers(selectedFile, options, progressCb);
+        resultBlob = res.pdfBlob;
+
+        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+        resultFilename = `${baseName}-numbered.pdf`;
+
+        UIUtils.setWorkflowStep(3, 100, "Numbering complete!");
+        resultCard.style.display = "flex";
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • Stamped ${res.numberedPagesCount} Pages (Format: "${options.format}")`;
+        UIUtils.showToast("Page numbers added successfully!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast(err.message || "Failed to add page numbers", "error");
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+
+    downloadBtn.addEventListener("click", function() {
+      if (resultBlob) {
+        UIUtils.downloadBlob(resultBlob, resultFilename);
+      }
+    });
+  </script>
+</body>
+</html>

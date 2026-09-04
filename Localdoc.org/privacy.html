@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy & Zero-Upload Whitepaper | LocalDoc</title>
+  <meta name="description" content="LocalDoc Privacy Policy and Architecture Whitepaper. Learn how client-side WebAssembly guarantees zero outbound network traffic, complete data sovereignty, and compliance with GDPR and CCPA.">
+  <link rel="canonical" href="https://localdoc.org/privacy.html">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Privacy Policy & Architecture | LocalDoc">
+  <meta property="og:description" content="LocalDoc Privacy Policy. How client-side WebAssembly guarantees zero outbound network traffic.">
+  <meta property="og:url" content="https://localdoc.org/privacy.html">
+  <meta property="og:site_name" content="LocalDoc">
+  <meta property="og:image" content="https://localdoc.org/assets/icons/favicon.svg">
+
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/blog.css">
+  <link rel="stylesheet" href="css/rtl.css">
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-i18n="nav_all_tools">All 20 Tools</a></li>
+        <li><a href="blog/index.html" class="nav-link" data-i18n="nav_blog">Blog & Guides</a></li>
+        <li><a href="privacy.html" class="nav-link active" data-i18n="nav_privacy">Privacy Architecture</a></li>
+        <li><a href="about.html" class="nav-link" data-i18n="nav_about">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Search</span>
+          <span class="kbd-shortcut">⌘K</span>
+        </button>
+
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+
+        <div class="privacy-pill">
+          <span class="radar-dot"></span>
+          <span data-i18n="offline_badge">100% Local RAM</span>
+        </div>
+
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:40px; padding-bottom:70px;">
+    <article class="blog-article">
+      <div class="tool-workspace-badge">🔒 Privacy Architecture & Security Whitepaper</div>
+      <h1>Privacy Policy & Data Protection</h1>
+      <div class="blog-meta-bar">
+        <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
+        <span>•</span>
+        <span>Lead Security Architect</span>
+        <span>•</span>
+        <span>Effective Date: August 2026</span>
+      </div>
+
+      <div class="exec-summary-box">
+        <h3>Zero-Knowledge Architecture Summary</h3>
+        <ul>
+          <li><strong>0 Bytes Server Document Data Transit:</strong> We do not operate file upload servers. Your files never touch our network.</li>
+          <li><strong>Local Browser Memory Sandbox:</strong> All parsing, text extraction, OCR, and vector PDF compilation happen inside your browser's private memory.</li>
+          <li><strong>No Data Harvesting:</strong> We do not retain, copy, inspect, or sell your documents or personal files.</li>
+        </ul>
+      </div>
+
+      <h2>1. The Fundamental Zero-Upload Architecture</h2>
+      <p>Traditional PDF utilities require sending your files to a backend web server over HTTPS. At that point, you must trust the service provider's privacy policy, their retention period, their employee access controls, and their vulnerability to external cyberattacks.</p>
+
+      <p>LocalDoc operates on a <strong>Zero-Trust Client-Side Architecture</strong>. Instead of sending your document to our code, our code is sent once to your browser. Your local CPU and GPU execute all computations locally inside your browser tab.</p>
+
+      <h2>2. What Information We Do (and Do Not) Collect</h2>
+      <p><strong>Files and Documents:</strong> When you open a PDF, Word document, Excel spreadsheet, or photo in LocalDoc, that file is loaded strictly into your browser's local memory (RAM). It is never transmitted across the network, stored on a remote server, or reviewed by any human or AI model.</p>
+      
+      <p><strong>Technical Logs & Analytics:</strong> To ensure website uptime and optimal performance, standard aggregated web server logs (such as browser type, referring URL, and page request counts) may be collected. These technical logs contain no personal document data.</p>
+
+      <h2>3. Third-Party Advertising & Cookies Policy</h2>
+      <p>To keep LocalDoc 100% free and accessible to all users worldwide without subscriptions, we may display third-party advertisements on non-tool informational pages.</p>
+
+      <p><strong>Google AdSense & DoubleClick DART Cookie:</strong></p>
+      <ul>
+        <li>Google, as a third-party vendor, uses cookies to serve ads on our site.</li>
+        <li>Google's use of the DART cookie enables it to serve ads to users based on their visit to our site and other sites on the Internet.</li>
+        <li>Users may opt out of the use of the DART cookie by visiting the <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google Ad and Content Network Privacy Policy</a>.</li>
+        <li>Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Web Beacons in their respective advertisements and links that appear on LocalDoc. They automatically receive your IP address when this occurs. LocalDoc has no access to or control over these cookies used by third-party advertisers.</li>
+      </ul>
+
+      <h2>4. GDPR & CCPA/CPRA Compliance Rights</h2>
+      <p>Under the European General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA/CPRA), users enjoy specific data sovereignty rights. Because LocalDoc operates without user accounts, databases, or document ingestion servers, your data is inherently protected by design.</p>
+      <ul>
+        <li><strong>Right of Access & Deletion:</strong> Because all documents exist only in your device's RAM, closing your browser tab permanently purges all processing artifacts instantly.</li>
+        <li><strong>Right to Non-Discrimination:</strong> We provide equal, unrestricted access to all 20 tools for all users globally.</li>
+      </ul>
+
+      <h2>5. How to Verify Zero-Upload Privacy Yourself</h2>
+      <p>We believe in verifiable security rather than blind trust. You can independently confirm that LocalDoc never transmits your files by following these steps:</p>
+
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li>Open LocalDoc in Google Chrome, Microsoft Edge, Mozilla Firefox, or Apple Safari.</li>
+        <li>Press <code>F12</code> or right-click anywhere on the page and select <strong>Inspect</strong> to open Developer Tools.</li>
+        <li>Click on the <strong>Network</strong> tab.</li>
+        <li>Drop a large PDF or photo into any tool and click process.</li>
+        <li>Observe the Network activity: you will see <strong>0 outbound POST or PUT requests</strong> containing your file data.</li>
+      </ol>
+
+      <div class="cta-banner">
+        <div>
+          <h3 style="color:var(--text-primary); font-size:1.3rem; margin-bottom:4px;">Have Questions Regarding Security?</h3>
+          <p style="color:var(--text-secondary); font-size:0.95rem; margin:0;">Contact our security team directly at security@localdoc.org.</p>
+        </div>
+        <a href="contact.html" class="btn btn-primary btn-lg">Contact Us &rarr;</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>LocalDoc</h3>
+          <p data-i18n="footer_desc">The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <div style="margin-top:16px;">
+            <a href="index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Browse 20 Tools</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Popular Tools</h4>
+          <ul class="footer-links">
+            <li><a href="pages/compress-pdf.html" class="footer-link">Compress PDF</a></li>
+            <li><a href="pages/merge-pdf.html" class="footer-link">Merge PDF</a></li>
+            <li><a href="pages/pdf-to-word.html" class="footer-link">PDF to Word</a></li>
+            <li><a href="pages/scan.html" class="footer-link">Document Scanner</a></li>
+            <li><a href="pages/cnic-photo-maker.html" class="footer-link">CNIC Photo Maker</a></li>
+            <li><a href="pages/edit-pdf.html" class="footer-link">Edit PDF Online</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Guides & Knowledge</h4>
+          <ul class="footer-links">
+            <li><a href="blog/index.html" class="footer-link">25 Tool Guides</a></li>
+            <li><a href="blog/compress-pdf-guide.html" class="footer-link">Compress PDF Guide</a></li>
+            <li><a href="blog/cnic-photo-maker-guide.html" class="footer-link">NADRA Photo Specs</a></li>
+            <li><a href="blog/passport-photo-maker-guide.html" class="footer-link">Global Passport Rules</a></li>
+            <li><a href="faq.html" class="footer-link">20+ FAQs</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Privacy & Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html" class="footer-link">Privacy Whitepaper</a></li>
+            <li><a href="about.html" class="footer-link">About LocalDoc</a></li>
+            <li><a href="terms.html" class="footer-link">Terms of Service</a></li>
+            <li><a href="contact.html" class="footer-link">Contact Support</a></li>
+            <li><a href="sitemap.xml" class="footer-link">XML Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
+        <p>Engineered for Speed, Privacy, and Security.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/core/i18n.js"></script>
+  <script src="js/core/ui-utils.js"></script>
+  <script src="js/core/pwa-register.js"></script>
+  <script src="js/core/seo.js"></script>
+</body>
+</html>

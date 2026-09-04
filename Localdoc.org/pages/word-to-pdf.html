@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word to PDF Converter Online — 100% Zero-Upload Client-Side | LocalDoc</title>
+  <meta name="description" content="Convert Microsoft Word (.docx) documents to standard A4 PDF files in your browser. Supports special characters, Urdu, multilingual text, headings, and tables with zero uploads.">
+  <link rel="canonical" href="https://localdoc.org/pages/word-to-pdf.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Word to PDF Converter Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Convert Word DOCX to printable A4 PDF in browser RAM with full Unicode & Urdu support.">
+  <meta property="og:url" content="https://localdoc.org/pages/word-to-pdf.html">
+  <meta property="og:image" content="../assets/icons/word-to-pdf.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Word to PDF Converter",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side Word to PDF converter supporting Unicode, Urdu, tables, headings, and images."
+  }
+  </script>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All 20 Tools</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+        <li><a href="../contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Conversion Tools</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Word to PDF</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% Client-Side RAM Processing</span>
+        </div>
+        <h1>Word to PDF Converter Online</h1>
+        <p class="tool-desc">Convert Microsoft Word (.docx) documents to standard A4 PDF files. Supports full Unicode, Urdu, Arabic, special quotes, dashes, bullets, and tables with 0% crash rate.</p>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-icon">
+          <img src="../assets/icons/word-to-pdf.svg" alt="Word to PDF Converter Online Icon" width="48" height="48">
+        </div>
+        <div class="drop-zone-text">
+          <h3>Drop your Word (.docx) file here</h3>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" id="browse-btn">Select Word Document</button>
+        <input type="file" id="file-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;">
+      </div>
+
+      <!-- File Queue Item -->
+      <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="../assets/icons/word-to-pdf.svg" width="32" height="32" alt="Word File">
+            <div>
+              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.docx</h4>
+              <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
+            </div>
+          </div>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
+        <button class="btn btn-primary btn-lg" id="process-btn">
+          <span>Convert to PDF</span> &rarr;
+        </button>
+      </div>
+
+      <!-- 3-Step Progress Workflow HUD -->
+      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
+        <div class="workflow-steps-indicator">
+          <div class="workflow-step-node workflow-step-1">
+            <div class="workflow-step-circle">1</div>
+            <div class="workflow-step-label">Parsing XML</div>
+          </div>
+          <div class="workflow-step-node workflow-step-2">
+            <div class="workflow-step-circle">2</div>
+            <div class="workflow-step-label">Rendering Layout</div>
+          </div>
+          <div class="workflow-step-node workflow-step-3">
+            <div class="workflow-step-circle">3</div>
+            <div class="workflow-step-label">Generating PDF</div>
+          </div>
+        </div>
+        <div class="workflow-progress-track">
+          <div class="workflow-progress-fill"></div>
+        </div>
+        <div class="workflow-progress-meta">
+          <span id="progress-status">Processing locally in RAM...</span>
+          <span id="progress-percent">0%</span>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card" style="display:none;">
+        <div class="result-details">
+          <h3 id="result-title">PDF Document Ready!</h3>
+          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary btn-lg" id="download-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Download .PDF File</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Document Preview Card -->
+      <div class="doc-preview-card" id="doc-preview-card" style="display:none;">
+        <div class="doc-preview-header">
+          <div class="doc-preview-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Document Preview (A4 Formatted)</span>
+          </div>
+        </div>
+        <div class="doc-preview-body" id="doc-preview-content"></div>
+      </div>
+    </section>
+
+    <!-- Deep Technical Explanation & Guide Link -->
+    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
+      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side Word to PDF Works</h3>
+      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc extracts Word XML formatting using Mammoth, renders the document layout with full Unicode typography and RTL auto-detection, and encodes crisp A4 PDF pages with zero server communication.</p>
+      <a href="../blog/word-to-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full Word to PDF Guide &rarr;</a>
+    </div>
+
+    <!-- Related Conversion Tools -->
+    <section class="related-tools-section">
+      <h3 class="related-tools-title">Related Document Conversion Tools</h3>
+      <div class="related-tools-grid">
+        <a href="pdf-to-word.html" class="related-tool-card">
+          <img src="../assets/icons/pdf-to-word.svg" alt="PDF to Word">
+          <div>
+            <h4>PDF to Word</h4>
+            <p>Convert PDF to editable DOCX</p>
+          </div>
+        </a>
+        <a href="excel-to-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/excel-to-pdf.svg" alt="Excel to PDF">
+          <div>
+            <h4>Excel to PDF</h4>
+            <p>Convert spreadsheets to A4 PDF</p>
+          </div>
+        </a>
+        <a href="jpg-to-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/jpg-to-pdf.svg" alt="JPG to PDF">
+          <div>
+            <h4>JPG to PDF</h4>
+            <p>Combine photos into PDF</p>
+          </div>
+        </a>
+        <a href="compress-pdf.html" class="related-tool-card">
+          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
+          <div>
+            <h4>Compress PDF</h4>
+            <p>Reduce PDF file size in RAM</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/core/i18n.js"></script>
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/mammoth.browser.min.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+  <script src="../js/lib/docx.min.js"></script>
+  <script src="../js/tools/convert.js"></script>
+
+  <script>
+    let selectedFile = null;
+    let resultData = null;
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const fileQueue = document.getElementById("file-queue");
+    const queueName = document.getElementById("queue-file-name");
+    const queueSize = document.getElementById("queue-file-size");
+    const actionBar = document.getElementById("action-bar");
+    const processBtn = document.getElementById("process-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const resultCard = document.getElementById("result-card");
+    const downloadBtn = document.getElementById("download-btn");
+    const previewCard = document.getElementById("doc-preview-card");
+    const previewContent = document.getElementById("doc-preview-content");
+
+    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
+      if (files.length > 0) {
+        selectedFile = files[0];
+        queueName.textContent = selectedFile.name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        fileQueue.style.display = "block";
+        actionBar.style.display = "flex";
+        resultCard.style.display = "none";
+        previewCard.style.display = "none";
+      }
+    });
+
+    clearBtn.addEventListener("click", function() {
+      selectedFile = null;
+      resultData = null;
+      fileQueue.style.display = "none";
+      actionBar.style.display = "none";
+      resultCard.style.display = "none";
+      previewCard.style.display = "none";
+      document.getElementById("workflow-progress").style.display = "none";
+    });
+
+    function progressCb(pct, status) {
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
+      UIUtils.setWorkflowStep(step, pct, status);
+    }
+
+    processBtn.addEventListener("click", async function() {
+      if (!selectedFile) return;
+      try {
+        processBtn.disabled = true;
+        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
+        
+        resultData = await PDFConvert.wordToPDF(selectedFile, progressCb);
+
+        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        resultCard.style.display = "flex";
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.pdfBlob.size)} • ${resultData.pageCount} Page(s) • Portable Document Format (.pdf)`;
+
+        if (resultData.htmlPreview) {
+          previewContent.innerHTML = resultData.htmlPreview;
+          previewCard.style.display = "block";
+        }
+
+        UIUtils.showToast("Word document converted to PDF successfully!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast(err.message || "Conversion failed. Please verify your file.", "error");
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+
+    downloadBtn.addEventListener("click", function() {
+      if (resultData && resultData.pdfBlob) {
+        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
+        UIUtils.downloadBlob(resultData.pdfBlob, baseName + ".pdf");
+      }
+    });
+  </script>
+</body>
+</html>
