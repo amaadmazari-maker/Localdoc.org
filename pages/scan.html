@@ -55,23 +55,24 @@
       z-index: 5;
     }
     .filter-preview-magic {
-      filter: contrast(1.25) brightness(1.08) saturate(1.15);
+      filter: contrast(1.3) brightness(1.1) saturate(1.25);
     }
     .filter-preview-clean-bw {
-      filter: grayscale(1) contrast(2.2) brightness(1.1);
+      filter: grayscale(1) contrast(2.6) brightness(1.15);
     }
     .filter-preview-grayscale {
-      filter: grayscale(1) contrast(1.15);
+      filter: grayscale(1) contrast(1.2);
     }
-    .filter-preview-light-mode {
-      filter: brightness(1.18) contrast(1.05);
+    .filter-preview-original {
+      filter: none;
     }
     .tag-pill {
       background: var(--bg-body);
       border: 1px solid var(--line);
       border-radius: var(--radius-full);
-      padding: 4px 10px;
-      font-size: 0.78rem;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.15s ease;
@@ -80,6 +81,46 @@
       border-color: var(--primary);
       color: var(--primary);
       background: var(--primary-subtle);
+    }
+    .tag-pill.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    /* Interactive 4-Corner Crop Editor Modal */
+    .crop-editor-wrap {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: #090D16;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      user-select: none;
+    }
+    .crop-corner-handle {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #10B981;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.95);
+      cursor: grab;
+      transform: translate(-50%, -50%);
+      z-index: 30;
+      touch-action: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .crop-corner-handle:active, .crop-corner-handle.dragging {
+      transform: translate(-50%, -50%) scale(1.35);
+      box-shadow: 0 0 18px #06B6D4;
+      background: #06B6D4;
+      cursor: grabbing;
     }
     .how-to-card {
       background: var(--bg-surface);
@@ -238,10 +279,9 @@
       <div style="margin-top:20px; text-align:center;">
         <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">Real-Time Enhancement Filter:</span>
         <div class="filter-selector-bar" id="filter-pills">
-          <button type="button" class="filter-pill active" data-filter="magic-color" onclick="setDefaultFilter('magic-color')">✨ Magic Color (CamScanner)</button>
-          <button type="button" class="filter-pill" data-filter="clean-bw" onclick="setDefaultFilter('clean-bw')">📄 Clean B&W (Photocopy)</button>
+          <button type="button" class="filter-pill active" data-filter="magic-color" onclick="setDefaultFilter('magic-color')">✨ Magic Color</button>
+          <button type="button" class="filter-pill" data-filter="clean-bw" onclick="setDefaultFilter('clean-bw')">📄 Clean B&W</button>
           <button type="button" class="filter-pill" data-filter="grayscale" onclick="setDefaultFilter('grayscale')">🏢 Grayscale</button>
-          <button type="button" class="filter-pill" data-filter="light-mode" onclick="setDefaultFilter('light-mode')">☀️ Natural Color</button>
           <button type="button" class="filter-pill" data-filter="original" onclick="setDefaultFilter('original')">📷 Original</button>
         </div>
       </div>
@@ -272,13 +312,13 @@
         <!-- Gallery / File Upload Drop Zone (Supports Multiple Files at Once) -->
         <div class="drop-zone" id="drop-zone" style="margin-top:20px;">
           <div class="drop-zone-icon">
-            <img src="../assets/icons/scan.svg" alt="Upload scans from gallery" width="36" height="36">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           </div>
           <div class="drop-zone-text">
-            <h3>Batch import multiple photos from Gallery or PC</h3>
+            <h3>Batch Import Multiple Photos from Gallery or PC</h3>
             <p>Select multiple JPG, PNG, or WEBP receipts, documents, or book pages simultaneously</p>
           </div>
-          <button class="btn btn-outline" id="browse-btn">Browse Multiple Photos</button>
+          <button class="btn btn-primary" id="browse-btn">Browse Multiple Photos</button>
           <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
         </div>
 
@@ -378,6 +418,64 @@
         <textarea id="ocr-textarea" style="width:100%; height:180px; padding:12px; border:1px solid var(--line); border-radius:var(--radius-sm); font-family:var(--font-mono); font-size:0.85rem; line-height:1.5; resize:vertical;"></textarea>
       </div>
     </section>
+
+    <!-- Interactive Document Page Crop & Filter Adjuster Modal -->
+    <div id="crop-editor-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); z-index:9998; align-items:center; justify-content:center; padding:16px;">
+      <div class="modal-card" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:22px; max-width:760px; width:100%; box-shadow:var(--shadow-lg); max-height:95vh; display:flex; flex-direction:column; overflow-y:auto;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            <span>📐</span> Adjust Document Edges & Filter
+          </h3>
+          <button class="modal-close-btn" id="crop-modal-close" style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer;">✕</button>
+        </div>
+
+        <!-- Aspect Ratio Toolbar -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; align-items:center;">
+          <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-right:4px;">RATIO:</span>
+          <button type="button" class="tag-pill active" id="btn-ratio-auto" onclick="setCropAspect('auto')">📐 Auto Detect</button>
+          <button type="button" class="tag-pill" id="btn-ratio-a4" onclick="setCropAspect('a4')">📄 Standard A4</button>
+          <button type="button" class="tag-pill" id="btn-ratio-letter" onclick="setCropAspect('letter')">📑 US Letter</button>
+          <button type="button" class="tag-pill" id="btn-ratio-id" onclick="setCropAspect('id')">🪪 ID Card</button>
+          <button type="button" class="tag-pill" id="btn-ratio-full" onclick="setCropAspect('full')">⛶ Full Image</button>
+        </div>
+
+        <!-- Interactive Canvas Stage -->
+        <div class="crop-editor-wrap" id="crop-editor-wrap">
+          <canvas id="crop-canvas" style="max-width:100%; max-height:100%; object-fit:contain;"></canvas>
+          <svg id="crop-svg-overlay" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;">
+            <polygon id="crop-polygon" points="0,0 0,0 0,0 0,0" fill="rgba(16,185,129,0.12)" stroke="#10B981" stroke-width="2.5" stroke-dasharray="6,4"></polygon>
+          </svg>
+          <!-- 4 Corner Draggable Handles -->
+          <div class="crop-corner-handle" id="corner-tl" data-corner="tl" title="Top-Left Corner"></div>
+          <div class="crop-corner-handle" id="corner-tr" data-corner="tr" title="Top-Right Corner"></div>
+          <div class="crop-corner-handle" id="corner-br" data-corner="br" title="Bottom-Right Corner"></div>
+          <div class="crop-corner-handle" id="corner-bl" data-corner="bl" title="Bottom-Left Corner"></div>
+        </div>
+
+        <!-- Modal Filter Selector (Live Real-Time Re-rendering) -->
+        <div style="margin-top:14px; text-align:center;">
+          <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">Preview Visual Filter:</span>
+          <div class="filter-selector-bar" id="modal-filter-pills" style="margin-top:6px;">
+            <button type="button" class="filter-pill active" data-filter="magic-color" onclick="setModalFilter('magic-color')">✨ Magic Color</button>
+            <button type="button" class="filter-pill" data-filter="clean-bw" onclick="setModalFilter('clean-bw')">📄 Clean B&W</button>
+            <button type="button" class="filter-pill" data-filter="grayscale" onclick="setModalFilter('grayscale')">🏢 Grayscale</button>
+            <button type="button" class="filter-pill" data-filter="original" onclick="setModalFilter('original')">📷 Original</button>
+          </div>
+        </div>
+
+        <!-- Action Footer -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline" id="crop-rotate-btn" onclick="rotateEditorImage()">↻ Rotate 90°</button>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-outline" id="crop-cancel-btn">Cancel</button>
+            <button class="btn btn-primary" id="crop-confirm-btn" style="background:#059669; border-color:#059669; font-weight:700;">✓ Apply & Keep Page</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Save Document Naming Modal Dialog -->
     <div id="naming-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
@@ -703,7 +801,7 @@
       }
     });
 
-    // 3. Filter Switching with Real-Time Viewfinder Preview
+    // 3. Filter Switching with Real-Time Viewfinder & Queue Preview
     window.setDefaultFilter = async function(filter) {
       currentFilter = filter;
       document.querySelectorAll("#filter-pills .filter-pill").forEach(p => {
@@ -715,37 +813,333 @@
       if (filter === 'magic-color') video.classList.add('filter-preview-magic');
       else if (filter === 'clean-bw') video.classList.add('filter-preview-clean-bw');
       else if (filter === 'grayscale') video.classList.add('filter-preview-grayscale');
-      else if (filter === 'light-mode') video.classList.add('filter-preview-light-mode');
+      else if (filter === 'original') video.classList.add('filter-preview-original');
 
-      // Re-process all captured pages
-      for (const item of pagesList) {
-        item.filter = filter;
-        const img = await UIUtils.loadImage(item.originalDataUrl);
-        item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
+      // Re-process all captured pages with new filter in real-time
+      if (pagesList.length > 0) {
+        UIUtils.showToast(`Applying ${filter} filter across document pages...`, "info");
+        for (const item of pagesList) {
+          item.filter = filter;
+          const img = await UIUtils.loadImage(item.originalDataUrl);
+          item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
+        }
+        renderPagesGrid();
       }
-      renderPagesGrid();
 
       if (currentMode === 'id') {
         updateIDCardUI();
       }
     };
 
-    // 4. Document Page Management
+    // 4. Interactive 4-Corner Crop & Filter Editor Studio Modal
+    const cropEditorModal = document.getElementById("crop-editor-modal");
+    const cropModalClose = document.getElementById("crop-modal-close");
+    const cropCancelBtn = document.getElementById("crop-cancel-btn");
+    const cropConfirmBtn = document.getElementById("crop-confirm-btn");
+    const cropEditorWrap = document.getElementById("crop-editor-wrap");
+    const cropCanvas = document.getElementById("crop-canvas");
+    const cropPolygon = document.getElementById("crop-polygon");
+    const cornerHandles = {
+      tl: document.getElementById("corner-tl"),
+      tr: document.getElementById("corner-tr"),
+      br: document.getElementById("corner-br"),
+      bl: document.getElementById("corner-bl")
+    };
+
+    let editorState = {
+      active: false,
+      pageIdx: -1,
+      img: null,
+      dataUrl: '',
+      corners: {
+        topLeft: { x: 0.05, y: 0.05 },
+        topRight: { x: 0.95, y: 0.05 },
+        bottomRight: { x: 0.95, y: 0.95 },
+        bottomLeft: { x: 0.05, y: 0.95 }
+      },
+      filter: 'magic-color',
+      rotation: 0,
+      activeDragCorner: null,
+      stageRect: null
+    };
+
+    window.openCropEditorForRaw = async function(rawDataUrl, detectedCorners = null) {
+      const img = await UIUtils.loadImage(rawDataUrl);
+      const corners = detectedCorners || DocumentScanner.detectDocumentEdges(img, 'auto');
+      editorState = {
+        active: true,
+        pageIdx: -1,
+        img: img,
+        dataUrl: rawDataUrl,
+        corners: corners,
+        filter: currentFilter,
+        rotation: 0,
+        activeDragCorner: null,
+        stageRect: null
+      };
+      showCropEditorUI();
+    };
+
+    window.openCropEditor = async function(idx) {
+      const item = pagesList[idx];
+      if (!item) return;
+      const img = await UIUtils.loadImage(item.originalDataUrl);
+      editorState = {
+        active: true,
+        pageIdx: idx,
+        img: img,
+        dataUrl: item.originalDataUrl,
+        corners: JSON.parse(JSON.stringify(item.corners)),
+        filter: item.filter || currentFilter,
+        rotation: item.rotation || 0,
+        activeDragCorner: null,
+        stageRect: null
+      };
+      showCropEditorUI();
+    };
+
+    function showCropEditorUI() {
+      cropEditorModal.style.display = 'flex';
+      // Sync modal filter pills
+      document.querySelectorAll("#modal-filter-pills .filter-pill").forEach(p => {
+        p.classList.toggle("active", p.getAttribute("data-filter") === editorState.filter);
+      });
+      // Sync ratio buttons
+      document.querySelectorAll(".crop-editor-wrap ~ div .tag-pill, #crop-editor-modal .tag-pill").forEach(p => {
+        p.classList.toggle("active", p.id === 'btn-ratio-auto');
+      });
+
+      renderCropCanvas();
+      updateCornerHandlesUI();
+    }
+
+    function renderCropCanvas() {
+      if (!editorState.img) return;
+      const wrap = cropEditorWrap;
+      const wrapW = wrap.clientWidth || 700;
+      const wrapH = wrap.clientHeight || 400;
+
+      const isRotated = (editorState.rotation % 180 !== 0);
+      const natW = isRotated ? editorState.img.height : editorState.img.width;
+      const natH = isRotated ? editorState.img.width : editorState.img.height;
+
+      const scale = Math.min(wrapW / natW, wrapH / natH);
+      const dispW = Math.round(natW * scale);
+      const dispH = Math.round(natH * scale);
+
+      cropCanvas.width = dispW;
+      cropCanvas.height = dispH;
+      const ctx = cropCanvas.getContext('2d');
+
+      ctx.save();
+      ctx.translate(dispW / 2, dispH / 2);
+      ctx.rotate((editorState.rotation * Math.PI) / 180);
+      const drawW = isRotated ? dispH : dispW;
+      const drawH = isRotated ? dispW : dispH;
+      ctx.drawImage(editorState.img, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      // Apply current modal filter visually to crop stage canvas
+      if (editorState.filter !== 'original') {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = dispW;
+        tempCanvas.height = dispH;
+        const tCtx = tempCanvas.getContext('2d');
+        tCtx.drawImage(cropCanvas, 0, 0);
+
+        const imgData = tCtx.getImageData(0, 0, dispW, dispH);
+        const data = imgData.data;
+        const len = data.length;
+
+        if (editorState.filter === 'magic-color') {
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            const lum = r * 0.299 + g * 0.587 + b * 0.114;
+            if (lum > 185) {
+              data[i] = 255; data[i + 1] = 255; data[i + 2] = 255;
+            } else {
+              data[i] = Math.min(255, Math.max(0, (r - 30) * 1.25));
+              data[i + 1] = Math.min(255, Math.max(0, (g - 30) * 1.25));
+              data[i + 2] = Math.min(255, Math.max(0, (b - 30) * 1.25));
+            }
+          }
+        } else if (editorState.filter === 'clean-bw') {
+          for (let i = 0; i < len; i += 4) {
+            const lum = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+            const v = lum < 140 ? 0 : 255;
+            data[i] = v; data[i + 1] = v; data[i + 2] = v;
+          }
+        } else if (editorState.filter === 'grayscale') {
+          for (let i = 0; i < len; i += 4) {
+            const lum = Math.min(255, (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) * 1.15);
+            data[i] = lum; data[i + 1] = lum; data[i + 2] = lum;
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+      }
+    }
+
+    function updateCornerHandlesUI() {
+      const canvasRect = cropCanvas.getBoundingClientRect();
+      const wrapRect = cropEditorWrap.getBoundingClientRect();
+      const offsetX = canvasRect.left - wrapRect.left;
+      const offsetY = canvasRect.top - wrapRect.top;
+      const cW = canvasRect.width;
+      const cH = canvasRect.height;
+
+      const tl = editorState.corners.topLeft;
+      const tr = editorState.corners.topRight;
+      const br = editorState.corners.bottomRight;
+      const bl = editorState.corners.bottomLeft;
+
+      const pxTL = { x: offsetX + tl.x * cW, y: offsetY + tl.y * cH };
+      const pxTR = { x: offsetX + tr.x * cW, y: offsetY + tr.y * cH };
+      const pxBR = { x: offsetX + br.x * cW, y: offsetY + br.y * cH };
+      const pxBL = { x: offsetX + bl.x * cW, y: offsetY + bl.y * cH };
+
+      cornerHandles.tl.style.left = `${pxTL.x}px`;
+      cornerHandles.tl.style.top = `${pxTL.y}px`;
+
+      cornerHandles.tr.style.left = `${pxTR.x}px`;
+      cornerHandles.tr.style.top = `${pxTR.y}px`;
+
+      cornerHandles.br.style.left = `${pxBR.x}px`;
+      cornerHandles.br.style.top = `${pxBR.y}px`;
+
+      cornerHandles.bl.style.left = `${pxBL.x}px`;
+      cornerHandles.bl.style.top = `${pxBL.y}px`;
+
+      // Update SVG polygon points
+      cropPolygon.setAttribute("points", `${pxTL.x},${pxTL.y} ${pxTR.x},${pxTR.y} ${pxBR.x},${pxBR.y} ${pxBL.x},${pxBL.y}`);
+    }
+
+    // Draggable corner pins (Pointer event handlers for desktop mouse & mobile touch)
+    Object.keys(cornerHandles).forEach(cornerKey => {
+      const handle = cornerHandles[cornerKey];
+      handle.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        handle.setPointerCapture(e.pointerId);
+        handle.classList.add("dragging");
+        editorState.activeDragCorner = cornerKey;
+      });
+
+      handle.addEventListener("pointermove", (e) => {
+        if (editorState.activeDragCorner !== cornerKey) return;
+        e.preventDefault();
+        const canvasRect = cropCanvas.getBoundingClientRect();
+        const normX = Math.max(0, Math.min(1, (e.clientX - canvasRect.left) / canvasRect.width));
+        const normY = Math.max(0, Math.min(1, (e.clientY - canvasRect.top) / canvasRect.height));
+
+        if (cornerKey === 'tl') editorState.corners.topLeft = { x: normX, y: normY };
+        else if (cornerKey === 'tr') editorState.corners.topRight = { x: normX, y: normY };
+        else if (cornerKey === 'br') editorState.corners.bottomRight = { x: normX, y: normY };
+        else if (cornerKey === 'bl') editorState.corners.bottomLeft = { x: normX, y: normY };
+
+        updateCornerHandlesUI();
+      });
+
+      const endDrag = (e) => {
+        if (editorState.activeDragCorner === cornerKey) {
+          handle.classList.remove("dragging");
+          editorState.activeDragCorner = null;
+        }
+      };
+
+      handle.addEventListener("pointerup", endDrag);
+      handle.addEventListener("pointercancel", endDrag);
+    });
+
+    window.setCropAspect = function(ratio) {
+      document.querySelectorAll("#crop-editor-modal .tag-pill").forEach(p => {
+        p.classList.toggle("active", p.id === `btn-ratio-${ratio}`);
+      });
+
+      if (!editorState.img) return;
+
+      if (ratio === 'auto') {
+        editorState.corners = DocumentScanner.detectDocumentEdges(editorState.img, 'auto');
+      } else if (ratio === 'a4') {
+        editorState.corners = DocumentScanner.detectDocumentEdges(editorState.img, 'a4');
+      } else if (ratio === 'letter') {
+        editorState.corners = DocumentScanner.detectDocumentEdges(editorState.img, 'letter');
+      } else if (ratio === 'id') {
+        editorState.corners = DocumentScanner.detectDocumentEdges(editorState.img, 'id');
+      } else if (ratio === 'full') {
+        editorState.corners = {
+          topLeft: { x: 0.01, y: 0.01 },
+          topRight: { x: 0.99, y: 0.01 },
+          bottomRight: { x: 0.99, y: 0.99 },
+          bottomLeft: { x: 0.01, y: 0.99 }
+        };
+      }
+      updateCornerHandlesUI();
+    };
+
+    window.setModalFilter = function(filter) {
+      editorState.filter = filter;
+      document.querySelectorAll("#modal-filter-pills .filter-pill").forEach(p => {
+        p.classList.toggle("active", p.getAttribute("data-filter") === filter);
+      });
+      renderCropCanvas();
+    };
+
+    window.rotateEditorImage = function() {
+      editorState.rotation = (editorState.rotation + 90) % 360;
+      renderCropCanvas();
+      updateCornerHandlesUI();
+    };
+
+    cropConfirmBtn.addEventListener("click", () => {
+      if (!editorState.img) return;
+      const processed = DocumentScanner.processImage(
+        editorState.img,
+        editorState.filter,
+        editorState.rotation,
+        editorState.corners
+      );
+
+      if (editorState.pageIdx >= 0 && editorState.pageIdx < pagesList.length) {
+        // Update existing page in queue
+        pagesList[editorState.pageIdx].processedDataUrl = processed;
+        pagesList[editorState.pageIdx].filter = editorState.filter;
+        pagesList[editorState.pageIdx].rotation = editorState.rotation;
+        pagesList[editorState.pageIdx].corners = editorState.corners;
+        UIUtils.showToast(`Page #${editorState.pageIdx + 1} updated with ${editorState.filter}!`, "success");
+      } else {
+        // Add as brand new page
+        pagesList.push({
+          id: Date.now() + Math.random().toString(36).substr(2, 5),
+          originalDataUrl: editorState.dataUrl,
+          processedDataUrl: processed,
+          filter: editorState.filter,
+          rotation: editorState.rotation,
+          corners: editorState.corners
+        });
+        UIUtils.showToast(`Page #${pagesList.length} added to document!`, "success");
+      }
+
+      cropEditorModal.style.display = 'none';
+      renderPagesGrid();
+    });
+
+    cropModalClose.addEventListener("click", () => cropEditorModal.style.display = 'none');
+    cropCancelBtn.addEventListener("click", () => cropEditorModal.style.display = 'none');
+
+    // 5. Document Page Management & Queue Rendering
     async function addDocumentPage(dataUrl, corners = null) {
       const img = await UIUtils.loadImage(dataUrl);
       const detectedCorners = corners || DocumentScanner.detectDocumentEdges(img);
       const processed = DocumentScanner.processImage(img, currentFilter, 0, detectedCorners);
 
-      const pageItem = {
+      pagesList.push({
         id: Date.now() + Math.random().toString(36).substr(2, 5),
         originalDataUrl: dataUrl,
         processedDataUrl: processed,
         filter: currentFilter,
         rotation: 0,
         corners: detectedCorners
-      };
+      });
 
-      pagesList.push(pageItem);
       renderPagesGrid();
       UIUtils.showToast(`Page #${pagesList.length} captured & enhanced!`, "success");
     }
@@ -767,12 +1161,13 @@
         card.className = "page-thumb-card";
 
         card.innerHTML = `
-          <div class="page-thumb-img-wrap" style="height:190px;">
+          <div class="page-thumb-img-wrap" style="height:190px; cursor:pointer;" onclick="openCropEditor(${idx})" title="Click to adjust crop & filter">
             <img src="${item.processedDataUrl}" alt="Page ${idx + 1}" style="max-height:100%; max-width:100%; object-fit:contain;">
           </div>
           <div class="page-thumb-footer">
             <span style="font-weight:700;">Page #${idx + 1}</span>
             <div class="page-thumb-actions">
+              <button class="page-thumb-btn" onclick="openCropEditor(${idx})" title="Crop & Filter" style="color:var(--primary); font-weight:700;">📐 Edit</button>
               <button class="page-thumb-btn" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">←</button>
               <button class="page-thumb-btn" onclick="movePage(${idx}, 1)" ${idx === pagesList.length - 1 ? 'disabled' : ''} title="Move Right">→</button>
               <button class="page-thumb-btn" onclick="rotatePage(${idx})" title="Rotate 90°">↻</button>
@@ -822,7 +1217,7 @@
       ocrResultPanel.style.display = "none";
     });
 
-    // 5. Gallery Multi-File Ingestion
+    // 6. Gallery Multi-File Ingestion
     function openGalleryPicker() {
       fileInput.value = '';
       fileInput.click();
@@ -834,8 +1229,14 @@
 
     UIUtils.setupDropZone(dropZone, fileInput, async (files) => {
       if (!files || files.length === 0) return;
-      UIUtils.showToast(`Importing ${files.length} photo(s) from gallery...`, "info");
+      
+      if (files.length === 1 && currentMode === 'doc') {
+        const dataUrl = await UIUtils.readFileAsDataURL(files[0]);
+        await openCropEditorForRaw(dataUrl);
+        return;
+      }
 
+      UIUtils.showToast(`Importing and auto-cropping ${files.length} photo(s) from gallery...`, "info");
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const dataUrl = await UIUtils.readFileAsDataURL(file);
@@ -845,7 +1246,7 @@
           await addDocumentPage(dataUrl);
         }
       }
-      UIUtils.showToast(`Imported ${files.length} document page(s) successfully!`, "success");
+      UIUtils.showToast(`Imported ${files.length} document page(s) successfully! Tap "Edit" on any page to fine-tune crop.`, "success");
     });
 
     // 6. ID Card Capture Handler

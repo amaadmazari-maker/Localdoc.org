@@ -84,14 +84,14 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% Client-Side RAM Processing</span>
         </div>
-        <h1>PDF to High-Res JPG Converter</h1>
-        <p class="tool-desc">Render PDF pages into high-definition JPEG images (up to 300 DPI). Preview thumbnails in browser RAM and download single images or a ZIP archive.</p>
+        <h1>PDF to Image (JPG & PNG) Converter</h1>
+        <p class="tool-desc">Render PDF pages into high-definition JPEG (300 DPI) or lossless transparent PNG images. Preview thumbnails in browser RAM and download single images or a ZIP archive.</p>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/pdf-to-jpg.svg" alt="PDF to JPG Converter Online Icon" width="48" height="48">
+          <img src="../assets/icons/pdf-to-jpg.svg" alt="PDF to Image Converter Online Icon" width="48" height="48">
         </div>
         <div class="drop-zone-text">
           <h3>Drop your PDF document here</h3>
@@ -118,6 +118,13 @@
       <!-- Controls Bar -->
       <div class="tool-controls-bar" id="tool-controls-bar" style="display:none;">
         <div class="control-group">
+          <span class="control-label">Output Format:</span>
+          <select class="control-select" id="format-select">
+            <option value="image/jpeg" selected>JPEG (.jpg) — 300 DPI High-Res</option>
+            <option value="image/png">PNG (.png) — Lossless Transparent</option>
+          </select>
+        </div>
+        <div class="control-group">
           <span class="control-label">Image Resolution:</span>
           <select class="control-select" id="dpi-select">
             <option value="2.0" selected>150 DPI — High Definition (Standard)</option>
@@ -130,7 +137,7 @@
       <!-- Action Bar -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Render JPG Images</span> &rarr;
+          <span>Render Document Images</span> &rarr;
         </button>
       </div>
 
@@ -338,11 +345,15 @@
       if (e.target === lightboxModal) lightboxModal.classList.remove("open");
     });
 
+    const formatSelect = document.getElementById("format-select");
+
     window.downloadSingleImage = function(idx) {
       const img = renderedImages[idx];
       if (!img) return;
+      const isPng = (formatSelect && formatSelect.value === 'image/png');
+      const ext = isPng ? 'png' : 'jpg';
       const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "page";
-      UIUtils.downloadBlob(img.blob, `${baseName}-page-${img.pageNumber}.jpg`);
+      UIUtils.downloadBlob(img.blob, `${baseName}-page-${img.pageNumber}.${ext}`);
     };
 
     function progressCb(pct, status) {
@@ -356,15 +367,17 @@
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
         
+        const mimeType = formatSelect ? formatSelect.value : 'image/jpeg';
+        const isPng = mimeType === 'image/png';
         const dpi = parseFloat(dpiSelect.value) || 2.0;
-        renderedImages = await PDFConvert.pdfToImages(selectedFile, 'image/jpeg', dpi, progressCb);
+        renderedImages = await PDFConvert.pdfToImages(selectedFile, mimeType, dpi, progressCb);
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = `Rendered ${renderedImages.length} High-Res JPEG Page(s)`;
+        document.getElementById("result-meta").textContent = `Rendered ${renderedImages.length} High-Res ${isPng ? 'PNG' : 'JPEG'} Page(s)`;
 
         renderThumbnailGallery();
-        UIUtils.showToast(`Extracted ${renderedImages.length} JPG images successfully!`, "success");
+        UIUtils.showToast(`Extracted ${renderedImages.length} ${isPng ? 'PNG' : 'JPG'} images successfully!`, "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast(err.message || "Operation failed", "error");
@@ -378,9 +391,11 @@
       try {
         downloadZipBtn.disabled = true;
         downloadZipBtn.textContent = "Bundling ZIP in RAM...";
+        const isPng = (formatSelect && formatSelect.value === 'image/png');
+        const ext = isPng ? 'png' : 'jpg';
         const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "pages";
-        const zipBlob = await PDFConvert.createImagesZip(renderedImages, baseName, 'jpg');
-        UIUtils.downloadBlob(zipBlob, `${baseName}-images.zip`);
+        const zipBlob = await PDFConvert.createImagesZip(renderedImages, baseName, ext);
+        UIUtils.downloadBlob(zipBlob, `${baseName}-${ext}-images.zip`);
         UIUtils.showToast("Downloaded all pages as ZIP archive!", "success");
       } catch (e) {
         console.error(e);
