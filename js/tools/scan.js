@@ -63,6 +63,89 @@ class DocumentScanner {
     }
   }
 
+  // Tap-to-Focus and hardware auto-focus helper
+  async applyFocus(xPercent = 0.5, yPercent = 0.5) {
+    if (!this.stream) return false;
+    const track = this.stream.getVideoTracks()[0];
+    if (!track) return false;
+    try {
+      const caps = track.getCapabilities ? track.getCapabilities() : {};
+      const adv = [];
+      if (caps.focusMode && caps.focusMode.includes('continuous')) {
+        adv.push({ focusMode: 'continuous' });
+      }
+      if (caps.pointsOfInterest) {
+        adv.push({ pointsOfInterest: [{ x: xPercent, y: yPercent }] });
+      }
+      if (adv.length > 0) {
+        await track.applyConstraints({ advanced: adv });
+        return true;
+      }
+    } catch (e) {
+      console.warn('Hardware focus constraint not supported on this device:', e);
+    }
+    return false;
+  }
+
+  // CamScanner Magic Pro Finger & Border Shadow Removal
+  static cleanFingerShadows(canvas) {
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    // Detect average paper brightness from center 50%
+    let paperLumSum = 0;
+    let paperCount = 0;
+    const startX = Math.round(width * 0.25);
+    const endX = Math.round(width * 0.75);
+    const startY = Math.round(height * 0.25);
+    const endY = Math.round(height * 0.75);
+
+    for (let y = startY; y < endY; y += 4) {
+      for (let x = startX; x < endX; x += 4) {
+        const idx = (y * width + x) * 4;
+        paperLumSum += (data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114);
+        paperCount++;
+      }
+    }
+    const targetWhite = Math.min(255, Math.round((paperLumSum / Math.max(1, paperCount)) * 1.08));
+
+    // Clean margin borders (12% margin around borders where fingers hold paper)
+    const marginX = Math.round(width * 0.12);
+    const marginY = Math.round(height * 0.12);
+
+    for (let y = 0; y < height; y++) {
+      const isEdgeY = (y < marginY || y > height - marginY);
+      for (let x = 0; x < width; x++) {
+        const isEdgeX = (x < marginX || x > width - marginX);
+        if (isEdgeX || isEdgeY) {
+          const idx = (y * width + x) * 4;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const lum = r * 0.299 + g * 0.587 + b * 0.114;
+
+          // Detect skin tone or dark border shadow (r > g > b or low luminance shadow)
+          const isSkinOrShadow = (lum < targetWhite * 0.85) && (
+            (r > g && g >= b && (r - b) > 15) || // skin tone
+            (lum < 110) // dark shadow
+          );
+
+          if (isSkinOrShadow) {
+            data[idx] = targetWhite;
+            data[idx + 1] = targetWhite;
+            data[idx + 2] = targetWhite;
+          }
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    return canvas.toDataURL('image/jpeg', 0.95);
+  }
+
   // 2. Real-time Document Edge Detection (Sobel Gradients + Luminance Profiling)
   static detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'auto') {
     const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;

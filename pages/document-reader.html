@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal Document Reader & Viewer Online — Free PDF, Word, Excel | LocalDoc</title>
+  <meta name="description" content="Read and preview PDF, Word (.docx), and Excel (.xlsx, .csv) documents instantly in your browser. 100% private in-browser execution with zero server uploads or external apps.">
+  <link rel="canonical" href="https://localdoc.org/pages/document-reader.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Universal Document Reader Online — PDF, Word & Excel | LocalDoc">
+  <meta property="og:description" content="Open and read any PDF, Word, or Excel document in your web browser with zero uploads and complete privacy.">
+  <meta property="og:url" content="https://localdoc.org/pages/document-reader.html">
+  <meta property="og:image" content="../assets/icons/document-reader.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Universal Document Reader",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side Document Reader and in-browser viewer for PDF, Word (.docx), and Excel (.xlsx) files."
+  }
+  </script>
+
+  <style>
+    .reader-page-layout {
+      min-height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-body);
+    }
+    .reader-toolbar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 60px;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .reader-toolbar-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .reader-tool-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      color: var(--text-primary);
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .reader-tool-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .reader-workspace-area {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+    }
+    .reader-scroll-canvas {
+      flex: 1;
+      overflow: auto;
+      padding: 30px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #525659;
+      position: relative;
+    }
+    .reader-canvas-shadow {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      background: #FFFFFF;
+      max-width: 100%;
+      height: auto;
+    }
+    .word-doc-page {
+      background: #FFFFFF;
+      max-width: 820px;
+      width: 100%;
+      min-height: 1050px;
+      padding: 50px 60px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      color: #1A202C;
+      font-family: 'Calibri', 'Times New Roman', serif;
+      line-height: 1.6;
+      border-radius: 2px;
+    }
+    .word-doc-page h1, .word-doc-page h2, .word-doc-page h3 {
+      color: #1E3A8A;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+    .word-doc-page table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .word-doc-page td, .word-doc-page th {
+      border: 1px solid #CBD5E1;
+      padding: 8px 12px;
+    }
+    .excel-table-scroll-container {
+      background: #FFFFFF;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      overflow: auto;
+      max-width: 100%;
+      max-height: 80vh;
+      border: 1px solid #CBD5E1;
+    }
+    .excel-table-scroll-container table {
+      border-collapse: collapse;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 0.86rem;
+      width: 100%;
+    }
+    .excel-table-scroll-container td, .excel-table-scroll-container th {
+      border: 1px solid #E2E8F0;
+      padding: 8px 14px;
+      white-space: nowrap;
+    }
+    .excel-table-scroll-container tr:first-child {
+      background: #F1F5F9;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .sheet-tabs-container {
+      background: #F8FAFC;
+      border-top: 1px solid var(--line);
+      padding: 6px 16px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+    .sheet-tab-btn {
+      padding: 6px 16px;
+      background: #E2E8F0;
+      border: 1px solid #CBD5E1;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #475569;
+    }
+    .sheet-tab-btn.active {
+      background: #FFFFFF;
+      color: #2563EB;
+      border-color: #2563EB;
+      box-shadow: 0 -2px 6px rgba(37, 99, 235, 0.1);
+    }
+    .reader-empty-hero {
+      padding: 80px 20px;
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .reader-loading-spinner {
+      padding: 60px;
+      text-align: center;
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="scan.html" class="nav-link">CamScanner</a></li>
+        <li><a href="document-reader.html" class="nav-link active">Document Reader</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span class="radar-dot"></span>
+          <span>100% In-Browser</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="reader-page-layout">
+    <!-- Initial Empty Upload State -->
+    <div id="reader-empty-state" class="reader-empty-hero">
+      <div style="width:68px; height:68px; border-radius:16px; background:#EFF6FF; color:#2563EB; display:inline-flex; align-items:center; justify-content:center; margin-bottom:18px;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="12" cy="14" r="3"></circle><path d="M7 14c1.5-2.5 3.5-3.5 5-3.5s3.5 1 5 3.5"></path></svg>
+      </div>
+      <h1 style="font-size:2.4rem; font-weight:800; color:var(--text-primary); margin-bottom:12px; letter-spacing:-0.02em;">Universal Document Reader & Viewer</h1>
+      <p style="font-size:1.1rem; color:var(--text-secondary); margin-bottom:30px; line-height:1.6;">Open and read <strong>PDF, Word (.docx), and Excel (.xlsx, .csv)</strong> documents instantly in your browser. Completely private, offline-capable, with zero cloud uploads or third-party apps.</p>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="reader-drop-zone" style="max-width:680px; margin:0 auto 24px; cursor:pointer;">
+        <div class="drop-zone-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        </div>
+        <div class="drop-zone-text">
+          <h3>Drop ANY Document Here to Read</h3>
+          <p>Supports <strong>PDF, Word (.docx), Excel (.xlsx, .csv), TXT, and Images</strong></p>
+        </div>
+        <button class="btn btn-primary btn-lg" type="button">Select Document from Device</button>
+        <input type="file" id="reader-file-input" style="display:none;" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.json,.md,image/*">
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:20px; color:var(--text-muted); font-size:0.86rem; flex-wrap:wrap;">
+        <span>🔒 Zero Server Uploads</span>
+        <span>⚡ Instant In-Browser Rendering</span>
+        <span>📑 Full Word & Excel Spreadsheet Support</span>
+      </div>
+    </div>
+
+    <!-- Active Viewer Workspace -->
+    <div id="reader-workspace" class="reader-workspace-area">
+      <!-- Top Action Toolbar -->
+      <div class="reader-toolbar">
+        <div class="reader-toolbar-group">
+          <button class="reader-tool-btn" id="reader-close-btn" title="Open Another File">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>Open File</span>
+          </button>
+          <div style="margin-left:8px;">
+            <div id="reader-doc-title" style="font-weight:700; color:var(--text-primary); font-size:0.95rem; max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Document</div>
+            <div id="reader-doc-meta" style="font-size:0.75rem; color:var(--text-muted);">PDF Document</div>
+          </div>
+        </div>
+
+        <!-- Page Navigator (PDF) -->
+        <div class="reader-toolbar-group" id="reader-page-nav-group">
+          <button class="reader-tool-btn" id="reader-prev-page" title="Previous Page">◀</button>
+          <input type="number" id="reader-page-input" value="1" min="1" style="width:48px; text-align:center; padding:4px; border:1px solid var(--line); border-radius:var(--radius-xs); font-weight:700;">
+          <span id="reader-page-total" style="font-size:0.85rem; color:var(--text-muted);">/ 1</span>
+          <button class="reader-tool-btn" id="reader-next-page" title="Next Page">▶</button>
+        </div>
+
+        <!-- Zoom & View Group -->
+        <div class="reader-toolbar-group">
+          <button class="reader-tool-btn" id="reader-zoom-out" title="Zoom Out">-</button>
+          <span id="reader-zoom-level" style="font-size:0.84rem; font-weight:700; min-width:44px; text-align:center;">125%</span>
+          <button class="reader-tool-btn" id="reader-zoom-in" title="Zoom In">+</button>
+          <button class="reader-tool-btn" id="reader-zoom-fit" title="Fit to Width">Fit</button>
+          <button class="reader-tool-btn" id="reader-rotate-btn" title="Rotate 90°">🔄</button>
+        </div>
+
+        <!-- Actions Group -->
+        <div class="reader-toolbar-group">
+          <button class="reader-tool-btn" id="reader-fullscreen-btn" title="Toggle Fullscreen">⛶</button>
+          <button class="reader-tool-btn" id="reader-print-btn" title="Print Document">🖨️ Print</button>
+          <button class="reader-tool-btn" id="reader-download-btn" title="Download Document" style="background:#2563EB; color:#FFF; border-color:#2563EB;">⬇ Download</button>
+        </div>
+      </div>
+
+      <!-- Main Canvas / Content Stage -->
+      <div class="reader-scroll-canvas" id="reader-content-canvas"></div>
+
+      <!-- Excel Sheet Tabs (Shown only for spreadsheets) -->
+      <div class="sheet-tabs-container" id="reader-sheet-tabs" style="display:none;"></div>
+    </div>
+  </main>
+
+  <!-- Required In-Browser Document Parsing Engines -->
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/mammoth.browser.min.js"></script>
+  <script src="../js/lib/sheetjs.min.js"></script>
+  <script src="../js/tools/reader.js"></script>
+</body>
+</html>

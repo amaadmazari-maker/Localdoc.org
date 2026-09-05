@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v5-2026-fresh';
+const CACHE_NAME = 'localdoc-v6-2026-pro';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -27,7 +27,24 @@ const ASSETS_TO_CACHE = [
   '/js/tools/organize.js',
   '/js/tools/edit.js',
   '/js/tools/id-photo.js',
-  '/js/tools/scan.js'
+  '/js/tools/scan.js',
+  '/js/tools/reader.js',
+  '/js/tools/photo-resizer.js',
+  '/js/tools/pdf-to-pptx.js',
+  '/js/tools/organize-pdf.js',
+  '/js/tools/calculator.js',
+  '/pages/scan.html',
+  '/pages/document-reader.html',
+  '/pages/photo-resizer.html',
+  '/pages/pdf-to-powerpoint.html',
+  '/pages/organize-pdf.html',
+  '/pages/scientific-calculator.html',
+  '/pages/id-photo.html',
+  '/assets/icons/document-reader.svg',
+  '/assets/icons/calculator.svg',
+  '/assets/icons/photo-resizer.svg',
+  '/assets/icons/pdf-to-powerpoint.svg',
+  '/assets/icons/organize-pdf.svg'
 ];
 
 self.addEventListener('install', (event) => {

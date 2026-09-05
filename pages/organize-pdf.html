@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organize PDF Online Free — Sort, Rotate, Delete & Add Pages | LocalDoc</title>
+  <meta name="description" content="Visually reorder, rotate, delete, and combine pages in PDF documents online for free. 100% private in-browser execution with zero uploads. Drag-and-drop page sorting.">
+  <link rel="canonical" href="https://localdoc.org/pages/organize-pdf.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Organize PDF Pages Online — 100% Client-Side | LocalDoc">
+  <meta property="og:description" content="Rearrange, rotate, delete, and add PDF pages visually in your browser RAM with complete data privacy.">
+  <meta property="og:url" content="https://localdoc.org/pages/organize-pdf.html">
+  <meta property="og:image" content="../assets/icons/organize-pdf.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Organize PDF Tool",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF organizer for visual page reordering, rotating, deletion, and combining."
+  }
+  </script>
+
+  <style>
+    .org-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    .org-empty-box {
+      border: 2px dashed var(--line);
+      border-radius: var(--radius-lg);
+      padding: 50px 24px;
+      text-align: center;
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 24px 0;
+    }
+    .org-empty-box:hover, .org-empty-box.drag-active {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .org-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .org-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .org-pages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .org-page-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      cursor: grab;
+      position: relative;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+    }
+    .org-page-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .org-page-card.dragging {
+      opacity: 0.4;
+      cursor: grabbing;
+    }
+    .org-page-card.drag-over {
+      border: 2px dashed var(--primary);
+      background: var(--primary-subtle);
+    }
+    .org-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .org-page-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .org-card-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .org-btn-mini {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+    .org-btn-mini:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .org-btn-delete:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #FEE2E2;
+    }
+    .org-thumb-wrap {
+      width: 100%;
+      height: 180px;
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .org-thumb-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.2s ease;
+    }
+    .org-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+    .org-shift-btn {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .org-shift-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-area">
+        <a href="../index.html" class="brand-logo" aria-label="LocalDoc Home">
+          <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
+          <span class="brand-name">LocalDoc</span>
+        </a>
+        <span class="header-tag">100% In-Browser</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">All Tools</a>
+        <a href="scan.html" class="nav-link">CamScanner</a>
+        <a href="document-reader.html" class="nav-link">Document Reader</a>
+        <a href="organize-pdf.html" class="nav-link active">Organize PDF</a>
+        <a href="../blog/index.html" class="nav-link">Guides</a>
+        <a href="../about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="org-container">
+    
+    <!-- Hero Title -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary-subtle); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">
+        <img src="../assets/icons/organize-pdf.svg" alt="Organize PDF" width="18" height="18">
+        Visual Page Organizer
+      </div>
+      <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
+        Organize, Rotate & Delete PDF Pages
+      </h1>
+      <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6;">
+        Drag and drop pages to reorder, rotate inverted scans, remove unwanted pages, and append new files — processed 100% inside your browser RAM.
+      </p>
+    </div>
+
+    <!-- Empty Upload State -->
+    <div id="org-empty-state">
+      <div class="org-empty-box" id="org-drop-zone">
+        <input type="file" id="org-file-input" accept="application/pdf,.pdf" multiple style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">📑</div>
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          Choose PDF file(s) or drag & drop here
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
+          Select one or multiple PDF documents. Zero server uploads.
+        </p>
+        <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
+          Select PDF Files
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Workspace -->
+    <div id="org-workspace" style="display: none;">
+      
+      <!-- Sticky/Top Toolbar -->
+      <div class="org-toolbar">
+        <div class="org-toolbar-group">
+          <span style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary);">Document Pages</span>
+          <span id="org-total-pages" style="background: var(--primary-subtle); color: var(--primary); font-size: 0.85rem; font-weight: 700; padding: 3px 10px; border-radius: 12px;">0 Pages</span>
+        </div>
+
+        <div class="org-toolbar-group">
+          <input type="file" id="org-add-more-input" accept="application/pdf,.pdf" multiple style="display: none;">
+          <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 7px 14px;" onclick="document.getElementById('org-add-more-input').click()">
+            ➕ Add More Pages
+          </button>
+          <button type="button" class="btn btn-outline" id="org-rotate-all-btn" style="font-size: 0.85rem; padding: 7px 14px;">
+            ↻ Rotate All (90°)
+          </button>
+          <button type="button" class="btn btn-outline" id="org-reset-btn" style="font-size: 0.85rem; padding: 7px 14px; color: var(--danger); border-color: var(--danger);">
+            Clear All
+          </button>
+          <button type="button" class="btn btn-primary" id="org-save-btn" style="font-size: 0.95rem; font-weight: 700; padding: 8px 20px;">
+            💾 Save & Download PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Pages Grid -->
+      <div class="org-pages-grid" id="org-pages-grid"></div>
+
+    </div>
+
+    <!-- SEO & FAQ Guide -->
+    <section style="margin-top: 60px; border-top: 1px solid var(--line); padding-top: 40px;">
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px;">
+        Effortless Visual PDF Page Management
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            🔄 Drag & Drop Reordering
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Grab any page thumbnail and drag it into its correct chronological position. On mobile screens, use the responsive left and right arrows for single-tap movement.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            🧭 Fix Upside-Down & Sideways Scans
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Rotate individual pages 90°, 180°, or 270° clockwise or counter-clockwise, or rotate the entire document in one click before saving.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            🗑️ Delete Unwanted Blank Pages
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Remove accidental blank scanner pages or duplicate terms-and-conditions sheets with a single click. Combine multiple PDFs seamlessly.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="28" height="28">
+            <span>LocalDoc</span>
+          </div>
+          <p class="footer-tagline">100% Private, Zero-Upload Document & Image Suite. Your files never touch a server.</p>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Tools</h4>
+          <ul class="footer-links">
+            <li><a href="scan.html">CamScanner Mobile</a></li>
+            <li><a href="document-reader.html">Document Reader</a></li>
+            <li><a href="organize-pdf.html">Organize PDF</a></li>
+            <li><a href="photo-resizer.html">Photo Resizer</a></li>
+            <li><a href="scientific-calculator.html">Scientific Calculator</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="../blog/index.html">Guides & Tutorials</a></li>
+            <li><a href="../about.html">About & Privacy</a></li>
+            <li><a href="../sitemap.xml">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LocalDoc.org. All rights reserved. 100% In-Browser Client-Side Processing.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/tools/organize-pdf.js"></script>
+</body>
+</html>

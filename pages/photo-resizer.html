@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Resizer & KB Reducer (Exact Dimensions & File Size) — LocalDoc</title>
+  <meta name="description" content="Resize photos by mm, cm, inches, or pixels and compress to exact target KB (20KB, 50KB, 100KB) for passport, visa, job portals, and exams. 100% private in-browser execution with zero uploads.">
+  <link rel="canonical" href="https://localdoc.org/pages/photo-resizer.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Photo Resizer & Exact KB Reducer — 100% Client-Side | LocalDoc">
+  <meta property="og:description" content="Resize photos to official 35x45mm, 2x2 inch, or custom pixels, and compress directly to exact file sizes like 20KB, 50KB, 100KB with zero server uploads.">
+  <meta property="og:url" content="https://localdoc.org/pages/photo-resizer.html">
+  <meta property="og:image" content="../assets/icons/photo-resizer.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc Photo Resizer & KB Reducer",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side photo resizer by millimeter, centimeter, inches, and pixels with exact target KB size compression."
+  }
+  </script>
+
+  <style>
+    .resizer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    @media (max-width: 860px) {
+      .resizer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .preview-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .preview-img-wrap {
+      width: 100%;
+      min-height: 260px;
+      max-height: 380px;
+      background: var(--bg-body);
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .preview-img-wrap img {
+      max-width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .control-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .control-group {
+      margin-bottom: 20px;
+    }
+    .control-group-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-btn {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .pill-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .input-addon {
+      position: relative;
+      flex: 1;
+    }
+    .input-addon input {
+      width: 100%;
+      padding: 10px 42px 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      background: var(--bg-body);
+      color: var(--text-primary);
+    }
+    .input-addon input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-subtle);
+    }
+    .input-addon span {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+    .slider-range {
+      width: 100%;
+      margin-top: 10px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .kb-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .resizer-empty-box {
+      border: 2px dashed var(--line);
+      border-radius: var(--radius-lg);
+      padding: 50px 24px;
+      text-align: center;
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 20px 0;
+    }
+    .resizer-empty-box:hover, .resizer-empty-box.drag-active {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-area">
+        <a href="../index.html" class="brand-logo" aria-label="LocalDoc Home">
+          <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
+          <span class="brand-name">LocalDoc</span>
+        </a>
+        <span class="header-tag">100% In-Browser</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">All Tools</a>
+        <a href="scan.html" class="nav-link">CamScanner</a>
+        <a href="document-reader.html" class="nav-link">Document Reader</a>
+        <a href="photo-resizer.html" class="nav-link active">Photo Resizer</a>
+        <a href="../blog/index.html" class="nav-link">Guides</a>
+        <a href="../about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container" style="max-width: 1100px; margin: 0 auto; padding: 30px 20px;">
+    
+    <!-- Hero Title -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary-subtle); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">
+        <img src="../assets/icons/photo-resizer.svg" alt="Photo Resizer" width="18" height="18">
+        Official Dimensions & File Size Optimizer
+      </div>
+      <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
+        Photo Resizer & KB Reducer
+      </h1>
+      <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.6;">
+        Resize passport, visa, exam, and government job photos to precise <strong>mm, cm, inches, or pixels</strong> and compress directly under strict file limits (<strong>20 KB, 50 KB, 100 KB</strong>) — completely offline in your browser.
+      </p>
+    </div>
+
+    <!-- Empty Upload State -->
+    <div id="resizer-empty-state">
+      <div class="resizer-empty-box" id="resizer-drop-zone">
+        <input type="file" id="resizer-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🖼️</div>
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          Choose a photo or drag & drop here
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
+          Supports JPG, PNG, and WebP photos. Instant local processing with zero server uploads.
+        </p>
+        <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
+          Select Photo from Device
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Workspace (Hidden until photo loaded) -->
+    <div id="resizer-workspace" style="display: none;">
+      <div class="resizer-grid">
+        
+        <!-- Left: Previews -->
+        <div>
+          <!-- Output Final Result Card -->
+          <div class="preview-card" style="border-color: var(--primary); margin-bottom: 16px;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-size: 1rem; font-weight: 700; color: var(--primary);">✓ Resized Result</h3>
+              <span class="kb-badge">Optimized</span>
+            </div>
+            <div class="preview-img-wrap">
+              <img id="resizer-output-preview" src="" alt="Resized output">
+            </div>
+            <div id="resizer-output-info" style="font-size: 0.88rem; text-align: center; color: var(--text-secondary); line-height: 1.5;">
+              Ready for download
+            </div>
+            <button id="resizer-download-btn" class="btn btn-primary" style="width: 100%; margin-top: 14px; padding: 12px; font-weight: 700; font-size: 1rem;">
+              ⬇ Download Resized Photo
+            </button>
+          </div>
+
+          <!-- Original Source Info -->
+          <div class="preview-card" style="padding: 14px;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary);">Original Source</span>
+              <button onclick="document.getElementById('resizer-file-input').click()" style="background:none; border:none; color:var(--primary); font-size:0.82rem; font-weight:600; cursor:pointer;">Change Photo</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+              <img id="resizer-orig-preview" src="" alt="Original preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line);">
+              <div id="resizer-orig-info" style="font-size: 0.82rem; color: var(--text-secondary);">
+                Original metadata
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Resize & Size Optimization Controls -->
+        <div class="control-panel">
+          
+          <!-- 1. Dimension Presets -->
+          <div class="control-group">
+            <label class="control-group-title">
+              <span>Standard Presets</span>
+            </label>
+            <div class="pill-group">
+              <button type="button" class="pill-btn active" data-preset-dim="35x45mm">35 × 45 mm (Passport)</button>
+              <button type="button" class="pill-btn" data-preset-dim="2x2in">2 × 2 in (US Visa)</button>
+              <button type="button" class="pill-btn" data-preset-dim="50x50mm">50 × 50 mm (Schengen)</button>
+              <button type="button" class="pill-btn" data-preset-dim="100x100mm">100 × 100 mm</button>
+              <button type="button" class="pill-btn" data-preset-dim="600x600px">600 × 600 px</button>
+            </div>
+          </div>
+
+          <!-- 2. Custom Dimensions & Units -->
+          <div class="control-group">
+            <div class="control-group-title">
+              <span>Custom Dimensions</span>
+              <div class="pill-group" style="gap: 4px;">
+                <button type="button" class="pill-btn active" data-unit="mm" style="padding: 2px 8px; font-size: 0.78rem;">mm</button>
+                <button type="button" class="pill-btn" data-unit="cm" style="padding: 2px 8px; font-size: 0.78rem;">cm</button>
+                <button type="button" class="pill-btn" data-unit="inch" style="padding: 2px 8px; font-size: 0.78rem;">inch</button>
+                <button type="button" class="pill-btn" data-unit="px" style="padding: 2px 8px; font-size: 0.78rem;">px</button>
+              </div>
+            </div>
+            
+            <div class="input-row">
+              <div class="input-addon">
+                <input type="number" id="resizer-input-width" value="35" min="1" step="any" aria-label="Width">
+                <span id="resizer-unit-w">mm</span>
+              </div>
+              <span style="color: var(--text-tertiary); font-weight: 700;">×</span>
+              <div class="input-addon">
+                <input type="number" id="resizer-input-height" value="45" min="1" step="any" aria-label="Height">
+                <span id="resizer-unit-h">mm</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer;">
+                <input type="checkbox" id="resizer-lock-aspect" checked>
+                Lock Aspect Ratio (Auto crop center)
+              </label>
+              
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="resizer-dpi-select" style="font-size: 0.82rem; color: var(--text-secondary);">DPI:</label>
+                <select id="resizer-dpi-select" style="background: var(--bg-body); border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; font-size: 0.82rem; color: var(--text-primary);">
+                  <option value="300" selected>300 DPI (Official Print)</option>
+                  <option value="200">200 DPI</option>
+                  <option value="150">150 DPI</option>
+                  <option value="72">72 DPI (Web)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--line); margin: 18px 0;">
+
+          <!-- 3. Target File Size (KB Reducer) -->
+          <div class="control-group">
+            <div class="control-group-title">
+              <span>Target File Size Limit</span>
+              <span style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">Binary Search Precision</span>
+            </div>
+            
+            <div class="pill-group" style="margin-bottom: 12px;">
+              <button type="button" class="pill-btn" data-preset-kb="20">≤ 20 KB (Govt Forms)</button>
+              <button type="button" class="pill-btn active" data-preset-kb="50">≤ 50 KB (Passports)</button>
+              <button type="button" class="pill-btn" data-preset-kb="100">≤ 100 KB (Visa)</button>
+              <button type="button" class="pill-btn" data-preset-kb="200">≤ 200 KB</button>
+              <button type="button" class="pill-btn" data-preset-kb="500">≤ 500 KB</button>
+            </div>
+
+            <div class="input-row">
+              <div class="input-addon" style="max-width: 140px;">
+                <input type="number" id="resizer-target-kb" value="50" min="5" max="5000" aria-label="Max Target KB">
+                <span>KB</span>
+              </div>
+              <input type="range" id="resizer-slider-kb" min="10" max="500" value="50" step="5" class="slider-range">
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-tertiary); margin-top: 6px;">
+              The engine automatically calculates the maximum JPEG quality factor that fits under your limit.
+            </p>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--line); margin: 18px 0;">
+
+          <!-- 4. Background & Format -->
+          <div class="control-group" style="margin-bottom: 0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <label class="control-group-title" style="font-size: 0.85rem;">Background</label>
+                <div class="pill-group">
+                  <button type="button" class="pill-btn active" data-bg-color="original">Original</button>
+                  <button type="button" class="pill-btn" data-bg-color="white">White</button>
+                  <button type="button" class="pill-btn" data-bg-color="light-blue">Light Blue</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="control-group-title" style="font-size: 0.85rem;">Format</label>
+                <div class="pill-group">
+                  <button type="button" class="pill-btn active" data-format="jpg">JPG / JPEG</button>
+                  <button type="button" class="pill-btn" data-format="png">PNG</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational & SEO Guide Section -->
+    <section style="margin-top: 60px; border-top: 1px solid var(--line); padding-top: 40px;">
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px;">
+        Standard Official Photo Dimensions & Target File Sizes
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            International Passport (35 × 45 mm)
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Standard standard for UK, EU Schengen, Canada, Australia, and Asian passports. Corresponds to 413 × 531 pixels at 300 DPI, typically under 50KB or 100KB for online visa portals.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            US Visa & Green Card (2 × 2 inches / 51 × 51 mm)
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Required by the US Department of State (DS-160 / Diversity Visa Lottery). Exact 600 × 600 pixels to 1200 × 1200 pixels at 300 DPI, strictly under 240KB.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            Government & Exam Portals (Under 20KB or 50KB)
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Civil service examinations, university admission portals, and national ID cards frequently require uploads strictly between 10KB and 50KB. Our binary search compression hits your exact target limit every time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="28" height="28">
+            <span>LocalDoc</span>
+          </div>
+          <p class="footer-tagline">100% Private, Zero-Upload Document & Image Suite. Your files never touch a server.</p>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Tools</h4>
+          <ul class="footer-links">
+            <li><a href="scan.html">CamScanner Mobile</a></li>
+            <li><a href="document-reader.html">Document Reader</a></li>
+            <li><a href="photo-resizer.html">Photo Resizer & KB Reducer</a></li>
+            <li><a href="scientific-calculator.html">Scientific Calculator</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="../blog/index.html">Guides & Tutorials</a></li>
+            <li><a href="../about.html">About & Privacy</a></li>
+            <li><a href="../sitemap.xml">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LocalDoc.org. All rights reserved. 100% In-Browser Client-Side Processing.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/tools/photo-resizer.js"></script>
+</body>
+</html>

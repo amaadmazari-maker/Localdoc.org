@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert PDF to PowerPoint (PPTX) Online Free — 100% In-Browser | LocalDoc</title>
+  <meta name="description" content="Convert PDF documents into editable Microsoft PowerPoint presentations (.pptx) online for free. 100% client-side in-memory conversion with zero uploads and complete data privacy.">
+  <link rel="canonical" href="https://localdoc.org/pages/pdf-to-powerpoint.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Convert PDF to PowerPoint (PPTX) — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Turn PDF pages into genuine Microsoft PowerPoint (.pptx) slide decks instantly in your browser RAM without uploading files to any server.">
+  <meta property="og:url" content="https://localdoc.org/pages/pdf-to-powerpoint.html">
+  <meta property="og:image" content="../assets/icons/pdf-to-powerpoint.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LocalDoc PDF to PowerPoint Converter",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Zero-upload client-side PDF to Microsoft PowerPoint (.pptx) presentation converter."
+  }
+  </script>
+
+  <style>
+    .pptx-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    .pptx-box {
+      border: 2px dashed var(--line);
+      border-radius: var(--radius-lg);
+      padding: 50px 24px;
+      text-align: center;
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 24px 0;
+    }
+    .pptx-box:hover, .pptx-box.drag-active {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .slides-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .pill-btn {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .pill-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #0284C7, #38BDF8);
+      transition: width 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-area">
+        <a href="../index.html" class="brand-logo" aria-label="LocalDoc Home">
+          <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
+          <span class="brand-name">LocalDoc</span>
+        </a>
+        <span class="header-tag">100% In-Browser</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">All Tools</a>
+        <a href="scan.html" class="nav-link">CamScanner</a>
+        <a href="document-reader.html" class="nav-link">Document Reader</a>
+        <a href="pdf-to-powerpoint.html" class="nav-link active">PDF to PPTX</a>
+        <a href="../blog/index.html" class="nav-link">Guides</a>
+        <a href="../about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pptx-container">
+    
+    <!-- Hero Title -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: #FEF3C7; color: #D97706; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">
+        <img src="../assets/icons/pdf-to-powerpoint.svg" alt="PDF to PPTX" width="18" height="18">
+        Native OpenXML Slide Generator
+      </div>
+      <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
+        Convert PDF to PowerPoint (.pptx)
+      </h1>
+      <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto; line-height: 1.6;">
+        Convert PDF pages into high-definition slides compatible with Microsoft PowerPoint, Google Slides, Keynote, and LibreOffice — generated 100% inside your browser RAM.
+      </p>
+    </div>
+
+    <!-- Empty Upload State -->
+    <div id="pptx-empty-state">
+      <div class="pptx-box" id="pptx-drop-zone">
+        <input type="file" id="pptx-file-input" accept="application/pdf,.pdf" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">📊</div>
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          Choose a PDF file or drag & drop here
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
+          Fast client-side conversion. Files are never uploaded to any cloud server.
+        </p>
+        <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
+          Select PDF from Device
+        </button>
+      </div>
+    </div>
+
+    <!-- Active PDF State -->
+    <div id="pptx-active-state" style="display: none; background: var(--bg-surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+        <div>
+          <h2 id="pptx-file-title" style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px;">document.pdf</h2>
+          <p id="pptx-file-meta" style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Analyzing slides...</p>
+        </div>
+        <button onclick="document.getElementById('pptx-file-input').click()" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 14px;">
+          Change PDF
+        </button>
+      </div>
+
+      <!-- Slide Aspect Ratio Options -->
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+        <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">Slide Aspect Ratio:</span>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="pill-btn active" data-slide-aspect="16:9">16:9 Widescreen (Modern Displays)</button>
+          <button type="button" class="pill-btn" data-slide-aspect="4:3">4:3 Standard (Classic Projectors)</button>
+        </div>
+      </div>
+
+      <!-- Slides Preview Grid -->
+      <div class="slides-preview-grid" id="pptx-slides-grid"></div>
+
+      <!-- Action Button -->
+      <div style="margin-top: 24px; text-align: center;">
+        <button id="pptx-convert-btn" class="btn btn-primary" style="padding: 12px 36px; font-size: 1.05rem; font-weight: 700;">
+          🚀 Convert to PowerPoint Presentation (.pptx)
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress State -->
+    <div id="pptx-progress-state" style="display: none; background: var(--bg-surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 40px 24px; text-align: center; box-shadow: var(--shadow-sm);">
+      <div style="font-size: 2.5rem; margin-bottom: 12px; animation: pulse 1.5s infinite;">⚙️</div>
+      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">
+        Creating PowerPoint Presentation
+      </h3>
+      <p id="pptx-progress-text" style="color: var(--text-secondary); font-size: 0.9rem;">
+        Rendering slide pages...
+      </p>
+      <div class="progress-track" style="max-width: 400px; margin: 16px auto;">
+        <div class="progress-fill" id="pptx-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- Result State -->
+    <div id="pptx-result-state" style="display: none; background: var(--bg-surface); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 40px 24px; text-align: center; box-shadow: var(--shadow-md);">
+      <div style="font-size: 3rem; margin-bottom: 12px;">🎉</div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">
+        PowerPoint Presentation Ready!
+      </h2>
+      <p id="pptx-result-meta" style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 24px;">
+        Full OpenXML presentation file generated.
+      </p>
+      
+      <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+        <button id="pptx-download-btn" class="btn btn-primary" style="padding: 12px 32px; font-weight: 700; font-size: 1rem;">
+          ⬇ Download .PPTX Presentation
+        </button>
+        <button onclick="location.reload()" class="btn btn-outline" style="padding: 12px 24px; font-weight: 600;">
+          Convert Another PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- SEO & Informational Section -->
+    <section style="margin-top: 60px; border-top: 1px solid var(--line); padding-top: 40px;">
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px;">
+        Why Convert PDF to PowerPoint on LocalDoc?
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            🔒 100% In-Browser Privacy
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Confidential corporate decks, school notes, and legal briefs are converted strictly in your device's memory. No data is ever transmitted to external servers.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            🖼️ High-DPI Slide Crispness
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Every slide is rendered at double presentation density (up to 200 DPI) to ensure charts, graphs, tables, and typography look razor-sharp on 4K meeting room screens.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-surface); padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--line);">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+            💻 Universal Software Support
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            Our generator outputs genuine OpenXML standard (.pptx) packages that open seamlessly in Microsoft PowerPoint, Google Slides, Apple Keynote, and LibreOffice Impress.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="28" height="28">
+            <span>LocalDoc</span>
+          </div>
+          <p class="footer-tagline">100% Private, Zero-Upload Document & Image Suite. Your files never touch a server.</p>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Tools</h4>
+          <ul class="footer-links">
+            <li><a href="scan.html">CamScanner Mobile</a></li>
+            <li><a href="document-reader.html">Document Reader</a></li>
+            <li><a href="pdf-to-powerpoint.html">PDF to PowerPoint</a></li>
+            <li><a href="photo-resizer.html">Photo Resizer</a></li>
+            <li><a href="scientific-calculator.html">Scientific Calculator</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="../blog/index.html">Guides & Tutorials</a></li>
+            <li><a href="../about.html">About & Privacy</a></li>
+            <li><a href="../sitemap.xml">Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LocalDoc.org. All rights reserved. 100% In-Browser Client-Side Processing.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/tools/pdf-to-pptx.js"></script>
+</body>
+</html>
