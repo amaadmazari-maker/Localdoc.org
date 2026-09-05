@@ -57,8 +57,13 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="index.html" class="nav-link active" data-i18n="nav_all_tools">All Tools</a></li>
-        <li><a href="pages/scan.html" class="nav-link" style="color:var(--accent-emerald); font-weight:700;">CamScanner</a></li>
+        <li>
+          <a href="index.html" class="nav-link active" data-i18n="nav_all_tools">
+            <span class="nav-link-dot-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+            <span>All Tools</span>
+          </a>
+        </li>
+        <li><a href="pages/scan.html" class="nav-link" style="color:var(--accent-emerald); font-weight:700;">📸 CamScanner</a></li>
         <li><a href="pages/document-reader.html" class="nav-link">Document Reader</a></li>
         <li><a href="pages/photo-resizer.html" class="nav-link">Photo Resizer</a></li>
         <li><a href="pages/scientific-calculator.html" class="nav-link">Calculator</a></li>
@@ -98,40 +103,37 @@
   </header>
 
   <main>
-    <!-- Streamlined, High-Impact Hero (Tools-First Layout) -->
-    <section class="hero-aurora-wrap" style="padding: 30px 20px 20px;">
+    <!-- Elegant, High-Impact Hero (Inspired by iLovePDF & PDF24) -->
+    <section class="hero-aurora-wrap">
       <div class="hero-aurora-bg"></div>
-      <div class="container hero-content" style="max-width: 980px;">
-        <div style="display:inline-flex; align-items:center; gap:8px; background:var(--primary-subtle); color:var(--primary); padding:5px 16px; border-radius:var(--radius-full); font-size:0.82rem; font-weight:700; margin-bottom:12px; border:1px solid rgba(2,132,199,0.3);">
+      <div class="container hero-content">
+        <div class="hero-badge-pill">
           <span class="radar-dot"></span>
           <span data-i18n="hero_badge">100% Client-Side In-Memory Architecture • Zero Server Uploads</span>
         </div>
         
-        <h1 style="font-size:2.5rem; line-height:1.2; margin-bottom:12px; font-weight:800; letter-spacing:-0.03em;" class="hero-title-gradient" data-i18n="hero_title">
-          Private Document & Math Productivity Suite
+        <h1 class="hero-headline" data-i18n="hero_title">
+          Every tool you need for Documents & Math in one place
         </h1>
         
-        <p style="font-size:1.05rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.5; max-width:760px; margin-left:auto; margin-right:auto;" data-i18n="hero_subtitle">
-          Read, convert, organize, compress, scan, resize photos, and calculate complex equations completely in your local device RAM. No server uploads. No subscriptions. Completely free forever.
+        <p class="hero-description" data-i18n="hero_subtitle">
+          Free, private, zero-upload productivity suite running directly in your browser RAM. Convert, edit, organize, scan documents, resize photos, and calculate complex equations with complete privacy.
         </p>
 
-        <!-- Compact Smart Quick-Action Bar & Drag Box -->
-        <div style="display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
-          <div class="drop-zone" id="home-drop-zone" style="max-width: 480px; width: 100%; margin: 0; padding: 16px 20px; box-shadow: var(--shadow-sm); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 14px;">
-            <div style="display: flex; align-items: center; gap: 12px; text-align: left;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary); flex-shrink: 0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              <div>
-                <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Drop any file here to auto-inspect</div>
-                <div style="font-size: 0.78rem; color: var(--text-secondary);">PDF, Word, Excel, or Photo</div>
-              </div>
+        <!-- Floating Dual Quick Action Widget (Drop Zone + CamScanner Quick Launch) -->
+        <div class="hero-quick-widget" id="home-drop-zone">
+          <div class="hero-drop-inline" onclick="document.getElementById('home-file-input')?.click()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div>
+              <div class="drop-text-primary">Drop any file to auto-detect tool</div>
+              <div class="drop-text-secondary">PDF, Word, Excel, or Photo</div>
             </div>
-            <button class="btn btn-primary" id="home-browse-btn" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 700; white-space: nowrap;">Browse</button>
-            <input type="file" id="home-file-input" style="display:none;">
           </div>
-
-          <a href="pages/scan.html" class="btn" style="background:#059669; color:#FFFFFF; padding:14px 20px; font-weight:700; font-size:0.95rem; border-radius:var(--radius-md); display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(5,150,105,0.25);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            <span>Launch CamScanner Studio</span>
+          <button class="hero-browse-pill" id="home-browse-btn" type="button">Browse File</button>
+          <input type="file" id="home-file-input" style="display:none;">
+          <a href="pages/scan.html" class="hero-camscanner-btn" title="Open Flagship Mobile Scanner">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span>CamScanner Studio</span>
           </a>
         </div>
 
@@ -150,8 +152,8 @@
     <!-- Elevated Front-and-Center Tools Suite -->
     <section class="container" style="padding: 10px 20px 60px;">
       
-      <!-- Multi-Category Filter Bar -->
-      <div class="filter-tabs-bar" id="category-filter-bar" style="margin-bottom: 24px;">
+      <!-- Multi-Category Filter Bar (iLovePDF Style Rounded Pills) -->
+      <div class="filter-tabs-bar" id="category-filter-bar">
         <button class="filter-tab-btn active" data-filter="all">
           <span>All 25 Tools</span>
         </button>
@@ -611,6 +613,10 @@
     const homeDrop = document.getElementById('home-drop-zone');
     const homeInput = document.getElementById('home-file-input');
     const homeBrowse = document.getElementById('home-browse-btn');
+    homeBrowse?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      homeInput?.click();
+    });
     const routerBox = document.getElementById('smart-router-box');
     const routerName = document.getElementById('router-file-name');
     const routerSize = document.getElementById('router-file-size');
