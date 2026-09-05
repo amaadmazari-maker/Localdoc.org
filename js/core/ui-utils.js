@@ -262,20 +262,54 @@ const UIUtils = {
     });
   },
 
-  // Dark / Light Theme Switcher
+  // Dark / Light Theme & Accent Color Switcher
   initTheme() {
-    const saved = localStorage.getItem('localdoc_theme') || 'dark';
+    const saved = localStorage.getItem('localdoc_theme') || 'light';
     document.documentElement.setAttribute('data-theme', saved);
 
+    const savedAccent = localStorage.getItem('localdoc_accent') || 'blue';
+    document.documentElement.setAttribute('data-accent', savedAccent);
+
+    // Dark/Light toggle buttons
     const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
     toggleBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        const curr = document.documentElement.getAttribute('data-theme') || 'dark';
+        const curr = document.documentElement.getAttribute('data-theme') || 'light';
         const next = curr === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('localdoc_theme', next);
         UIUtils.showToast(`Switched to ${next} mode`, 'info');
       });
+    });
+
+    // Accent Color Palette Selector
+    const paletteBtns = document.querySelectorAll('.color-palette-btn');
+    const paletteDropdowns = document.querySelectorAll('.color-palette-dropdown');
+    
+    paletteBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dropdown = btn.nextElementSibling;
+        if (dropdown) dropdown.classList.toggle('open');
+      });
+    });
+
+    document.querySelectorAll('.color-dot-opt').forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const accent = dot.getAttribute('data-accent');
+        if (accent) {
+          document.documentElement.setAttribute('data-accent', accent);
+          localStorage.setItem('localdoc_accent', accent);
+          paletteDropdowns.forEach(d => d.classList.remove('open'));
+          UIUtils.showToast(`Applied ${accent.charAt(0).toUpperCase() + accent.slice(1)} theme`, 'success');
+        }
+      });
+    });
+
+    // Close palette on outside click
+    document.addEventListener('click', () => {
+      paletteDropdowns.forEach(d => d.classList.remove('open'));
     });
   },
 
