@@ -129,6 +129,8 @@ html {
   font-size: 15px;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -145,6 +147,9 @@ body {
   display: flex;
   flex-direction: column;
   transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
 [data-theme="dark"] body {
@@ -180,6 +185,10 @@ a:hover {
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
   box-shadow: 0 1px 0 rgba(2, 132, 199, 0.06);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
+  box-sizing: border-box;
 }
 
 .header-inner {
@@ -187,6 +196,9 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   height: 66px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .brand {
@@ -432,6 +444,85 @@ a:hover {
 }
 .lang-select-wrap select:hover {
   border-color: var(--primary);
+}
+
+/* Mobile Navigation Hamburger & Drawer */
+.mobile-menu-btn {
+  display: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.mobile-menu-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 66px;
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border-bottom: 2px solid var(--line);
+  padding: 16px 20px 24px;
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - 66px);
+  overflow-y: auto;
+  z-index: 9999;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: drawerSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-nav-drawer.open {
+  display: flex;
+}
+
+@keyframes drawerSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  background: var(--bg-body);
+  border: 1px solid var(--line);
+  transition: all 0.15s ease;
+}
+
+.mobile-nav-link:hover, .mobile-nav-link.active {
+  background: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .pwa-install-btn {
@@ -2302,6 +2393,99 @@ a:hover {
   background: var(--primary-subtle);
   color: var(--primary);
 }
+
+/* Responsive Header & Layout Alignment (Eliminates Layout Shift on Mobile) */
+@media (max-width: 1200px) {
+  .nav-links li:nth-child(n+5) {
+    display: none;
+  }
+  .privacy-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .nav-links {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+  .pwa-install-btn {
+    display: none !important;
+  }
+  .search-trigger-btn span,
+  .search-trigger-btn .kbd-shortcut {
+    display: none !important;
+  }
+  .search-trigger-btn {
+    padding: 8px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    height: 60px;
+  }
+  .header-inner {
+    height: 60px;
+    padding: 0 8px;
+  }
+  .brand-badge {
+    display: none !important;
+  }
+  .brand {
+    font-size: 1.12rem;
+    gap: 7px;
+  }
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .header-actions {
+    gap: 5px;
+  }
+  .lang-select-wrap select {
+    max-width: 78px;
+    padding: 4px 6px;
+    font-size: 0.72rem;
+  }
+  .color-palette-btn {
+    padding: 5px 6px;
+  }
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .mobile-menu-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .mobile-nav-drawer {
+    top: 60px;
+    max-height: calc(100vh - 60px);
+  }
+  .hero-quick-widget {
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .hero-camscanner-btn {
+    justify-content: center;
+    width: 100%;
+  }
+  .hero-drop-inline {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 
 
 

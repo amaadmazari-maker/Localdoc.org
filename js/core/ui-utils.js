@@ -322,6 +322,40 @@ const UIUtils = {
       const progress = (window.scrollY / total) * 100;
       bar.style.width = `${progress}%`;
     });
+  },
+
+  // Mobile Navigation Drawer Toggle
+  initMobileNav() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const drawer = document.getElementById('mobile-nav-drawer');
+    if (!toggleBtn || !drawer) return;
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = drawer.classList.toggle('open');
+      toggleBtn.setAttribute('aria-expanded', isOpen);
+      toggleBtn.innerHTML = isOpen 
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+    });
+
+    // Close drawer on link click
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+      });
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (!drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+        drawer.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+      }
+    });
   }
 };
 
@@ -330,4 +364,5 @@ document.addEventListener('DOMContentLoaded', () => {
   UIUtils.initTheme();
   UIUtils.initQuickSearch();
   UIUtils.initReadingProgress();
+  UIUtils.initMobileNav();
 });
