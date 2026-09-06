@@ -1,1 +1,113 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <!-- Background Glow -->
+    <filter id="ld-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="ld-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0284C7" flood-opacity="0.35" />
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="ld-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="50%" stop-color="#0369A1" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <linearGradient id="ld-sheet-front" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="40%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+
+    <linearGradient id="ld-sheet-back" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <linearGradient id="ld-fold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BAE6FD" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <linearGradient id="ld-spark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <linearGradient id="ld-shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    @keyframes ldPulse {
+      0%, 100% { transform: scale(1) translateY(0px); filter: drop-shadow(0 6px 16px rgba(2,132,199,0.35)); }
+      50% { transform: scale(1.02) translateY(-2px); filter: drop-shadow(0 10px 24px rgba(2,132,199,0.55)); }
+    }
+    @keyframes ldShimmerMove {
+      0% { transform: translateX(-60px) rotate(25deg); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(120px) rotate(25deg); opacity: 0; }
+    }
+    @keyframes ldSparkGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 8px #34D399); }
+    }
+    .ld-logo-core {
+      animation: ldPulse 4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .ld-shimmer-bar {
+      animation: ldShimmerMove 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .ld-spark {
+      animation: ldSparkGlow 2.5s ease-in-out infinite;
+      transform-origin: 82px 82px;
+    }
+  </style>
+
+  <!-- Main 3D Container -->
+  <g class="ld-logo-core">
+    <!-- Outer Shield / Container Base -->
+    <rect x="12" y="12" width="96" height="96" rx="26" fill="url(#ld-bg-grad)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" filter="url(#ld-shadow)" />
+
+    <!-- Back Document Layer (Emerald Security/Privacy Layer) -->
+    <path d="M34 26 H72 L86 40 V86 C86 89.3 83.3 92 80 92 H34 C30.7 92 28 89.3 28 86 V32 C28 28.7 30.7 26 34 26 Z" 
+          fill="url(#ld-sheet-back)" opacity="0.55" transform="translate(-4, -4) rotate(-4 57 59)" />
+
+    <!-- Front 3D Document Layer -->
+    <g>
+      <path d="M38 24 H70 L86 40 V86 C86 89.3 83.3 92 80 92 H38 C34.7 92 32 89.3 32 86 V30 C32 26.7 34.7 24 38 24 Z" 
+            fill="url(#ld-sheet-front)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" />
+
+      <!-- Folded Corner Geometry (Isometric Depth) -->
+      <path d="M70 24 V36 C70 38.2 71.8 40 74 40 H86 Z" fill="url(#ld-fold-grad)" />
+      <path d="M70 24 L86 40 H74 C71.8 40 70 38.2 70 36 Z" fill="rgba(0,0,0,0.15)" />
+
+      <!-- High-Tech Document Data Lines -->
+      <rect x="42" y="48" width="34" height="4" rx="2" fill="#FFFFFF" opacity="0.9" />
+      <rect x="42" y="58" width="26" height="3.5" rx="1.75" fill="#BAE6FD" opacity="0.8" />
+      <rect x="42" y="67" width="20" height="3.5" rx="1.75" fill="#BAE6FD" opacity="0.8" />
+
+      <!-- Shimmer Glint Line -->
+      <rect class="ld-shimmer-bar" x="20" y="20" width="16" height="80" fill="url(#ld-shimmer)" opacity="0.5" />
+    </g>
+
+    <!-- Zero-Upload Client-Side Local RAM Security Badge -->
+    <g class="ld-spark">
+      <!-- Badge Outer Glow -->
+      <circle cx="82" cy="82" r="15" fill="#090D16" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+      <circle cx="82" cy="82" r="12" fill="url(#ld-spark-grad)" />
+      
+      <!-- Lock / Spark Icon -->
+      <path d="M82 76 C80.3 76 79 77.3 79 79 V81 H78 C77.4 81 77 81.4 77 82 V87 C77 87.6 77.4 88 78 88 H86 C86.6 88 87 87.6 87 87 V82 C87 81.4 86.6 81 86 81 H85 V79 C85 77.3 83.7 76 82 76 Z M83.5 81 H80.5 V79 C80.5 78.2 81.2 77.5 82 77.5 C82.8 77.5 83.5 78.2 83.5 79 V81 Z" 
+            fill="#FFFFFF" />
+    </g>
+  </g>
+</svg>
