@@ -104,9 +104,25 @@
     }
   }
 
-  // Check if a document was passed via sessionStorage (from Document Vault)
+  // Check if a document was passed via sessionStorage (from CamScanner or Document Vault)
   function checkIncomingDocument() {
     try {
+      // 1. Check direct file from CamScanner
+      const csDataUrl = sessionStorage.getItem('localdoc_reader_file');
+      const csName = sessionStorage.getItem('localdoc_reader_name') || 'Scanned_Document.jpg';
+      if (csDataUrl) {
+        sessionStorage.removeItem('localdoc_reader_file');
+        sessionStorage.removeItem('localdoc_reader_name');
+        fetch(csDataUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], csName, { type: blob.type || 'image/jpeg' });
+            handleFile(file);
+          });
+        return;
+      }
+
+      // 2. Check stored doc from Document Vault
       const stored = sessionStorage.getItem('localdoc_view_doc');
       if (stored) {
         sessionStorage.removeItem('localdoc_view_doc');

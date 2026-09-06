@@ -2,9 +2,9 @@
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document Scanner & CamScanner Studio Online (100% Zero-Upload) — LocalDoc</title>
-  <meta name="description" content="Free CamScanner online alternative. Real-time document edge detection, Magic Color enhancement, B&W photocopy filter, batch gallery upload, and custom file naming. 100% private in-browser execution.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CamScanner Studio Online — Real-Time Edge Detection & ID Card Scanner | LocalDoc</title>
+  <meta name="description" content="Free CamScanner online alternative. Real-time document edge detection, auto-crop, Magic Pro shadow removal, front & back ID card scanner, and instant PDF compilation. 100% private in-browser execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -12,8 +12,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Document Scanner & CamScanner Studio Online — 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Scan multi-page documents and ID cards in browser RAM with real-time edge detection and Magic Color enhancement. 100% private.">
+  <meta property="og:title" content="CamScanner Studio Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:description" content="Scan multi-page documents, receipts, and front & back ID cards with auto-edge detection and Magic Color enhancement. 100% private in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/scan.html">
   <meta property="og:image" content="../assets/icons/scan.svg">
 
@@ -29,1837 +29,1242 @@
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "Zero-upload client-side document scanner with real-time edge detection, Magic Color enhancement, and custom PDF compilation."
+    "description": "Zero-upload client-side document scanner with real-time edge detection, Magic Color enhancement, ID card front & back compilation, and custom PDF export."
   }
   </script>
 
   <style>
-    /* Viewfinder Edge Guides & Filter Overlays */
-    .edge-box {
-      position: absolute;
-      border: 2px solid #06B6D4;
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.45);
-      border-radius: 4px;
-      pointer-events: none;
-      transition: all 0.15s ease-out;
-      z-index: 4;
-    }
-    .edge-corner-dot {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: #10B981;
-      border: 2px solid #FFFFFF;
-      border-radius: 50%;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
-      z-index: 5;
-    }
-    .filter-preview-magic {
-      filter: contrast(1.3) brightness(1.1) saturate(1.25);
-    }
-    .filter-preview-clean-bw {
-      filter: grayscale(1) contrast(2.6) brightness(1.15);
-    }
-    .filter-preview-grayscale {
-      filter: grayscale(1) contrast(1.2);
-    }
-    .filter-preview-original {
-      filter: none;
-    }
-    .tag-pill {
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-full);
-      padding: 5px 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .tag-pill:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-subtle);
-    }
-    .tag-pill.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      border-color: var(--primary);
+    /* CamScanner Studio Dedicated Styles */
+    .cs-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
     }
 
-    /* Tap-to-Focus Reticle */
-    .focus-reticle {
-      position: absolute;
-      width: 54px;
-      height: 54px;
-      border: 2px solid #10B981;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.8);
-      border-radius: 6px;
-      transform: translate(-50%, -50%) scale(1.4);
-      pointer-events: none;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      opacity: 0;
-      z-index: 20;
-    }
-    .focus-reticle.active {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    /* Full-Screen CamScanner Dedicated Crop Stage */
-    .crop-fullscreen-modal {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #000000;
-      z-index: 10000;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      user-select: none;
-    }
-    .crop-stage-header {
-      height: 54px;
-      background: #111827;
+    /* Mode Selector Bar */
+    .cs-mode-nav {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid #1F2937;
-      color: #FFFFFF;
-      flex-shrink: 0;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
     }
-    .crop-back-btn {
-      background: none;
-      border: none;
-      color: #FFFFFF;
-      font-size: 1rem;
+    .cs-mode-btn {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--line);
+      border-radius: 9999px;
+      padding: 10px 20px;
+      font-size: 0.92rem;
       font-weight: 700;
+      color: var(--text-secondary);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
-    .crop-stage-viewport {
-      flex: 1;
-      width: 100%;
-      height: 100%;
+    .cs-mode-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .cs-mode-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Modern Viewfinder Box */
+    .cs-viewfinder-card {
+      background: #090D16;
+      border-radius: 20px;
+      overflow: hidden;
       position: relative;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid #1E293B;
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+    }
+    .cs-viewport {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      background: #020617;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0B0F19;
       touch-action: none;
     }
-    .crop-corner-handle {
+    @media (max-width: 640px) {
+      .cs-viewport {
+        height: 65vh;
+        min-height: 380px;
+      }
+    }
+    .cs-video-feed {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.15s ease, filter 0.2s ease;
+    }
+
+    /* Filter Classes for Viewfinder & Previews */
+    .filter-magic {
+      filter: contrast(1.25) brightness(1.08) saturate(1.2);
+    }
+    .filter-no-shadow {
+      filter: contrast(1.15) brightness(1.2) saturate(1.1);
+    }
+    .filter-lighten {
+      filter: brightness(1.3) contrast(1.1);
+    }
+    .filter-clean-bw {
+      filter: grayscale(1) contrast(2.4) brightness(1.1);
+    }
+    .filter-original {
+      filter: none;
+    }
+
+    /* Top Camera Toolbar */
+    .cs-cam-topbar {
       position: absolute;
-      width: 30px;
-      height: 30px;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 25;
+      color: #FFF;
+    }
+    .cs-icon-btn {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: #10B981;
-      border: 3px solid #FFFFFF;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.95);
-      cursor: grab;
-      transform: translate(-50%, -50%);
-      z-index: 35;
-      touch-action: none;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.15s ease;
     }
-    .crop-corner-handle:active, .crop-corner-handle.dragging {
-      transform: translate(-50%, -50%) scale(1.35);
-      box-shadow: 0 0 20px #06B6D4;
-      background: #06B6D4;
-      cursor: grabbing;
+    .cs-icon-btn:hover {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: #38BDF8;
+      color: #38BDF8;
+      transform: scale(1.08);
     }
-    /* Edge Midpoint Handles (Horizontal & Vertical Capsules) */
-    .crop-edge-handle-h {
-      position: absolute;
-      width: 44px;
-      height: 18px;
+    .cs-icon-btn.active {
+      background: #F59E0B;
+      border-color: #F59E0B;
+      color: #000;
+    }
+
+    /* Zoom Indicator Controls */
+    .cs-zoom-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      padding: 3px 10px;
       border-radius: 9999px;
-      background: #FFFFFF;
-      border: 2.5px solid #10B981;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-      transform: translate(-50%, -50%);
-      z-index: 32;
-      cursor: ns-resize;
-      touch-action: none;
+      border: 1px solid rgba(255, 255, 255, 0.18);
     }
-    .crop-edge-handle-v {
+    .cs-zoom-pill {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cs-zoom-pill.active {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+
+    /* Framing Guides */
+    .cs-guide-overlay {
       position: absolute;
-      width: 18px;
-      height: 44px;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .cs-guide-box {
+      border: 2px dashed rgba(56, 189, 248, 0.7);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .cs-guide-doc {
+      width: 78%;
+      height: 82%;
+      max-width: 440px;
+      max-height: 600px;
+      aspect-ratio: 1 / 1.414;
+    }
+    .cs-guide-id {
+      width: 88%;
+      max-width: 440px;
+      aspect-ratio: 85.6 / 53.98;
+      border-radius: 16px;
+      border-color: #10B981;
+    }
+    .cs-guide-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: #38BDF8;
+      border-style: solid;
+    }
+    .cs-guide-id .cs-guide-corner {
+      border-color: #10B981;
+    }
+    .cs-corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 8px; }
+    .cs-corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 8px; }
+    .cs-corner-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 8px; }
+    .cs-corner-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 8px; }
+
+    .cs-guide-prompt {
+      position: absolute;
+      bottom: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 14px;
       border-radius: 9999px;
-      background: #FFFFFF;
-      border: 2.5px solid #10B981;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-      transform: translate(-50%, -50%);
-      z-index: 32;
-      cursor: ew-resize;
-      touch-action: none;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .crop-edge-handle-h:active, .crop-edge-handle-h.dragging,
-    .crop-edge-handle-v:active, .crop-edge-handle-v.dragging {
-      background: #10B981;
-      border-color: #FFFFFF;
-      transform: translate(-50%, -50%) scale(1.2);
+
+    /* Live Detected Edge Box */
+    .cs-live-edge {
+      position: absolute;
+      border: 2px solid #10B981;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 15;
+      transition: all 0.12s ease-out;
+      display: none;
     }
-    .crop-stage-footer {
-      height: 72px;
-      background: #111827;
+
+    /* Bottom Shutter & Controls Bar */
+    .cs-cam-bottombar {
+      height: 96px;
+      background: #0B0F19;
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 0 20px;
-      border-top: 1px solid #1F2937;
-      flex-shrink: 0;
+      padding: 0 24px;
+      border-top: 1px solid #1E293B;
+      z-index: 25;
     }
-    .crop-action-btn {
-      display: inline-flex;
+    .cs-gallery-btn {
+      display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
       background: none;
       border: none;
-      color: #9CA3AF;
-      font-size: 0.76rem;
+      color: #94A3B8;
+      font-size: 0.74rem;
       font-weight: 700;
       cursor: pointer;
     }
-    .crop-action-btn:hover {
+    .cs-gallery-btn:hover {
       color: #FFFFFF;
     }
-    .crop-next-btn {
+    .cs-gallery-btn img, .cs-gallery-btn svg {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1.5px solid #334155;
+    }
+
+    .cs-shutter-wrap {
+      position: relative;
+    }
+    .cs-shutter-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 4px solid #10B981;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      user-select: none;
+    }
+    .cs-shutter-btn:active {
+      transform: scale(0.9);
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.9);
+    }
+    .cs-shutter-inner {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #10B981;
+      transition: transform 0.1s ease;
+    }
+    .cs-shutter-btn:active .cs-shutter-inner {
+      transform: scale(0.85);
+    }
+
+    /* Single vs Batch Toggle Pill */
+    .cs-batch-pill {
+      display: flex;
+      align-items: center;
+      background: #1E293B;
+      border-radius: 9999px;
+      border: 1px solid #334155;
+      padding: 3px;
+    }
+    .cs-batch-opt {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .cs-batch-opt.active {
+      background: #0284C7;
+      color: #FFFFFF;
+    }
+
+    /* Batch Badge Counter */
+    .cs-batch-tray-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .cs-batch-badge {
+      position: absolute;
+      top: -4px;
+      right: 0;
       background: #10B981;
       color: #FFFFFF;
-      border: none;
-      border-radius: 9999px;
-      padding: 10px 24px;
-      font-size: 0.95rem;
+      font-size: 0.72rem;
+      font-weight: 900;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #0B0F19;
+    }
+
+    /* Camera Initial Launch Card */
+    .cs-launch-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(11, 15, 25, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      z-index: 30;
+      color: #FFF;
+    }
+    .cs-launch-card h3 {
+      font-size: 1.4rem;
       font-weight: 800;
+      margin: 14px 0 8px;
+    }
+    .cs-launch-card p {
+      color: #94A3B8;
+      font-size: 0.9rem;
+      max-width: 360px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ==================== ENHANCED PREVIEW & WORKSPACE ==================== */
+    .cs-preview-section {
+      margin-top: 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      display: none;
+    }
+    .cs-preview-display {
+      background: var(--bg-body);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      border: 1px solid var(--line);
+      position: relative;
+    }
+    .cs-preview-img {
+      max-width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      background: #FFFFFF;
+      transition: filter 0.2s ease;
+    }
+
+    /* Real-Time Filter Strip */
+    .cs-filter-strip {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .cs-filter-pill {
+      background: var(--bg-body);
+      border: 1.5px solid var(--line);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+      transition: all 0.15s ease;
+    }
+    .cs-filter-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .cs-filter-pill.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
     }
 
-    /* Dedicated Fullscreen Review Stage Modal */
-    .review-fullscreen-modal {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #090D16;
-      z-index: 10001;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      user-select: none;
+    /* Actions Grid */
+    .cs-action-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
     }
-    .review-header {
-      height: 56px;
-      background: #111827;
+    .btn-cs-download {
+      background: #059669;
+      color: #FFFFFF;
+      border: none;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
+    }
+    .btn-cs-download:hover {
+      background: #047857;
+      color: #FFFFFF;
+    }
+    .btn-cs-reader {
+      background: #0284C7;
+      color: #FFFFFF;
+      border: none;
+      font-weight: 800;
+    }
+    .btn-cs-reader:hover {
+      background: #0369A1;
+      color: #FFFFFF;
+    }
+
+    /* ID Card Step Prompts */
+    .id-step-banner {
+      background: #0F172A;
+      border: 1px solid #10B981;
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid #1F2937;
-      color: #FFFFFF;
-      flex-shrink: 0;
+      color: #FFF;
     }
-    .review-viewport {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      position: relative;
-    }
-    .review-doc-img {
-      max-width: 95%;
-      max-height: 80vh;
-      object-fit: contain;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
-      border-radius: 4px;
-      background: #FFFFFF;
-    }
-    .finger-detect-banner {
-      position: absolute;
-      top: 24px;
-      background: rgba(30, 41, 59, 0.94);
-      border: 1px solid #334155;
-      color: #F8FAFC;
-      border-radius: 8px;
-      padding: 8px 14px;
+    .id-step-indicator {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 0.84rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      z-index: 50;
+      font-size: 0.95rem;
+      font-weight: 700;
     }
-    .finger-detect-banner button.remove-btn {
+    .id-step-badge {
       background: #10B981;
       color: #FFF;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .review-pagination {
-      position: absolute;
-      bottom: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(6px);
-      padding: 6px 16px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #FFFFFF;
-      font-weight: 700;
-      font-size: 0.88rem;
-    }
-    .review-pagination button {
-      background: none;
-      border: none;
-      color: #9CA3AF;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-    .review-pagination button:hover {
-      color: #FFFFFF;
-    }
-    .review-footer {
-      height: 72px;
-      background: #111827;
+      font-weight: 900;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: space-around;
-      padding: 0 20px;
-      border-top: 1px solid #1F2937;
-      flex-shrink: 0;
-    }
-    .review-confirm-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #10B981;
-      color: #FFFFFF;
-      border: none;
-      display: inline-flex;
-      align-items: center;
       justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 18px rgba(16, 185, 129, 0.5);
-      transition: transform 0.15s ease;
-    }
-    .review-confirm-btn:active {
-      transform: scale(0.92);
-    }
-    .how-to-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .how-to-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--line-glow);
-    }
-    .how-to-step-num {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      font-weight: 800;
       font-size: 0.82rem;
+    }
+
+    /* Multi-Page Grid (Batch Mode) */
+    .cs-batch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .cs-batch-card {
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .cs-batch-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+    .cs-batch-card-foot {
+      padding: 6px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-    }
-    .how-to-icon {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-    }
-    .how-to-card h3 {
-      font-size: 1.05rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-    .how-to-card p {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.55;
+      background: var(--bg-surface);
     }
   </style>
 </head>
 <body>
-  <div id="reading-progress"></div>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="../index.html" class="brand" title="LocalDoc Home">
-        <div class="brand-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-        </div>
-        <span>LocalDoc</span>
-        <span class="brand-badge">Zero-Upload</span>
-      </a>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-area">
+        <a href="../index.html" class="brand-logo" aria-label="LocalDoc Home">
+          <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
+          <span class="brand-name">LocalDoc</span>
+        </a>
+        <span class="header-tag">100% Zero-Upload</span>
+      </div>
 
-      <ul class="nav-links">
-        <li><a href="../index.html" class="nav-link">All Tools</a></li>
-        <li><a href="create-pdf.html" class="nav-link">Create PDF</a></li>
-        <li><a href="id-photo.html" class="nav-link">Scan ID & Photo</a></li>
-        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
-        <li><a href="../privacy.html" class="nav-link">Privacy</a></li>
-      </ul>
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">All Tools</a>
+        <a href="scan.html" class="nav-link active">CamScanner</a>
+        <a href="document-reader.html" class="nav-link">Document Reader</a>
+        <a href="scientific-calculator.html" class="nav-link">Scientific Calculator</a>
+        <a href="../about.html" class="nav-link">About</a>
+      </nav>
 
       <div class="header-actions">
-        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
-        <div class="privacy-pill">
-          <span>100% Local RAM</span>
-        </div>
-        <div class="lang-select-wrap">
-          <select class="lang-select" aria-label="Select Language"></select>
-        </div>
       </div>
     </div>
   </header>
 
-  <main class="container" style="padding-top:24px; padding-bottom:60px;">
-    <!-- Breadcrumbs -->
-    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-      <a href="../index.html">Home</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="../index.html#category-filter-bar">Scanner & OCR Tools</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>CamScanner Studio</span>
-    </nav>
+  <main class="cs-container">
 
-    <section class="tool-workspace">
-      <div class="tool-workspace-header">
-        <div class="tool-workspace-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>100% Client-Side CamScanner Studio</span>
+    <!-- Mode Selector Tabs -->
+    <div class="cs-mode-nav">
+      <button type="button" class="cs-mode-btn active" id="tab-mode-doc" onclick="setScannerMode('doc')">
+        <span>📄</span> Document Mode (A4 / Letter)
+      </button>
+      <button type="button" class="cs-mode-btn" id="tab-mode-id" onclick="setScannerMode('id')">
+        <span>🪪</span> ID Card Mode (Front & Back)
+      </button>
+    </div>
+
+    <!-- ID Card Flow Notice (Shown when in ID Card Mode) -->
+    <div id="id-card-flow-banner" class="id-step-banner" style="display:none;">
+      <div class="id-step-indicator">
+        <span class="id-step-badge" id="id-step-number">1</span>
+        <span id="id-step-text">Snap FRONT side of ID Card / License</span>
+      </div>
+      <button type="button" class="btn btn-outline" onclick="resetIDCardFlow()" style="padding:4px 10px; font-size:0.76rem; color:#94A3B8; border-color:#475569;">Reset</button>
+    </div>
+
+    <!-- Main Viewfinder Section -->
+    <div class="cs-viewfinder-card" id="viewfinder-card">
+      
+      <!-- Top Bar: Flash, Camera Flip, Zoom, Aspect -->
+      <div class="cs-cam-topbar">
+        <button type="button" class="cs-icon-btn" id="btn-torch" title="Flash / Torch">⚡</button>
+
+        <!-- Zoom Quick Pills -->
+        <div class="cs-zoom-bar">
+          <button type="button" class="cs-zoom-pill active" onclick="setZoom(1)">1x</button>
+          <button type="button" class="cs-zoom-pill" onclick="setZoom(2)">2x</button>
+          <button type="button" class="cs-zoom-pill" onclick="setZoom(3)">3x</button>
         </div>
-        <h1>Document Scanner & CamScanner Studio</h1>
-        <p class="tool-desc">Capture physical paperwork with real-time edge detection and auto-crop. Apply CamScanner Magic Color shadow removal, batch import multiple gallery photos, and compile custom-named PDFs.</p>
+
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="cs-icon-btn" id="btn-switch-cam" title="Switch Front/Rear Camera">🔄</button>
+        </div>
       </div>
 
-      <!-- Scanner Studio Mode Switcher -->
-      <div class="scanner-mode-tabs">
-        <button type="button" class="scanner-mode-tab active" id="tab-mode-doc" onclick="switchScanMode('doc')">📄 Document Batch Mode</button>
-        <button type="button" class="scanner-mode-tab" id="tab-mode-id" onclick="switchScanMode('id')">🪪 ID Card Front & Back (1-Page A4)</button>
-      </div>
+      <!-- Viewfinder Stage -->
+      <div class="cs-viewport" id="viewport-stage">
+        <video id="camera-video" class="cs-video-feed filter-magic" autoplay playsinline muted></video>
+        <canvas id="camera-canvas" style="display:none;"></canvas>
 
-      <!-- Live Camera Viewfinder Box -->
-      <div class="camscanner-viewfinder-wrap" id="viewfinder-wrap" style="position:relative; overflow:hidden;">
-        <video id="scanner-video" class="filter-preview-magic" style="width:100%; height:100%; object-fit:cover;" autoplay playsinline muted></video>
-        <canvas id="scanner-canvas" style="display:none;"></canvas>
-
-        <!-- Real-Time Edge Detection Overlay Box -->
-        <div id="live-edge-box" class="edge-box" style="display:none;">
-          <div class="edge-corner-dot" style="top:-6px; left:-6px;"></div>
-          <div class="edge-corner-dot" style="top:-6px; right:-6px;"></div>
-          <div class="edge-corner-dot" style="bottom:-6px; right:-6px;"></div>
-          <div class="edge-corner-dot" style="bottom:-6px; left:-6px;"></div>
-          <div style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#10B981; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap;">
-            ✦ Document Edge Locked
+        <!-- Framing Guide Box (Aspect-Aware) -->
+        <div class="cs-guide-overlay">
+          <div class="cs-guide-box cs-guide-doc" id="guide-box">
+            <div class="cs-guide-corner cs-corner-tl"></div>
+            <div class="cs-guide-corner cs-corner-tr"></div>
+            <div class="cs-guide-corner cs-corner-bl"></div>
+            <div class="cs-guide-corner cs-corner-br"></div>
+            <div class="cs-guide-prompt" id="guide-prompt">
+              <span>✦</span> <span id="guide-prompt-text">Auto Edge Detection Active</span>
+            </div>
           </div>
         </div>
 
-        <!-- Dynamic Framing Overlays -->
-        <div class="camscanner-overlay-a4" id="overlay-a4"></div>
-        <div class="camscanner-overlay-id" id="overlay-id" style="display:none;"></div>
+        <!-- Real-Time Edge Tracker Highlight -->
+        <div id="live-edge-rect" class="cs-live-edge"></div>
 
-        <!-- Offline Camera Placeholder -->
-        <div id="camera-placeholder" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; background:rgba(15,23,42,0.92); padding:24px; text-align:center; z-index:10;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-          <h3 style="margin:12px 0 6px; font-size:1.15rem;">Camera Viewfinder Ready</h3>
-          <p style="font-size:0.85rem; color:#94A3B8; max-width:340px;">Enable camera for live document edge detection and perspective auto-crop.</p>
-          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center;">
-            <button class="btn btn-primary" id="start-cam-btn">Open Live Camera</button>
-            <button class="btn btn-outline" id="placeholder-gallery-btn" style="color:#FFF; border-color:rgba(255,255,255,0.3);">Import Photos from Gallery</button>
+        <!-- Initial Camera Launch Modal (Clean Single-Click) -->
+        <div class="cs-launch-card" id="camera-launch-cover">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <h3>CamScanner Camera Ready</h3>
+          <p>Tap below to start the camera with auto-edge detection, smart document straightening, and shadow whitening.</p>
+          <button type="button" class="btn btn-primary btn-lg" id="btn-start-camera" style="border-radius:9999px; padding:12px 32px; font-weight:800;">
+            📸 Start Live Camera
+          </button>
+          <div style="margin-top:16px;">
+            <button type="button" class="btn btn-outline" id="btn-launch-gallery" style="color:#FFF; border-color:rgba(255,255,255,0.3); font-size:0.85rem;">
+              Or Pick Photos from Gallery
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Live Shutter & Camera Controls -->
-      <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-top:16px;" id="camera-controls-bar">
-        <button class="btn btn-outline" id="quick-gallery-btn" style="padding:10px 14px; font-size:0.85rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Import photos from Gallery">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      <!-- Bottom Shutter Bar -->
+      <div class="cs-cam-bottombar">
+        <!-- Gallery Button -->
+        <button type="button" class="cs-gallery-btn" id="btn-open-gallery" title="Choose from Gallery">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           <span>Gallery</span>
         </button>
+        <input type="file" id="cs-file-input" accept="image/*" multiple style="display:none;">
 
-        <button class="camera-shutter-btn" id="snap-btn" disabled title="Snap Document Page">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3" fill="#FFFFFF"></circle></svg>
-        </button>
-
-        <button class="btn btn-outline" id="switch-cam-btn" style="display:none; padding:10px 14px; font-size:0.85rem;" title="Switch Camera">🔄 Switch</button>
-        <button class="btn btn-outline" id="stop-cam-btn" style="display:none; padding:10px 14px; font-size:0.85rem; color:var(--danger);" title="Stop Camera">Turn Off</button>
-      </div>
-
-      <!-- CamScanner Enhancement Filter Selector -->
-      <div style="margin-top:20px; text-align:center;">
-        <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">Real-Time Enhancement Filter:</span>
-        <div class="filter-selector-bar" id="filter-pills">
-          <button type="button" class="filter-pill active" data-filter="magic-color" onclick="setDefaultFilter('magic-color')">✨ Magic Color</button>
-          <button type="button" class="filter-pill" data-filter="clean-bw" onclick="setDefaultFilter('clean-bw')">📄 Clean B&W</button>
-          <button type="button" class="filter-pill" data-filter="grayscale" onclick="setDefaultFilter('grayscale')">🏢 Grayscale</button>
-          <button type="button" class="filter-pill" data-filter="original" onclick="setDefaultFilter('original')">📷 Original</button>
+        <!-- Shutter Button -->
+        <div class="cs-shutter-wrap">
+          <button type="button" class="cs-shutter-btn" id="btn-shutter" title="Capture Photo">
+            <div class="cs-shutter-inner"></div>
+          </button>
         </div>
-      </div>
 
-      <!-- Mode: ID Card Front & Back Dual Slots (Visible when ID Mode is Active) -->
-      <div id="id-mode-container" style="display:none;">
-        <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-top:20px; margin-bottom:8px;">ID Card Capture Slots:</h4>
-        <div class="id-card-capture-grid">
-          <div class="id-card-slot active" id="slot-front" onclick="selectIDSlot('front')">
-            <h5 style="margin:0; font-size:0.9rem; color:var(--primary); font-weight:700;">1. FRONT SIDE</h5>
-            <p style="margin:2px 0 8px; font-size:0.75rem; color:var(--text-muted);">Snap photo or click to upload front</p>
-            <div class="id-card-slot-preview" id="preview-front">
-              <span style="color:var(--text-muted); font-size:0.8rem;">[ Front Empty ]</span>
+        <!-- Mode Toggle Pill / Batch Counter -->
+        <div id="mode-control-wrap">
+          <div class="cs-batch-pill" id="batch-toggle-pill">
+            <button type="button" class="cs-batch-opt active" id="btn-single-mode" onclick="setCaptureMode('single')">Single</button>
+            <button type="button" class="cs-batch-opt" id="btn-batch-mode" onclick="setCaptureMode('batch')">Batch</button>
+          </div>
+          <button type="button" class="cs-batch-tray-btn" id="btn-batch-tray" style="display:none;" onclick="openBatchOrganizer()">
+            <div style="width:36px; height:36px; border-radius:6px; border:1.5px solid #10B981; overflow:hidden;">
+              <img id="batch-tray-thumb" src="" alt="Thumbnail" style="width:100%; height:100%; object-fit:cover;">
             </div>
-          </div>
-          <div class="id-card-slot" id="slot-back" onclick="selectIDSlot('back')">
-            <h5 style="margin:0; font-size:0.9rem; color:var(--text-primary); font-weight:700;">2. BACK SIDE</h5>
-            <p style="margin:2px 0 8px; font-size:0.75rem; color:var(--text-muted);">Snap photo or click to upload back</p>
-            <div class="id-card-slot-preview" id="preview-back">
-              <span style="color:var(--text-muted); font-size:0.8rem;">[ Back Empty ]</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mode: Document Multi-Page Queue & Gallery Upload -->
-      <div id="doc-mode-container">
-        <!-- Gallery / File Upload Drop Zone (Supports Multiple Files at Once) -->
-        <div class="drop-zone" id="drop-zone" style="margin-top:20px;">
-          <div class="drop-zone-icon">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          </div>
-          <div class="drop-zone-text">
-            <h3>Batch Import Multiple Photos from Gallery or PC</h3>
-            <p>Select multiple JPG, PNG, or WEBP receipts, documents, or book pages simultaneously</p>
-          </div>
-          <button class="btn btn-primary" id="browse-btn">Browse Multiple Photos</button>
-          <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
-        </div>
-
-        <!-- Captured Pages Reordering & Management Queue -->
-        <div id="queue-container" style="margin-top:24px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">Captured Document Pages (<span id="page-count">0</span> pages)</h4>
-            <div style="display:flex; gap:8px;">
-              <button class="btn btn-outline" id="btn-ocr-all" style="padding:4px 10px; font-size:0.78rem;" disabled>🔍 Extract Text (OCR)</button>
-              <button class="btn btn-outline" id="clear-pages-btn" style="padding:4px 10px; font-size:0.78rem;">Clear All</button>
-            </div>
-          </div>
-
-          <div class="page-thumbnail-grid" id="pages-grid">
-            <div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--text-muted); font-size:0.85rem; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line);">
-              No pages captured yet. Click the shutter button or upload multiple gallery photos above.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Export Settings Bar -->
-      <div class="tool-controls-bar" id="export-controls-bar" style="display:none; margin-top:24px;">
-        <div class="control-group">
-          <span class="control-label">PDF Page Size:</span>
-          <select class="control-select" id="pdf-size-select">
-            <option value="a4" selected>Standard A4</option>
-            <option value="letter">US Letter</option>
-            <option value="auto">Fit to Photo Aspect</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <span class="control-label">Resolution Preset:</span>
-          <select class="control-select" id="pdf-dpi-select">
-            <option value="standard" selected>Recommended (150 DPI)</option>
-            <option value="ultra">High Print Quality (300 DPI)</option>
-            <option value="compact">Compact Email (72 DPI)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="process-btn">
-          <span id="process-btn-text">Save & Compile to PDF Document</span> &rarr;
-        </button>
-      </div>
-
-      <!-- 3-Step Progress Workflow HUD -->
-      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
-        <div class="workflow-steps-indicator">
-          <div class="workflow-step-node workflow-step-1">
-            <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Enhancing Pages</div>
-          </div>
-          <div class="workflow-step-node workflow-step-2">
-            <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Compiling Vector PDF</div>
-          </div>
-          <div class="workflow-step-node workflow-step-3">
-            <div class="workflow-step-circle">3</div>
-            <div class="workflow-step-label">Ready</div>
-          </div>
-        </div>
-        <div class="workflow-progress-track">
-          <div class="workflow-progress-fill"></div>
-        </div>
-        <div class="workflow-progress-meta">
-          <span id="progress-status">Processing locally in RAM...</span>
-          <span id="progress-percent">0%</span>
-        </div>
-      </div>
-
-      <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
-          <h3 id="result-title">Scanned Document Ready!</h3>
-          <p id="result-meta">Ready for instant download. 100% private in-browser execution.</p>
-        </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span id="download-btn-text">Download Scanned PDF</span>
+            <span class="cs-batch-badge" id="batch-counter">0</span>
+            <span>Finish</span>
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Live OCR Transcription Panel (Optional) -->
-      <div id="ocr-result-panel" style="display:none; margin-top:24px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">Extracted OCR Text (<span id="ocr-word-count">0</span> words)</h4>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-outline" id="btn-copy-ocr" style="padding:3px 8px; font-size:0.75rem;">📋 Copy Text</button>
-            <button class="btn btn-outline" id="btn-download-ocr-txt" style="padding:3px 8px; font-size:0.75rem;">⬇ Download .TXT</button>
-          </div>
-        </div>
-        <textarea id="ocr-textarea" style="width:100%; height:180px; padding:12px; border:1px solid var(--line); border-radius:var(--radius-sm); font-family:var(--font-mono); font-size:0.85rem; line-height:1.5; resize:vertical;"></textarea>
-      </div>
-    </section>
-
-    <!-- CamScanner Full-Screen 8-Point Dedicated Crop Stage -->
-    <div id="crop-editor-modal" class="crop-fullscreen-modal">
-      <!-- Header -->
-      <div class="crop-stage-header">
-        <button type="button" class="crop-back-btn" id="crop-modal-close">
-          <span>&larr;</span> <span>Crop</span>
+    <!-- ==================== ENHANCED PREVIEW SECTION ==================== -->
+    <div class="cs-preview-section" id="preview-section">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+        <h3 style="font-size:1.2rem; font-weight:800; color:var(--text-primary); margin:0;" id="preview-heading">
+          ✨ Auto-Cropped & Enhanced
+        </h3>
+        <button type="button" class="btn btn-outline" id="btn-back-to-cam" style="font-size:0.82rem; padding:6px 14px;">
+          📸 Retake / Scan Next
         </button>
-        <!-- Aspect Ratio Quick Presets -->
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button type="button" class="tag-pill active" id="btn-ratio-auto" onclick="setCropAspect('auto')" style="background:rgba(255,255,255,0.1); color:#FFF; border-color:rgba(255,255,255,0.2); font-size:0.75rem; padding:3px 10px;">Auto</button>
-          <button type="button" class="tag-pill" id="btn-ratio-a4" onclick="setCropAspect('a4')" style="background:rgba(255,255,255,0.1); color:#FFF; border-color:rgba(255,255,255,0.2); font-size:0.75rem; padding:3px 10px;">A4</button>
-          <button type="button" class="tag-pill" id="btn-ratio-full" onclick="setCropAspect('full')" style="background:rgba(255,255,255,0.1); color:#FFF; border-color:rgba(255,255,255,0.2); font-size:0.75rem; padding:3px 10px;">All</button>
-        </div>
       </div>
 
-      <!-- Main Interactive 8-Point Canvas Stage -->
-      <div class="crop-stage-viewport" id="crop-editor-wrap">
-        <canvas id="crop-canvas" style="max-width:96%; max-height:94%; object-fit:contain;"></canvas>
-        <svg id="crop-svg-overlay" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;">
-          <polygon id="crop-polygon" points="0,0 0,0 0,0 0,0" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="2.5" stroke-dasharray="6,4"></polygon>
-        </svg>
-        
-        <!-- 4 Corner Draggable Circles -->
-        <div class="crop-corner-handle" id="corner-tl" data-handle="tl" title="Top-Left"></div>
-        <div class="crop-corner-handle" id="corner-tr" data-handle="tr" title="Top-Right"></div>
-        <div class="crop-corner-handle" id="corner-br" data-handle="br" title="Bottom-Right"></div>
-        <div class="crop-corner-handle" id="corner-bl" data-handle="bl" title="Bottom-Left"></div>
-
-        <!-- 4 Edge Midpoint Capsules (Single-Finger Edge Dragging) -->
-        <div class="crop-edge-handle-h" id="edge-top" data-handle="edge-top" title="Drag Top Edge"></div>
-        <div class="crop-edge-handle-v" id="edge-right" data-handle="edge-right" title="Drag Right Edge"></div>
-        <div class="crop-edge-handle-h" id="edge-bottom" data-handle="edge-bottom" title="Drag Bottom Edge"></div>
-        <div class="crop-edge-handle-v" id="edge-left" data-handle="edge-left" title="Drag Left Edge"></div>
+      <!-- Preview Image Display -->
+      <div class="cs-preview-display">
+        <img id="scanned-result-img" class="cs-preview-img filter-magic" src="" alt="Scanned Document">
       </div>
 
-      <!-- Bottom CamScanner Toolbar (Picture 3 Style) -->
-      <div class="crop-stage-footer">
-        <button type="button" class="crop-action-btn" onclick="rotateEditorImage(-90)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38l-2.73-2.73"/></svg>
-          <span>Left</span>
+      <!-- CamScanner Filter Strip -->
+      <div class="cs-filter-strip">
+        <button type="button" class="cs-filter-pill active" data-filter="magic" onclick="applyFilter('magic')">✨ Magic Pro</button>
+        <button type="button" class="cs-filter-pill" data-filter="no-shadow" onclick="applyFilter('no-shadow')">☀️ No Shadow</button>
+        <button type="button" class="cs-filter-pill" data-filter="lighten" onclick="applyFilter('lighten')">💡 Lighten</button>
+        <button type="button" class="cs-filter-pill" data-filter="clean-bw" onclick="applyFilter('clean-bw')">📄 Clean B&W</button>
+        <button type="button" class="cs-filter-pill" data-filter="original" onclick="applyFilter('original')">📷 Original</button>
+      </div>
+
+      <!-- ID Card Layout Mode Options (When viewing ID Card) -->
+      <div id="id-card-layout-options" style="display:none; margin-top:16px; text-align:center;">
+        <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); margin-right:8px;">Layout Format:</span>
+        <button type="button" class="tag-pill active" id="id-layout-a4" onclick="setIDCardLayout('a4')">Standard A4 Sheet (Print)</button>
+        <button type="button" class="tag-pill" id="id-layout-compact" onclick="setIDCardLayout('compact')">Side-by-Side (Digital)</button>
+      </div>
+
+      <!-- Action Buttons Row -->
+      <div class="cs-action-row">
+        <button type="button" class="btn btn-cs-download btn-lg" id="btn-instant-pdf">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span id="btn-instant-pdf-text">Download PDF Document</span>
         </button>
-        <button type="button" class="crop-action-btn" onclick="rotateEditorImage(90)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l2.73-2.73"/></svg>
-          <span>Right</span>
+
+        <button type="button" class="btn btn-outline btn-lg" id="btn-instant-jpg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Save as Image (JPG)</span>
         </button>
-        <button type="button" class="crop-action-btn" onclick="setCropAspect('full')">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-          <span>All</span>
-        </button>
-        <button type="button" class="crop-next-btn" id="crop-confirm-btn">
-          <span>Next</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+
+        <button type="button" class="btn btn-cs-reader btn-lg" id="btn-open-reader">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <span>Open in Document Reader</span>
         </button>
       </div>
     </div>
 
-    <!-- CamScanner Dedicated Full-Screen Review Stage Modal (Pictures 4 & 5 Style) -->
-    <div id="review-stage-modal" class="review-fullscreen-modal">
-      <!-- Header with Editable Title -->
-      <div class="review-header">
-        <button type="button" class="crop-back-btn" id="review-back-to-cam" title="Return to Camera">
-          <span>&larr;</span>
-        </button>
-        <div style="display:flex; align-items:center; gap:6px; cursor:pointer;" onclick="openNamingPrompt()">
-          <span id="review-doc-title-text" style="font-size:0.95rem; font-weight:700; color:#FFFFFF; border-bottom:1px dashed #64748B;">CamScanner Document</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <div style="width:24px;"></div>
-      </div>
-
-      <!-- Main Review Viewport -->
-      <div class="review-viewport">
-        <!-- AI Finger / Shadow Detection Banner -->
-        <div class="finger-detect-banner" id="finger-detect-banner">
-          <span>Finger detected. Try Magic Pro filter.</span>
-          <button type="button" class="remove-btn" id="btn-remove-finger">Remove</button>
-          <button type="button" style="background:none; border:none; color:#94A3B8; font-size:1rem; cursor:pointer;" onclick="document.getElementById('finger-detect-banner').style.display='none'">✕</button>
-        </div>
-
-        <img id="review-current-img" src="" alt="Scanned Document" class="review-doc-img">
-
-        <!-- Pagination Carousel -->
-        <div class="review-pagination">
-          <button type="button" id="review-prev-page" title="Previous Page">&lsaquo;</button>
-          <span id="review-page-indicator">1/1</span>
-          <button type="button" id="review-next-page" title="Next Page">&rsaquo;</button>
-        </div>
-      </div>
-
-      <!-- Bottom Actions Toolbar (Pictures 4 & 5 Style) -->
-      <div class="review-footer">
-        <button type="button" class="crop-action-btn" id="review-retake-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-          <span>Retake</span>
-        </button>
-        <button type="button" class="crop-action-btn" id="review-rotate-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38l-2.73-2.73"/></svg>
-          <span>Left</span>
-        </button>
-        <button type="button" class="crop-action-btn" id="review-filter-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span>Filter</span>
-        </button>
-        <button type="button" class="crop-action-btn" id="review-recrop-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2"/></svg>
-          <span>Crop</span>
-        </button>
-        <button type="button" class="crop-action-btn" id="review-delete-btn" style="color:#EF4444;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          <span>Delete</span>
-        </button>
-        <!-- Big Green Confirm Checkmark Button -->
-        <button type="button" class="review-confirm-btn" id="review-done-btn" title="Compile PDF">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Save Document Naming Modal Dialog -->
-    <div id="naming-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
-      <div class="modal-card" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; max-width:480px; width:100%; box-shadow:var(--shadow-lg);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-            <span>📝</span> Name Your Scanned Document
+    <!-- ==================== BATCH MULTI-PAGE ORGANIZER MODAL ==================== -->
+    <div id="batch-organizer-modal" style="display:none; position:fixed; inset:0; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:16px; width:100%; max-width:680px; max-height:85vh; display:flex; flex-direction:column; padding:20px; box-shadow:var(--shadow-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid var(--line); padding-bottom:8px;">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0;">
+            Scanned Pages (<span id="batch-modal-count">0</span>)
           </h3>
-          <button class="modal-close-btn" id="naming-modal-close" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
+          <button type="button" onclick="closeBatchOrganizer()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
         </div>
-        <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:16px;">Specify a custom filename before compiling your pages into a single PDF document:</p>
-        <div style="margin-bottom:14px;">
-          <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:6px;">Filename (.pdf)</label>
-          <input type="text" id="document-name-input" class="control-input" style="width:100%; padding:10px 14px; font-size:0.95rem; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-card); color:var(--text-primary);" placeholder="LocalDoc_Scan_2026-09-04">
+
+        <div style="flex:1; overflow-y:auto; padding:8px 0;" id="batch-pages-container">
+          <!-- Rendered batch thumbnail cards -->
         </div>
-        <div style="margin-bottom:20px;">
-          <span style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">Quick Presets:</span>
-          <div style="display:flex; flex-wrap:wrap; gap:6px;">
-            <button type="button" class="tag-pill" onclick="setDocTag('Invoice')">🧾 Invoice</button>
-            <button type="button" class="tag-pill" onclick="setDocTag('Receipt')">💳 Receipt</button>
-            <button type="button" class="tag-pill" onclick="setDocTag('Contract')">📑 Contract</button>
-            <button type="button" class="tag-pill" onclick="setDocTag('Study_Notes')">✍️ Notes</button>
-            <button type="button" class="tag-pill" onclick="setDocTag('ID_Card')">🪪 ID Card</button>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--line); padding-top:12px; flex-wrap:wrap; gap:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeBatchOrganizer(); resumeCamera();">➕ Add More Pages</button>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-outline" onclick="clearAllBatch()" style="color:var(--danger);">Clear All</button>
+            <button type="button" class="btn btn-cs-download" id="btn-compile-batch-pdf">Compile Multi-Page PDF &rarr;</button>
           </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:12px;">
-          <button class="btn btn-outline" id="naming-cancel-btn">Cancel</button>
-          <button class="btn btn-primary" id="naming-confirm-btn">Compile & Save PDF &rarr;</button>
         </div>
       </div>
     </div>
 
-    <!-- 3-Step How To Use Section -->
-    <section class="how-to-use-section" style="margin:48px 0 32px;">
-      <div style="text-align:center; margin-bottom:28px;">
-        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">How to Scan Documents with LocalDoc</h2>
-        <p style="color:var(--text-secondary); font-size:0.92rem; max-width:620px; margin:0 auto;">Follow three simple steps to digitize physical paperwork with real-time paper edge detection and automatic CamScanner Magic Color enhancement.</p>
-      </div>
-      <div class="how-to-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
-        <div class="how-to-card">
-          <div class="how-to-step-num">1</div>
-          <div class="how-to-icon">📷</div>
-          <h3>Snap or Batch Import</h3>
-          <p>Open live camera to capture documents with real-time edge detection guides, or tap <strong>Gallery</strong> to upload multiple receipts or pages at once.</p>
-        </div>
-        <div class="how-to-card">
-          <div class="how-to-step-num">2</div>
-          <div class="how-to-icon">✨</div>
-          <h3>Enhance & Adjust</h3>
-          <p>Choose <strong>Magic Color</strong> to whiten paper backgrounds and boost ink, <strong>Clean B&W</strong> for photocopies, or rotate and reorder pages effortlessly.</p>
-        </div>
-        <div class="how-to-card">
-          <div class="how-to-step-num">3</div>
-          <div class="how-to-icon">📥</div>
-          <h3>Name & Export PDF</h3>
-          <p>Type a custom document name, choose A4 or Letter page sizing, and instantly download a compressed, print-ready PDF compiled 100% in your browser RAM.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive Animated Tutorial Player -->
-    <section class="tutorial-player-section" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px; margin:32px 0; box-shadow:var(--shadow-sm);">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
-        <div>
-          <span class="brand-badge" style="display:inline-block; margin-bottom:6px; font-size:0.75rem;">Interactive Tutorial Demo</span>
-          <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-top:2px;">Visual Walkthrough: How the Scanner Works</h3>
-          <p style="font-size:0.88rem; color:var(--text-secondary);">Interactive visual walkthrough demonstrating real-time edge detection, filter enhancement, and PDF export.</p>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-outline" id="tutorial-play-btn" style="display:inline-flex; align-items:center; gap:6px;">
-            <span id="tutorial-btn-icon">▶</span> <span id="tutorial-btn-text">Play Demo</span>
-          </button>
-        </div>
-      </div>
-      <div class="tutorial-viewport" id="tutorial-viewport" style="position:relative; width:100%; height:280px; background:linear-gradient(135deg, #090D16 0%, #0F172A 100%); border-radius:var(--radius-md); overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid var(--line-glow);">
-        <!-- Animated Mockup Stage -->
-        <div id="tutorial-stage" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative; color:#FFF;">
-          <!-- SVG Document & Scan Line Animation -->
-          <svg width="220" height="200" viewBox="0 0 220 200" fill="none">
-            <rect x="40" y="20" width="140" height="160" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="2.5" id="tut-doc"></rect>
-            <!-- Lines representing text -->
-            <rect x="60" y="45" width="80" height="8" rx="2" fill="#38BDF8" opacity="0.8"></rect>
-            <rect x="60" y="65" width="100" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
-            <rect x="60" y="80" width="90" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
-            <rect x="60" y="95" width="95" height="6" rx="2" fill="#64748B" opacity="0.7"></rect>
-            <rect x="60" y="115" width="60" height="6" rx="2" fill="#10B981" opacity="0.8"></rect>
-            
-            <!-- Animated Edge Corners -->
-            <path d="M35,35 L35,20 L50,20" stroke="#10B981" stroke-width="3" fill="none"></path>
-            <path d="M170,20 L185,20 L185,35" stroke="#10B981" stroke-width="3" fill="none"></path>
-            <path d="M185,165 L185,180 L170,180" stroke="#10B981" stroke-width="3" fill="none"></path>
-            <path d="M50,180 L35,180 L35,165" stroke="#10B981" stroke-width="3" fill="none"></path>
-
-            <!-- Animated Laser Scan Beam -->
-            <line x1="30" y1="40" x2="190" y2="40" stroke="#06B6D4" stroke-width="3" id="tut-scan-beam" filter="drop-shadow(0 0 8px #06B6D4)">
-              <animate attributeName="y1" values="30;170;30" dur="3s" repeatCount="indefinite" />
-              <animate attributeName="y2" values="30;170;30" dur="3s" repeatCount="indefinite" />
-            </line>
-          </svg>
-          <div id="tutorial-caption" style="position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.9); padding:6px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; color:#38BDF8; border:1px solid rgba(56,189,248,0.3); white-space:nowrap;">
-            Step 1: Real-time paper edge detection & framing
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Deep Technical Explanation & Guide Link -->
-    <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:32px 0;">
-      <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.1rem;">How Client-Side CamScanner Technology Works</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:12px;">LocalDoc executes real-time luminance histogram stretching, adaptive Sauvola binarization, and homography perspective warping directly inside HTML5 Canvas memory buffers. No images or camera frames are ever sent to external cloud servers.</p>
-      <a href="../blog/scan-to-pdf-guide.html" class="btn btn-outline" style="font-size:0.82rem;">Read Full CamScanner Studio Guide &rarr;</a>
-    </div>
-
-    <!-- Related Tools -->
-    <section class="related-tools-section">
-      <h3 class="related-tools-title">Related Document Tools</h3>
-      <div class="related-tools-grid">
-        <a href="create-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/jpg-to-pdf.svg" alt="Create PDF">
-          <div>
-            <h4>Create PDF</h4>
-            <p>Combine photos & scans into clean PDF</p>
-          </div>
-        </a>
-        <a href="id-photo.html" class="related-tool-card">
-          <img src="../assets/icons/passport-photo.svg" alt="Scan ID or Photo">
-          <div>
-            <h4>Scan ID or Photo</h4>
-            <p>Passport, Visa & 1-page A4 ID Cards</p>
-          </div>
-        </a>
-        <a href="compress-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF">
-          <div>
-            <h4>Compress PDF</h4>
-            <p>Reduce scan file size without quality loss</p>
-          </div>
-        </a>
-        <a href="image-to-text.html" class="related-tool-card">
-          <img src="../assets/icons/image-to-text.svg" alt="Image to Text OCR">
-          <div>
-            <h4>Image to Text OCR</h4>
-            <p>Neural optical character recognition</p>
-          </div>
-        </a>
-      </div>
-    </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
-      </div>
-    </div>
-  </footer>
-
+  <!-- Scripts -->
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/tools/scan.js"></script>
-  <script src="../js/lib/tesseract.min.js"></script>
-  <script src="../js/tools/id-photo.js"></script>
 
   <script>
+    // State Management
+    let scanner = null;
     let currentMode = 'doc'; // 'doc' or 'id'
-    let currentFilter = 'magic-color';
+    let captureMode = 'single'; // 'single' or 'batch'
+    let currentFilter = 'magic';
     let currentFacingMode = 'environment';
-    let pagesList = []; // Array of { id, originalDataUrl, processedDataUrl, filter, rotation, corners }
-    let idSlots = { front: null, back: null };
-    let activeIDSlot = 'front';
-    let compiledResultBlob = null;
-    let compiledResultFilename = 'LocalDoc_Scan.pdf';
-    let edgeDetectInterval = null;
+    let isTorchOn = false;
 
-    const video = document.getElementById("scanner-video");
-    const canvas = document.getElementById("scanner-canvas");
-    const scanner = new DocumentScanner(video, canvas);
+    // ID Card state: Step 1 = front, Step 2 = back
+    let idCardState = {
+      step: 1,
+      front: null,
+      back: null,
+      layout: 'a4' // 'a4' or 'compact'
+    };
 
-    const startCamBtn = document.getElementById("start-cam-btn");
-    const stopCamBtn = document.getElementById("stop-cam-btn");
-    const switchCamBtn = document.getElementById("switch-cam-btn");
-    const snapBtn = document.getElementById("snap-btn");
-    const placeholder = document.getElementById("camera-placeholder");
-    const overlayA4 = document.getElementById("overlay-a4");
-    const overlayID = document.getElementById("overlay-id");
-    const liveEdgeBox = document.getElementById("live-edge-box");
+    // Scanned documents queue (Batch Mode)
+    let scannedPages = [];
+    let currentActiveImage = null; // Last scanned data URL
 
-    const quickGalleryBtn = document.getElementById("quick-gallery-btn");
-    const placeholderGalleryBtn = document.getElementById("placeholder-gallery-btn");
+    const videoEl = document.getElementById("camera-video");
+    const canvasEl = document.getElementById("camera-canvas");
+    scanner = new DocumentScanner(videoEl, canvasEl);
 
-    const docModeContainer = document.getElementById("doc-mode-container");
-    const idModeContainer = document.getElementById("id-mode-container");
-    const pagesGrid = document.getElementById("pages-grid");
-    const pageCountEl = document.getElementById("page-count");
-    const clearPagesBtn = document.getElementById("clear-pages-btn");
-    const btnOcrAll = document.getElementById("btn-ocr-all");
+    // Initial Camera Launch
+    const launchCover = document.getElementById("camera-launch-cover");
+    const startCamBtn = document.getElementById("btn-start-camera");
+    const launchGalleryBtn = document.getElementById("btn-launch-gallery");
+    const openGalleryBtn = document.getElementById("btn-open-gallery");
+    const fileInput = document.getElementById("cs-file-input");
+    const shutterBtn = document.getElementById("btn-shutter");
+    const previewSection = document.getElementById("preview-section");
+    const resultImg = document.getElementById("scanned-result-img");
 
-    const dropZone = document.getElementById("drop-zone");
-    const fileInput = document.getElementById("file-input");
-    const browseBtn = document.getElementById("browse-btn");
+    startCamBtn.addEventListener("click", startCameraStream);
+    launchGalleryBtn.addEventListener("click", () => fileInput.click());
+    openGalleryBtn.addEventListener("click", () => fileInput.click());
 
-    const exportControlsBar = document.getElementById("export-controls-bar");
-    const pdfSizeSelect = document.getElementById("pdf-size-select");
-    const pdfDpiSelect = document.getElementById("pdf-dpi-select");
-    const actionBar = document.getElementById("action-bar");
-    const processBtn = document.getElementById("process-btn");
-    const processBtnText = document.getElementById("process-btn-text");
-    const resultCard = document.getElementById("result-card");
-    const downloadBtn = document.getElementById("download-btn");
+    // Switch Front/Rear Camera
+    document.getElementById("btn-switch-cam").addEventListener("click", async () => {
+      currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
+      await startCameraStream();
+    });
 
-    // Naming modal elements
-    const namingModal = document.getElementById("naming-modal");
-    const namingModalClose = document.getElementById("naming-modal-close");
-    const namingCancelBtn = document.getElementById("naming-cancel-btn");
-    const namingConfirmBtn = document.getElementById("naming-confirm-btn");
-    const docNameInput = document.getElementById("document-name-input");
+    // Torch / Flashlight Toggle
+    const torchBtn = document.getElementById("btn-torch");
+    torchBtn.addEventListener("click", async () => {
+      isTorchOn = !isTorchOn;
+      const ok = await scanner.toggleTorch(isTorchOn);
+      if (ok) {
+        torchBtn.classList.toggle("active", isTorchOn);
+      } else {
+        isTorchOn = false;
+        UIUtils.showToast("Torch not supported on this device/camera.", "info");
+      }
+    });
 
-    const ocrResultPanel = document.getElementById("ocr-result-panel");
-    const ocrTextarea = document.getElementById("ocr-textarea");
-    const ocrWordCount = document.getElementById("ocr-word-count");
-    const btnCopyOcr = document.getElementById("btn-copy-ocr");
-    const btnDownloadOcrTxt = document.getElementById("btn-download-ocr-txt");
+    async function startCameraStream() {
+      try {
+        await scanner.startCamera(currentFacingMode);
+        launchCover.style.display = "none";
+        previewSection.style.display = "none";
+        document.getElementById("viewfinder-card").style.display = "flex";
+        startLiveEdgeLoop();
+        UIUtils.showToast("Camera active. Align document inside frame.", "success");
+      } catch (err) {
+        alert("Camera error: " + err.message);
+      }
+    }
 
-    // 1. Mode Switcher (Document Batch vs ID Card)
-    window.switchScanMode = function(mode) {
+    function resumeCamera() {
+      previewSection.style.display = "none";
+      document.getElementById("viewfinder-card").style.display = "flex";
+      if (!scanner.stream) {
+        startCameraStream();
+      }
+    }
+
+    // Zoom Controls
+    window.setZoom = async function(val) {
+      document.querySelectorAll(".cs-zoom-pill").forEach(p => {
+        p.classList.toggle("active", p.textContent.trim() === `${val}x`);
+      });
+      await scanner.applyZoom(val);
+    };
+
+    // Scanner Mode Switcher
+    window.setScannerMode = function(mode) {
       currentMode = mode;
       document.getElementById("tab-mode-doc").classList.toggle("active", mode === 'doc');
       document.getElementById("tab-mode-id").classList.toggle("active", mode === 'id');
 
+      const guideBox = document.getElementById("guide-box");
+      const promptText = document.getElementById("guide-prompt-text");
+      const idBanner = document.getElementById("id-card-flow-banner");
+      const batchToggle = document.getElementById("batch-toggle-pill");
+
       if (mode === 'id') {
-        docModeContainer.style.display = 'none';
-        idModeContainer.style.display = 'block';
-        overlayA4.style.display = 'none';
-        overlayID.style.display = 'block';
-        processBtnText.textContent = 'Generate 1-Page A4 ID Card Sheet';
-        updateIDCardUI();
+        guideBox.className = "cs-guide-box cs-guide-id";
+        idBanner.style.display = "flex";
+        batchToggle.style.display = "none";
+        updateIDCardBanner();
       } else {
-        docModeContainer.style.display = 'block';
-        idModeContainer.style.display = 'none';
-        overlayA4.style.display = 'block';
-        overlayID.style.display = 'none';
-        processBtnText.textContent = 'Save & Compile to PDF Document';
-        renderPagesGrid();
+        guideBox.className = "cs-guide-box cs-guide-doc";
+        idBanner.style.display = "none";
+        batchToggle.style.display = "flex";
+        promptText.textContent = "Auto Edge Detection Active";
       }
     };
 
-    // 2. Camera Stream & Live Edge Detection Loop
-    startCamBtn.addEventListener("click", async () => {
-      try {
-        await scanner.startCamera(currentFacingMode);
-        placeholder.style.display = "none";
-        snapBtn.disabled = false;
-        stopCamBtn.style.display = "inline-flex";
-        switchCamBtn.style.display = "inline-flex";
-        liveEdgeBox.style.display = "block";
-        startLiveEdgeDetection();
-        UIUtils.showToast("Camera connected! Edge detection active.", "success");
-      } catch (err) {
-        alert(err.message);
+    window.setCaptureMode = function(mode) {
+      captureMode = mode;
+      document.getElementById("btn-single-mode").classList.toggle("active", mode === 'single');
+      document.getElementById("btn-batch-mode").classList.toggle("active", mode === 'batch');
+      document.getElementById("btn-batch-tray").style.display = (mode === 'batch' && scannedPages.length > 0) ? 'flex' : 'none';
+    };
+
+    // ID Card Banner Update
+    function updateIDCardBanner() {
+      const stepNum = document.getElementById("id-step-number");
+      const stepText = document.getElementById("id-step-text");
+      const promptText = document.getElementById("guide-prompt-text");
+
+      if (idCardState.step === 1) {
+        stepNum.textContent = "1";
+        stepText.textContent = "Snap FRONT side of ID Card / License";
+        promptText.textContent = "Align ID Card Front inside box";
+      } else {
+        stepNum.textContent = "2";
+        stepText.textContent = "Turn Card Over — Snap BACK side";
+        promptText.textContent = "Align ID Card Back inside box";
       }
-    });
+    }
 
-    stopCamBtn.addEventListener("click", () => {
-      scanner.stopCamera();
-      if (edgeDetectInterval) clearInterval(edgeDetectInterval);
-      placeholder.style.display = "flex";
-      snapBtn.disabled = true;
-      stopCamBtn.style.display = "none";
-      switchCamBtn.style.display = "none";
-      liveEdgeBox.style.display = "none";
-    });
+    window.resetIDCardFlow = function() {
+      idCardState.step = 1;
+      idCardState.front = null;
+      idCardState.back = null;
+      updateIDCardBanner();
+      resumeCamera();
+    };
 
-    switchCamBtn.addEventListener("click", async () => {
-      currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
-      await scanner.startCamera(currentFacingMode);
-    });
-
-    function startLiveEdgeDetection() {
-      if (edgeDetectInterval) clearInterval(edgeDetectInterval);
-      edgeDetectInterval = setInterval(() => {
-        if (!video || !video.videoWidth) return;
+    // Real-Time Background Edge Loop
+    let edgeLoop = null;
+    function startLiveEdgeLoop() {
+      if (edgeLoop) clearInterval(edgeLoop);
+      edgeLoop = setInterval(() => {
+        if (!videoEl || !videoEl.videoWidth) return;
         try {
-          const corners = DocumentScanner.detectDocumentEdges(video);
-          if (corners) {
-            const vWrap = document.getElementById("viewfinder-wrap");
+          const corners = DocumentScanner.detectDocumentEdges(videoEl, currentMode === 'id' ? 'id' : 'auto');
+          const rectEl = document.getElementById("live-edge-rect");
+          if (corners && rectEl) {
+            const vWrap = document.getElementById("viewport-stage");
             const w = vWrap.clientWidth;
             const h = vWrap.clientHeight;
             const left = corners.topLeft.x * w;
             const top = corners.topLeft.y * h;
-            const boxW = (corners.topRight.x - corners.topLeft.x) * w;
-            const boxH = (corners.bottomLeft.y - corners.topLeft.y) * h;
+            const bw = (corners.topRight.x - corners.topLeft.x) * w;
+            const bh = (corners.bottomLeft.y - corners.topLeft.y) * h;
 
-            liveEdgeBox.style.left = `${Math.max(4, left)}px`;
-            liveEdgeBox.style.top = `${Math.max(4, top)}px`;
-            liveEdgeBox.style.width = `${Math.max(40, boxW)}px`;
-            liveEdgeBox.style.height = `${Math.max(40, boxH)}px`;
+            rectEl.style.left = `${Math.max(4, left)}px`;
+            rectEl.style.top = `${Math.max(4, top)}px`;
+            rectEl.style.width = `${Math.max(30, bw)}px`;
+            rectEl.style.height = `${Math.max(30, bh)}px`;
+            rectEl.style.display = 'block';
           }
-        } catch (e) {
-          // Non-blocking background edge tracker
-        }
-      }, 200);
+        } catch (e) {}
+      }, 250);
     }
 
-    // Tap-to-Focus on Viewfinder
-    const vWrap = document.getElementById("viewfinder-wrap");
-    if (vWrap) {
-      vWrap.addEventListener("click", async (e) => {
-        if (!scanner.stream || e.target.closest("button") || e.target.closest(".tag-pill")) return;
-        const rect = vWrap.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const xPct = Math.max(0, Math.min(1, x / rect.width));
-        const yPct = Math.max(0, Math.min(1, y / rect.height));
-
-        let reticle = document.getElementById("focus-reticle");
-        if (!reticle) {
-          reticle = document.createElement("div");
-          reticle.id = "focus-reticle";
-          reticle.className = "focus-reticle";
-          vWrap.appendChild(reticle);
-        }
-        reticle.style.left = `${x}px`;
-        reticle.style.top = `${y}px`;
-        reticle.classList.add("active");
-        setTimeout(() => reticle.classList.remove("active"), 850);
-
-        await scanner.applyFocus(xPct, yPct);
-      });
-    }
-
-    snapBtn.addEventListener("click", async () => {
+    // ==================== SHUTTER & CAPTURE FLOW ====================
+    shutterBtn.addEventListener("click", async () => {
       try {
+        if (!videoEl || !videoEl.videoWidth) {
+          await startCameraStream();
+          return;
+        }
+
+        // Visual flash animation
+        videoEl.style.opacity = '0.1';
+        setTimeout(() => videoEl.style.opacity = '1', 100);
+
         const rawDataUrl = scanner.captureFrame();
-        // Visual shutter flash effect
-        video.style.opacity = '0.2';
-        setTimeout(() => video.style.opacity = '1', 120);
+        const img = await UIUtils.loadImage(rawDataUrl);
 
-        // Detect corners on captured frame for perspective rectification
-        const tempImg = await UIUtils.loadImage(rawDataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(tempImg);
+        // Auto-detect edges and perspective-rectify
+        const corners = DocumentScanner.detectDocumentEdges(img, currentMode === 'id' ? 'id' : 'auto');
+        const filterType = getInternalFilterName(currentFilter);
+        const processedDataUrl = DocumentScanner.processImage(img, filterType, 0, corners);
 
         if (currentMode === 'id') {
-          handleIDCardCapture(rawDataUrl, corners);
+          // ID Card Front & Back Flow
+          if (idCardState.step === 1) {
+            idCardState.front = processedDataUrl;
+            idCardState.step = 2;
+            updateIDCardBanner();
+            UIUtils.showToast("✓ Front Captured! Now flip card over to snap Back side.", "success");
+          } else {
+            idCardState.back = processedDataUrl;
+            UIUtils.showToast("✓ Back Captured! Compiling ID Card...", "success");
+            await showIDCardResult();
+          }
         } else {
-          // Open CamScanner 8-Point Crop Stage immediately upon capture
-          await openCropEditorForRaw(rawDataUrl, corners);
+          // Document Mode
+          if (captureMode === 'single') {
+            currentActiveImage = processedDataUrl;
+            showSingleResult(processedDataUrl);
+          } else {
+            // Batch Mode
+            scannedPages.push({
+              dataUrl: processedDataUrl,
+              filter: currentFilter
+            });
+            updateBatchTray();
+            UIUtils.showToast(`Page #${scannedPages.length} captured! Continue snapping or tap Finish.`, "info");
+          }
         }
-      } catch (e) {
-        console.error(e);
-      }
-    });
-
-    // 3. Filter Switching with Real-Time Viewfinder & Queue Preview
-    window.setDefaultFilter = async function(filter) {
-      currentFilter = filter;
-      document.querySelectorAll("#filter-pills .filter-pill").forEach(p => {
-        p.classList.toggle("active", p.getAttribute("data-filter") === filter);
-      });
-
-      // Update viewfinder live shader
-      video.className = '';
-      if (filter === 'magic-color') video.classList.add('filter-preview-magic');
-      else if (filter === 'clean-bw') video.classList.add('filter-preview-clean-bw');
-      else if (filter === 'grayscale') video.classList.add('filter-preview-grayscale');
-      else if (filter === 'original') video.classList.add('filter-preview-original');
-
-      // Re-process all captured pages with new filter in real-time
-      if (pagesList.length > 0) {
-        UIUtils.showToast(`Applying ${filter} filter across document pages...`, "info");
-        for (const item of pagesList) {
-          item.filter = filter;
-          const img = await UIUtils.loadImage(item.originalDataUrl);
-          item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
-        }
-        renderPagesGrid();
-        if (reviewState.active) renderReviewPage();
-      }
-
-      if (currentMode === 'id') {
-        updateIDCardUI();
-      }
-    };
-
-    // 4. Interactive 8-Point Crop & Filter Editor Studio Modal
-    const cropEditorModal = document.getElementById("crop-editor-modal");
-    const cropModalClose = document.getElementById("crop-modal-close");
-    const cropConfirmBtn = document.getElementById("crop-confirm-btn");
-    const cropEditorWrap = document.getElementById("crop-editor-wrap");
-    const cropCanvas = document.getElementById("crop-canvas");
-    const cropPolygon = document.getElementById("crop-polygon");
-    
-    // 8 Draggable Handles (4 Corners + 4 Edge Midpoint Capsules)
-    const handles = {
-      tl: document.getElementById("corner-tl"),
-      tr: document.getElementById("corner-tr"),
-      br: document.getElementById("corner-br"),
-      bl: document.getElementById("corner-bl"),
-      'edge-top': document.getElementById("edge-top"),
-      'edge-right': document.getElementById("edge-right"),
-      'edge-bottom': document.getElementById("edge-bottom"),
-      'edge-left': document.getElementById("edge-left")
-    };
-
-    let editorState = {
-      active: false,
-      pageIdx: -1,
-      img: null,
-      dataUrl: '',
-      corners: {
-        topLeft: { x: 0.05, y: 0.05 },
-        topRight: { x: 0.95, y: 0.05 },
-        bottomRight: { x: 0.95, y: 0.95 },
-        bottomLeft: { x: 0.05, y: 0.95 }
-      },
-      filter: 'magic-color',
-      rotation: 0,
-      activeDragHandle: null,
-      dragStartPos: { x: 0, y: 0 },
-      dragStartCorners: null
-    };
-
-    window.openCropEditorForRaw = async function(rawDataUrl, detectedCorners = null) {
-      const img = await UIUtils.loadImage(rawDataUrl);
-      const corners = detectedCorners || DocumentScanner.detectDocumentEdges(img, 'auto');
-      editorState = {
-        active: true,
-        pageIdx: -1,
-        img: img,
-        dataUrl: rawDataUrl,
-        corners: corners,
-        filter: currentFilter,
-        rotation: 0,
-        activeDragHandle: null,
-        dragStartPos: { x: 0, y: 0 },
-        dragStartCorners: null
-      };
-      showCropEditorUI();
-    };
-
-    window.openCropEditor = async function(idx) {
-      const item = pagesList[idx];
-      if (!item) return;
-      const img = await UIUtils.loadImage(item.originalDataUrl);
-      editorState = {
-        active: true,
-        pageIdx: idx,
-        img: img,
-        dataUrl: item.originalDataUrl,
-        corners: JSON.parse(JSON.stringify(item.corners)),
-        filter: item.filter || currentFilter,
-        rotation: item.rotation || 0,
-        activeDragHandle: null,
-        dragStartPos: { x: 0, y: 0 },
-        dragStartCorners: null
-      };
-      showCropEditorUI();
-    };
-
-    function showCropEditorUI() {
-      cropEditorModal.style.display = 'flex';
-      renderCropCanvas();
-      updateHandlesUI();
-    }
-
-    function renderCropCanvas() {
-      if (!editorState.img) return;
-      const wrap = cropEditorWrap;
-      const wrapW = wrap.clientWidth || window.innerWidth || 700;
-      const wrapH = wrap.clientHeight || (window.innerHeight - 130) || 500;
-
-      const isRotated = (editorState.rotation % 180 !== 0);
-      const natW = isRotated ? editorState.img.height : editorState.img.width;
-      const natH = isRotated ? editorState.img.width : editorState.img.height;
-
-      const scale = Math.min((wrapW * 0.94) / natW, (wrapH * 0.94) / natH);
-      const dispW = Math.round(natW * scale);
-      const dispH = Math.round(natH * scale);
-
-      cropCanvas.width = dispW;
-      cropCanvas.height = dispH;
-      const ctx = cropCanvas.getContext('2d');
-
-      ctx.save();
-      ctx.translate(dispW / 2, dispH / 2);
-      ctx.rotate((editorState.rotation * Math.PI) / 180);
-      const drawW = isRotated ? dispH : dispW;
-      const drawH = isRotated ? dispW : dispH;
-      ctx.drawImage(editorState.img, -drawW / 2, -drawH / 2, drawW, drawH);
-      ctx.restore();
-    }
-
-    function updateHandlesUI() {
-      const canvasRect = cropCanvas.getBoundingClientRect();
-      const wrapRect = cropEditorWrap.getBoundingClientRect();
-      const offsetX = canvasRect.left - wrapRect.left;
-      const offsetY = canvasRect.top - wrapRect.top;
-      const cW = canvasRect.width;
-      const cH = canvasRect.height;
-
-      const tl = editorState.corners.topLeft;
-      const tr = editorState.corners.topRight;
-      const br = editorState.corners.bottomRight;
-      const bl = editorState.corners.bottomLeft;
-
-      const pxTL = { x: offsetX + tl.x * cW, y: offsetY + tl.y * cH };
-      const pxTR = { x: offsetX + tr.x * cW, y: offsetY + tr.y * cH };
-      const pxBR = { x: offsetX + br.x * cW, y: offsetY + br.y * cH };
-      const pxBL = { x: offsetX + bl.x * cW, y: offsetY + bl.y * cH };
-
-      // 4 Corners
-      if (handles.tl) { handles.tl.style.left = `${pxTL.x}px`; handles.tl.style.top = `${pxTL.y}px`; }
-      if (handles.tr) { handles.tr.style.left = `${pxTR.x}px`; handles.tr.style.top = `${pxTR.y}px`; }
-      if (handles.br) { handles.br.style.left = `${pxBR.x}px`; handles.br.style.top = `${pxBR.y}px`; }
-      if (handles.bl) { handles.bl.style.left = `${pxBL.x}px`; handles.bl.style.top = `${pxBL.y}px`; }
-
-      // 4 Edge Midpoint Capsules (Midpoints between corners)
-      const topMid = { x: (pxTL.x + pxTR.x) / 2, y: (pxTL.y + pxTR.y) / 2 };
-      const rightMid = { x: (pxTR.x + pxBR.x) / 2, y: (pxTR.y + pxBR.y) / 2 };
-      const bottomMid = { x: (pxBL.x + pxBR.x) / 2, y: (pxBL.y + pxBR.y) / 2 };
-      const leftMid = { x: (pxTL.x + pxBL.x) / 2, y: (pxTL.y + pxBL.y) / 2 };
-
-      if (handles['edge-top']) { handles['edge-top'].style.left = `${topMid.x}px`; handles['edge-top'].style.top = `${topMid.y}px`; }
-      if (handles['edge-right']) { handles['edge-right'].style.left = `${rightMid.x}px`; handles['edge-right'].style.top = `${rightMid.y}px`; }
-      if (handles['edge-bottom']) { handles['edge-bottom'].style.left = `${bottomMid.x}px`; handles['edge-bottom'].style.top = `${bottomMid.y}px`; }
-      if (handles['edge-left']) { handles['edge-left'].style.left = `${leftMid.x}px`; handles['edge-left'].style.top = `${leftMid.y}px`; }
-
-      // Update SVG polygon highlight
-      cropPolygon.setAttribute("points", `${pxTL.x},${pxTL.y} ${pxTR.x},${pxTR.y} ${pxBR.x},${pxBR.y} ${pxBL.x},${pxBL.y}`);
-    }
-
-    // 8-Point Draggable Handle Listener (Single-Finger Edge Drag + Corner Drag)
-    Object.keys(handles).forEach(hKey => {
-      const handle = handles[hKey];
-      if (!handle) return;
-
-      handle.addEventListener("pointerdown", (e) => {
-        e.preventDefault();
-        handle.setPointerCapture(e.pointerId);
-        handle.classList.add("dragging");
-        editorState.activeDragHandle = hKey;
-        editorState.dragStartPos = { x: e.clientX, y: e.clientY };
-        editorState.dragStartCorners = JSON.parse(JSON.stringify(editorState.corners));
-      });
-
-      handle.addEventListener("pointermove", (e) => {
-        if (editorState.activeDragHandle !== hKey) return;
-        e.preventDefault();
-        const canvasRect = cropCanvas.getBoundingClientRect();
-        const normX = Math.max(0, Math.min(1, (e.clientX - canvasRect.left) / canvasRect.width));
-        const normY = Math.max(0, Math.min(1, (e.clientY - canvasRect.top) / canvasRect.height));
-
-        const deltaX = (e.clientX - editorState.dragStartPos.x) / canvasRect.width;
-        const deltaY = (e.clientY - editorState.dragStartPos.y) / canvasRect.height;
-        const start = editorState.dragStartCorners;
-
-        // Individual Corner Drag
-        if (hKey === 'tl') editorState.corners.topLeft = { x: normX, y: normY };
-        else if (hKey === 'tr') editorState.corners.topRight = { x: normX, y: normY };
-        else if (hKey === 'br') editorState.corners.bottomRight = { x: normX, y: normY };
-        else if (hKey === 'bl') editorState.corners.bottomLeft = { x: normX, y: normY };
-        // Edge Midpoint Drag (Moves entire edge in parallel)
-        else if (hKey === 'edge-top') {
-          editorState.corners.topLeft.y = Math.max(0, Math.min(1, start.topLeft.y + deltaY));
-          editorState.corners.topRight.y = Math.max(0, Math.min(1, start.topRight.y + deltaY));
-        } else if (hKey === 'edge-bottom') {
-          editorState.corners.bottomLeft.y = Math.max(0, Math.min(1, start.bottomLeft.y + deltaY));
-          editorState.corners.bottomRight.y = Math.max(0, Math.min(1, start.bottomRight.y + deltaY));
-        } else if (hKey === 'edge-left') {
-          editorState.corners.topLeft.x = Math.max(0, Math.min(1, start.topLeft.x + deltaX));
-          editorState.corners.bottomLeft.x = Math.max(0, Math.min(1, start.bottomLeft.x + deltaX));
-        } else if (hKey === 'edge-right') {
-          editorState.corners.topRight.x = Math.max(0, Math.min(1, start.topRight.x + deltaX));
-          editorState.corners.bottomRight.x = Math.max(0, Math.min(1, start.bottomRight.x + deltaX));
-        }
-
-        updateHandlesUI();
-      });
-
-      const endDrag = (e) => {
-        if (editorState.activeDragHandle === hKey) {
-          handle.classList.remove("dragging");
-          editorState.activeDragHandle = null;
-        }
-      };
-
-      handle.addEventListener("pointerup", endDrag);
-      handle.addEventListener("pointercancel", endDrag);
-    });
-
-    window.rotateEditorImage = function(deg = 90) {
-      editorState.rotation = (editorState.rotation + deg + 360) % 360;
-      renderCropCanvas();
-      updateHandlesUI();
-    };
-
-    // When clicking "Next" on Crop Stage -> Transition to Review Stage
-    cropConfirmBtn.addEventListener("click", () => {
-      if (!editorState.img) return;
-      const processed = DocumentScanner.processImage(
-        editorState.img,
-        editorState.filter,
-        editorState.rotation,
-        editorState.corners
-      );
-
-      let targetIdx = editorState.pageIdx;
-      if (targetIdx >= 0 && targetIdx < pagesList.length) {
-        pagesList[targetIdx].processedDataUrl = processed;
-        pagesList[targetIdx].filter = editorState.filter;
-        pagesList[targetIdx].rotation = editorState.rotation;
-        pagesList[targetIdx].corners = editorState.corners;
-      } else {
-        pagesList.push({
-          id: Date.now() + Math.random().toString(36).substr(2, 5),
-          originalDataUrl: editorState.dataUrl,
-          processedDataUrl: processed,
-          filter: editorState.filter,
-          rotation: editorState.rotation,
-          corners: editorState.corners
-        });
-        targetIdx = pagesList.length - 1;
-      }
-
-      cropEditorModal.style.display = 'none';
-      renderPagesGrid();
-      openReviewStage(targetIdx);
-    });
-
-    cropModalClose.addEventListener("click", () => cropEditorModal.style.display = 'none');
-
-    // ==================== DEDICATED REVIEW STAGE (Pictures 4 & 5) ====================
-    const reviewModal = document.getElementById("review-stage-modal");
-    const reviewImg = document.getElementById("review-current-img");
-    const reviewPageIndicator = document.getElementById("review-page-indicator");
-    const reviewDocTitleText = document.getElementById("review-doc-title-text");
-    const fingerBanner = document.getElementById("finger-detect-banner");
-    const btnRemoveFinger = document.getElementById("btn-remove-finger");
-
-    let reviewState = {
-      active: false,
-      currentIdx: 0
-    };
-
-    window.openReviewStage = function(pageIndex = 0) {
-      if (pagesList.length === 0) return;
-      reviewState.active = true;
-      reviewState.currentIdx = Math.max(0, Math.min(pagesList.length - 1, pageIndex));
-      reviewDocTitleText.textContent = generateDefaultName();
-      reviewModal.style.display = 'flex';
-      renderReviewPage();
-    };
-
-    function renderReviewPage() {
-      if (!reviewState.active || pagesList.length === 0) return;
-      const item = pagesList[reviewState.currentIdx];
-      reviewImg.src = item.processedDataUrl;
-      reviewPageIndicator.textContent = `${reviewState.currentIdx + 1}/${pagesList.length}`;
-      
-      // Smart finger/shadow banner prompt
-      if (fingerBanner) {
-        fingerBanner.style.display = (item.filter === 'original' || item.filter === 'magic-color') ? 'flex' : 'none';
-      }
-    }
-
-    document.getElementById("review-prev-page").addEventListener("click", () => {
-      if (reviewState.currentIdx > 0) {
-        reviewState.currentIdx--;
-        renderReviewPage();
-      }
-    });
-
-    document.getElementById("review-next-page").addEventListener("click", () => {
-      if (reviewState.currentIdx < pagesList.length - 1) {
-        reviewState.currentIdx++;
-        renderReviewPage();
-      }
-    });
-
-    document.getElementById("review-back-to-cam").addEventListener("click", () => {
-      reviewState.active = false;
-      reviewModal.style.display = 'none';
-    });
-
-    document.getElementById("review-retake-btn").addEventListener("click", () => {
-      reviewState.active = false;
-      reviewModal.style.display = 'none';
-      UIUtils.showToast("Align document and snap retake photo!", "info");
-    });
-
-    document.getElementById("review-rotate-btn").addEventListener("click", async () => {
-      await rotatePage(reviewState.currentIdx);
-      renderReviewPage();
-    });
-
-    document.getElementById("review-filter-btn").addEventListener("click", async () => {
-      // Cycle filters: magic-color -> clean-bw -> grayscale -> original
-      const filters = ['magic-color', 'clean-bw', 'grayscale', 'original'];
-      const item = pagesList[reviewState.currentIdx];
-      const nextFilter = filters[(filters.indexOf(item.filter || 'magic-color') + 1) % filters.length];
-      item.filter = nextFilter;
-      const img = await UIUtils.loadImage(item.originalDataUrl);
-      item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
-      UIUtils.showToast(`Applied ${nextFilter} filter`, "info");
-      renderReviewPage();
-      renderPagesGrid();
-    });
-
-    document.getElementById("review-recrop-btn").addEventListener("click", () => {
-      reviewState.active = false;
-      reviewModal.style.display = 'none';
-      openCropEditor(reviewState.currentIdx);
-    });
-
-    document.getElementById("review-delete-btn").addEventListener("click", () => {
-      pagesList.splice(reviewState.currentIdx, 1);
-      if (pagesList.length === 0) {
-        reviewState.active = false;
-        reviewModal.style.display = 'none';
-      } else {
-        reviewState.currentIdx = Math.max(0, reviewState.currentIdx - 1);
-        renderReviewPage();
-      }
-      renderPagesGrid();
-    });
-
-    // Remove Finger / Border Shadows helper
-    if (btnRemoveFinger) {
-      btnRemoveFinger.addEventListener("click", async () => {
-        const item = pagesList[reviewState.currentIdx];
-        const img = await UIUtils.loadImage(item.processedDataUrl);
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-
-        item.processedDataUrl = DocumentScanner.cleanFingerShadows(canvas);
-        fingerBanner.style.display = 'none';
-        UIUtils.showToast("Fingers and border shadows cleaned with Magic Pro!", "success");
-        renderReviewPage();
-        renderPagesGrid();
-      });
-    }
-
-    // Done Checkmark Button -> Prompts Naming and Compiles PDF
-    document.getElementById("review-done-btn").addEventListener("click", () => {
-      reviewState.active = false;
-      reviewModal.style.display = 'none';
-      docNameInput.value = generateDefaultName();
-      namingModal.style.display = 'flex';
-    });
-
-    // 5. Document Page Management & Queue Rendering
-    async function addDocumentPage(dataUrl, corners = null) {
-      const img = await UIUtils.loadImage(dataUrl);
-      const detectedCorners = corners || DocumentScanner.detectDocumentEdges(img);
-      const processed = DocumentScanner.processImage(img, currentFilter, 0, detectedCorners);
-
-      pagesList.push({
-        id: Date.now() + Math.random().toString(36).substr(2, 5),
-        originalDataUrl: dataUrl,
-        processedDataUrl: processed,
-        filter: currentFilter,
-        rotation: 0,
-        corners: detectedCorners
-      });
-
-      renderPagesGrid();
-      UIUtils.showToast(`Page #${pagesList.length} captured & enhanced!`, "success");
-    }
-
-    function renderPagesGrid() {
-      pageCountEl.textContent = pagesList.length;
-
-      if (pagesList.length === 0) {
-        pagesGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--text-muted); font-size:0.85rem; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line);">No pages captured yet. Click the shutter button or upload multiple gallery photos above.</div>';
-        exportControlsBar.style.display = 'none';
-        actionBar.style.display = 'none';
-        btnOcrAll.disabled = true;
-        return;
-      }
-
-      pagesGrid.innerHTML = '';
-      pagesList.forEach((item, idx) => {
-        const card = document.createElement("div");
-        card.className = "page-thumb-card";
-
-        card.innerHTML = `
-          <div class="page-thumb-img-wrap" style="height:190px; cursor:pointer;" onclick="openCropEditor(${idx})" title="Click to adjust crop & filter">
-            <img src="${item.processedDataUrl}" alt="Page ${idx + 1}" style="max-height:100%; max-width:100%; object-fit:contain;">
-          </div>
-          <div class="page-thumb-footer">
-            <span style="font-weight:700;">Page #${idx + 1}</span>
-            <div class="page-thumb-actions">
-              <button class="page-thumb-btn" onclick="openCropEditor(${idx})" title="Crop & Filter" style="color:var(--primary); font-weight:700;">📐 Edit</button>
-              <button class="page-thumb-btn" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">←</button>
-              <button class="page-thumb-btn" onclick="movePage(${idx}, 1)" ${idx === pagesList.length - 1 ? 'disabled' : ''} title="Move Right">→</button>
-              <button class="page-thumb-btn" onclick="rotatePage(${idx})" title="Rotate 90°">↻</button>
-              <button class="page-thumb-btn" style="color:var(--danger);" onclick="deletePage(${idx})" title="Delete">✕</button>
-            </div>
-          </div>
-        `;
-
-        pagesGrid.appendChild(card);
-      });
-
-      exportControlsBar.style.display = 'flex';
-      actionBar.style.display = 'flex';
-      btnOcrAll.disabled = false;
-      resultCard.style.display = 'none';
-    }
-
-    window.movePage = function(idx, dir) {
-      const target = idx + dir;
-      if (target < 0 || target >= pagesList.length) return;
-      const temp = pagesList[idx];
-      pagesList[idx] = pagesList[target];
-      pagesList[target] = temp;
-      renderPagesGrid();
-    };
-
-    window.rotatePage = async function(idx) {
-      const item = pagesList[idx];
-      item.rotation = (item.rotation + 90) % 360;
-      const img = await UIUtils.loadImage(item.originalDataUrl);
-      item.processedDataUrl = DocumentScanner.processImage(img, item.filter, item.rotation, item.corners);
-      renderPagesGrid();
-    };
-
-    window.deletePage = function(idx) {
-      pagesList.splice(idx, 1);
-      renderPagesGrid();
-    };
-
-    clearPagesBtn.addEventListener("click", () => {
-      pagesList = [];
-      idSlots = { front: null, back: null };
-      renderPagesGrid();
-      updateIDCardUI();
-      document.getElementById("workflow-progress").style.display = "none";
-      resultCard.style.display = "none";
-      ocrResultPanel.style.display = "none";
-    });
-
-    // 6. Gallery Multi-File Ingestion
-    function openGalleryPicker() {
-      fileInput.value = '';
-      fileInput.click();
-    }
-
-    quickGalleryBtn.addEventListener("click", openGalleryPicker);
-    placeholderGalleryBtn.addEventListener("click", openGalleryPicker);
-    browseBtn.addEventListener("click", openGalleryPicker);
-
-    UIUtils.setupDropZone(dropZone, fileInput, async (files) => {
-      if (!files || files.length === 0) return;
-      
-      if (files.length === 1 && currentMode === 'doc') {
-        const dataUrl = await UIUtils.readFileAsDataURL(files[0]);
-        await openCropEditorForRaw(dataUrl);
-        return;
-      }
-
-      UIUtils.showToast(`Importing and auto-cropping ${files.length} photo(s) from gallery...`, "info");
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
-        if (currentMode === 'id') {
-          await handleIDCardCapture(dataUrl);
-        } else {
-          await addDocumentPage(dataUrl);
-        }
-      }
-      UIUtils.showToast(`Imported ${files.length} document page(s) successfully! Tap "Edit" on any page to fine-tune crop.`, "success");
-    });
-
-    // 6. ID Card Capture Handler
-    window.selectIDSlot = function(slot) {
-      activeIDSlot = slot;
-      document.getElementById("slot-front").classList.toggle("active", slot === 'front');
-      document.getElementById("slot-back").classList.toggle("active", slot === 'back');
-    };
-
-    async function handleIDCardCapture(dataUrl, corners = null) {
-      const img = await UIUtils.loadImage(dataUrl);
-      const processed = DocumentScanner.processImage(img, currentFilter, 0, corners);
-
-      if (activeIDSlot === 'front') {
-        idSlots.front = processed;
-        selectIDSlot('back');
-        UIUtils.showToast("ID Card Front captured! Now snap the Back side.", "success");
-      } else {
-        idSlots.back = processed;
-        UIUtils.showToast("ID Card Back captured! Ready to compile.", "success");
-      }
-      updateIDCardUI();
-    }
-
-    function updateIDCardUI() {
-      const prevFront = document.getElementById("preview-front");
-      const prevBack = document.getElementById("preview-back");
-
-      if (idSlots.front) {
-        prevFront.innerHTML = `<img src="${idSlots.front}" alt="Front">`;
-      } else {
-        prevFront.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem;">[ Front Empty ]</span>`;
-      }
-
-      if (idSlots.back) {
-        prevBack.innerHTML = `<img src="${idSlots.back}" alt="Back">`;
-      } else {
-        prevBack.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem;">[ Back Empty ]</span>`;
-      }
-
-      if (idSlots.front && idSlots.back) {
-        exportControlsBar.style.display = 'flex';
-        actionBar.style.display = 'flex';
-      }
-    }
-
-    // 7. File Naming Modal & Compilation Workflow
-    function generateDefaultName() {
-      const today = new Date().toISOString().slice(0, 10);
-      if (currentMode === 'id') {
-        return `LocalDoc_ID_Card_${today}`;
-      }
-      return `LocalDoc_Scan_${today}`;
-    }
-
-    window.setDocTag = function(tag) {
-      const today = new Date().toISOString().slice(0, 10);
-      docNameInput.value = `LocalDoc_${tag}_${today}`;
-    };
-
-    processBtn.addEventListener("click", () => {
-      if (currentMode === 'doc' && pagesList.length === 0) return;
-      if (currentMode === 'id' && (!idSlots.front || !idSlots.back)) {
-        UIUtils.showToast("Please capture both Front and Back sides of the ID card.", "error");
-        return;
-      }
-
-      docNameInput.value = generateDefaultName();
-      namingModal.style.display = 'flex';
-    });
-
-    namingModalClose.addEventListener("click", () => namingModal.style.display = 'none');
-    namingCancelBtn.addEventListener("click", () => namingModal.style.display = 'none');
-
-    namingConfirmBtn.addEventListener("click", async () => {
-      namingModal.style.display = 'none';
-      let customName = docNameInput.value.trim();
-      if (!customName) customName = generateDefaultName();
-      if (!customName.toLowerCase().endsWith('.pdf')) customName += '.pdf';
-      compiledResultFilename = customName;
-
-      await compileDocument();
-    });
-
-    function progressCb(pct, status) {
-      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
-      UIUtils.setWorkflowStep(step, pct, status);
-    }
-
-    async function compileDocument() {
-      try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing CamScanner processing engine...");
-
-        if (currentMode === 'id') {
-          const sheetDataUrl = await DocumentScanner.generateIDCardA4(idSlots.front, idSlots.back, currentFilter);
-          const pdfDoc = await PDFLib.PDFDocument.create();
-          const img = await pdfDoc.embedJpg(sheetDataUrl);
-          const page = pdfDoc.addPage([595.28, 841.89]);
-          page.drawImage(img, { x: 0, y: 0, width: 595.28, height: 841.89 });
-          const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-          compiledResultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-          document.getElementById("result-meta").textContent = `Filename: ${compiledResultFilename} • Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Standard 1-Page A4 Sheet`;
-        } else {
-          const options = {
-            pageSize: pdfSizeSelect.value,
-            dpi: pdfDpiSelect.value
-          };
-          compiledResultBlob = await DocumentScanner.exportToPDF(pagesList, options, progressCb);
-          document.getElementById("result-meta").textContent = `Filename: ${compiledResultFilename} • Size: ${UIUtils.formatBytes(compiledResultBlob.size)} • Compiled ${pagesList.length} Enhanced Document Pages`;
-        }
-
-        document.getElementById("download-btn-text").textContent = `Download ${compiledResultFilename}`;
-        UIUtils.setWorkflowStep(3, 100, "PDF Generated Successfully!");
-        resultCard.style.display = "flex";
-        UIUtils.showToast("Document compiled successfully!", "success");
-      } catch (e) {
-        console.error(e);
-        UIUtils.showToast(e.message || "Failed to compile document", "error");
-      } finally {
-        processBtn.disabled = false;
-      }
-    }
-
-    downloadBtn.addEventListener("click", () => {
-      if (compiledResultBlob) {
-        UIUtils.downloadBlob(compiledResultBlob, compiledResultFilename);
-      }
-    });
-
-    // 8. Integrated 1-Click OCR Recognition
-    btnOcrAll.addEventListener("click", async () => {
-      if (pagesList.length === 0) return;
-
-      try {
-        btnOcrAll.disabled = true;
-        UIUtils.setWorkflowStep(0, 10, "Initializing neural OCR worker...");
-        let fullTranscribedText = '';
-
-        for (let i = 0; i < pagesList.length; i++) {
-          const item = pagesList[i];
-          UIUtils.setWorkflowStep(2, Math.round(15 + (i / pagesList.length) * 80), `Transcribing text from page ${i + 1} of ${pagesList.length}...`);
-          const text = await OCRUtils.imageToText(item.processedDataUrl);
-          fullTranscribedText += `--- PAGE ${i + 1} ---\n` + text + "\n\n";
-        }
-
-        ocrTextarea.value = fullTranscribedText.trim();
-        const wordCount = ocrTextarea.value.trim().split(/\s+/).filter(Boolean).length;
-        ocrWordCount.textContent = wordCount;
-        ocrResultPanel.style.display = 'block';
-
-        UIUtils.setWorkflowStep(3, 100, "OCR Transcription Complete!");
-        UIUtils.showToast("Text extracted successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "OCR failed", "error");
-      } finally {
-        btnOcrAll.disabled = false;
+        UIUtils.showToast("Capture failed: " + err.message, "error");
       }
     });
 
-    btnCopyOcr.addEventListener("click", () => {
-      if (ocrTextarea.value) {
-        navigator.clipboard.writeText(ocrTextarea.value);
-        UIUtils.showToast("Transcribed text copied to clipboard!", "success");
+    // Gallery File Upload Handling
+    fileInput.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+
+      UIUtils.showToast(`Processing ${files.length} photo(s)...`, "info");
+
+      for (let i = 0; i < files.length; i++) {
+        const dataUrl = await UIUtils.readFileAsDataURL(files[i]);
+        const img = await UIUtils.loadImage(dataUrl);
+        const corners = DocumentScanner.detectDocumentEdges(img, currentMode === 'id' ? 'id' : 'auto');
+        const processed = DocumentScanner.processImage(img, getInternalFilterName(currentFilter), 0, corners);
+
+        if (currentMode === 'id') {
+          if (idCardState.step === 1) {
+            idCardState.front = processed;
+            idCardState.step = 2;
+            updateIDCardBanner();
+          } else {
+            idCardState.back = processed;
+            await showIDCardResult();
+            return;
+          }
+        } else {
+          if (files.length === 1 && captureMode === 'single') {
+            currentActiveImage = processed;
+            showSingleResult(processed);
+            return;
+          } else {
+            scannedPages.push({ dataUrl: processed, filter: currentFilter });
+          }
+        }
+      }
+
+      if (scannedPages.length > 0) {
+        setCaptureMode('batch');
+        updateBatchTray();
+        openBatchOrganizer();
       }
     });
 
-    btnDownloadOcrTxt.addEventListener("click", () => {
-      if (ocrTextarea.value) {
-        const blob = new Blob([ocrTextarea.value], { type: 'text/plain;charset=utf-8' });
-        UIUtils.downloadBlob(blob, 'localdoc-scanned-transcription.txt');
-      }
-    });
+    function getInternalFilterName(f) {
+      if (f === 'magic') return 'magic-color';
+      if (f === 'no-shadow') return 'magic-color';
+      if (f === 'clean-bw') return 'clean-bw';
+      if (f === 'lighten') return 'grayscale';
+      return 'original';
+    }
 
-    // 9. Interactive Tutorial Demo Controller
-    const tutPlayBtn = document.getElementById("tutorial-play-btn");
-    const tutCaption = document.getElementById("tutorial-caption");
-    let isTutPlaying = false;
-    let tutStep = 1;
-    let tutTimer = null;
+    // ==================== RESULTS PRESENTATION ====================
+    function showSingleResult(dataUrl) {
+      document.getElementById("viewfinder-card").style.display = "none";
+      document.getElementById("id-card-layout-options").style.display = "none";
+      document.getElementById("preview-heading").textContent = "✨ Auto-Cropped & Enhanced Document";
+      
+      resultImg.src = dataUrl;
+      resultImg.className = "cs-preview-img filter-" + currentFilter;
+      previewSection.style.display = "block";
+      window.scrollTo({ top: previewSection.offsetTop - 30, behavior: 'smooth' });
+    }
 
-    const tutSteps = [
-      { text: "Step 1: Real-time paper edge detection & framing", color: "#38BDF8" },
-      { text: "Step 2: CamScanner Magic Color shadow removal & whitening", color: "#10B981" },
-      { text: "Step 3: Multi-page batch compilation & custom PDF export", color: "#F59E0B" }
-    ];
+    async function showIDCardResult() {
+      document.getElementById("viewfinder-card").style.display = "none";
+      document.getElementById("id-card-layout-options").style.display = "block";
+      document.getElementById("preview-heading").textContent = "🪪 Compiled ID Card (Front & Back)";
 
-    tutPlayBtn.addEventListener("click", () => {
-      if (isTutPlaying) {
-        clearInterval(tutTimer);
-        isTutPlaying = false;
-        document.getElementById("tutorial-btn-icon").textContent = "▶";
-        document.getElementById("tutorial-btn-text").textContent = "Play Demo";
+      let compiled;
+      if (idCardState.layout === 'compact') {
+        compiled = await DocumentScanner.generateIDCardCompact(idCardState.front, idCardState.back);
       } else {
-        isTutPlaying = true;
-        document.getElementById("tutorial-btn-icon").textContent = "⏸";
-        document.getElementById("tutorial-btn-text").textContent = "Pause Demo";
-        tutTimer = setInterval(() => {
-          tutStep = (tutStep % tutSteps.length) + 1;
-          const current = tutSteps[tutStep - 1];
-          tutCaption.textContent = current.text;
-          tutCaption.style.color = current.color;
-          tutCaption.style.borderColor = current.color;
-        }, 3000);
+        compiled = await DocumentScanner.generateIDCardA4(idCardState.front, idCardState.back);
+      }
+
+      currentActiveImage = compiled;
+      resultImg.src = compiled;
+      resultImg.className = "cs-preview-img filter-" + currentFilter;
+      previewSection.style.display = "block";
+      window.scrollTo({ top: previewSection.offsetTop - 30, behavior: 'smooth' });
+    }
+
+    window.setIDCardLayout = async function(layout) {
+      idCardState.layout = layout;
+      document.getElementById("id-layout-a4").classList.toggle("active", layout === 'a4');
+      document.getElementById("id-layout-compact").classList.toggle("active", layout === 'compact');
+      await showIDCardResult();
+    };
+
+    // Filter Buttons on Preview
+    window.applyFilter = function(filter) {
+      currentFilter = filter;
+      document.querySelectorAll(".cs-filter-pill").forEach(p => {
+        p.classList.toggle("active", p.getAttribute("data-filter") === filter);
+      });
+      resultImg.className = "cs-preview-img filter-" + filter;
+      videoEl.className = "cs-video-feed filter-" + filter;
+    };
+
+    document.getElementById("btn-back-to-cam").addEventListener("click", () => {
+      if (currentMode === 'id') {
+        resetIDCardFlow();
+      } else {
+        resumeCamera();
+      }
+    });
+
+    // ==================== INSTANT DOWNLOAD & DOCUMENT READER ====================
+    // Instant PDF Download
+    document.getElementById("btn-instant-pdf").addEventListener("click", async () => {
+      if (!currentActiveImage) return;
+      try {
+        const btnText = document.getElementById("btn-instant-pdf-text");
+        btnText.textContent = "Compiling PDF...";
+        
+        const today = new Date().toISOString().slice(0, 10);
+        const filename = currentMode === 'id' ? `LocalDoc_ID_Card_${today}.pdf` : `LocalDoc_Scanned_${today}.pdf`;
+
+        const blob = await DocumentScanner.exportToPDF([{ processedDataUrl: currentActiveImage }], { pageSize: 'a4' });
+        UIUtils.downloadBlob(blob, filename);
+        UIUtils.showToast("Scanned PDF downloaded successfully!", "success");
+        btnText.textContent = "Download PDF Document";
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast("Failed to compile PDF: " + err.message, "error");
+        document.getElementById("btn-instant-pdf-text").textContent = "Download PDF Document";
+      }
+    });
+
+    // Instant JPG Download
+    document.getElementById("btn-instant-jpg").addEventListener("click", () => {
+      if (!currentActiveImage) return;
+      const today = new Date().toISOString().slice(0, 10);
+      const filename = currentMode === 'id' ? `LocalDoc_ID_Card_${today}.jpg` : `LocalDoc_Scanned_${today}.jpg`;
+      const a = document.createElement("a");
+      a.href = currentActiveImage;
+      a.download = filename;
+      a.click();
+      UIUtils.showToast("Scanned photo saved as JPG!", "success");
+    });
+
+    // Open in Universal Document Reader
+    document.getElementById("btn-open-reader").addEventListener("click", async () => {
+      if (!currentActiveImage) return;
+      try {
+        // Save base64 image or blob into sessionStorage and redirect to document-reader.html
+        sessionStorage.setItem("localdoc_reader_file", currentActiveImage);
+        sessionStorage.setItem("localdoc_reader_name", currentMode === 'id' ? 'Scanned_ID_Card.jpg' : 'Scanned_Document.jpg');
+        window.location.href = "document-reader.html";
+      } catch (err) {
+        UIUtils.showToast("Opening in viewer...", "info");
+        window.location.href = "document-reader.html";
+      }
+    });
+
+    // ==================== BATCH MODE ORGANIZER ====================
+    function updateBatchTray() {
+      const countEl = document.getElementById("batch-counter");
+      const thumbEl = document.getElementById("batch-tray-thumb");
+      const trayBtn = document.getElementById("btn-batch-tray");
+      const togglePill = document.getElementById("batch-toggle-pill");
+
+      if (scannedPages.length > 0 && captureMode === 'batch') {
+        countEl.textContent = scannedPages.length;
+        thumbEl.src = scannedPages[scannedPages.length - 1].dataUrl;
+        trayBtn.style.display = "flex";
+        togglePill.style.display = "none";
+      } else {
+        trayBtn.style.display = "none";
+        togglePill.style.display = "flex";
+      }
+    }
+
+    window.openBatchOrganizer = function() {
+      const modal = document.getElementById("batch-organizer-modal");
+      const container = document.getElementById("batch-pages-container");
+      document.getElementById("batch-modal-count").textContent = scannedPages.length;
+
+      if (scannedPages.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No pages scanned yet.</p>';
+      } else {
+        container.innerHTML = `
+          <div class="cs-batch-grid">
+            ${scannedPages.map((p, idx) => `
+              <div class="cs-batch-card">
+                <img src="${p.dataUrl}" alt="Page ${idx + 1}">
+                <div class="cs-batch-card-foot">
+                  <span>#${idx + 1}</span>
+                  <button type="button" onclick="removeBatchPage(${idx})" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer;">✕</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      modal.style.display = "flex";
+    };
+
+    window.closeBatchOrganizer = function() {
+      document.getElementById("batch-organizer-modal").style.display = "none";
+    };
+
+    window.removeBatchPage = function(idx) {
+      scannedPages.splice(idx, 1);
+      updateBatchTray();
+      openBatchOrganizer();
+    };
+
+    window.clearAllBatch = function() {
+      scannedPages = [];
+      updateBatchTray();
+      closeBatchOrganizer();
+      resumeCamera();
+    };
+
+    // Compile Batch to PDF
+    document.getElementById("btn-compile-batch-pdf").addEventListener("click", async () => {
+      if (scannedPages.length === 0) return;
+      try {
+        const btn = document.getElementById("btn-compile-batch-pdf");
+        btn.disabled = true;
+        btn.textContent = `Compiling ${scannedPages.length} Pages...`;
+
+        const today = new Date().toISOString().slice(0, 10);
+        const filename = `LocalDoc_Batch_Document_${today}.pdf`;
+
+        const pagesArray = scannedPages.map(p => ({ processedDataUrl: p.dataUrl }));
+        const blob = await DocumentScanner.exportToPDF(pagesArray, { pageSize: 'a4' });
+        
+        UIUtils.downloadBlob(blob, filename);
+        UIUtils.showToast(`Compiled ${scannedPages.length} pages into PDF!`, "success");
+        closeBatchOrganizer();
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast("Batch PDF compilation failed: " + err.message, "error");
+      } finally {
+        const btn = document.getElementById("btn-compile-batch-pdf");
+        btn.disabled = false;
+        btn.textContent = "Compile Multi-Page PDF →";
       }
     });
   </script>

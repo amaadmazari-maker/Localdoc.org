@@ -87,6 +87,51 @@ class DocumentScanner {
     return false;
   }
 
+  // Camera Zoom (Hardware zoom with capability detection)
+  getZoomCapabilities() {
+    if (!this.stream) return null;
+    const track = this.stream.getVideoTracks()[0];
+    if (!track || !track.getCapabilities) return null;
+    const caps = track.getCapabilities();
+    if (caps.zoom) {
+      return { min: caps.zoom.min || 1, max: caps.zoom.max || 5, step: caps.zoom.step || 0.1 };
+    }
+    return null;
+  }
+
+  async applyZoom(zoomVal) {
+    if (!this.stream) return false;
+    const track = this.stream.getVideoTracks()[0];
+    if (!track) return false;
+    try {
+      const caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.zoom) {
+        await track.applyConstraints({ advanced: [{ zoom: parseFloat(zoomVal) }] });
+        return true;
+      }
+    } catch (e) {
+      console.warn('Hardware zoom constraint not supported:', e);
+    }
+    return false;
+  }
+
+  // Camera Torch / Flashlight Toggle
+  async toggleTorch(enabled) {
+    if (!this.stream) return false;
+    const track = this.stream.getVideoTracks()[0];
+    if (!track) return false;
+    try {
+      const caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.torch) {
+        await track.applyConstraints({ advanced: [{ torch: !!enabled }] });
+        return true;
+      }
+    } catch (e) {
+      console.warn('Torch constraint not supported:', e);
+    }
+    return false;
+  }
+
   // CamScanner Magic Pro Finger & Border Shadow Removal
   static cleanFingerShadows(canvas) {
     const ctx = canvas.getContext('2d');
@@ -517,8 +562,8 @@ class DocumentScanner {
     // Render Front Card (Top section)
     const frontY = 600;
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.06)';
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(0,0,0,0.08)';
+    ctx.shadowBlur = 16;
     ctx.drawImage(frontImg, posX, frontY, cardW, cardH);
     ctx.restore();
 
@@ -526,14 +571,14 @@ class DocumentScanner {
     ctx.lineWidth = 2;
     ctx.strokeRect(posX, frontY, cardW, cardH);
 
-    ctx.fillStyle = '#64748B';
+    ctx.fillStyle = '#1E293B';
     ctx.font = 'bold 36px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('IDENTITY CARD — FRONT SIDE', canvas.width / 2, frontY - 30);
 
     // Center divider dashed line
-    ctx.setLineDash([12, 12]);
-    ctx.strokeStyle = '#E2E8F0';
+    ctx.setLineDash([14, 12]);
+    ctx.strokeStyle = '#CBD5E1';
     ctx.beginPath();
     ctx.moveTo(200, 1600);
     ctx.lineTo(canvas.width - 200, 1600);
@@ -543,8 +588,8 @@ class DocumentScanner {
     // Render Back Card (Bottom section)
     const backY = 1800;
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.06)';
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(0,0,0,0.08)';
+    ctx.shadowBlur = 16;
     ctx.drawImage(backImg, posX, backY, cardW, cardH);
     ctx.restore();
 
@@ -552,25 +597,104 @@ class DocumentScanner {
     ctx.lineWidth = 2;
     ctx.strokeRect(posX, backY, cardW, cardH);
 
-    ctx.fillStyle = '#64748B';
+    ctx.fillStyle = '#1E293B';
     ctx.fillText('IDENTITY CARD — BACK SIDE', canvas.width / 2, backY - 30);
 
     // Security footer badge
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = '26px sans-serif';
+    ctx.fillStyle = '#64748B';
+    ctx.font = '28px sans-serif';
     ctx.fillText('Compiled securely in-browser via localdoc.org • 100% Private (Zero Cloud Uploads)', canvas.width / 2, 3300);
 
     return canvas.toDataURL('image/jpeg', 0.95);
   }
 
-  // 7. Multi-Page High-Capacity PDF Compiler with Memory Chunking
+  // 6b. ID Card Compact Side-by-Side / Wallet Card Format
+  static async generateIDCardCompact(frontDataUrl, backDataUrl) {
+    const canvas = document.createElement('canvas');
+    // Standard credit card proportions side-by-side with border
+    canvas.width = 1920;
+    canvas.height = 720;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#F8FAFC';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const cardW = 860;
+    const cardH = 540;
+    const marginY = 90;
+    const gap = 80;
+    const startX = (canvas.width - (cardW * 2 + gap)) / 2;
+
+    const frontImg = await UIUtils.loadImage(frontDataUrl);
+    const backImg = await UIUtils.loadImage(backDataUrl);
+
+    // Front
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.12)';
+    ctx.shadowBlur = 14;
+    ctx.drawImage(frontImg, startX, marginY, cardW, cardH);
+    ctx.restore();
+    ctx.strokeStyle = '#CBD5E1';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(startX, marginY, cardW, cardH);
+
+    // Back
+    const backX = startX + cardW + gap;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.12)';
+    ctx.shadowBlur = 14;
+    ctx.drawImage(backImg, backX, marginY, cardW, cardH);
+    ctx.restore();
+    ctx.strokeStyle = '#CBD5E1';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(backX, marginY, cardW, cardH);
+
+    // Labels
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('FRONT', startX + cardW / 2, marginY - 18);
+    ctx.fillText('BACK', backX + cardW / 2, marginY - 18);
+
+    return canvas.toDataURL('image/jpeg', 0.95);
+  }
+
+  // Safe helper to convert any image or canvas to verified JPEG Uint8Array for PDF embedding
+  static async toJpegBytes(dataUrlOrCanvas) {
+    let img;
+    if (typeof dataUrlOrCanvas === 'string') {
+      img = await UIUtils.loadImage(dataUrlOrCanvas);
+    } else {
+      img = dataUrlOrCanvas;
+    }
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth || img.videoWidth || img.width;
+    c.height = img.naturalHeight || img.videoHeight || img.height;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0);
+
+    const cleanDataUrl = c.toDataURL('image/jpeg', 0.92);
+    // Base64 to Uint8Array
+    const base64 = cleanDataUrl.split(',')[1];
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  // 7. Multi-Page High-Capacity PDF Compiler with Fail-Safe Embedding
   static async exportToPDF(pagesArray, options = {}, onProgress = null) {
     if (!pagesArray || pagesArray.length === 0) {
       throw new Error('No scanned pages to export.');
     }
 
     const pageSize = options.pageSize || 'a4';
-    if (onProgress) onProgress(10, 'Initializing PDF vector canvas in memory...');
+    if (onProgress) onProgress(10, 'Initializing PDF vector engine in memory...');
 
     const pdfDoc = await PDFLib.PDFDocument.create();
     const total = pagesArray.length;
@@ -583,7 +707,19 @@ class DocumentScanner {
     for (let i = 0; i < total; i++) {
       const pageItem = pagesArray[i];
       const dataUrl = pageItem.processedDataUrl || pageItem.originalDataUrl;
-      const img = await pdfDoc.embedJpg(dataUrl);
+      
+      let img;
+      try {
+        const jpegBytes = await DocumentScanner.toJpegBytes(dataUrl);
+        img = await pdfDoc.embedJpg(jpegBytes);
+      } catch (err) {
+        console.warn('PDFLib embedJpg failed on page ' + (i + 1) + ', trying embedPng fallback:', err);
+        try {
+          img = await pdfDoc.embedPng(dataUrl);
+        } catch (e2) {
+          throw new Error('Failed to embed page ' + (i + 1) + ' into PDF: ' + e2.message);
+        }
+      }
 
       let targetWidth, targetHeight;
       if (pageSize === 'auto') {
@@ -611,7 +747,7 @@ class DocumentScanner {
       });
 
       if (onProgress && total > 1) {
-        const pct = Math.round(10 + ((i + 1) / total) * 80);
+        const pct = Math.round(15 + ((i + 1) / total) * 75);
         onProgress(pct, `Compiling page ${i + 1} of ${total}...`);
       }
     }
