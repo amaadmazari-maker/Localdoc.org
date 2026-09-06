@@ -400,9 +400,341 @@
     .fx-tape-item:hover {
       background: #334155;
     }
+
+    /* Native App & Fullscreen Mobile Experience */
+    .calc-native-bar {
+      display: none;
+    }
+    .fx-tape-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 998;
+    }
+    .fx-tape-backdrop.open {
+      display: block;
+    }
+    .fx-tape-drag-handle {
+      display: none;
+    }
+
+    @media (max-width: 640px), (display-mode: standalone) {
+      html, body {
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #0B0F19 !important;
+      }
+
+      .app-header {
+        display: none !important;
+      }
+
+      .calc-native-bar {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        height: 48px;
+        padding: 0 12px;
+        background: #0F172A;
+        border-bottom: 1px solid #1E293B;
+        color: #F8FAFC;
+        z-index: 100;
+        width: 100%;
+        user-select: none;
+      }
+
+      .calc-native-back {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: none;
+        color: #38BDF8;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 8px;
+        transition: background 0.15s ease;
+      }
+      .calc-native-back:active {
+        background: rgba(56, 189, 248, 0.18);
+      }
+
+      .calc-native-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .calc-native-brand {
+        font-size: 0.86rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #E2E8F0;
+      }
+      .calc-native-sub {
+        font-size: 0.58rem;
+        font-weight: 700;
+        color: #38BDF8;
+        letter-spacing: 0.5px;
+      }
+
+      .calc-native-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .calc-native-icon-btn {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        color: #E2E8F0;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .calc-native-icon-btn:active {
+        background: #334155;
+      }
+
+      .calc-app-wrap {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: calc(100dvh - 48px) !important;
+        max-width: 100% !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+      }
+
+      .fx-calculator {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 8px)) !important;
+        justify-content: space-between !important;
+        background: #0F172A !important;
+      }
+
+      .fx-top-header {
+        margin-bottom: 4px !important;
+      }
+      .fx-brand-title {
+        font-size: 0.88rem !important;
+      }
+      .fx-brand-subtitle {
+        font-size: 0.55rem !important;
+      }
+      .fx-solar-panel {
+        width: 72px !important;
+        height: 20px !important;
+      }
+
+      .fx-screen-bezel {
+        margin-bottom: 6px !important;
+        padding: 6px !important;
+      }
+      .fx-lcd-screen {
+        min-height: 72px !important;
+        padding: 6px 10px !important;
+      }
+      .fx-lcd-indicators {
+        height: 12px !important;
+        font-size: 0.62rem !important;
+        gap: 6px !important;
+      }
+      .fx-lcd-expr {
+        font-size: 1.05rem !important;
+        min-height: 20px !important;
+      }
+      .fx-lcd-result {
+        font-size: 1.7rem !important;
+      }
+
+      .fx-top-controls {
+        margin-bottom: 5px !important;
+        gap: 5px !important;
+      }
+      .fx-ctrl-btn {
+        height: 32px !important;
+        font-size: 0.68rem !important;
+      }
+      .fx-dpad-center {
+        width: 72px !important;
+        height: 44px !important;
+      }
+
+      .fx-fn-grid {
+        gap: 3px !important;
+        margin-bottom: 4px !important;
+      }
+      .fx-fn-btn {
+        height: 28px !important;
+        font-size: 0.74rem !important;
+        border-radius: 4px !important;
+      }
+      .fx-key-subtext {
+        font-size: 0.5rem !important;
+        height: 8px !important;
+        line-height: 8px !important;
+      }
+
+      .fx-num-grid {
+        gap: 5px !important;
+        flex: 1 !important;
+        align-content: stretch !important;
+      }
+      .fx-num-btn {
+        height: auto !important;
+        min-height: 42px !important;
+        font-size: 1.25rem !important;
+        border-radius: 6px !important;
+      }
+
+      /* Slide-up tape sheet */
+      .fx-tape-drawer {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 20px 20px 0 0 !important;
+        z-index: 999 !important;
+        transform: translateY(115%) !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.85) !important;
+        background: #0F172A !important;
+        border-top: 2px solid #38BDF8 !important;
+        padding: 12px 18px calc(20px + env(safe-area-inset-bottom, 8px)) !important;
+      }
+      .fx-tape-drawer.open {
+        transform: translateY(0) !important;
+      }
+      .fx-tape-drag-handle {
+        display: block !important;
+        width: 36px;
+        height: 4px;
+        background: #334155;
+        border-radius: 2px;
+        margin: 0 auto 10px;
+      }
+    }
+
+    /* Force native full-screen immersion when running in LocalDoc APK */
+    .is-native-app html, .is-native-app body {
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #0B0F19 !important;
+    }
+    .is-native-app .app-header {
+      display: none !important;
+    }
+    .is-native-app .calc-native-bar {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      height: 48px;
+      padding: 0 12px;
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      color: #F8FAFC;
+      z-index: 100;
+      width: 100%;
+      user-select: none;
+    }
+    .is-native-app .calc-app-wrap {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      height: calc(100dvh - 48px) !important;
+      max-width: 100% !important;
+      justify-content: space-between !important;
+      overflow: hidden !important;
+    }
+    .is-native-app .fx-calculator {
+      max-width: 100% !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 8px)) !important;
+      justify-content: space-between !important;
+      background: #0F172A !important;
+    }
+    .is-native-app .fx-tape-drawer {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      border-radius: 20px 20px 0 0 !important;
+      z-index: 999 !important;
+      transform: translateY(115%) !important;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.85) !important;
+      background: #0F172A !important;
+      border-top: 2px solid #38BDF8 !important;
+      padding: 12px 18px calc(20px + env(safe-area-inset-bottom, 8px)) !important;
+    }
+    .is-native-app .fx-tape-drawer.open {
+      transform: translateY(0) !important;
+    }
+    .is-native-app .fx-tape-drag-handle {
+      display: block !important;
+      width: 36px;
+      height: 4px;
+      background: #334155;
+      border-radius: 2px;
+      margin: 0 auto 10px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Mobile & Native App Fullscreen Top Bar -->
+  <div class="calc-native-bar" id="calc-native-bar">
+    <button type="button" class="calc-native-back" id="calc-native-back-btn" aria-label="Back to Tools">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Back</span>
+    </button>
+    <div class="calc-native-title">
+      <span class="calc-native-brand">CASIO fx-991 PRO</span>
+      <span class="calc-native-sub">NATURAL-V.P.A.M.</span>
+    </div>
+    <div class="calc-native-actions">
+      <button type="button" class="calc-native-icon-btn" id="btn-deg-rad-toggle" title="Switch DEG/RAD">
+        <span id="calc-mode-label">DEG</span>
+      </button>
+      <button type="button" class="calc-native-icon-btn" id="btn-tape-toggle" title="Tape History">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+      </button>
+    </div>
+  </div>
 
   <!-- App Header -->
   <header class="app-header">
@@ -598,11 +930,18 @@
 
     </div>
 
-    <!-- Calculation Reel History Drawer -->
-    <div class="fx-tape-drawer">
+    <!-- Calculation Reel History Modal Backdrop -->
+    <div class="fx-tape-backdrop" id="fx-tape-backdrop"></div>
+
+    <!-- Calculation Reel History Drawer / Bottom Sheet -->
+    <div class="fx-tape-drawer" id="fx-tape-drawer">
+      <div class="fx-tape-drag-handle"></div>
       <div class="fx-tape-header">
-        <span>📜 Calculation Tape</span>
-        <button type="button" id="btn-clear-tape" style="background:none; border:none; color:#EF4444; font-size:0.76rem; font-weight:700; cursor:pointer;">Clear Tape</button>
+        <span>📜 Calculation History</span>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button type="button" id="btn-clear-tape" style="background:none; border:none; color:#EF4444; font-size:0.76rem; font-weight:700; cursor:pointer;">Clear</button>
+          <button type="button" id="btn-close-tape" style="background:#334155; border:none; color:#FFF; font-size:0.76rem; font-weight:700; padding:4px 12px; border-radius:6px; cursor:pointer;">Done</button>
+        </div>
       </div>
       <div class="fx-tape-list" id="fx-tape-list">
         <div style="color:#64748B; font-size:0.8rem; text-align:center; padding:10px;">Calculations appear here</div>
@@ -627,18 +966,27 @@
     let isNewCalculation = false;
     let tapeHistory = [];
 
-    // Synthesized Audio Click Effect
+    // Synthesized Audio Click & Native Haptics Effect
     let audioCtx = null;
-    function playKeyClick() {
+    function playKeyClick(isHeavy) {
+      if (window.AndroidNative) {
+        if (isHeavy && window.AndroidNative.hapticHeavy) {
+          window.AndroidNative.hapticHeavy();
+        } else if (window.AndroidNative.hapticClick) {
+          window.AndroidNative.hapticClick();
+        }
+      } else if (navigator.vibrate) {
+        try { navigator.vibrate(isHeavy ? 24 : 10); } catch(e) {}
+      }
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.025);
-        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(isHeavy ? 900 : 1400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(isHeavy ? 200 : 300, audioCtx.currentTime + 0.025);
+        gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.025);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -944,6 +1292,45 @@
       tapeHistory = [];
       renderTape();
     });
+
+    // Native app bar back navigation
+    document.getElementById("calc-native-back-btn")?.addEventListener("click", () => {
+      playKeyClick(true);
+      if (window.AndroidNative && window.AndroidNative.exitToHome) {
+        window.AndroidNative.exitToHome();
+      } else if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "../index.html";
+      }
+    });
+
+    // Native DEG/RAD top toggle
+    document.getElementById("btn-deg-rad-toggle")?.addEventListener("click", () => {
+      playKeyClick();
+      angleUnit = (angleUnit === 'DEG') ? 'RAD' : 'DEG';
+      const label = document.getElementById("calc-mode-label");
+      if (label) label.textContent = angleUnit;
+      updateLCD();
+      if (expr) evaluateLive();
+    });
+
+    // Tape Drawer Bottom Sheet Toggle
+    const tapeDrawer = document.getElementById("fx-tape-drawer");
+    const tapeBackdrop = document.getElementById("fx-tape-backdrop");
+    function openTape() {
+      playKeyClick();
+      tapeDrawer?.classList.add("open");
+      tapeBackdrop?.classList.add("open");
+    }
+    function closeTape() {
+      playKeyClick();
+      tapeDrawer?.classList.remove("open");
+      tapeBackdrop?.classList.remove("open");
+    }
+    document.getElementById("btn-tape-toggle")?.addEventListener("click", openTape);
+    document.getElementById("btn-close-tape")?.addEventListener("click", closeTape);
+    tapeBackdrop?.addEventListener("click", closeTape);
 
     // Keyboard bindings
     document.addEventListener("keydown", (e) => {

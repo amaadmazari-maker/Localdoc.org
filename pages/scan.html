@@ -578,6 +578,62 @@
       font-weight: 700;
       background: var(--bg-surface);
     }
+
+    /* Native App & Mobile Fullscreen Viewfinder (CamScanner Flagship APK) */
+    @media (max-width: 640px), (display-mode: standalone) {
+      .app-header {
+        display: none !important;
+      }
+      #btn-scan-back {
+        display: inline-flex !important;
+      }
+      .cs-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        height: 100dvh !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      .cs-mode-nav {
+        margin: 6px 0 !important;
+      }
+      .cs-viewfinder-card {
+        border-radius: 0 !important;
+        border: none !important;
+        flex: 1 !important;
+        min-height: unset !important;
+      }
+      .cs-viewport {
+        height: 100% !important;
+        flex: 1 !important;
+      }
+    }
+
+    .is-native-app .app-header {
+      display: none !important;
+    }
+    .is-native-app #btn-scan-back {
+      display: inline-flex !important;
+    }
+    .is-native-app .cs-container {
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+      height: 100dvh !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .is-native-app .cs-viewfinder-card {
+      border-radius: 0 !important;
+      border: none !important;
+      flex: 1 !important;
+      min-height: unset !important;
+    }
+    .is-native-app .cs-viewport {
+      height: 100% !important;
+      flex: 1 !important;
+    }
   </style>
 </head>
 <body>
@@ -636,7 +692,12 @@
       
       <!-- Top Bar: Flash, Camera Flip, Zoom, Aspect -->
       <div class="cs-cam-topbar">
-        <button type="button" class="cs-icon-btn" id="btn-torch" title="Flash / Torch">⚡</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" class="cs-icon-btn" id="btn-scan-back" title="Back to Tools" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <button type="button" class="cs-icon-btn" id="btn-torch" title="Flash / Torch">⚡</button>
+        </div>
 
         <!-- Zoom Quick Pills -->
         <div class="cs-zoom-bar">
@@ -986,6 +1047,13 @@
         videoEl.style.opacity = '0.1';
         setTimeout(() => videoEl.style.opacity = '1', 100);
 
+        // Native tactile haptic feedback on shutter press
+        if (window.AndroidNative && window.AndroidNative.hapticHeavy) {
+          window.AndroidNative.hapticHeavy();
+        } else if (navigator.vibrate) {
+          try { navigator.vibrate(35); } catch(e) {}
+        }
+
         const rawDataUrl = scanner.captureFrame();
         const img = await UIUtils.loadImage(rawDataUrl);
 
@@ -1265,6 +1333,20 @@
         const btn = document.getElementById("btn-compile-batch-pdf");
         btn.disabled = false;
         btn.textContent = "Compile Multi-Page PDF →";
+      }
+    });
+
+    // Native back navigation button in viewfinder top bar
+    document.getElementById("btn-scan-back")?.addEventListener("click", () => {
+      if (window.AndroidNative && window.AndroidNative.hapticClick) {
+        window.AndroidNative.hapticClick();
+      }
+      if (window.AndroidNative && window.AndroidNative.exitToHome) {
+        window.AndroidNative.exitToHome();
+      } else if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "../index.html";
       }
     });
   </script>

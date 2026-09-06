@@ -2487,6 +2487,84 @@ a:hover {
   }
 }
 
+/* ==========================================================================
+   NATIVE APP IMMERSION & MOBILE BOTTOM NAVIGATION (FLAGSHIP APK EXPERIENCE)
+   ========================================================================== */
+
+.app-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .app-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--line);
+    z-index: 990;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  }
+  [data-theme="dark"] .app-bottom-nav {
+    background: rgba(15, 23, 42, 0.96);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+  }
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 12px;
+    transition: all 0.15s ease;
+    flex: 1;
+    max-width: 90px;
+    user-select: none;
+  }
+  .bottom-nav-item svg {
+    transition: transform 0.15s ease;
+  }
+  .bottom-nav-item.active {
+    color: var(--primary);
+  }
+  .bottom-nav-item:active {
+    transform: scale(0.92);
+  }
+  .bottom-nav-item.active svg {
+    transform: translateY(-1px);
+  }
+  body.has-bottom-nav {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* LocalDoc Native Android APK Immersion Mode */
+.is-native-app .pwa-install-btn {
+  display: none !important;
+}
+
+.is-native-app .offline-status-pill,
+.is-native-app .privacy-pill {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #10B981 !important;
+}
+
+
 
 
 
