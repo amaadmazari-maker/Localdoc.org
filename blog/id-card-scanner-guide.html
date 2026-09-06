@@ -173,20 +173,22 @@
       </div>
 
       <h2 id="section-1">1. Dual-Side Capture Workflow and Grid Placement</h2>
-      <p>When you use legacy cloud conversion websites, your document travels through multiple intermediate proxy servers, cloud storage buckets, and third-party worker queues before reaching a backend processing cluster. Even if a service claims to "delete files after one hour," temporary disk cache snapshots and memory dumps frequently persist indefinitely.</p>
+      <p>Scanning physical identity documents like CNIC, driving licenses, and work badges presents unique challenges. When captured with generic camera apps, perspective distortion, heavy table shadows, and skewed aspect ratios routinely cause banking apps and government portals to reject submissions.</p>
 
-      <p>In contrast, LocalDoc operates under a zero-trust client architecture. When you drag and drop a file into our drop zone, our JavaScript runtime utilizes the FileReader and ArrayBuffer APIs to load the binary stream directly into your browser's private memory sandbox. The transformation engine compiles your output in real time and triggers an instant local download via dynamic Blob object URLs.</p>
+      <p>LocalDoc's <a href="../pages/scan.html" style="color:var(--primary); font-weight:700;">CamScanner Studio</a> incorporates an in-browser computer vision pipeline tailored specifically for identity cards. When you activate <strong>ID Card Mode</strong>, the viewfinder displays real-time 85.6 × 54 mm aspect ratio framing guides with active corner contrast scoring. The system captures the front side, prompts you to flip the card, and locks in the reverse face with identical scale.</p>
 
       <h2 id="section-2">2. Outputting 1:1 Scale A4 Printable PDF Sheets</h2>
-      <p>Our client-side engines take advantage of multi-threaded Web Workers to prevent user interface stutter or freezing. By offloading heavy matrix calculations, optical character recognition, and stream compression into dedicated background threads, LocalDoc delivers native desktop software speeds directly in your web browser.</p>
+      <p>Government submission guidelines strictly regulate document layout. The front of your ID card must sit centered in the upper hemisphere of the page, while the back face must sit aligned directly beneath it in the lower hemisphere, maintaining exact 1:1 physical dimensions (85.60 × 53.98 mm) without scaling artifacts.</p>
+
+      <p>LocalDoc dynamically compiles both faces onto a standard 300 DPI vector A4 canvas (2480 × 3508 px at full resolution). You can also toggle <strong>Compact Card</strong> export for side-by-side credit card-sized layouts suitable for digital storage or wallet archives.</p>
 
       <h2 id="section-3">3. Step-by-Step Execution Workflow</h2>
       <ol>
-        <li>Open the <a href="../pages/scan.html" style="color:var(--primary); font-weight:700;">Document Scanner Online</a> interface on LocalDoc.</li>
-        <li>Select or drag your source files into the interactive drop zone.</li>
-        <li>Configure your processing preferences (e.g. quality, rotation, compression levels).</li>
-        <li>Click <strong>Process Now</strong>. The client engine executes the transformation in milliseconds.</li>
-        <li>Click <strong>Download Result</strong> to save your processed document.</li>
+        <li>Open <a href="../pages/scan.html" style="color:var(--primary); font-weight:700;">CamScanner Studio</a> and switch to the <strong>🪪 ID Card Mode</strong> tab.</li>
+        <li>Align the front of your ID inside the holographic card guide and tap <strong>Snap Front Card</strong>. LocalDoc auto-detects card borders and removes background clutter without forcing manual 8-point handle dragging.</li>
+        <li>Flip the card when prompted with <strong>Step 2: Turn Card Over — Snap Back</strong> and capture the reverse face.</li>
+        <li>Select your preferred enhancement filter: <strong>Magic Pro</strong> for clean paper whitening, or <strong>No Shadow</strong> to neutralize uneven room lighting.</li>
+        <li>Click <strong>Download 1-Page A4 PDF</strong> to instantly generate and download the completed submission-ready document.</li>
       </ol>
 
       <h2 id="section-4">4. Architectural Comparison Matrix</h2>
