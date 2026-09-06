@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CamScanner Studio Online — Real-Time Edge Detection & ID Card Scanner | LocalDoc</title>
-  <meta name="description" content="Free CamScanner online alternative. Real-time document edge detection, auto-crop, Magic Pro shadow removal, front & back ID card scanner, and instant PDF compilation. 100% private in-browser execution.">
+  <title>CamScanner Studio Online — A4 Document Edge Detection & PDF Scanner | LocalDoc</title>
+  <meta name="description" content="Free CamScanner online alternative. Real-time document edge detection, interactive 4-corner perspective crop, Magic Pro shadow removal, and instant PDF compilation. 100% private in-browser execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -12,8 +12,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="CamScanner Studio Online — 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Scan multi-page documents, receipts, and front & back ID cards with auto-edge detection and Magic Color enhancement. 100% private in browser RAM.">
+  <meta property="og:title" content="CamScanner Studio Online — 100% Zero-Upload A4 Scanner | LocalDoc">
+  <meta property="og:description" content="Scan paperwork, receipts, and study notes with 4-corner auto edge detection, shadow removal, and instant in-browser PDF reader viewing. 100% private in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/scan.html">
   <meta property="og:image" content="../assets/icons/scan.svg">
 
@@ -29,51 +29,40 @@
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "Zero-upload client-side document scanner with real-time edge detection, Magic Color enhancement, ID card front & back compilation, and custom PDF export."
+    "description": "Zero-upload client-side document scanner with real-time paper edge detection, 4-corner perspective warp, Magic Pro shadow whitening, and custom PDF export."
   }
   </script>
 
   <style>
-    /* CamScanner Studio Dedicated Styles */
     .cs-container {
       max-width: 960px;
       margin: 0 auto;
       padding: 16px;
     }
 
-    /* Mode Selector Bar */
-    .cs-mode-nav {
+    /* Top Mode Banner */
+    .cs-header-banner {
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .cs-mode-btn {
-      background: var(--bg-surface);
-      border: 1.5px solid var(--line);
-      border-radius: 9999px;
-      padding: 10px 20px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 16px;
       box-shadow: var(--shadow-sm);
     }
-    .cs-mode-btn:hover {
-      border-color: var(--primary);
+    .cs-badge-a4 {
+      background: rgba(2, 132, 199, 0.12);
       color: var(--primary);
-      transform: translateY(-1px);
-    }
-    .cs-mode-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
     /* Modern Viewfinder Box */
@@ -84,14 +73,14 @@
       position: relative;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
       border: 1px solid #1E293B;
-      min-height: 440px;
+      min-height: 460px;
       display: flex;
       flex-direction: column;
     }
     .cs-viewport {
       position: relative;
       width: 100%;
-      height: 480px;
+      height: 490px;
       background: #020617;
       overflow: hidden;
       display: flex;
@@ -114,16 +103,16 @@
 
     /* Filter Classes for Viewfinder & Previews */
     .filter-magic {
-      filter: contrast(1.25) brightness(1.08) saturate(1.2);
+      filter: contrast(1.28) brightness(1.1) saturate(1.22);
     }
     .filter-no-shadow {
-      filter: contrast(1.15) brightness(1.2) saturate(1.1);
+      filter: contrast(1.18) brightness(1.22) saturate(1.1);
     }
     .filter-lighten {
-      filter: brightness(1.3) contrast(1.1);
+      filter: brightness(1.32) contrast(1.12);
     }
     .filter-clean-bw {
-      filter: grayscale(1) contrast(2.4) brightness(1.1);
+      filter: grayscale(1) contrast(2.6) brightness(1.12);
     }
     .filter-original {
       filter: none;
@@ -136,7 +125,7 @@
       left: 0;
       right: 0;
       height: 56px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, transparent 100%);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -208,35 +197,23 @@
       padding: 24px;
     }
     .cs-guide-box {
-      border: 2px dashed rgba(56, 189, 248, 0.7);
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+      border: 2px dashed rgba(56, 189, 248, 0.75);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
       border-radius: 12px;
       position: relative;
-      transition: all 0.25s ease;
-    }
-    .cs-guide-doc {
       width: 78%;
-      height: 82%;
+      height: 84%;
       max-width: 440px;
-      max-height: 600px;
+      max-height: 620px;
       aspect-ratio: 1 / 1.414;
-    }
-    .cs-guide-id {
-      width: 88%;
-      max-width: 440px;
-      aspect-ratio: 85.6 / 53.98;
-      border-radius: 16px;
-      border-color: #10B981;
+      transition: all 0.25s ease;
     }
     .cs-guide-corner {
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-color: #38BDF8;
       border-style: solid;
-    }
-    .cs-guide-id .cs-guide-corner {
-      border-color: #10B981;
     }
     .cs-corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 8px; }
     .cs-corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 8px; }
@@ -265,7 +242,7 @@
     .cs-live-edge {
       position: absolute;
       border: 2px solid #10B981;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
       border-radius: 6px;
       pointer-events: none;
       z-index: 15;
@@ -299,11 +276,10 @@
     .cs-gallery-btn:hover {
       color: #FFFFFF;
     }
-    .cs-gallery-btn img, .cs-gallery-btn svg {
+    .cs-gallery-btn svg {
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      object-fit: cover;
       border: 1.5px solid #334155;
     }
 
@@ -334,9 +310,6 @@
       border-radius: 50%;
       background: #10B981;
       transition: transform 0.1s ease;
-    }
-    .cs-shutter-btn:active .cs-shutter-inner {
-      transform: scale(0.85);
     }
 
     /* Single vs Batch Toggle Pill */
@@ -395,7 +368,7 @@
       border: 2px solid #0B0F19;
     }
 
-    /* Camera Initial Launch Card */
+    /* Camera Initial Launch Cover */
     .cs-launch-card {
       position: absolute;
       inset: 0;
@@ -421,6 +394,35 @@
       max-width: 360px;
       margin-bottom: 20px;
       line-height: 1.5;
+    }
+
+    /* ==================== INTERACTIVE 4-CORNER CROP ADJUSTER ==================== */
+    .cs-crop-stage {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+      box-shadow: var(--shadow-md);
+    }
+    .cs-crop-canvas-wrap {
+      position: relative;
+      background: #0F172A;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      touch-action: none;
+      user-select: none;
+    }
+    #crop-adjust-canvas {
+      max-width: 100%;
+      max-height: 520px;
+      display: block;
+      cursor: crosshair;
     }
 
     /* ==================== ENHANCED PREVIEW & WORKSPACE ==================== */
@@ -517,38 +519,6 @@
       color: #FFFFFF;
     }
 
-    /* ID Card Step Prompts */
-    .id-step-banner {
-      background: #0F172A;
-      border: 1px solid #10B981;
-      border-radius: 12px;
-      padding: 12px 18px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #FFF;
-    }
-    .id-step-indicator {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-    .id-step-badge {
-      background: #10B981;
-      color: #FFF;
-      font-weight: 900;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.82rem;
-    }
-
     /* Multi-Page Grid (Batch Mode) */
     .cs-batch-grid {
       display: grid;
@@ -579,7 +549,7 @@
       background: var(--bg-surface);
     }
 
-    /* Native App & Mobile Fullscreen Viewfinder (CamScanner Flagship APK) */
+    /* Native App & Mobile Fullscreen Viewfinder */
     @media (max-width: 640px), (display-mode: standalone) {
       .app-header {
         display: none !important;
@@ -591,48 +561,12 @@
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
-        height: 100dvh !important;
-        display: flex !important;
-        flex-direction: column !important;
-      }
-      .cs-mode-nav {
-        margin: 6px 0 !important;
+        min-height: 100dvh !important;
       }
       .cs-viewfinder-card {
         border-radius: 0 !important;
         border: none !important;
-        flex: 1 !important;
-        min-height: unset !important;
       }
-      .cs-viewport {
-        height: 100% !important;
-        flex: 1 !important;
-      }
-    }
-
-    .is-native-app .app-header {
-      display: none !important;
-    }
-    .is-native-app #btn-scan-back {
-      display: inline-flex !important;
-    }
-    .is-native-app .cs-container {
-      padding: 0 !important;
-      margin: 0 !important;
-      max-width: 100% !important;
-      height: 100dvh !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-    .is-native-app .cs-viewfinder-card {
-      border-radius: 0 !important;
-      border: none !important;
-      flex: 1 !important;
-      min-height: unset !important;
-    }
-    .is-native-app .cs-viewport {
-      height: 100% !important;
-      flex: 1 !important;
     }
   </style>
 </head>
@@ -651,9 +585,10 @@
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">All Tools</a>
-        <a href="scan.html" class="nav-link active">CamScanner</a>
+        <a href="scan.html" class="nav-link active">CamScanner Studio</a>
+        <a href="id-photo.html" class="nav-link">Biometric ID Studio</a>
         <a href="document-reader.html" class="nav-link">Document Reader</a>
-        <a href="scientific-calculator.html" class="nav-link">Scientific Calculator</a>
+        <a href="scientific-calculator.html" class="nav-link">Calculator</a>
         <a href="../about.html" class="nav-link">About</a>
       </nav>
 
@@ -668,51 +603,27 @@
 
   <main class="cs-container">
 
-    <!-- Mode Selector Tabs -->
-    <div class="cs-mode-nav">
-      <button type="button" class="cs-mode-btn active" id="tab-mode-doc" onclick="setScannerMode('doc')">
-        <span>📄</span> Document Mode (A4 / Letter)
-      </button>
-      <button type="button" class="cs-mode-btn" id="tab-mode-id" onclick="setScannerMode('id')">
-        <span>🪪</span> ID Cards & Passport
-      </button>
-    </div>
-
-    <!-- ID Card Sub-Preset Selector (Shown when in ID Mode) -->
-    <div id="id-presets-bar" class="cs-sub-presets-nav" style="display:none; justify-content:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
-      <button type="button" class="tag-pill active" id="id-preset-general" onclick="setIDPreset('general')">General</button>
-      <button type="button" class="tag-pill" id="id-preset-license" onclick="setIDPreset('license')">Driver License</button>
-      <button type="button" class="tag-pill" id="id-preset-idcard" onclick="setIDPreset('idcard')">National ID Card</button>
-      <button type="button" class="tag-pill" id="id-preset-passport" onclick="setIDPreset('passport')">Passport</button>
-      <button type="button" class="tag-pill" id="id-preset-bankcard" onclick="setIDPreset('bankcard')">Bank Card</button>
-    </div>
-
-    <!-- ID Card Flow Notice (Shown when in ID Card Mode) -->
-    <div id="id-card-flow-banner" class="id-step-banner" style="display:none;">
-      <div class="id-step-indicator">
-        <span class="id-step-badge" id="id-step-number">1</span>
-        <span id="id-step-text">Snap FRONT side of ID Card / License</span>
+    <!-- A4 Document Studio Header Banner -->
+    <div class="cs-header-banner">
+      <div>
+        <h2 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 2px;">
+          📄 A4 Document & Paper Scanner
+        </h2>
+        <p style="font-size:0.8rem; color:var(--text-secondary); margin:0;">
+          Auto paper corner detection, shadow & wrinkle removal, and instant PDF compilation.
+        </p>
       </div>
-      <button type="button" class="btn btn-outline" onclick="resetIDCardFlow()" style="padding:4px 10px; font-size:0.76rem; color:#94A3B8; border-color:#475569;">Reset</button>
-    </div>
-
-    <!-- Smart Finger / Shadow Removal Tip -->
-    <div id="smart-enhance-tip" style="display:none; background:rgba(15,23,42,0.92); border:1px solid #10B981; border-radius:10px; padding:8px 14px; margin-bottom:12px; font-size:0.82rem; color:#FFFFFF; align-items:center; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span style="color:#10B981;">💡</span>
-        <span>Paper edge detected. Try <strong>Magic Pro</strong> or <strong>No Shadow</strong> filter.</span>
-      </div>
-      <button type="button" onclick="document.getElementById('smart-enhance-tip').style.display='none'" style="background:none; border:none; color:#94A3B8; font-size:1rem; cursor:pointer; padding:0 4px;">✕</button>
+      <span class="cs-badge-a4">✦ Ready to Print A4</span>
     </div>
 
     <!-- Main Viewfinder Section -->
     <div class="cs-viewfinder-card" id="viewfinder-card">
       
-      <!-- Top Bar: Flash, Camera Flip, Zoom, Aspect -->
+      <!-- Top Bar: Flash, Camera Flip, Zoom -->
       <div class="cs-cam-topbar">
         <div style="display:flex; gap:8px; align-items:center;">
           <button type="button" class="cs-icon-btn" id="btn-scan-back" title="Back to Tools" style="display:none;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </button>
           <button type="button" class="cs-icon-btn" id="btn-torch" title="Flash / Torch">⚡</button>
         </div>
@@ -734,15 +645,15 @@
         <video id="camera-video" class="cs-video-feed filter-magic" autoplay playsinline muted></video>
         <canvas id="camera-canvas" style="display:none;"></canvas>
 
-        <!-- Framing Guide Box (Aspect-Aware) -->
+        <!-- Framing Guide Box (A4 Document Ratio) -->
         <div class="cs-guide-overlay">
-          <div class="cs-guide-box cs-guide-doc" id="guide-box">
+          <div class="cs-guide-box" id="guide-box">
             <div class="cs-guide-corner cs-corner-tl"></div>
             <div class="cs-guide-corner cs-corner-tr"></div>
             <div class="cs-guide-corner cs-corner-bl"></div>
             <div class="cs-guide-corner cs-corner-br"></div>
             <div class="cs-guide-prompt" id="guide-prompt">
-              <span>✦</span> <span id="guide-prompt-text">Auto Edge Detection Active</span>
+              <span>✦</span> <span id="guide-prompt-text">Auto Paper Edge Detection Active</span>
             </div>
           </div>
         </div>
@@ -750,11 +661,11 @@
         <!-- Real-Time Edge Tracker Highlight -->
         <div id="live-edge-rect" class="cs-live-edge"></div>
 
-        <!-- Initial Camera Launch Modal (Clean Single-Click) -->
+        <!-- Initial Camera Launch Modal -->
         <div class="cs-launch-card" id="camera-launch-cover">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           <h3>CamScanner Camera Ready</h3>
-          <p>Tap below to start the camera with auto-edge detection, smart document straightening, and shadow whitening.</p>
+          <p>Tap below to start camera with auto-edge detection, smart paper flattening, and shadow removal.</p>
           <button type="button" class="btn btn-primary btn-lg" id="btn-start-camera" style="border-radius:9999px; padding:12px 32px; font-weight:800;">
             📸 Start Live Camera
           </button>
@@ -777,7 +688,7 @@
 
         <!-- Shutter Button -->
         <div class="cs-shutter-wrap">
-          <button type="button" class="cs-shutter-btn" id="btn-shutter" title="Capture Photo">
+          <button type="button" class="cs-shutter-btn" id="btn-shutter" title="Capture Document Photo">
             <div class="cs-shutter-inner"></div>
           </button>
         </div>
@@ -799,11 +710,35 @@
       </div>
     </div>
 
+    <!-- ==================== INTERACTIVE 4-CORNER CROP ADJUSTMENT STAGE ==================== -->
+    <div class="cs-crop-stage" id="crop-stage-section">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 2px;">
+            📐 Adjust Paper Corners
+          </h3>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin:0;">
+            Drag the 4 corner circles to perfectly outline your document. Excess table area will be removed.
+          </p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-outline" id="btn-crop-reset" style="padding:6px 14px; font-size:0.82rem;">Reset Box</button>
+          <button type="button" class="btn btn-primary" id="btn-apply-crop" style="padding:6px 20px; font-size:0.88rem; font-weight:800;">
+            ✓ Next: Enhance &rarr;
+          </button>
+        </div>
+      </div>
+
+      <div class="cs-crop-canvas-wrap">
+        <canvas id="crop-adjust-canvas"></canvas>
+      </div>
+    </div>
+
     <!-- ==================== ENHANCED PREVIEW SECTION ==================== -->
     <div class="cs-preview-section" id="preview-section">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
         <h3 style="font-size:1.2rem; font-weight:800; color:var(--text-primary); margin:0;" id="preview-heading">
-          ✨ Auto-Cropped & Enhanced
+          ✨ Auto-Cropped & Flattened A4 Document
         </h3>
         <button type="button" class="btn btn-outline" id="btn-back-to-cam" style="font-size:0.82rem; padding:6px 14px;">
           📸 Retake / Scan Next
@@ -815,7 +750,7 @@
         <img id="scanned-result-img" class="cs-preview-img filter-magic" src="" alt="Scanned Document">
       </div>
 
-      <!-- CamScanner Filter Strip -->
+      <!-- CamScanner Signature Filter Strip -->
       <div class="cs-filter-strip">
         <button type="button" class="cs-filter-pill active" data-filter="magic" onclick="applyFilter('magic')">✨ Magic Pro</button>
         <button type="button" class="cs-filter-pill" data-filter="no-shadow" onclick="applyFilter('no-shadow')">☀️ No Shadow</button>
@@ -824,29 +759,46 @@
         <button type="button" class="cs-filter-pill" data-filter="original" onclick="applyFilter('original')">📷 Original</button>
       </div>
 
-      <!-- ID Card Layout Mode Options (When viewing ID Card) -->
-      <div id="id-card-layout-options" style="display:none; margin-top:16px; text-align:center;">
-        <span style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); margin-right:8px;">Layout Format:</span>
-        <button type="button" class="tag-pill active" id="id-layout-a4" onclick="setIDCardLayout('a4')">Standard A4 Sheet (Print)</button>
-        <button type="button" class="tag-pill" id="id-layout-compact" onclick="setIDCardLayout('compact')">Side-by-Side (Digital)</button>
-      </div>
-
       <!-- Action Buttons Row -->
       <div class="cs-action-row">
         <button type="button" class="btn btn-cs-download btn-lg" id="btn-instant-pdf">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span id="btn-instant-pdf-text">Download PDF Document</span>
+          <span id="btn-instant-pdf-text">Save & Download PDF</span>
         </button>
 
         <button type="button" class="btn btn-outline btn-lg" id="btn-instant-jpg">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          <span>Save as Image (JPG)</span>
+          <span>Save as JPG Image</span>
         </button>
 
         <button type="button" class="btn btn-cs-reader btn-lg" id="btn-open-reader">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-          <span>Open in Document Reader</span>
+          <span>View in Document Reader</span>
         </button>
+      </div>
+    </div>
+
+    <!-- ==================== BATCH MULTI-PAGE ORGANIZER MODAL ==================== -->
+    <div id="batch-organizer-modal" style="display:none; position:fixed; inset:0; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:16px; width:100%; max-width:680px; max-height:85vh; display:flex; flex-direction:column; padding:20px; box-shadow:var(--shadow-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid var(--line); padding-bottom:8px;">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0;">
+            Scanned Pages (<span id="batch-modal-count">0</span>)
+          </h3>
+          <button type="button" onclick="closeBatchOrganizer()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; padding:8px 0;" id="batch-pages-container">
+          <!-- Rendered batch thumbnail cards -->
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--line); padding-top:12px; flex-wrap:wrap; gap:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeBatchOrganizer(); resumeCamera();">➕ Add More Pages</button>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-outline" onclick="clearAllBatch()" style="color:var(--danger);">Clear All</button>
+            <button type="button" class="btn btn-cs-download" id="btn-compile-batch-pdf">Compile Multi-Page PDF &rarr;</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -854,16 +806,16 @@
     <div id="doc-title-modal" style="display:none; position:fixed; inset:0; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); z-index:10000; align-items:center; justify-content:center; padding:16px;">
       <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:18px; width:100%; max-width:420px; padding:24px; box-shadow:var(--shadow-xl);">
         <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 8px;">Document Title</h3>
-        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">Give your scanned document a name:</p>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">Name your scanned document before saving:</p>
         
         <div style="position:relative; margin-bottom:20px;">
-          <input type="text" id="doc-name-input" style="width:100%; padding:12px 38px 12px 14px; border-radius:10px; border:1.5px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem; font-weight:600;" placeholder="LocalDoc_Scanned">
+          <input type="text" id="doc-name-input" style="width:100%; padding:12px 38px 12px 14px; border-radius:10px; border:1.5px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem; font-weight:600;" placeholder="LocalDoc_Document">
           <button type="button" onclick="document.getElementById('doc-name-input').value=''" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); font-size:1rem; cursor:pointer;">✕</button>
         </div>
 
         <div style="display:flex; justify-content:flex-end; gap:10px;">
           <button type="button" class="btn btn-outline" onclick="closeDocTitleModal()">Cancel</button>
-          <button type="button" class="btn btn-primary" id="btn-confirm-doc-save" style="font-weight:700; padding:10px 22px;">Save & Export</button>
+          <button type="button" class="btn btn-primary" id="btn-confirm-doc-save" style="font-weight:700; padding:10px 22px;">Save & Open</button>
         </div>
       </div>
     </div>
@@ -879,20 +831,15 @@
   <script>
     // State Management
     let scanner = null;
-    let currentMode = 'doc'; // 'doc' or 'id'
-    let currentIDPreset = 'general'; // 'general', 'license', 'idcard', 'passport', 'bankcard'
     let captureMode = 'single'; // 'single' or 'batch'
     let currentFilter = 'magic';
     let currentFacingMode = 'environment';
     let isTorchOn = false;
 
-    // ID Card state: Step 1 = front, Step 2 = back
-    let idCardState = {
-      step: 1,
-      front: null,
-      back: null,
-      layout: 'a4' // 'a4' or 'compact'
-    };
+    // Raw captured image object & interactive 4 corners
+    let rawCapturedImg = null;
+    let currentCorners = null; // { topLeft, topRight, bottomRight, bottomLeft }
+    let activeCornerDrag = null;
 
     // Scanned documents queue (Batch Mode)
     let scannedPages = [];
@@ -910,6 +857,8 @@
     const openGalleryBtn = document.getElementById("btn-open-gallery");
     const fileInput = document.getElementById("cs-file-input");
     const shutterBtn = document.getElementById("btn-shutter");
+    const cropStageSection = document.getElementById("crop-stage-section");
+    const cropCanvas = document.getElementById("crop-adjust-canvas");
     const previewSection = document.getElementById("preview-section");
     const resultImg = document.getElementById("scanned-result-img");
 
@@ -940,16 +889,18 @@
       try {
         await scanner.startCamera(currentFacingMode);
         launchCover.style.display = "none";
+        cropStageSection.style.display = "none";
         previewSection.style.display = "none";
         document.getElementById("viewfinder-card").style.display = "flex";
         startLiveEdgeLoop();
-        UIUtils.showToast("Camera active. Align document inside frame.", "success");
+        UIUtils.showToast("Camera active. Align paper document inside frame.", "success");
       } catch (err) {
         alert("Camera error: " + err.message);
       }
     }
 
     function resumeCamera() {
+      cropStageSection.style.display = "none";
       previewSection.style.display = "none";
       document.getElementById("viewfinder-card").style.display = "flex";
       if (!scanner.stream) {
@@ -965,92 +916,11 @@
       await scanner.applyZoom(val);
     };
 
-    // Scanner Mode Switcher
-    window.setScannerMode = function(mode) {
-      currentMode = mode;
-      document.getElementById("tab-mode-doc").classList.toggle("active", mode === 'doc');
-      document.getElementById("tab-mode-id").classList.toggle("active", mode === 'id');
-
-      const guideBox = document.getElementById("guide-box");
-      const promptText = document.getElementById("guide-prompt-text");
-      const idBanner = document.getElementById("id-card-flow-banner");
-      const idPresetsBar = document.getElementById("id-presets-bar");
-      const batchToggle = document.getElementById("batch-toggle-pill");
-
-      if (mode === 'id') {
-        idPresetsBar.style.display = "flex";
-        idBanner.style.display = "flex";
-        batchToggle.style.display = "none";
-        applyIDPresetGuide(currentIDPreset);
-        updateIDCardBanner();
-      } else {
-        guideBox.className = "cs-guide-box cs-guide-doc";
-        idPresetsBar.style.display = "none";
-        idBanner.style.display = "none";
-        batchToggle.style.display = "flex";
-        promptText.textContent = "Auto Edge Detection Active";
-      }
-    };
-
-    window.setIDPreset = function(preset) {
-      currentIDPreset = preset;
-      document.querySelectorAll("#id-presets-bar .tag-pill").forEach(p => {
-        p.classList.toggle("active", p.id === `id-preset-${preset}`);
-      });
-      applyIDPresetGuide(preset);
-      updateIDCardBanner();
-    };
-
-    function applyIDPresetGuide(preset) {
-      const guideBox = document.getElementById("guide-box");
-      guideBox.className = "cs-guide-box cs-guide-id";
-      if (preset === 'passport') {
-        guideBox.style.aspectRatio = "1 / 1.414";
-        guideBox.style.width = "72%";
-      } else if (preset === 'bankcard' || preset === 'license' || preset === 'idcard') {
-        guideBox.style.aspectRatio = "85.6 / 53.98";
-        guideBox.style.width = "88%";
-      } else {
-        guideBox.style.aspectRatio = "85.6 / 53.98";
-        guideBox.style.width = "85%";
-      }
-    }
-
     window.setCaptureMode = function(mode) {
       captureMode = mode;
       document.getElementById("btn-single-mode").classList.toggle("active", mode === 'single');
       document.getElementById("btn-batch-mode").classList.toggle("active", mode === 'batch');
       document.getElementById("btn-batch-tray").style.display = (mode === 'batch' && scannedPages.length > 0) ? 'flex' : 'none';
-    };
-
-    // ID Card Banner Update
-    function updateIDCardBanner() {
-      const stepNum = document.getElementById("id-step-number");
-      const stepText = document.getElementById("id-step-text");
-      const promptText = document.getElementById("guide-prompt-text");
-      const presetLabel = currentIDPreset === 'passport' ? 'Passport' : (currentIDPreset === 'license' ? 'Driver License' : 'ID Card');
-
-      if (currentIDPreset === 'passport') {
-        stepNum.textContent = "1";
-        stepText.textContent = "Snap Main Information Page of Passport";
-        promptText.textContent = "Align Passport Page inside frame";
-      } else if (idCardState.step === 1) {
-        stepNum.textContent = "1";
-        stepText.textContent = `Snap FRONT side of ${presetLabel}`;
-        promptText.textContent = `Align ${presetLabel} Front inside box`;
-      } else {
-        stepNum.textContent = "2";
-        stepText.textContent = `Turn Over — Snap BACK side of ${presetLabel}`;
-        promptText.textContent = `Align ${presetLabel} Back inside box`;
-      }
-    }
-
-    window.resetIDCardFlow = function() {
-      idCardState.step = 1;
-      idCardState.front = null;
-      idCardState.back = null;
-      updateIDCardBanner();
-      resumeCamera();
     };
 
     // Real-Time Background Edge Loop
@@ -1060,7 +930,7 @@
       edgeLoop = setInterval(() => {
         if (!videoEl || !videoEl.videoWidth) return;
         try {
-          const corners = DocumentScanner.detectDocumentEdges(videoEl, currentMode === 'id' ? 'id' : 'auto');
+          const corners = DocumentScanner.detectDocumentEdges(videoEl, 'a4');
           const rectEl = document.getElementById("live-edge-rect");
           if (corners && rectEl) {
             const vWrap = document.getElementById("viewport-stage");
@@ -1076,12 +946,6 @@
             rectEl.style.width = `${Math.max(30, bw)}px`;
             rectEl.style.height = `${Math.max(30, bh)}px`;
             rectEl.style.display = 'block';
-
-            // Show tip occasionally if shadows detected
-            const tipEl = document.getElementById("smart-enhance-tip");
-            if (tipEl && Math.random() < 0.05 && tipEl.style.display === 'none') {
-              tipEl.style.display = 'flex';
-            }
           }
         } catch (e) {}
       }, 250);
@@ -1099,7 +963,6 @@
         videoEl.style.opacity = '0.1';
         setTimeout(() => videoEl.style.opacity = '1', 100);
 
-        // Native tactile haptic feedback on shutter press
         if (window.AndroidNative && window.AndroidNative.hapticHeavy) {
           window.AndroidNative.hapticHeavy();
         } else if (navigator.vibrate) {
@@ -1107,46 +970,11 @@
         }
 
         const rawDataUrl = scanner.captureFrame();
-        const img = await UIUtils.loadImage(rawDataUrl);
+        rawCapturedImg = await UIUtils.loadImage(rawDataUrl);
 
-        // Auto-detect edges and perspective-rectify
-        const corners = DocumentScanner.detectDocumentEdges(img, currentMode === 'id' ? 'id' : 'auto');
-        const filterType = getInternalFilterName(currentFilter);
-        const processedDataUrl = DocumentScanner.processImage(img, filterType, 0, corners);
-
-        if (currentMode === 'id') {
-          if (currentIDPreset === 'passport') {
-            currentActiveImage = processedDataUrl;
-            showSingleResult(processedDataUrl);
-            return;
-          }
-
-          // ID Card Front & Back Flow
-          if (idCardState.step === 1) {
-            idCardState.front = processedDataUrl;
-            idCardState.step = 2;
-            updateIDCardBanner();
-            UIUtils.showToast("✓ Front Captured! Now flip card over to snap Back side.", "success");
-          } else {
-            idCardState.back = processedDataUrl;
-            UIUtils.showToast("✓ Back Captured! Compiling ID Card...", "success");
-            await showIDCardResult();
-          }
-        } else {
-          // Document Mode
-          if (captureMode === 'single') {
-            currentActiveImage = processedDataUrl;
-            showSingleResult(processedDataUrl);
-          } else {
-            // Batch Mode
-            scannedPages.push({
-              dataUrl: processedDataUrl,
-              filter: currentFilter
-            });
-            updateBatchTray();
-            UIUtils.showToast(`Page #${scannedPages.length} captured! Continue snapping or tap Finish.`, "info");
-          }
-        }
+        // Auto detect paper boundaries
+        currentCorners = DocumentScanner.detectDocumentEdges(rawCapturedImg, 'a4');
+        openCropStage(rawCapturedImg, currentCorners);
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Capture failed: " + err.message, "error");
@@ -1158,32 +986,22 @@
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
-      UIUtils.showToast(`Processing ${files.length} photo(s)...`, "info");
+      UIUtils.showToast(`Loading ${files.length} document photo(s)...`, "info");
 
       for (let i = 0; i < files.length; i++) {
         const dataUrl = await UIUtils.readFileAsDataURL(files[i]);
         const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, currentMode === 'id' ? 'id' : 'auto');
-        const processed = DocumentScanner.processImage(img, getInternalFilterName(currentFilter), 0, corners);
+        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
 
-        if (currentMode === 'id') {
-          if (idCardState.step === 1) {
-            idCardState.front = processed;
-            idCardState.step = 2;
-            updateIDCardBanner();
-          } else {
-            idCardState.back = processed;
-            await showIDCardResult();
-            return;
-          }
+        if (files.length === 1 && captureMode === 'single') {
+          rawCapturedImg = img;
+          currentCorners = corners;
+          openCropStage(img, corners);
+          return;
         } else {
-          if (files.length === 1 && captureMode === 'single') {
-            currentActiveImage = processed;
-            showSingleResult(processed);
-            return;
-          } else {
-            scannedPages.push({ dataUrl: processed, filter: currentFilter });
-          }
+          const filterType = getInternalFilterName(currentFilter);
+          const processed = DocumentScanner.processImage(img, filterType, 0, corners);
+          scannedPages.push({ dataUrl: processed, filter: currentFilter });
         }
       }
 
@@ -1191,6 +1009,174 @@
         setCaptureMode('batch');
         updateBatchTray();
         openBatchOrganizer();
+      }
+    });
+
+    // ==================== INTERACTIVE 4-CORNER CROP EDITOR ====================
+    function openCropStage(img, corners) {
+      document.getElementById("viewfinder-card").style.display = "none";
+      previewSection.style.display = "none";
+      cropStageSection.style.display = "block";
+
+      const maxCanvasW = Math.min(800, window.innerWidth - 48);
+      const maxCanvasH = 500;
+      const aspect = img.width / img.height;
+
+      let drawW, drawH;
+      if (aspect > maxCanvasW / maxCanvasH) {
+        drawW = maxCanvasW;
+        drawH = drawW / aspect;
+      } else {
+        drawH = maxCanvasH;
+        drawW = drawH * aspect;
+      }
+
+      cropCanvas.width = drawW;
+      cropCanvas.height = drawH;
+
+      renderCropCanvas();
+      setupCropCanvasEvents();
+      window.scrollTo({ top: cropStageSection.offsetTop - 20, behavior: 'smooth' });
+    }
+
+    function renderCropCanvas() {
+      const ctx = cropCanvas.getContext('2d');
+      const w = cropCanvas.width;
+      const h = cropCanvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(rawCapturedImg, 0, 0, w, h);
+
+      // Denormalized points
+      const tl = { x: currentCorners.topLeft.x * w, y: currentCorners.topLeft.y * h };
+      const tr = { x: currentCorners.topRight.x * w, y: currentCorners.topRight.y * h };
+      const br = { x: currentCorners.bottomRight.x * w, y: currentCorners.bottomRight.y * h };
+      const bl = { x: currentCorners.bottomLeft.x * w, y: currentCorners.bottomLeft.y * h };
+
+      // Shaded background outside polygon
+      ctx.save();
+      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.moveTo(tl.x, tl.y);
+      ctx.lineTo(tr.x, tr.y);
+      ctx.lineTo(br.x, br.y);
+      ctx.lineTo(bl.x, bl.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      // Border lines
+      ctx.save();
+      ctx.strokeStyle = "#10B981";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(tl.x, tl.y);
+      ctx.lineTo(tr.x, tr.y);
+      ctx.lineTo(br.x, br.y);
+      ctx.lineTo(bl.x, bl.y);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Draw 4 corner handles
+      [tl, tr, br, bl].forEach(pt => {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#0284C7";
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function setupCropCanvasEvents() {
+      const getPos = (e) => {
+        const rect = cropCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (cropCanvas.width / rect.width),
+          y: (clientY - rect.top) * (cropCanvas.height / rect.height)
+        };
+      };
+
+      const findNearestCorner = (pos) => {
+        const w = cropCanvas.width;
+        const h = cropCanvas.height;
+        const pts = [
+          { key: 'topLeft', x: currentCorners.topLeft.x * w, y: currentCorners.topLeft.y * h },
+          { key: 'topRight', x: currentCorners.topRight.x * w, y: currentCorners.topRight.y * h },
+          { key: 'bottomRight', x: currentCorners.bottomRight.x * w, y: currentCorners.bottomRight.y * h },
+          { key: 'bottomLeft', x: currentCorners.bottomLeft.x * w, y: currentCorners.bottomLeft.y * h }
+        ];
+
+        let minD = 45; // Touch target radius
+        let match = null;
+        pts.forEach(p => {
+          const d = Math.hypot(p.x - pos.x, p.y - pos.y);
+          if (d < minD) {
+            minD = d;
+            match = p.key;
+          }
+        });
+        return match;
+      };
+
+      const handleDown = (e) => {
+        const pos = getPos(e);
+        activeCornerDrag = findNearestCorner(pos);
+      };
+
+      const handleMove = (e) => {
+        if (!activeCornerDrag) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        const normX = Math.max(0.01, Math.min(0.99, pos.x / cropCanvas.width));
+        const normY = Math.max(0.01, Math.min(0.99, pos.y / cropCanvas.height));
+        currentCorners[activeCornerDrag] = { x: normX, y: normY };
+        renderCropCanvas();
+      };
+
+      const handleUp = () => {
+        activeCornerDrag = null;
+      };
+
+      cropCanvas.onmousedown = handleDown;
+      window.onmousemove = handleMove;
+      window.onmouseup = handleUp;
+
+      cropCanvas.ontouchstart = handleDown;
+      window.ontouchmove = handleMove;
+      window.ontouchend = handleUp;
+    }
+
+    document.getElementById("btn-crop-reset").addEventListener("click", () => {
+      currentCorners = {
+        topLeft: { x: 0.05, y: 0.05 },
+        topRight: { x: 0.95, y: 0.05 },
+        bottomRight: { x: 0.95, y: 0.95 },
+        bottomLeft: { x: 0.05, y: 0.95 }
+      };
+      renderCropCanvas();
+    });
+
+    document.getElementById("btn-apply-crop").addEventListener("click", () => {
+      const filterType = getInternalFilterName(currentFilter);
+      // Perspective crop and warp to A4 rectangle
+      const processed = DocumentScanner.processImage(rawCapturedImg, filterType, 0, currentCorners);
+
+      if (captureMode === 'single') {
+        currentActiveImage = processed;
+        showSingleResult(processed);
+      } else {
+        scannedPages.push({ dataUrl: processed, filter: currentFilter });
+        updateBatchTray();
+        UIUtils.showToast(`Page #${scannedPages.length} added!`, "success");
+        resumeCamera();
       }
     });
 
@@ -1205,40 +1191,13 @@
     // ==================== RESULTS PRESENTATION ====================
     function showSingleResult(dataUrl) {
       document.getElementById("viewfinder-card").style.display = "none";
-      document.getElementById("id-card-layout-options").style.display = "none";
-      document.getElementById("preview-heading").textContent = "✨ Auto-Cropped & Enhanced Document";
+      cropStageSection.style.display = "none";
       
       resultImg.src = dataUrl;
       resultImg.className = "cs-preview-img filter-" + currentFilter;
       previewSection.style.display = "block";
       window.scrollTo({ top: previewSection.offsetTop - 30, behavior: 'smooth' });
     }
-
-    async function showIDCardResult() {
-      document.getElementById("viewfinder-card").style.display = "none";
-      document.getElementById("id-card-layout-options").style.display = "block";
-      document.getElementById("preview-heading").textContent = "🪪 Compiled ID Card (Front & Back)";
-
-      let compiled;
-      if (idCardState.layout === 'compact') {
-        compiled = await DocumentScanner.generateIDCardCompact(idCardState.front, idCardState.back);
-      } else {
-        compiled = await DocumentScanner.generateIDCardA4(idCardState.front, idCardState.back);
-      }
-
-      currentActiveImage = compiled;
-      resultImg.src = compiled;
-      resultImg.className = "cs-preview-img filter-" + currentFilter;
-      previewSection.style.display = "block";
-      window.scrollTo({ top: previewSection.offsetTop - 30, behavior: 'smooth' });
-    }
-
-    window.setIDCardLayout = async function(layout) {
-      idCardState.layout = layout;
-      document.getElementById("id-layout-a4").classList.toggle("active", layout === 'a4');
-      document.getElementById("id-layout-compact").classList.toggle("active", layout === 'compact');
-      await showIDCardResult();
-    };
 
     // Filter Buttons on Preview
     window.applyFilter = function(filter) {
@@ -1248,14 +1207,16 @@
       });
       resultImg.className = "cs-preview-img filter-" + filter;
       videoEl.className = "cs-video-feed filter-" + filter;
+
+      if (rawCapturedImg && currentCorners) {
+        const filterType = getInternalFilterName(filter);
+        currentActiveImage = DocumentScanner.processImage(rawCapturedImg, filterType, 0, currentCorners);
+        resultImg.src = currentActiveImage;
+      }
     };
 
     document.getElementById("btn-back-to-cam").addEventListener("click", () => {
-      if (currentMode === 'id') {
-        resetIDCardFlow();
-      } else {
-        resumeCamera();
-      }
+      resumeCamera();
     });
 
     // ==================== DOCUMENT TITLE / RENAME MODAL FLOW ====================
@@ -1267,8 +1228,7 @@
       const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
       const timeStr = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
       
-      const defaultPrefix = currentMode === 'id' ? `LocalDoc_ID_${dateStr}_${timeStr}` : `LocalDoc_Scanned_${dateStr}_${timeStr}`;
-      input.value = defaultPrefix;
+      input.value = `LocalDoc_A4_${dateStr}_${timeStr}`;
       modal.style.display = "flex";
       setTimeout(() => input.select(), 100);
     }
@@ -1281,7 +1241,7 @@
       const input = document.getElementById("doc-name-input");
       let baseName = input.value.trim();
       if (!baseName) {
-        baseName = "LocalDoc_Scanned_" + Date.now();
+        baseName = "LocalDoc_A4_" + Date.now();
       }
       closeDocTitleModal();
 
@@ -1292,7 +1252,7 @@
       }
     });
 
-    // Instant PDF Download
+    // Save & Download PDF
     document.getElementById("btn-instant-pdf").addEventListener("click", () => {
       if (!currentActiveImage) return;
       promptDocTitle('pdf');
@@ -1301,27 +1261,30 @@
     async function executePDFExport(filenameBase) {
       try {
         const btnText = document.getElementById("btn-instant-pdf-text");
-        btnText.textContent = "Compiling PDF...";
+        btnText.textContent = "Compiling A4 PDF...";
         
         const filename = filenameBase.endsWith('.pdf') ? filenameBase : `${filenameBase}.pdf`;
         const blob = await DocumentScanner.exportToPDF([{ processedDataUrl: currentActiveImage }], { pageSize: 'a4' });
         
         UIUtils.downloadBlob(blob, filename);
-        UIUtils.showToast("Scanned PDF saved successfully!", "success");
-        btnText.textContent = "Download PDF Document";
+        UIUtils.showToast("✓ Saved! Opening in built-in Document Reader...", "success");
+        btnText.textContent = "Save & Download PDF";
 
-        // Trigger native AdMob interstitial hook if in APK
-        if (window.AndroidNative && window.AndroidNative.showInterstitialAd) {
-          window.AndroidNative.showInterstitialAd();
-        }
+        // Automatically open the saved document in LocalDoc's built-in Document Reader
+        sessionStorage.setItem("localdoc_reader_file", currentActiveImage);
+        sessionStorage.setItem("localdoc_reader_name", filename);
+        setTimeout(() => {
+          window.location.href = "document-reader.html";
+        }, 1200);
+
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Failed to compile PDF: " + err.message, "error");
-        document.getElementById("btn-instant-pdf-text").textContent = "Download PDF Document";
+        document.getElementById("btn-instant-pdf-text").textContent = "Save & Download PDF";
       }
     }
 
-    // Instant JPG Download
+    // Save as JPG Image
     document.getElementById("btn-instant-jpg").addEventListener("click", () => {
       if (!currentActiveImage) return;
       promptDocTitle('jpg');
@@ -1333,20 +1296,15 @@
       a.href = currentActiveImage;
       a.download = filename;
       a.click();
-      UIUtils.showToast("Scanned photo saved as JPG!", "success");
+      UIUtils.showToast("Scanned document saved as JPG!", "success");
     }
 
-    // Open in Universal Document Reader
+    // View directly in built-in Document Reader
     document.getElementById("btn-open-reader").addEventListener("click", async () => {
       if (!currentActiveImage) return;
-      try {
-        sessionStorage.setItem("localdoc_reader_file", currentActiveImage);
-        sessionStorage.setItem("localdoc_reader_name", currentMode === 'id' ? 'Scanned_ID_Card.jpg' : 'Scanned_Document.jpg');
-        window.location.href = "document-reader.html";
-      } catch (err) {
-        UIUtils.showToast("Opening in viewer...", "info");
-        window.location.href = "document-reader.html";
-      }
+      sessionStorage.setItem("localdoc_reader_file", currentActiveImage);
+      sessionStorage.setItem("localdoc_reader_name", "Scanned_A4_Document.jpg");
+      window.location.href = "document-reader.html";
     });
 
     // ==================== BATCH MODE ORGANIZER ====================
@@ -1437,14 +1395,22 @@
 
         const now = new Date();
         const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-        const filename = `LocalDoc_Batch_${dateStr}.pdf`;
+        const filename = `LocalDoc_Batch_A4_${dateStr}.pdf`;
 
         const pagesArray = scannedPages.map(p => ({ processedDataUrl: p.dataUrl }));
         const blob = await DocumentScanner.exportToPDF(pagesArray, { pageSize: 'a4' });
         
         UIUtils.downloadBlob(blob, filename);
-        UIUtils.showToast(`Compiled ${scannedPages.length} pages into PDF!`, "success");
+        UIUtils.showToast(`✓ Compiled ${scannedPages.length} pages into PDF! Opening in Reader...`, "success");
         closeBatchOrganizer();
+
+        // Open in built-in document reader
+        sessionStorage.setItem("localdoc_reader_file", scannedPages[0].dataUrl);
+        sessionStorage.setItem("localdoc_reader_name", filename);
+        setTimeout(() => {
+          window.location.href = "document-reader.html";
+        }, 1200);
+
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Batch PDF compilation failed: " + err.message, "error");
@@ -1471,4 +1437,3 @@
   </script>
 </body>
 </html>
-
