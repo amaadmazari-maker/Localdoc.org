@@ -674,8 +674,17 @@
         <span>📄</span> Document Mode (A4 / Letter)
       </button>
       <button type="button" class="cs-mode-btn" id="tab-mode-id" onclick="setScannerMode('id')">
-        <span>🪪</span> ID Card Mode (Front & Back)
+        <span>🪪</span> ID Cards & Passport
       </button>
+    </div>
+
+    <!-- ID Card Sub-Preset Selector (Shown when in ID Mode) -->
+    <div id="id-presets-bar" class="cs-sub-presets-nav" style="display:none; justify-content:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+      <button type="button" class="tag-pill active" id="id-preset-general" onclick="setIDPreset('general')">General</button>
+      <button type="button" class="tag-pill" id="id-preset-license" onclick="setIDPreset('license')">Driver License</button>
+      <button type="button" class="tag-pill" id="id-preset-idcard" onclick="setIDPreset('idcard')">National ID Card</button>
+      <button type="button" class="tag-pill" id="id-preset-passport" onclick="setIDPreset('passport')">Passport</button>
+      <button type="button" class="tag-pill" id="id-preset-bankcard" onclick="setIDPreset('bankcard')">Bank Card</button>
     </div>
 
     <!-- ID Card Flow Notice (Shown when in ID Card Mode) -->
@@ -685,6 +694,15 @@
         <span id="id-step-text">Snap FRONT side of ID Card / License</span>
       </div>
       <button type="button" class="btn btn-outline" onclick="resetIDCardFlow()" style="padding:4px 10px; font-size:0.76rem; color:#94A3B8; border-color:#475569;">Reset</button>
+    </div>
+
+    <!-- Smart Finger / Shadow Removal Tip -->
+    <div id="smart-enhance-tip" style="display:none; background:rgba(15,23,42,0.92); border:1px solid #10B981; border-radius:10px; padding:8px 14px; margin-bottom:12px; font-size:0.82rem; color:#FFFFFF; align-items:center; justify-content:space-between; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="color:#10B981;">💡</span>
+        <span>Paper edge detected. Try <strong>Magic Pro</strong> or <strong>No Shadow</strong> filter.</span>
+      </div>
+      <button type="button" onclick="document.getElementById('smart-enhance-tip').style.display='none'" style="background:none; border:none; color:#94A3B8; font-size:1rem; cursor:pointer; padding:0 4px;">✕</button>
     </div>
 
     <!-- Main Viewfinder Section -->
@@ -832,26 +850,20 @@
       </div>
     </div>
 
-    <!-- ==================== BATCH MULTI-PAGE ORGANIZER MODAL ==================== -->
-    <div id="batch-organizer-modal" style="display:none; position:fixed; inset:0; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
-      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:16px; width:100%; max-width:680px; max-height:85vh; display:flex; flex-direction:column; padding:20px; box-shadow:var(--shadow-lg);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid var(--line); padding-bottom:8px;">
-          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0;">
-            Scanned Pages (<span id="batch-modal-count">0</span>)
-          </h3>
-          <button type="button" onclick="closeBatchOrganizer()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">✕</button>
+    <!-- ==================== DOCUMENT TITLE / RENAME MODAL ==================== -->
+    <div id="doc-title-modal" style="display:none; position:fixed; inset:0; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); z-index:10000; align-items:center; justify-content:center; padding:16px;">
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:18px; width:100%; max-width:420px; padding:24px; box-shadow:var(--shadow-xl);">
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 8px;">Document Title</h3>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:16px;">Give your scanned document a name:</p>
+        
+        <div style="position:relative; margin-bottom:20px;">
+          <input type="text" id="doc-name-input" style="width:100%; padding:12px 38px 12px 14px; border-radius:10px; border:1.5px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem; font-weight:600;" placeholder="LocalDoc_Scanned">
+          <button type="button" onclick="document.getElementById('doc-name-input').value=''" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); font-size:1rem; cursor:pointer;">✕</button>
         </div>
 
-        <div style="flex:1; overflow-y:auto; padding:8px 0;" id="batch-pages-container">
-          <!-- Rendered batch thumbnail cards -->
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--line); padding-top:12px; flex-wrap:wrap; gap:10px;">
-          <button type="button" class="btn btn-outline" onclick="closeBatchOrganizer(); resumeCamera();">➕ Add More Pages</button>
-          <div style="display:flex; gap:10px;">
-            <button type="button" class="btn btn-outline" onclick="clearAllBatch()" style="color:var(--danger);">Clear All</button>
-            <button type="button" class="btn btn-cs-download" id="btn-compile-batch-pdf">Compile Multi-Page PDF &rarr;</button>
-          </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeDocTitleModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" id="btn-confirm-doc-save" style="font-weight:700; padding:10px 22px;">Save & Export</button>
         </div>
       </div>
     </div>
@@ -868,6 +880,7 @@
     // State Management
     let scanner = null;
     let currentMode = 'doc'; // 'doc' or 'id'
+    let currentIDPreset = 'general'; // 'general', 'license', 'idcard', 'passport', 'bankcard'
     let captureMode = 'single'; // 'single' or 'batch'
     let currentFilter = 'magic';
     let currentFacingMode = 'environment';
@@ -884,6 +897,7 @@
     // Scanned documents queue (Batch Mode)
     let scannedPages = [];
     let currentActiveImage = null; // Last scanned data URL
+    let pendingExportType = 'pdf'; // 'pdf' or 'jpg'
 
     const videoEl = document.getElementById("camera-video");
     const canvasEl = document.getElementById("camera-canvas");
@@ -960,20 +974,47 @@
       const guideBox = document.getElementById("guide-box");
       const promptText = document.getElementById("guide-prompt-text");
       const idBanner = document.getElementById("id-card-flow-banner");
+      const idPresetsBar = document.getElementById("id-presets-bar");
       const batchToggle = document.getElementById("batch-toggle-pill");
 
       if (mode === 'id') {
-        guideBox.className = "cs-guide-box cs-guide-id";
+        idPresetsBar.style.display = "flex";
         idBanner.style.display = "flex";
         batchToggle.style.display = "none";
+        applyIDPresetGuide(currentIDPreset);
         updateIDCardBanner();
       } else {
         guideBox.className = "cs-guide-box cs-guide-doc";
+        idPresetsBar.style.display = "none";
         idBanner.style.display = "none";
         batchToggle.style.display = "flex";
         promptText.textContent = "Auto Edge Detection Active";
       }
     };
+
+    window.setIDPreset = function(preset) {
+      currentIDPreset = preset;
+      document.querySelectorAll("#id-presets-bar .tag-pill").forEach(p => {
+        p.classList.toggle("active", p.id === `id-preset-${preset}`);
+      });
+      applyIDPresetGuide(preset);
+      updateIDCardBanner();
+    };
+
+    function applyIDPresetGuide(preset) {
+      const guideBox = document.getElementById("guide-box");
+      guideBox.className = "cs-guide-box cs-guide-id";
+      if (preset === 'passport') {
+        guideBox.style.aspectRatio = "1 / 1.414";
+        guideBox.style.width = "72%";
+      } else if (preset === 'bankcard' || preset === 'license' || preset === 'idcard') {
+        guideBox.style.aspectRatio = "85.6 / 53.98";
+        guideBox.style.width = "88%";
+      } else {
+        guideBox.style.aspectRatio = "85.6 / 53.98";
+        guideBox.style.width = "85%";
+      }
+    }
 
     window.setCaptureMode = function(mode) {
       captureMode = mode;
@@ -987,15 +1028,20 @@
       const stepNum = document.getElementById("id-step-number");
       const stepText = document.getElementById("id-step-text");
       const promptText = document.getElementById("guide-prompt-text");
+      const presetLabel = currentIDPreset === 'passport' ? 'Passport' : (currentIDPreset === 'license' ? 'Driver License' : 'ID Card');
 
-      if (idCardState.step === 1) {
+      if (currentIDPreset === 'passport') {
         stepNum.textContent = "1";
-        stepText.textContent = "Snap FRONT side of ID Card / License";
-        promptText.textContent = "Align ID Card Front inside box";
+        stepText.textContent = "Snap Main Information Page of Passport";
+        promptText.textContent = "Align Passport Page inside frame";
+      } else if (idCardState.step === 1) {
+        stepNum.textContent = "1";
+        stepText.textContent = `Snap FRONT side of ${presetLabel}`;
+        promptText.textContent = `Align ${presetLabel} Front inside box`;
       } else {
         stepNum.textContent = "2";
-        stepText.textContent = "Turn Card Over — Snap BACK side";
-        promptText.textContent = "Align ID Card Back inside box";
+        stepText.textContent = `Turn Over — Snap BACK side of ${presetLabel}`;
+        promptText.textContent = `Align ${presetLabel} Back inside box`;
       }
     }
 
@@ -1030,6 +1076,12 @@
             rectEl.style.width = `${Math.max(30, bw)}px`;
             rectEl.style.height = `${Math.max(30, bh)}px`;
             rectEl.style.display = 'block';
+
+            // Show tip occasionally if shadows detected
+            const tipEl = document.getElementById("smart-enhance-tip");
+            if (tipEl && Math.random() < 0.05 && tipEl.style.display === 'none') {
+              tipEl.style.display = 'flex';
+            }
           }
         } catch (e) {}
       }, 250);
@@ -1063,6 +1115,12 @@
         const processedDataUrl = DocumentScanner.processImage(img, filterType, 0, corners);
 
         if (currentMode === 'id') {
+          if (currentIDPreset === 'passport') {
+            currentActiveImage = processedDataUrl;
+            showSingleResult(processedDataUrl);
+            return;
+          }
+
           // ID Card Front & Back Flow
           if (idCardState.step === 1) {
             idCardState.front = processedDataUrl;
@@ -1138,9 +1196,9 @@
 
     function getInternalFilterName(f) {
       if (f === 'magic') return 'magic-color';
-      if (f === 'no-shadow') return 'magic-color';
+      if (f === 'no-shadow') return 'no-shadow';
       if (f === 'clean-bw') return 'clean-bw';
-      if (f === 'lighten') return 'grayscale';
+      if (f === 'lighten') return 'lighten';
       return 'original';
     }
 
@@ -1200,45 +1258,88 @@
       }
     });
 
-    // ==================== INSTANT DOWNLOAD & DOCUMENT READER ====================
+    // ==================== DOCUMENT TITLE / RENAME MODAL FLOW ====================
+    function promptDocTitle(type) {
+      pendingExportType = type;
+      const modal = document.getElementById("doc-title-modal");
+      const input = document.getElementById("doc-name-input");
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const timeStr = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+      
+      const defaultPrefix = currentMode === 'id' ? `LocalDoc_ID_${dateStr}_${timeStr}` : `LocalDoc_Scanned_${dateStr}_${timeStr}`;
+      input.value = defaultPrefix;
+      modal.style.display = "flex";
+      setTimeout(() => input.select(), 100);
+    }
+
+    window.closeDocTitleModal = function() {
+      document.getElementById("doc-title-modal").style.display = "none";
+    };
+
+    document.getElementById("btn-confirm-doc-save").addEventListener("click", async () => {
+      const input = document.getElementById("doc-name-input");
+      let baseName = input.value.trim();
+      if (!baseName) {
+        baseName = "LocalDoc_Scanned_" + Date.now();
+      }
+      closeDocTitleModal();
+
+      if (pendingExportType === 'pdf') {
+        await executePDFExport(baseName);
+      } else if (pendingExportType === 'jpg') {
+        executeJPGExport(baseName);
+      }
+    });
+
     // Instant PDF Download
-    document.getElementById("btn-instant-pdf").addEventListener("click", async () => {
+    document.getElementById("btn-instant-pdf").addEventListener("click", () => {
       if (!currentActiveImage) return;
+      promptDocTitle('pdf');
+    });
+
+    async function executePDFExport(filenameBase) {
       try {
         const btnText = document.getElementById("btn-instant-pdf-text");
         btnText.textContent = "Compiling PDF...";
         
-        const today = new Date().toISOString().slice(0, 10);
-        const filename = currentMode === 'id' ? `LocalDoc_ID_Card_${today}.pdf` : `LocalDoc_Scanned_${today}.pdf`;
-
+        const filename = filenameBase.endsWith('.pdf') ? filenameBase : `${filenameBase}.pdf`;
         const blob = await DocumentScanner.exportToPDF([{ processedDataUrl: currentActiveImage }], { pageSize: 'a4' });
+        
         UIUtils.downloadBlob(blob, filename);
-        UIUtils.showToast("Scanned PDF downloaded successfully!", "success");
+        UIUtils.showToast("Scanned PDF saved successfully!", "success");
         btnText.textContent = "Download PDF Document";
+
+        // Trigger native AdMob interstitial hook if in APK
+        if (window.AndroidNative && window.AndroidNative.showInterstitialAd) {
+          window.AndroidNative.showInterstitialAd();
+        }
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Failed to compile PDF: " + err.message, "error");
         document.getElementById("btn-instant-pdf-text").textContent = "Download PDF Document";
       }
-    });
+    }
 
     // Instant JPG Download
     document.getElementById("btn-instant-jpg").addEventListener("click", () => {
       if (!currentActiveImage) return;
-      const today = new Date().toISOString().slice(0, 10);
-      const filename = currentMode === 'id' ? `LocalDoc_ID_Card_${today}.jpg` : `LocalDoc_Scanned_${today}.jpg`;
+      promptDocTitle('jpg');
+    });
+
+    function executeJPGExport(filenameBase) {
+      const filename = filenameBase.endsWith('.jpg') ? filenameBase : `${filenameBase}.jpg`;
       const a = document.createElement("a");
       a.href = currentActiveImage;
       a.download = filename;
       a.click();
       UIUtils.showToast("Scanned photo saved as JPG!", "success");
-    });
+    }
 
     // Open in Universal Document Reader
     document.getElementById("btn-open-reader").addEventListener("click", async () => {
       if (!currentActiveImage) return;
       try {
-        // Save base64 image or blob into sessionStorage and redirect to document-reader.html
         sessionStorage.setItem("localdoc_reader_file", currentActiveImage);
         sessionStorage.setItem("localdoc_reader_name", currentMode === 'id' ? 'Scanned_ID_Card.jpg' : 'Scanned_Document.jpg');
         window.location.href = "document-reader.html";
@@ -1281,7 +1382,10 @@
                 <img src="${p.dataUrl}" alt="Page ${idx + 1}">
                 <div class="cs-batch-card-foot">
                   <span>#${idx + 1}</span>
-                  <button type="button" onclick="removeBatchPage(${idx})" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer;">✕</button>
+                  <div style="display:flex; gap:6px;">
+                    <button type="button" onclick="rotateBatchPage(${idx})" title="Rotate" style="background:none; border:none; color:var(--primary); font-size:0.9rem; cursor:pointer;">🔄</button>
+                    <button type="button" onclick="removeBatchPage(${idx})" title="Delete" style="background:none; border:none; color:var(--danger); font-weight:700; cursor:pointer;">✕</button>
+                  </div>
                 </div>
               </div>
             `).join('')}
@@ -1294,6 +1398,20 @@
 
     window.closeBatchOrganizer = function() {
       document.getElementById("batch-organizer-modal").style.display = "none";
+    };
+
+    window.rotateBatchPage = async function(idx) {
+      const page = scannedPages[idx];
+      const img = await UIUtils.loadImage(page.dataUrl);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.height;
+      canvas.height = img.width;
+      const ctx = canvas.getContext('2d');
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((90 * Math.PI) / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      page.dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      openBatchOrganizer();
     };
 
     window.removeBatchPage = function(idx) {
@@ -1317,8 +1435,9 @@
         btn.disabled = true;
         btn.textContent = `Compiling ${scannedPages.length} Pages...`;
 
-        const today = new Date().toISOString().slice(0, 10);
-        const filename = `LocalDoc_Batch_Document_${today}.pdf`;
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const filename = `LocalDoc_Batch_${dateStr}.pdf`;
 
         const pagesArray = scannedPages.map(p => ({ processedDataUrl: p.dataUrl }));
         const blob = await DocumentScanner.exportToPDF(pagesArray, { pageSize: 'a4' });
@@ -1352,3 +1471,4 @@
   </script>
 </body>
 </html>
+

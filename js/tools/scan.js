@@ -524,6 +524,44 @@ class DocumentScanner {
         break;
       }
 
+      case 'no-shadow': {
+        // Shadow Flattening & Illumination:
+        // Removes gradient cast shadows while preserving natural ink colors
+        for (let i = 0; i < len; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const lum = r * 0.299 + g * 0.587 + b * 0.114;
+          
+          // Gamma curve lift for shadows + slight saturation preservation
+          const liftedLum = Math.min(255, Math.pow(lum / 255, 0.72) * 265);
+          const ratio = lum > 10 ? (liftedLum / lum) : 1.2;
+          
+          data[i] = Math.min(255, Math.max(0, r * ratio));
+          data[i + 1] = Math.min(255, Math.max(0, g * ratio));
+          data[i + 2] = Math.min(255, Math.max(0, b * ratio));
+        }
+        break;
+      }
+
+      case 'lighten': {
+        // Document Brightener & Soft Whitening
+        for (let i = 0; i < len; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const lum = r * 0.299 + g * 0.587 + b * 0.114;
+
+          const brightenedLum = Math.min(255, Math.max(0, (lum - 15) * 1.28 + 25));
+          const ratio = lum > 5 ? (brightenedLum / lum) : 1.3;
+
+          data[i] = Math.min(255, Math.max(0, r * ratio));
+          data[i + 1] = Math.min(255, Math.max(0, g * ratio));
+          data[i + 2] = Math.min(255, Math.max(0, b * ratio));
+        }
+        break;
+      }
+
       case 'grayscale': {
         // Studio monochrome scan with shadow lift and contrast normalization
         for (let i = 0; i < len; i += 4) {
