@@ -671,7 +671,7 @@ const PDFConvert = {
     };
   },
 
-  // 5. PDF to Excel (.xlsx & .csv)
+  // 5. PDF to Excel (.xlsx & .csv) — High-Precision Column Clustering & Number Formatting
   async pdfToExcel(file, onProgress = null) {
     if (onProgress) onProgress(20, 'Reading PDF Tables & Tabular Streams in RAM...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
@@ -684,23 +684,88 @@ const PDFConvert = {
       if (onProgress) onProgress(25 + ((i / numPages) * 65), `Extracting Tabular Grid from Page ${i} of ${numPages}...`);
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
+      const viewport = page.getViewport({ scale: 1.0 });
 
-      const rowsMap = new Map();
+      if (!textContent.items || textContent.items.length === 0) {
+        allSheetsData.push({ sheetName: `Page ${i}`, data: [['[Empty Page]']] });
+        const ws = XLSX.utils.aoa_to_sheet([['[Empty Page]']]);
+        XLSX.utils.book_append_sheet(wb, ws, `Page ${i}`);
+        continue;
+      }
+
+      // Group text items by line Y (within 5px tolerance)
+      const rowsMap = [];
+      const allXCoords = [];
+
       textContent.items.forEach(item => {
         const text = (item.str || '').trim();
         if (!text) return;
-        const y = Math.round(item.transform[5] / 7) * 7;
         const x = item.transform[4];
-        if (!rowsMap.has(y)) rowsMap.set(y, []);
-        rowsMap.get(y).push({ x: x, text: item.str });
+        const y = item.transform[5];
+        allXCoords.push(x);
+
+        let row = rowsMap.find(r => Math.abs(r.y - y) <= 4.5);
+        if (!row) {
+          row = { y: y, items: [] };
+          rowsMap.push(row);
+        }
+        row.items.push({ x: x, width: item.width || 0, text: item.str.trim() });
       });
 
-      const sortedY = Array.from(rowsMap.keys()).sort((a, b) => b - a);
+      // Sort rows top-to-bottom
+      rowsMap.sort((a, b) => b.y - a.y);
+
+      // Compute distinct column anchor clusters along X axis
+      allXCoords.sort((a, b) => a - b);
+      const colAnchors = [];
+      allXCoords.forEach(x => {
+        if (!colAnchors.some(a => Math.abs(a - x) <= 18)) {
+          colAnchors.push(x);
+        }
+      });
+      colAnchors.sort((a, b) => a - b);
+
       const sheetData = [];
 
-      sortedY.forEach(y => {
-        const rowItems = rowsMap.get(y).sort((a, b) => a.x - b.x);
-        sheetData.push(rowItems.map(item => item.text.trim()));
+      rowsMap.forEach(row => {
+        row.items.sort((a, b) => a.x - b.x);
+
+        // Map row items into discrete column slots
+        const rowCells = new Array(Math.max(1, colAnchors.length)).fill('');
+
+        row.items.forEach(item => {
+          let bestColIdx = 0;
+          let minDiff = Infinity;
+          colAnchors.forEach((anchor, cIdx) => {
+            const diff = Math.abs(anchor - item.x);
+            if (diff < minDiff) {
+              minDiff = diff;
+              bestColIdx = cIdx;
+            }
+          });
+
+          let cellVal = item.text;
+          // Check if numeric currency or percentage
+          const cleanNum = cellVal.replace(/[$,€£¥\s]/g, '').replace(/^\((.+)\)$/, '-$1');
+          if (/^-?\d+(\.\d+)?$/.test(cleanNum)) {
+            cellVal = parseFloat(cleanNum);
+          }
+
+          if (rowCells[bestColIdx] && typeof cellVal === 'string') {
+            rowCells[bestColIdx] += ' ' + cellVal;
+          } else {
+            rowCells[bestColIdx] = cellVal;
+          }
+        });
+
+        // Trim empty trailing columns
+        while (rowCells.length > 1 && rowCells[rowCells.length - 1] === '') {
+          rowCells.pop();
+        }
+
+        if (rowCells.some(c => c !== '')) {
+          sheetData.push(rowCells);
+        }
       });
 
       if (sheetData.length === 0) {
