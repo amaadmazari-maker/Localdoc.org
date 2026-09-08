@@ -794,8 +794,8 @@
           <h4 style="color:#10B981; font-size:0.92rem; margin-bottom:6px; font-weight:700;">▶ How to Run a Program</h4>
           <ol style="margin:0 0 0 16px; padding:0; font-size:0.84rem; color:#CBD5E1; line-height:1.5;">
             <li>Press <strong>FILE (Prog)</strong> to open the on-screen program menu.</li>
-            <li>Press <strong>1, 2, 3, or 4</strong> to select your program slot.</li>
-            <li>When prompted on the LCD (e.g. <code>A?</code>), type your value and press <strong>EXE</strong>.</li>
+            <li>Press <strong>1, 2, 3, or 4</strong> to select your program slot (e.g. <strong>4</strong> for Survey Inverse).</li>
+            <li>When prompted on the LCD (e.g. <code>A?</code>), type your coordinate value and press <strong>EXE</strong>.</li>
             <li>When <strong>◢</strong> blinks, press <strong>EXE</strong> to view the next output.</li>
           </ol>
         </div>
@@ -806,7 +806,21 @@
             <li><code>?→A</code>: Prompts user on LCD for variable A.</li>
             <li><code>expr→D</code>: Stores formula result into variable D.</li>
             <li><code>:</code>: Statement separator for sequential execution.</li>
+            <li><code>cond=>act</code>: Conditional branch (e.g. <code>T&lt;0=&gt;T+360→T</code>).</li>
             <li><code>◢</code>: Output pause symbol (shows result on LCD until EXE).</li>
+          </ul>
+        </div>
+
+        <div style="background:#1E293B; border-radius:10px; padding:14px; grid-column:1 / -1;">
+          <h4 style="color:#38BDF8; font-size:0.92rem; margin-bottom:6px; font-weight:700;">🗺️ Land Surveying: Pol(ΔN, ΔE) Bearing & Distance</h4>
+          <p style="font-size:0.84rem; color:#CBD5E1; line-height:1.5; margin:0 0 8px 0;">
+            Surveyors can enter <code>Pol(N1-N2, E1-E2)</code> directly on the keypad to calculate horizontal distance and whole-circle bearing between any two control points:
+          </p>
+          <ul style="margin:0 0 0 16px; padding:0; font-size:0.84rem; color:#CBD5E1; line-height:1.5;">
+            <li><strong>Line 3 displays:</strong> Distance <code>r</code> (stored into memory register <code>X</code>).</li>
+            <li><strong>Line 4 displays:</strong> Bearing <code>θ</code> in decimal and DMS <code>DD°MM'SS"</code> (stored into <code>Y</code>).</li>
+            <li>Press <strong>° ' " (DMS)</strong> to toggle angles between decimal degrees and sexagesimal notation.</li>
+            <li>Run built-in <strong>P4: SURVEY-INV</strong> from the <strong>FILE</strong> menu to calculate traverse inverse legs interactively.</li>
           </ul>
         </div>
       </div>
@@ -893,8 +907,8 @@
           code: "?→I:?→R:I*R→V:V*I→P:\"VOLT=\"V◢\"WATT=\"P◢"
         },
         4: {
-          name: "2D-DIST",
-          code: "?→A:?→B:?→C:?→D:√((C-A)²+(D-B)²)→X:\"DIST=\"X◢"
+          name: "SURVEY-INV",
+          code: "?→A:?→B:?→C:?→D:Pol(A-C,B-D)→R:Y→T:T<0=>T+360→T:\"DIST=\"R◢\"BRG=\"T◢"
         }
       };
 
@@ -910,20 +924,47 @@
 
       function loadPrograms() {
         try {
-          const s = localStorage.getItem('casio_fx_programs_v2');
-          return s ? JSON.parse(s) : DEFAULT_PROGRAMS;
+          const s = localStorage.getItem('casio_fx_programs_v3');
+          if (s) {
+            const parsed = JSON.parse(s);
+            return Object.assign({}, DEFAULT_PROGRAMS, parsed);
+          }
+          // Migration from v2 if exists
+          const old = localStorage.getItem('casio_fx_programs_v2');
+          if (old) {
+            const parsedOld = JSON.parse(old);
+            parsedOld[4] = DEFAULT_PROGRAMS[4]; // Ensure Slot 4 gets the official Land Surveying program
+            savePrograms(parsedOld);
+            return Object.assign({}, DEFAULT_PROGRAMS, parsedOld);
+          }
+          return Object.assign({}, DEFAULT_PROGRAMS);
         } catch(e) {
-          return DEFAULT_PROGRAMS;
+          return Object.assign({}, DEFAULT_PROGRAMS);
         }
       }
 
       function savePrograms(progs) {
         try {
-          localStorage.setItem('casio_fx_programs_v2', JSON.stringify(progs));
+          localStorage.setItem('casio_fx_programs_v3', JSON.stringify(progs));
         } catch(e) {}
       }
 
       let userPrograms = loadPrograms();
+
+      // Convert decimal degrees to Degrees, Minutes, Seconds (DMS) string: DD°MM'SS"
+      function toDMS(deg) {
+        if (isNaN(deg) || deg === null || deg === undefined) return '';
+        const sign = deg < 0 ? '-' : '';
+        deg = Math.abs(deg);
+        let d = Math.floor(deg);
+        let minFloat = (deg - d) * 60;
+        let m = Math.floor(minFloat);
+        let s = Math.round((minFloat - m) * 60);
+        if (s >= 60) { s = 0; m += 1; }
+        if (m >= 60) { m = 0; d += 1; }
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${sign}${d}°${pad(m)}'${pad(s)}"`;
+      }
 
       // LCD State Engine
       // Modes: 'COMP', 'MODE_MENU', 'PRGM_MENU', 'PRGM_RUN', 'PRGM_EDIT', 'CALC_PROMPT', 'FMLA_MENU', 'FMLA_RUN', 'BASE_N'
@@ -939,6 +980,10 @@
         cursorPos: 0,
         hasMemory: false,
         menuIndex: 1,
+
+        // Coordinate Result (Pol / Rec)
+        coordResult: null,
+        rclPending: false,
 
         // Program Execution State (On LCD)
         prgmSlot: 1,
@@ -1012,7 +1057,23 @@
             l1Tag.textContent = appState.angle;
             l2Txt.textContent = appState.expr || '0';
             l2Cursor.style.display = 'inline-block';
-            l4Ans.textContent = appState.result || '0';
+            if (appState.coordResult) {
+              if (appState.coordResult.type === 'Pol') {
+                l3Txt.textContent = `r= ${formatResult(appState.coordResult.r)}`;
+                const dmsStr = toDMS(appState.coordResult.theta);
+                const azStr = (appState.coordResult.theta < 0 && appState.angle === 'DEG')
+                  ? ` [Az: ${toDMS(appState.coordResult.azimuth)}]`
+                  : '';
+                l4Ans.textContent = `θ= ${formatResult(appState.coordResult.theta)}${appState.coordResult.unit} (${dmsStr})${azStr}`;
+              } else if (appState.coordResult.type === 'Rec') {
+                l3Txt.textContent = `X= ${formatResult(appState.coordResult.x)}`;
+                l4Ans.textContent = `Y= ${formatResult(appState.coordResult.y)}`;
+              }
+            } else if (appState.rclPending) {
+              l4Ans.textContent = "RCL: Press var [A-Z,X,Y]";
+            } else {
+              l4Ans.textContent = appState.result || '0';
+            }
             break;
 
           case 'MODE_MENU':
@@ -1025,9 +1086,9 @@
           case 'PRGM_MENU':
             l1Txt.textContent = "--- PRGM FILE MENU ---";
             l1Tag.textContent = "[1-4]:RUN";
-            l2Txt.textContent = `1:P1 ${userPrograms[1]?.name || 'PROG1'}`;
-            l3Txt.textContent = `2:P2 ${userPrograms[2]?.name || 'PROG2'}`;
-            l4Txt.textContent = `3:P3 ${userPrograms[3]?.name || 'PROG3'} 4:P4`;
+            l2Txt.textContent = `1:P1 ${userPrograms[1]?.name || 'QUAD'}`;
+            l3Txt.textContent = `2:P2 ${userPrograms[2]?.name || 'AREA'}`;
+            l4Txt.textContent = `3:P3 ${userPrograms[3]?.name || 'OHM'}  4:P4 ${userPrograms[4]?.name || 'SURV'}`;
             break;
 
           case 'PRGM_RUN':
@@ -1245,7 +1306,7 @@
       function advanceProgramStep() {
         if (appState.prgmStmtIdx >= appState.prgmStatements.length) {
           // Finished all statements
-          if (appState.prgmOutputs.length > 0) {
+          if (appState.prgmOutputs.length > 0 && appState.prgmOutIdx < appState.prgmOutputs.length) {
             appState.prgmWaitingForExe = true;
           } else {
             UIUtils.showToast(`P${appState.prgmSlot} Complete!`, "success");
@@ -1255,6 +1316,41 @@
         }
 
         const stmt = appState.prgmStatements[appState.prgmStmtIdx];
+        executeSingleProgramStatement(stmt);
+      }
+
+      function executeSingleProgramStatement(stmt) {
+        if (!stmt) {
+          appState.prgmStmtIdx++;
+          advanceProgramStep();
+          return;
+        }
+
+        // 0. Conditional Statement: cond => action (e.g. T<0=>T+360→T)
+        if (stmt.includes('=>')) {
+          const arrowIdx = stmt.indexOf('=>');
+          const condStr = stmt.substring(0, arrowIdx).trim();
+          const actionStr = stmt.substring(arrowIdx + 2).trim();
+          let condVal = false;
+          try {
+            let jsCond = condStr
+              .replace(/=/g, '===')
+              .replace(/≠/g, '!==')
+              .replace(/<===/g, '<=')
+              .replace(/>===/g, '>=');
+            condVal = Boolean(evaluateCasioMath(jsCond));
+          } catch(e) {
+            condVal = false;
+          }
+
+          if (condVal && actionStr) {
+            executeSingleProgramStatement(actionStr);
+          } else {
+            appState.prgmStmtIdx++;
+            advanceProgramStep();
+          }
+          return;
+        }
 
         // 1. Input: ? -> A or ?→A
         if (stmt.startsWith('?') && (stmt.includes('->') || stmt.includes('→'))) {
@@ -1277,12 +1373,16 @@
         else if (stmt.includes('◢')) {
           const cleanStmt = stmt.replace(/◢/g, '').trim();
           let outStr = '';
-          if (cleanStmt.startsWith('"') && cleanStmt.includes('"')) {
+          if (cleanStmt.startsWith('"') && cleanStmt.includes('"', 1)) {
             const quoteEnd = cleanStmt.indexOf('"', 1);
             const label = cleanStmt.substring(1, quoteEnd);
             const varPart = cleanStmt.substring(quoteEnd + 1).trim();
             const val = evaluateCasioMath(varPart);
-            outStr = `${label} ${formatResult(val)}`;
+            let dispVal = formatResult(val);
+            if (/BRG|BEARING|ANG|AZ/i.test(label) && !isNaN(val)) {
+              dispVal = `${dispVal}° (${toDMS(val)})`;
+            }
+            outStr = `${label} ${dispVal}`;
           } else {
             const val = evaluateCasioMath(cleanStmt);
             outStr = `${cleanStmt} = ${formatResult(val)}`;
@@ -1343,17 +1443,21 @@
         } else if (isAlpha) {
           if (key === ',') appState.expr += '?→';
           else if (key === 'exe') appState.expr += '◢';
+          else if (key === 'sqrt') appState.expr += '"';
           else if (key >= 'A' && key <= 'Z') appState.expr += key;
           else appState.expr += getAlphaSymbol(key);
         } else if (isShift) {
           if (key === 'sqrt') appState.expr += ':';
           else if (key === 'rcl') appState.expr += '→';
+          else if (key === '1') appState.expr += 'Pol(';
+          else if (key === '2') appState.expr += 'Rec(';
           else appState.expr += getShiftSymbol(key);
         } else {
-          if (['0','1','2','3','4','5','6','7','8','9','+','-','*','/','.','(',')'].includes(key)) {
+          if (['0','1','2','3','4','5','6','7','8','9','+','-','*','/','.','(',')',','].includes(key)) {
             appState.expr += key;
           } else if (key === 'sqr') appState.expr += '²';
           else if (key === 'sqrt') appState.expr += '√(';
+          else if (key === 'pow') appState.expr += '^(';
         }
       }
 
@@ -1462,6 +1566,25 @@
           return;
         }
 
+        // Reset coordinate result on new expression start
+        if (appState.coordResult && !['exe', 'dms', 'sd', 'ac'].includes(key)) {
+          appState.coordResult = null;
+        }
+
+        // Handle RCL Pending Variable Selection
+        if (appState.rclPending) {
+          appState.rclPending = false;
+          let vName = getAlphaSymbol(key);
+          if (!vName && key >= 'A' && key <= 'Z') vName = key;
+          if (key === '0') vName = 'X';
+          if (key === '.') vName = 'Y';
+          if (vName && variables[vName] !== undefined) {
+            appState.expr += formatResult(variables[vName]);
+            renderLCD();
+            return;
+          }
+        }
+
         // ALPHA Character Inputs
         if (isAlpha) {
           const alphaChar = getAlphaSymbol(key);
@@ -1524,7 +1647,20 @@
         } else if (key === 'i') {
           appState.expr += 'i';
         } else if (key === 'dms') {
-          appState.expr += '°';
+          if (appState.coordResult && appState.coordResult.type === 'Pol') {
+            appState.coordResult.showDms = !appState.coordResult.showDms;
+          } else if (!appState.expr && appState.result && appState.result !== '0') {
+            const num = parseFloat(appState.result);
+            if (!isNaN(num)) {
+              if (appState.result.includes('°')) {
+                appState.result = formatResult(num);
+              } else {
+                appState.result = toDMS(num);
+              }
+            }
+          } else {
+            appState.expr += '°';
+          }
         } else if (key === 'sd') {
           toggleFractionDecimal();
         } else if (key === 'mplus') {
@@ -1533,7 +1669,7 @@
           appState.hasMemory = (variables.M !== 0);
           UIUtils.showToast(`M+ -> M = ${variables.M}`, 'info');
         } else if (key === 'rcl') {
-          appState.expr += variables.M.toString();
+          appState.rclPending = true;
         } else if (key === 'del') {
           appState.expr = appState.expr.slice(0, -1);
         } else if (key === 'exe') {
@@ -1543,10 +1679,12 @@
 
       function getAlphaSymbol(key) {
         const map = {
+          'sqrt': '"',
           'i': 'A', 'frac': 'B', 'dms': 'C', 'sin': 'D', 'cos': 'E', 'tan': 'F',
-          '(': 'G', ')': 'H', '7': 'K', '8': 'L', '9': 'M', '4': 'N', '5': 'O',
+          '(': 'G', ')': 'H', 'rcl': '=', ',': '?',
+          '7': 'K', '8': 'L', '9': 'M', '4': 'N', '5': 'O',
           '6': 'P', '*': 'Q', '/': 'R', '1': 'S', '2': 'T', '3': 'U', '+': 'V',
-          '-': 'W', '0': 'X', '.': 'Y', 'exp': 'Z', 'neg': ' '
+          '-': 'W', '0': 'X', '.': 'Y', 'exp': 'Z', 'neg': ' ', 'exe': '◢'
         };
         return map[key] || '';
       }
@@ -1554,9 +1692,13 @@
       function getShiftSymbol(key) {
         const map = {
           'sqrt': ':', 'sqr': '^3', 'log': '10^(', 'ln': 'exp(', 'pow': 'cbrt(',
-          'sin': 'asin(', 'cos': 'acos(', 'tan': 'atan(', 'i': '∠', 'frac': 'd/c',
+          'i': '∠', 'frac': 'd/c', 'dms': '←',
+          'sin': 'asin(', 'cos': 'acos(', 'tan': 'atan(',
+          'rcl': '→', ',': '%',
           '7': 'd/dx(', '8': '∫(', '9': 'nPr(', '4': 'nCr(', '5': '!', '6': 'Ran#',
-          '1': 'Pol(', '2': 'Rec(', '3': 'Abs(', 'exp': 'π', 'neg': 'Ans'
+          '1': 'Pol(', '2': 'Rec(', '3': 'Abs(',
+          '+': 'GCD(', '-': 'LCM(',
+          '0': 'Rnd(', '.': 'RanInt(', 'exp': 'π', 'neg': 'Ans', 'exe': 'Disp'
         };
         return map[key] || '';
       }
@@ -1564,58 +1706,253 @@
       function executeFinalCalculation() {
         if (!appState.expr) return;
         try {
+          appState.coordResult = null;
           const val = evaluateCasioMath(appState.expr);
           if (isNaN(val) || !isFinite(val)) {
             appState.result = 'Math ERROR';
           } else {
             appState.result = formatResult(val);
             variables.Ans = val;
-            addTape(appState.expr, appState.result);
+            if (appState.coordResult) {
+              const cr = appState.coordResult;
+              if (cr.type === 'Pol') {
+                addTape(appState.expr, `r: ${formatResult(cr.r)}, θ: ${formatResult(cr.theta)}${cr.unit}`);
+              } else if (cr.type === 'Rec') {
+                addTape(appState.expr, `X: ${formatResult(cr.x)}, Y: ${formatResult(cr.y)}`);
+              }
+            } else {
+              addTape(appState.expr, appState.result);
+            }
           }
         } catch(e) {
           appState.result = 'Syntax ERROR';
         }
       }
 
+      // Mathematical Utility Functions (Available on window for dynamic evaluation)
+      window.casioPol = function(x, y) {
+        x = Number(x);
+        y = Number(y);
+        if (isNaN(x) || isNaN(y)) throw new Error("Invalid arguments to Pol");
+        const r = Math.hypot(x, y);
+        const thetaRad = Math.atan2(y, x);
+        let theta;
+        if (appState.angle === 'RAD') {
+          theta = thetaRad;
+        } else if (appState.angle === 'GRA') {
+          theta = thetaRad * (200 / Math.PI);
+        } else {
+          theta = thetaRad * (180 / Math.PI);
+        }
+
+        // Store into Casio Memory Registers
+        variables.X = r;
+        variables.Y = theta;
+        variables.Ans = r;
+
+        // Whole circle azimuth (0 to 360)
+        let azimuth = theta;
+        if (azimuth < 0 && appState.angle === 'DEG') azimuth += 360;
+
+        appState.coordResult = {
+          type: 'Pol',
+          r: r,
+          theta: theta,
+          azimuth: azimuth,
+          unit: appState.angle === 'RAD' ? 'rad' : (appState.angle === 'GRA' ? 'gra' : '°'),
+          showDms: false
+        };
+
+        return r;
+      };
+
+      window.casioRec = function(r, theta) {
+        r = Number(r);
+        theta = Number(theta);
+        if (isNaN(r) || isNaN(theta)) throw new Error("Invalid arguments to Rec");
+        let thetaRad;
+        if (appState.angle === 'RAD') {
+          thetaRad = theta;
+        } else if (appState.angle === 'GRA') {
+          thetaRad = theta * (Math.PI / 200);
+        } else {
+          thetaRad = theta * (Math.PI / 180);
+        }
+
+        const x = r * Math.cos(thetaRad);
+        const y = r * Math.sin(thetaRad);
+
+        variables.X = x;
+        variables.Y = y;
+        variables.Ans = x;
+
+        appState.coordResult = {
+          type: 'Rec',
+          x: x,
+          y: y
+        };
+
+        return x;
+      };
+
+      window.casioSin = function(x) {
+        let rad = appState.angle === 'RAD' ? x : (appState.angle === 'GRA' ? x * Math.PI / 200 : x * Math.PI / 180);
+        let res = Math.sin(rad);
+        return Math.abs(res) < 1e-15 ? 0 : res;
+      };
+
+      window.casioCos = function(x) {
+        let rad = appState.angle === 'RAD' ? x : (appState.angle === 'GRA' ? x * Math.PI / 200 : x * Math.PI / 180);
+        let res = Math.cos(rad);
+        return Math.abs(res) < 1e-15 ? 0 : res;
+      };
+
+      window.casioTan = function(x) {
+        if (appState.angle === 'DEG' && (Math.abs((Math.abs(x) - 90) % 180) < 1e-9)) return NaN;
+        let rad = appState.angle === 'RAD' ? x : (appState.angle === 'GRA' ? x * Math.PI / 200 : x * Math.PI / 180);
+        let res = Math.tan(rad);
+        return Math.abs(res) < 1e-15 ? 0 : res;
+      };
+
+      window.casioAsin = function(x) {
+        let rad = Math.asin(x);
+        if (appState.angle === 'RAD') return rad;
+        if (appState.angle === 'GRA') return rad * (200 / Math.PI);
+        return rad * (180 / Math.PI);
+      };
+
+      window.casioAcos = function(x) {
+        let rad = Math.acos(x);
+        if (appState.angle === 'RAD') return rad;
+        if (appState.angle === 'GRA') return rad * (200 / Math.PI);
+        return rad * (180 / Math.PI);
+      };
+
+      window.casioAtan = function(x) {
+        let rad = Math.atan(x);
+        if (appState.angle === 'RAD') return rad;
+        if (appState.angle === 'GRA') return rad * (200 / Math.PI);
+        return rad * (180 / Math.PI);
+      };
+
+      window.casioGCD = function(a, b) {
+        a = Math.abs(Math.floor(Number(a)));
+        b = Math.abs(Math.floor(Number(b)));
+        while (b) {
+          const t = b;
+          b = a % b;
+          a = t;
+        }
+        return a;
+      };
+
+      window.casioLCM = function(a, b) {
+        a = Math.abs(Math.floor(Number(a)));
+        b = Math.abs(Math.floor(Number(b)));
+        if (a === 0 || b === 0) return 0;
+        return (a * b) / window.casioGCD(a, b);
+      };
+
+      window.casioNPr = function(n, r) {
+        n = Math.floor(Number(n));
+        r = Math.floor(Number(r));
+        if (r < 0 || r > n) return NaN;
+        return factorial(n) / factorial(n - r);
+      };
+
+      window.casioNCr = function(n, r) {
+        n = Math.floor(Number(n));
+        r = Math.floor(Number(r));
+        if (r < 0 || r > n) return NaN;
+        return factorial(n) / (factorial(r) * factorial(n - r));
+      };
+
+      window.casioRanHash = function() {
+        return parseFloat(Math.random().toFixed(3));
+      };
+
+      window.casioRanInt = function(a, b) {
+        a = Math.floor(Number(a));
+        b = Math.floor(Number(b));
+        return Math.floor(Math.random() * (b - a + 1)) + a;
+      };
+
+      window.casioRnd = function(x) {
+        return Math.round(Number(x));
+      };
+
       // Mathematical Core Parser
       function evaluateCasioMath(raw) {
-        let s = raw
+        let s = raw.trim()
           .replace(/×/g, '*')
           .replace(/÷/g, '/')
           .replace(/−/g, '-')
-          .replace(/²/g, '^2')
-          .replace(/³/g, '^3')
+          .replace(/²/g, '**2')
+          .replace(/³/g, '**3')
+          .replace(/\^/g, '**')
           .replace(/π/g, 'Math.PI')
           .replace(/Ans/g, variables.Ans || 0);
 
-        // Replace Variable Names
-        for (const [v, val] of Object.entries(variables)) {
-          s = s.replace(new RegExp(`\\b${v}\\b`, 'g'), `(${val})`);
-        }
+        // Parse DMS angles: 45°30'15" -> (45 + 30/60 + 15/3600)
+        s = s.replace(/(\d+(?:\.\d+)?)°(?:(\d+(?:\.\d+)?)')?(?:(\d+(?:\.\d+)?)"?)?/g, (_, d, m, sec) => {
+          const deg = parseFloat(d) || 0;
+          const min = parseFloat(m) || 0;
+          const sVal = parseFloat(sec) || 0;
+          return `(${deg} + ${min}/60 + ${sVal}/3600)`;
+        });
 
-        // Implicit Multiplications: 2(3) -> 2*(3), 2A -> 2*A, 2√ -> 2*√
-        s = s.replace(/(\d+)\(/g, '$1*(');
-        s = s.replace(/\)(\d+)/g, ')*$1');
-        s = s.replace(/(\d+)Math\./g, '$1*Math.');
-        s = s.replace(/(\d+)sqrt\(/g, '$1*Math.sqrt(');
-
-        s = s.replace(/(\d+)!/g, (_, n) => factorial(parseInt(n)));
-        s = s.replace(/([0-9\.]+|\([^\)]+\))\^([0-9\.]+|\([^\)]+\))/g, 'Math.pow($1,$2)');
-
-        const deg = (appState.angle === 'DEG') ? '(Math.PI/180)*' : '';
-        const invDeg = (appState.angle === 'DEG') ? '*(180/Math.PI)' : '';
-
-        s = s.replace(/sin\(/g, `Math.sin(${deg}`);
-        s = s.replace(/cos\(/g, `Math.cos(${deg}`);
-        s = s.replace(/tan\(/g, `Math.tan(${deg}`);
-        s = s.replace(/asin\(/g, `(${invDeg}Math.asin(`);
-        s = s.replace(/acos\(/g, `(${invDeg}Math.acos(`);
-        s = s.replace(/atan\(/g, `(${invDeg}Math.atan(`);
+        // Square root & Cube root
+        s = s.replace(/√\(/g, 'Math.sqrt(');
+        s = s.replace(/√([0-9A-Za-z]+)/g, 'Math.sqrt($1)');
         s = s.replace(/sqrt\(/g, 'Math.sqrt(');
         s = s.replace(/cbrt\(/g, 'Math.cbrt(');
+        s = s.replace(/³√\(/g, 'Math.cbrt(');
+
+        // Pol and Rec coordinates (Case-insensitive)
+        s = s.replace(/Pol\(/gi, 'window.casioPol(');
+        s = s.replace(/Rec\(/gi, 'window.casioRec(');
+
+        // Trigonometric Functions (Inverses FIRST!)
+        s = s.replace(/asin\(/g, 'window.casioAsin(');
+        s = s.replace(/acos\(/g, 'window.casioAcos(');
+        s = s.replace(/atan\(/g, 'window.casioAtan(');
+        s = s.replace(/sin\(/g, 'window.casioSin(');
+        s = s.replace(/cos\(/g, 'window.casioCos(');
+        s = s.replace(/tan\(/g, 'window.casioTan(');
+
+        // Logarithms and Special Functions
         s = s.replace(/log\(/g, 'Math.log10(');
         s = s.replace(/ln\(/g, 'Math.log(');
-        s = s.replace(/Abs\(/g, 'Math.abs(');
+        s = s.replace(/Abs\(/gi, 'Math.abs(');
+        s = s.replace(/Ran#/g, 'window.casioRanHash()');
+        s = s.replace(/RanInt\(/gi, 'window.casioRanInt(');
+        s = s.replace(/Rnd\(/gi, 'window.casioRnd(');
+        s = s.replace(/GCD\(/gi, 'window.casioGCD(');
+        s = s.replace(/LCM\(/gi, 'window.casioLCM(');
+        s = s.replace(/nPr\(/gi, 'window.casioNPr(');
+        s = s.replace(/nCr\(/gi, 'window.casioNCr(');
+
+        // Implicit Multiplications with variables: 2A -> 2*A, 2(3) -> 2*(3)
+        s = s.replace(/(\d+)([A-Z])\b/g, '$1*$2');
+        s = s.replace(/\b([A-Z])(\d+)/g, '$1*$2');
+        s = s.replace(/(\d+)\(/g, '$1*(');
+        s = s.replace(/\)(\d+)/g, ')*$1');
+        s = s.replace(/\)\(/g, ')*(');
+
+        // Factorial: 5! -> factorial(5)
+        s = s.replace(/(\d+)!/g, (_, n) => factorial(parseInt(n)));
+
+        // Safe Variable Substitution (isolated single letters A-Z, excluding inside window.casio... or Math.)
+        for (const [v, val] of Object.entries(variables)) {
+          s = s.replace(new RegExp(`(?<![a-zA-Z0-9_.])\\b${v}\\b(?![a-zA-Z0-9_])`, 'g'), `(${val})`);
+        }
+
+        // Auto-balance closing parentheses
+        const opens = (s.match(/\(/g) || []).length;
+        const closes = (s.match(/\)/g) || []).length;
+        if (opens > closes) {
+          s += ')'.repeat(opens - closes);
+        }
 
         return Function(`'use strict'; return (${s})`)();
       }
