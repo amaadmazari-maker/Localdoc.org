@@ -46,11 +46,11 @@
       padding: 16px;
     }
 
-    /* Top Quick Tools Strip (CamScanner App Pattern) */
+    /* Top Action Strip (CamScanner Primary Scan & Import) */
     .cs-quick-tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
       margin-bottom: 24px;
     }
     .cs-quick-tool-card {
@@ -300,21 +300,10 @@
       object-fit: cover;
     }
 
-    /* Dynamic Paper Tracking Overlay (Shown in Video 1 & 2) */
-    .cs-cam-paper-tracking {
-      position: absolute;
-      width: 84%;
-      max-width: 440px;
-      aspect-ratio: 1 / 1.414;
-      border: 2px solid #38BDF8;
-      border-radius: 8px;
-      pointer-events: none;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
-      transition: all 0.2s ease;
-    }
+    /* Viewfinder Clean Status Banner */
     .cs-cam-tracking-pill {
       position: absolute;
-      top: -36px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(15, 23, 42, 0.85);
@@ -322,14 +311,16 @@
       color: #38BDF8;
       font-size: 0.8rem;
       font-weight: 800;
-      padding: 4px 14px;
+      padding: 6px 16px;
       border-radius: 9999px;
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       letter-spacing: 0.2px;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+      pointer-events: none;
     }
 
     /* Bottom Camera HUD */
@@ -810,28 +801,20 @@
       <span>CamScanner Studio Online</span>
     </nav>
 
-    <!-- Quick Tools Row (CamScanner Home Grid from Video) -->
+    <!-- Primary Scanner Actions (Smart Camera & Import) -->
     <div class="cs-quick-tools-grid">
-      <div class="cs-quick-tool-card" onclick="openFullscreenCamera()">
-        <div class="cs-tool-icon-circle" style="background:rgba(13, 148, 136, 0.15); color:var(--cs-teal);">📷</div>
-        <span>Smart Scan</span>
+      <div class="cs-quick-tool-card" onclick="openFullscreenCamera()" style="padding: 16px 14px; border: 1.5px solid var(--cs-teal); background: rgba(13, 148, 136, 0.06);">
+        <div class="cs-tool-icon-circle" style="background:var(--cs-teal); color:#FFF; width:46px; height:46px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </div>
+        <span style="font-size:0.92rem; font-weight:800;">Smart Camera Scan</span>
       </div>
-      <a href="../index.html#category-pdf" class="cs-quick-tool-card">
-        <div class="cs-tool-icon-circle" style="background:rgba(239, 68, 68, 0.15); color:#EF4444;">📄</div>
-        <span>PDF Tools</span>
-      </a>
-      <div class="cs-quick-tool-card" onclick="document.getElementById('home-import-files').click()">
-        <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6;">🖼️</div>
-        <span>Import Photos</span>
+      <div class="cs-quick-tool-card" onclick="document.getElementById('home-import-files').click()" style="padding: 16px 14px;">
+        <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6; width:46px; height:46px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <span style="font-size:0.92rem; font-weight:800;">Import Photos / Files</span>
       </div>
-      <a href="id-photo.html" class="cs-quick-tool-card">
-        <div class="cs-tool-icon-circle" style="background:rgba(168, 85, 247, 0.15); color:#A855F7;">🪪</div>
-        <span>ID Cards</span>
-      </a>
-      <a href="document-reader.html" class="cs-quick-tool-card">
-        <div class="cs-tool-icon-circle" style="background:rgba(245, 158, 11, 0.15); color:#F59E0B;">📖</div>
-        <span>Doc Reader</span>
-      </a>
       <input type="file" id="home-import-files" accept="image/*" multiple style="display:none;" onchange="handleHomeFileImport(event)">
     </div>
 
@@ -908,23 +891,19 @@
       <video id="camera-feed-video" class="cs-cam-video" playsinline autoplay muted></video>
       <canvas id="camera-raw-canvas" style="display:none;"></canvas>
 
-      <!-- Live Dynamic Paper Boundary (as seen in Video 1: "Scanning... hold steady") -->
-      <div class="cs-cam-paper-tracking" id="cam-paper-tracking">
-        <div class="cs-cam-tracking-pill">
-          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38BDF8; animation:pulse 1.2s infinite;"></span>
-          <span>Scanning... hold steady</span>
-        </div>
+      <!-- Clean Live Status Pill -->
+      <div class="cs-cam-tracking-pill" id="cam-paper-tracking">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38BDF8; animation:pulse 1.2s infinite;"></span>
+        <span>Auto-Edge Detection Active</span>
       </div>
     </div>
 
     <!-- Bottom HUD -->
     <div class="cs-cam-bottom-hud">
-      <!-- Mode Carousel -->
+      <!-- Mode Switcher (Single vs Batch) -->
       <div class="cs-cam-mode-scroll">
-        <button type="button" class="cs-cam-mode-item" onclick="setCamMode('id')">ID Card</button>
-        <button type="button" class="cs-cam-mode-item active" id="mode-single-btn" onclick="setCamMode('single')">Single</button>
-        <button type="button" class="cs-cam-mode-item" id="mode-batch-btn" onclick="setCamMode('batch')">Batch</button>
-        <button type="button" class="cs-cam-mode-item" onclick="setCamMode('book')">Book</button>
+        <button type="button" class="cs-cam-mode-item active" id="mode-single-btn" onclick="setCamMode('single')">Single Page</button>
+        <button type="button" class="cs-cam-mode-item" id="mode-batch-btn" onclick="setCamMode('batch')">Batch Mode</button>
       </div>
 
       <!-- Shutter Bar -->

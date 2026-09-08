@@ -354,7 +354,7 @@ class DocumentScanner {
   }
 
   // =========================================================================
-  // 4. High-Precision 4-Corner Paper Boundary Detection
+  // 4. High-Precision 4-Corner Paper Boundary Detection Engine
   // =========================================================================
   static detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'a4') {
     const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;
@@ -363,9 +363,9 @@ class DocumentScanner {
       return this.getDefaultCorners();
     }
 
-    // Downsample image for high-speed robust edge analysis
-    const sampleW = 320;
-    const sampleH = Math.round((height / width) * 320);
+    // Downsample image for real-time edge & component analysis
+    const sampleW = 280;
+    const sampleH = Math.round((height / width) * 280);
 
     const helperCanvas = document.createElement('canvas');
     helperCanvas.width = sampleW;
@@ -375,90 +375,173 @@ class DocumentScanner {
 
     const imgData = ctx.getImageData(0, 0, sampleW, sampleH);
     const data = imgData.data;
+    const totalPixels = sampleW * sampleH;
 
-    // Convert to grayscale luminance & compute global background average
-    const gray = new Uint8Array(sampleW * sampleH);
+    // 1. Grayscale luminance and histogram calculation
+    const gray = new Uint8Array(totalPixels);
+    const hist = new Int32Array(256);
     let totalLum = 0;
+
     for (let i = 0, j = 0; i < data.length; i += 4, j++) {
       const lum = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) | 0;
       gray[j] = lum;
+      hist[lum]++;
       totalLum += lum;
     }
-    const avgLum = totalLum / (sampleW * sampleH);
 
-    // Sobel gradient detection
-    const grad = new Uint8Array(sampleW * sampleH);
-    for (let y = 1; y < sampleH - 1; y++) {
-      for (let x = 1; x < sampleW - 1; x++) {
-        const gx = Math.abs(gray[y * sampleW + (x + 1)] - gray[y * sampleW + (x - 1)]);
-        const gy = Math.abs(gray[(y + 1) * sampleW + x] - gray[(y - 1) * sampleW + x]);
-        grad[y * sampleW + x] = Math.min(255, gx + gy);
+    // 2. Otsu's Global Adaptive Thresholding
+    let weightBackground = 0;
+    let sumBackground = 0;
+    let maxVariance = 0;
+    let otsuThreshold = 128;
+
+    for (let t = 0; t < 256; t++) {
+      weightBackground += hist[t];
+      if (weightBackground === 0) continue;
+      const weightForeground = totalPixels - weightBackground;
+      if (weightForeground === 0) break;
+
+      sumBackground += t * hist[t];
+      const meanBackground = sumBackground / weightBackground;
+      const meanForeground = (totalLum - sumBackground) / weightForeground;
+      const variance = weightBackground * weightForeground * Math.pow(meanBackground - meanForeground, 2);
+
+      if (variance > maxVariance) {
+        maxVariance = variance;
+        otsuThreshold = t;
       }
     }
 
-    // Identify candidate paper points
-    const paperThreshold = Math.max(75, avgLum * 0.88);
-    const candidatePoints = [];
+    // Paper brightness threshold (paper is typically brighter than ambient surface)
+    const paperThreshold = Math.max(70, Math.min(210, otsuThreshold));
 
-    const borderMargin = 6;
-    for (let y = borderMargin; y < sampleH - borderMargin; y += 2) {
-      for (let x = borderMargin; x < sampleW - borderMargin; x += 2) {
-        const lum = gray[y * sampleW + x];
-        const g = grad[y * sampleW + x];
-        if (lum > paperThreshold || g > 40) {
-          candidatePoints.push({ x, y });
+    // 3. Binary paper segmentation mask
+    const binary = new Uint8Array(totalPixels);
+    for (let i = 0; i < totalPixels; i++) {
+      binary[i] = gray[i] >= paperThreshold ? 1 : 0;
+    }
+
+    // 4. Morphological Closing (Dilation then Erosion) to bridge text & creases into solid paper
+    const dilated = new Uint8Array(totalPixels);
+    for (let y = 1; y < sampleH - 1; y++) {
+      for (let x = 1; x < sampleW - 1; x++) {
+        const idx = y * sampleW + x;
+        if (binary[idx] || binary[idx - 1] || binary[idx + 1] ||
+            binary[idx - sampleW] || binary[idx + sampleW] ||
+            binary[idx - sampleW - 1] || binary[idx - sampleW + 1] ||
+            binary[idx + sampleW - 1] || binary[idx + sampleW + 1]) {
+          dilated[idx] = 1;
         }
       }
     }
 
-    if (candidatePoints.length < 50) {
-      return this.getDefaultCorners();
+    const closed = new Uint8Array(totalPixels);
+    for (let y = 1; y < sampleH - 1; y++) {
+      for (let x = 1; x < sampleW - 1; x++) {
+        const idx = y * sampleW + x;
+        if (dilated[idx] && dilated[idx - 1] && dilated[idx + 1] &&
+            dilated[idx - sampleW] && dilated[idx + sampleW]) {
+          closed[idx] = 1;
+        }
+      }
     }
 
-    // Find 4 extreme polygon corners from convex candidates:
-    let tl = candidatePoints[0], tr = candidatePoints[0], br = candidatePoints[0], bl = candidatePoints[0];
-    let minSum = Infinity, maxSum = -Infinity;
-    let maxDiff = -Infinity, minDiff = Infinity;
+    // 5. Connected Component Analysis — Find largest solid paper blob
+    const visited = new Uint8Array(totalPixels);
+    let largestBlobPoints = [];
+    let maxBlobSize = 0;
 
-    for (let i = 0; i < candidatePoints.length; i++) {
-      const p = candidatePoints[i];
-      const sum = p.x + p.y;
-      const diff = p.x - p.y;
+    // Scan for bright connected components
+    for (let y = 4; y < sampleH - 4; y += 2) {
+      for (let x = 4; x < sampleW - 4; x += 2) {
+        const startIdx = y * sampleW + x;
+        if (closed[startIdx] === 1 && visited[startIdx] === 0) {
+          // BFS Flood Fill
+          const queue = [startIdx];
+          visited[startIdx] = 1;
+          const currentBlob = [{ x, y }];
 
-      if (sum < minSum) { minSum = sum; tl = p; }
-      if (sum > maxSum) { maxSum = sum; br = p; }
-      if (diff > maxDiff) { maxDiff = diff; tr = p; }
-      if (diff < minDiff) { minDiff = diff; bl = p; }
+          let qHead = 0;
+          while (qHead < queue.length && queue.length < 25000) {
+            const curr = queue[qHead++];
+            const cx = curr % sampleW;
+            const cy = (curr / sampleW) | 0;
+
+            const neighbors = [
+              curr - 1, curr + 1,
+              curr - sampleW, curr + sampleW
+            ];
+
+            for (let k = 0; k < 4; k++) {
+              const nIdx = neighbors[k];
+              if (nIdx >= 0 && nIdx < totalPixels && visited[nIdx] === 0 && closed[nIdx] === 1) {
+                visited[nIdx] = 1;
+                queue.push(nIdx);
+                const nx = nIdx % sampleW;
+                const ny = (nIdx / sampleW) | 0;
+                // Keep subsampled points for geometry
+                if (queue.length % 3 === 0) {
+                  currentBlob.push({ x: nx, y: ny });
+                }
+              }
+            }
+          }
+
+          if (currentBlob.length > maxBlobSize) {
+            maxBlobSize = currentBlob.length;
+            largestBlobPoints = currentBlob;
+          }
+        }
+      }
     }
 
-    // Normalize coordinates to 0..1 range with safety margins
-    let normTL = { x: Math.max(0.02, tl.x / sampleW), y: Math.max(0.02, tl.y / sampleH) };
-    let normTR = { x: Math.min(0.98, tr.x / sampleW), y: Math.max(0.02, tr.y / sampleH) };
-    let normBR = { x: Math.min(0.98, br.x / sampleW), y: Math.min(0.98, br.y / sampleH) };
-    let normBL = { x: Math.max(0.02, bl.x / sampleW), y: Math.min(0.98, bl.y / sampleH) };
+    // If largest blob covers at least 5% of the frame, extract 4 corners
+    if (largestBlobPoints.length > 80) {
+      let minSum = Infinity, maxSum = -Infinity;
+      let minDiff = Infinity, maxDiff = -Infinity;
+      let tl = largestBlobPoints[0], tr = largestBlobPoints[0];
+      let br = largestBlobPoints[0], bl = largestBlobPoints[0];
 
-    // Validate polygon area
-    const polyW = Math.max(normTR.x - normTL.x, normBR.x - normBL.x);
-    const polyH = Math.max(normBL.y - normTL.y, normBR.y - normTR.y);
+      for (let i = 0; i < largestBlobPoints.length; i++) {
+        const p = largestBlobPoints[i];
+        const sum = p.x + p.y;
+        const diff = p.x - p.y;
 
-    if (polyW < 0.25 || polyH < 0.25) {
-      return this.getDefaultCorners();
+        if (sum < minSum) { minSum = sum; tl = p; }
+        if (sum > maxSum) { maxSum = sum; br = p; }
+        if (diff > maxDiff) { maxDiff = diff; tr = p; }
+        if (diff < minDiff) { minDiff = diff; bl = p; }
+      }
+
+      // Convert to normalized 0..1 coordinates with a small 1% safety margin
+      const normTL = { x: Math.max(0.01, Math.min(0.95, (tl.x - 2) / sampleW)), y: Math.max(0.01, Math.min(0.95, (tl.y - 2) / sampleH)) };
+      const normTR = { x: Math.max(0.05, Math.min(0.99, (tr.x + 2) / sampleW)), y: Math.max(0.01, Math.min(0.95, (tr.y - 2) / sampleH)) };
+      const normBR = { x: Math.max(0.05, Math.min(0.99, (br.x + 2) / sampleW)), y: Math.max(0.05, Math.min(0.99, (br.y + 2) / sampleH)) };
+      const normBL = { x: Math.max(0.01, Math.min(0.95, (bl.x - 2) / sampleW)), y: Math.max(0.05, Math.min(0.99, (bl.y + 2) / sampleH)) };
+
+      const polyW = Math.max(normTR.x - normTL.x, normBR.x - normBL.x);
+      const polyH = Math.max(normBL.y - normTL.y, normBR.y - normTR.y);
+
+      // Ensure detected quadrilateral has plausible document proportions
+      if (polyW >= 0.20 && polyH >= 0.20) {
+        return {
+          topLeft: normTL,
+          topRight: normTR,
+          bottomRight: normBR,
+          bottomLeft: normBL
+        };
+      }
     }
 
-    return {
-      topLeft: normTL,
-      topRight: normTR,
-      bottomRight: normBR,
-      bottomLeft: normBL
-    };
+    return this.getDefaultCorners();
   }
 
   static getDefaultCorners() {
     return {
-      topLeft: { x: 0.05, y: 0.05 },
-      topRight: { x: 0.95, y: 0.05 },
-      bottomRight: { x: 0.95, y: 0.95 },
-      bottomLeft: { x: 0.05, y: 0.95 }
+      topLeft: { x: 0.08, y: 0.08 },
+      topRight: { x: 0.92, y: 0.08 },
+      bottomRight: { x: 0.92, y: 0.92 },
+      bottomLeft: { x: 0.08, y: 0.92 }
     };
   }
 
