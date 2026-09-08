@@ -1,14 +1,239 @@
 /**
  * localdoc.org — Advanced CamScanner Engine & A4 Document Studio (js/tools/scan.js)
  * 100% Client-side in-browser RAM execution:
- * - High-Precision 4-Corner Convex Hull Paper Detection
- * - Homography Perspective Rectification to Standard A4 Dimensions
- * - CamScanner Signature Filters: Magic Pro Whitening, No Shadow, Lighten, Clean B&W, Original
- * - High-Resolution Camera Capture with Tap-to-Focus & Torch
- * - Single & Batch Scan Multi-Page PDF Compilation
- * - Recent Scans Local Storage Management
+ * - High-Precision 4-Corner Convex Hull Paper Detection with Edge Snapping
+ * - High-Precision Homography Perspective Rectification to Standard A4 Dimensions
+ * - CamScanner Signature Filters: Magic Pro Whitening, No Shadow, Lighten, Clean B&W, Grayscale, Original
+ * - Real-Time Interactive Magnifying Loupe for Precision Corner Placement
+ * - High-Resolution Camera Capture with Tap-to-Focus, Torch, and Multi-Camera Switching
+ * - IndexedDB Unlimited Storage Engine for High-Res Scanned Documents & Multi-Page PDFs
+ * - Synthesized Audio/Haptic Shutter Feedback (Web Audio API)
+ * - Single & Batch Scan Multi-Page PDF Compilation via PDF-Lib
  */
 
+// =========================================================================
+// 1. IndexedDB Storage Engine (Eliminates localStorage 5MB Quota Limits)
+// =========================================================================
+class LocalDocScanDB {
+  static DB_NAME = 'LocalDocScanStore';
+  static DB_VERSION = 1;
+  static STORE_NAME = 'scanned_documents';
+
+  static async openDB() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        return resolve(null); // Fallback to localStorage
+      }
+      const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+          const store = db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+          store.createIndex('updatedAt', 'updatedAt', { unique: false });
+        }
+      };
+      request.onsuccess = (e) => resolve(e.target.result);
+      request.onerror = (e) => {
+        console.warn('IndexedDB open error:', e);
+        resolve(null);
+      };
+    });
+  }
+
+  static async getAll() {
+    try {
+      const db = await this.openDB();
+      if (!db) return this.getLocalStorageFallback();
+
+      return new Promise((resolve) => {
+        const transaction = db.transaction([this.STORE_NAME], 'readonly');
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => {
+          const docs = request.result || [];
+          // Sort descending by updatedAt
+          docs.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+          resolve(docs);
+        };
+        request.onerror = () => resolve(this.getLocalStorageFallback());
+      });
+    } catch (e) {
+      console.warn('DB getAll failed, falling back:', e);
+      return this.getLocalStorageFallback();
+    }
+  }
+
+  static async get(id) {
+    try {
+      const db = await this.openDB();
+      if (!db) {
+        const list = this.getLocalStorageFallback();
+        return list.find(d => d.id === id) || null;
+      }
+      return new Promise((resolve) => {
+        const transaction = db.transaction([this.STORE_NAME], 'readonly');
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => resolve(null);
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static async save(doc) {
+    if (!doc.id) doc.id = 'scan_' + Date.now();
+    doc.updatedAt = Date.now();
+    if (!doc.createdAt) doc.createdAt = doc.updatedAt;
+
+    try {
+      const db = await this.openDB();
+      if (!db) {
+        this.saveLocalStorageFallback(doc);
+        return doc;
+      }
+
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.put(doc);
+        request.onsuccess = () => resolve(doc);
+        request.onerror = (err) => {
+          this.saveLocalStorageFallback(doc);
+          resolve(doc);
+        };
+      });
+    } catch (e) {
+      this.saveLocalStorageFallback(doc);
+      return doc;
+    }
+  }
+
+  static async delete(id) {
+    try {
+      const db = await this.openDB();
+      if (!db) {
+        this.deleteLocalStorageFallback(id);
+        return true;
+      }
+      return new Promise((resolve) => {
+        const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => {
+          this.deleteLocalStorageFallback(id);
+          resolve(true);
+        };
+      });
+    } catch (e) {
+      this.deleteLocalStorageFallback(id);
+      return true;
+    }
+  }
+
+  // LocalStorage fallback routines (stores lightweight thumbnails & metadata)
+  static getLocalStorageFallback() {
+    try {
+      return JSON.parse(localStorage.getItem('localdoc_recent_scans') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static saveLocalStorageFallback(doc) {
+    try {
+      let list = this.getLocalStorageFallback();
+      // Keep lightweight version in localStorage
+      const lite = {
+        id: doc.id,
+        name: doc.name || doc.title,
+        title: doc.title || doc.name,
+        pageCount: doc.pageCount || (doc.pages ? doc.pages.length : 1),
+        date: doc.date || new Date().toLocaleString(),
+        updatedAt: doc.updatedAt,
+        thumbnail: doc.thumbnail || (doc.pages && doc.pages[0] ? doc.pages[0].processedDataUrl : ''),
+        dataUrl: doc.dataUrl || ''
+      };
+      list = [lite, ...list.filter(d => d.id !== doc.id)].slice(0, 15);
+      localStorage.setItem('localdoc_recent_scans', JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  static deleteLocalStorageFallback(id) {
+    try {
+      let list = this.getLocalStorageFallback().filter(d => d.id !== id);
+      localStorage.setItem('localdoc_recent_scans', JSON.stringify(list));
+    } catch (e) {}
+  }
+}
+
+// =========================================================================
+// 2. Synthesized Audio & Haptic Feedback Engine
+// =========================================================================
+class ScanFeedback {
+  static audioCtx = null;
+
+  static initAudio() {
+    if (!this.audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      this.audioCtx = new AudioContextClass();
+    }
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+  }
+
+  static playShutter() {
+    try {
+      this.initAudio();
+      if (!this.audioCtx) return;
+
+      const ctx = this.audioCtx;
+      const now = ctx.currentTime;
+
+      // Mechanical shutter click 1 (mirror lift)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(140, now);
+      osc1.frequency.exponentialRampToValueAtTime(40, now + 0.04);
+      gain1.gain.setValueAtTime(0.3, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.045);
+
+      // Mechanical shutter click 2 (curtain snap)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(800, now + 0.035);
+      osc2.frequency.exponentialRampToValueAtTime(120, now + 0.09);
+      gain2.gain.setValueAtTime(0.25, now + 0.035);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.035);
+      osc2.stop(now + 0.095);
+    } catch (e) {}
+
+    // Haptic feedback
+    try {
+      if (window.AndroidNative && window.AndroidNative.hapticClick) {
+        window.AndroidNative.hapticClick();
+      } else if (navigator.vibrate) {
+        navigator.vibrate(35);
+      }
+    } catch (e) {}
+  }
+}
+
+// =========================================================================
+// 3. Document Scanner Core Class
+// =========================================================================
 class DocumentScanner {
   constructor(videoElement, canvasElement) {
     this.video = videoElement;
@@ -17,7 +242,7 @@ class DocumentScanner {
     this.imageCapture = null;
   }
 
-  // 1. Live Camera Stream with High-Resolution Constraints
+  // Start Camera Stream with Ultra-HD resolution preferences
   async startCamera(facingMode = 'environment') {
     if (this.stream) this.stopCamera();
 
@@ -51,7 +276,7 @@ class DocumentScanner {
     this.video.srcObject = this.stream;
     await this.video.play();
 
-    // Initialize ImageCapture API if supported for maximum sensor resolution
+    // Initialize ImageCapture API if supported
     try {
       const track = this.stream.getVideoTracks()[0];
       if (track && window.ImageCapture) {
@@ -102,6 +327,8 @@ class DocumentScanner {
 
   // High-Resolution Snapshot Capture
   async captureHighResFrame() {
+    ScanFeedback.playShutter();
+
     if (this.imageCapture) {
       try {
         const photoBlob = await this.imageCapture.takePhoto();
@@ -126,7 +353,9 @@ class DocumentScanner {
     return this.canvas.toDataURL('image/jpeg', 0.98);
   }
 
-  // 2. High-Precision 4-Corner Paper Boundary Detection
+  // =========================================================================
+  // 4. High-Precision 4-Corner Paper Boundary Detection
+  // =========================================================================
   static detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'a4') {
     const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;
     const height = sourceImgOrCanvas.videoHeight || sourceImgOrCanvas.naturalHeight || sourceImgOrCanvas.height;
@@ -168,7 +397,6 @@ class DocumentScanner {
     }
 
     // Identify candidate paper points
-    // Paper is characterized by higher brightness than dark/patterned desks, or strong border contrast
     const paperThreshold = Math.max(75, avgLum * 0.88);
     const candidatePoints = [];
 
@@ -188,10 +416,6 @@ class DocumentScanner {
     }
 
     // Find 4 extreme polygon corners from convex candidates:
-    // Top-Left: minimizes (x + y)
-    // Top-Right: maximizes (x - y)
-    // Bottom-Right: maximizes (x + y)
-    // Bottom-Left: minimizes (x - y)
     let tl = candidatePoints[0], tr = candidatePoints[0], br = candidatePoints[0], bl = candidatePoints[0];
     let minSum = Infinity, maxSum = -Infinity;
     let maxDiff = -Infinity, minDiff = Infinity;
@@ -208,10 +432,10 @@ class DocumentScanner {
     }
 
     // Normalize coordinates to 0..1 range with safety margins
-    let normTL = { x: Math.max(0.01, tl.x / sampleW), y: Math.max(0.01, tl.y / sampleH) };
-    let normTR = { x: Math.min(0.99, tr.x / sampleW), y: Math.max(0.01, tr.y / sampleH) };
-    let normBR = { x: Math.min(0.99, br.x / sampleW), y: Math.min(0.99, br.y / sampleH) };
-    let normBL = { x: Math.max(0.01, bl.x / sampleW), y: Math.min(0.99, bl.y / sampleH) };
+    let normTL = { x: Math.max(0.02, tl.x / sampleW), y: Math.max(0.02, tl.y / sampleH) };
+    let normTR = { x: Math.min(0.98, tr.x / sampleW), y: Math.max(0.02, tr.y / sampleH) };
+    let normBR = { x: Math.min(0.98, br.x / sampleW), y: Math.min(0.98, br.y / sampleH) };
+    let normBL = { x: Math.max(0.02, bl.x / sampleW), y: Math.min(0.98, bl.y / sampleH) };
 
     // Validate polygon area
     const polyW = Math.max(normTR.x - normTL.x, normBR.x - normBL.x);
@@ -231,14 +455,16 @@ class DocumentScanner {
 
   static getDefaultCorners() {
     return {
-      topLeft: { x: 0.04, y: 0.04 },
-      topRight: { x: 0.96, y: 0.04 },
-      bottomRight: { x: 0.96, y: 0.96 },
-      bottomLeft: { x: 0.04, y: 0.96 }
+      topLeft: { x: 0.05, y: 0.05 },
+      topRight: { x: 0.95, y: 0.05 },
+      bottomRight: { x: 0.95, y: 0.95 },
+      bottomLeft: { x: 0.05, y: 0.95 }
     };
   }
 
-  // 3. High-Precision Perspective Homography Warp to Standard A4
+  // =========================================================================
+  // 5. High-Precision Perspective Homography Warp to Standard A4
+  // =========================================================================
   static warpDocument(sourceImg, corners, targetW = 0, targetH = 0) {
     const origW = sourceImg.naturalWidth || sourceImg.videoWidth || sourceImg.width;
     const origH = sourceImg.naturalHeight || sourceImg.videoHeight || sourceImg.height;
@@ -249,36 +475,48 @@ class DocumentScanner {
     const br = { x: corners.bottomRight.x * origW, y: corners.bottomRight.y * origH };
     const bl = { x: corners.bottomLeft.x * origW, y: corners.bottomLeft.y * origH };
 
-    const widthTop = Math.hypot(tr.x - tl.x, tr.y - tl.y);
-    const widthBottom = Math.hypot(br.x - bl.x, br.y - bl.y);
-    const heightLeft = Math.hypot(bl.x - tl.x, bl.y - tl.y);
-    const heightRight = Math.hypot(br.x - tr.x, br.y - tr.y);
+    // Calculate natural target width and height using Euclidean distances
+    const topW = Math.hypot(tr.x - tl.x, tr.y - tl.y);
+    const bottomW = Math.hypot(br.x - bl.x, br.y - bl.y);
+    const maxW = Math.max(topW, bottomW);
 
-    const avgW = Math.max(widthTop, widthBottom);
-    const avgH = Math.max(heightLeft, heightRight);
+    const leftH = Math.hypot(bl.x - tl.x, bl.y - tl.y);
+    const rightH = Math.hypot(br.x - tr.x, br.y - tr.y);
+    const maxH = Math.max(leftH, rightH);
 
-    // Standard A4 aspect ratio is 1 : 1.4142
-    let outW = targetW || Math.round(avgW);
-    let outH = targetH || Math.round(outW * 1.4142);
+    // Standard A4 Ratio: 1 : 1.4142
+    let destW = targetW || Math.round(maxW);
+    let destH = targetH || Math.round(destW * 1.4142);
 
-    // Constrain to crisp high-res boundaries (1600 x 2262 minimum up to 2480 x 3508 A4 300 DPI)
-    outW = Math.max(1200, Math.min(2480, outW));
-    outH = Math.round(outW * 1.4142);
+    if (!targetW && !targetH) {
+      if (maxH / maxW < 1.1) {
+        // Landscape A4
+        destW = Math.round(maxW);
+        destH = Math.round(destW / 1.4142);
+      } else {
+        // Portrait A4
+        destW = Math.round(maxW);
+        destH = Math.round(destW * 1.4142);
+      }
+    }
+
+    // Safety bounds for canvas
+    destW = Math.max(400, Math.min(2800, destW));
+    destH = Math.max(565, Math.min(3960, destH));
 
     const canvas = document.createElement('canvas');
-    canvas.width = outW;
-    canvas.height = outH;
+    canvas.width = destW;
+    canvas.height = destH;
     const ctx = canvas.getContext('2d');
 
-    // High-resolution 32x32 bilinear quadrilateral mesh slicing
-    const slices = 32;
-    for (let sy = 0; sy < slices; sy++) {
-      const v0 = sy / slices;
-      const v1 = (sy + 1) / slices;
-
-      for (let sx = 0; sx < slices; sx++) {
-        const u0 = sx / slices;
-        const u1 = (sx + 1) / slices;
+    // Bilinear grid interpolation mesh (32x32 tiles for smooth perspective)
+    const subdivisions = 32;
+    for (let row = 0; row < subdivisions; row++) {
+      for (let col = 0; col < subdivisions; col++) {
+        const u0 = col / subdivisions;
+        const u1 = (col + 1) / subdivisions;
+        const v0 = row / subdivisions;
+        const v1 = (row + 1) / subdivisions;
 
         const p00 = {
           x: (1 - u0) * (1 - v0) * tl.x + u0 * (1 - v0) * tr.x + (1 - u0) * v0 * bl.x + u0 * v0 * br.x,
@@ -293,25 +531,27 @@ class DocumentScanner {
           y: (1 - u0) * (1 - v1) * tl.y + u0 * (1 - v1) * tr.y + (1 - u0) * v1 * bl.y + u0 * v1 * br.y
         };
 
-        const destX = u0 * canvas.width;
-        const destY = v0 * canvas.height;
-        const destW = (u1 - u0) * canvas.width;
-        const destH = (v1 - v0) * canvas.height;
+        const destX = u0 * destW;
+        const destY = v0 * destH;
+        const destW_tile = (u1 - u0) * destW;
+        const destH_tile = (v1 - v0) * destH;
 
         const srcX = Math.min(p00.x, p01.x);
         const srcY = Math.min(p00.y, p10.y);
         const srcW = Math.max(1, Math.abs(p10.x - p00.x));
         const srcH = Math.max(1, Math.abs(p01.y - p00.y));
 
-        ctx.drawImage(sourceImg, srcX, srcY, srcW, srcH, destX, destY, destW + 0.5, destH + 0.5);
+        ctx.drawImage(sourceImg, srcX, srcY, srcW, srcH, destX, destY, destW_tile + 0.5, destH_tile + 0.5);
       }
     }
 
     return canvas;
   }
 
-  // 4. CamScanner Signature Filter Processing
-  static processImage(imgElement, filter = 'magic-color', rotation = 0, corners = null) {
+  // =========================================================================
+  // 6. CamScanner Signature Filter Processing
+  // =========================================================================
+  static processImage(imgElement, filter = 'magic-color', rotation = 0, corners = null, options = {}) {
     let sourceCanvas;
     if (corners) {
       sourceCanvas = DocumentScanner.warpDocument(imgElement, corners);
@@ -346,9 +586,13 @@ class DocumentScanner {
     const data = imgData.data;
     const len = data.length;
 
+    // Optional fine-tune adjustments
+    const brightnessAdjust = options.brightness || 0; // -50 to +50
+    const contrastAdjust = options.contrast || 0;     // -50 to +50
+
     switch (filter) {
       case 'magic-color': {
-        // CamScanner Magic Pro:
+        // CamScanner Signature Magic Pro:
         // Automatically whitens yellowish/creased paper backgrounds, removes shadows, and sharpens ink
         let lumSum = 0;
         let lumSamples = [];
@@ -428,13 +672,35 @@ class DocumentScanner {
         }
         break;
       }
+
+      case 'grayscale': {
+        for (let i = 0; i < len; i += 4) {
+          const lum = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          data[i] = lum;
+          data[i + 1] = lum;
+          data[i + 2] = lum;
+        }
+        break;
+      }
+    }
+
+    // Apply brightness and contrast if adjusted
+    if (brightnessAdjust !== 0 || contrastAdjust !== 0) {
+      const factor = (259 * (contrastAdjust + 255)) / (255 * (259 - contrastAdjust));
+      for (let i = 0; i < len; i += 4) {
+        data[i] = Math.min(255, Math.max(0, factor * (data[i] - 128) + 128 + brightnessAdjust));
+        data[i + 1] = Math.min(255, Math.max(0, factor * (data[i + 1] - 128) + 128 + brightnessAdjust));
+        data[i + 2] = Math.min(255, Math.max(0, factor * (data[i + 2] - 128) + 128 + brightnessAdjust));
+      }
     }
 
     ctx.putImageData(imgData, 0, 0);
     return canvas.toDataURL('image/jpeg', 0.95);
   }
 
-  // 5. Multi-Page PDF Export with PDF-Lib
+  // =========================================================================
+  // 7. Multi-Page PDF Export with PDF-Lib
+  // =========================================================================
   static async exportToPDF(pagesArray, options = {}) {
     if (typeof PDFLib === 'undefined') {
       throw new Error('PDF-Lib engine is still loading in your browser. Please try again in a moment.');
@@ -491,32 +757,20 @@ class DocumentScanner {
     return new Blob([pdfBytes], { type: 'application/pdf' });
   }
 
-  // 6. Recent Scans Storage Management
-  static getRecentScans() {
-    try {
-      return JSON.parse(localStorage.getItem('localdoc_recent_scans') || '[]');
-    } catch (e) {
-      return [];
-    }
+  // Backward-compatible Recent Scans hooks (delegates to LocalDocScanDB)
+  static async getRecentScans() {
+    return await LocalDocScanDB.getAll();
   }
 
-  static saveRecentScan(item) {
-    try {
-      let recents = this.getRecentScans();
-      // Keep most recent 12 scans
-      recents = [item, ...recents.filter(r => r.id !== item.id)].slice(0, 12);
-      localStorage.setItem('localdoc_recent_scans', JSON.stringify(recents));
-    } catch (e) {
-      console.warn('LocalStorage limit reached for recent scans:', e);
-    }
+  static async saveRecentScan(item) {
+    return await LocalDocScanDB.save(item);
   }
 
-  static deleteRecentScan(id) {
-    try {
-      let recents = this.getRecentScans().filter(r => r.id !== id);
-      localStorage.setItem('localdoc_recent_scans', JSON.stringify(recents));
-    } catch (e) {}
+  static async deleteRecentScan(id) {
+    return await LocalDocScanDB.delete(id);
   }
 }
 
+window.LocalDocScanDB = LocalDocScanDB;
+window.ScanFeedback = ScanFeedback;
 window.DocumentScanner = DocumentScanner;
