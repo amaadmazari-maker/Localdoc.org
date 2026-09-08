@@ -13,10 +13,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CamScanner Studio Online — Free Fullscreen A4 Document Scanner & PDF Studio | LocalDoc</title>
-  <meta name="description" content="Free CamScanner online alternative. Fullscreen camera document scanner with real-time paper edge detection, auto-crop perspective warp, Magic Pro shadow removal, and instant PDF compilation with built-in viewer. 100% private in-browser RAM execution.">
+  <meta name="description" content="Free CamScanner online alternative. Fullscreen hardware camera scanner with live paper edge detection, auto-crop perspective warp, Magic Pro whitening, and instant multi-page PDF compilation. 100% private in-browser RAM execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
-  <meta name="theme-color" content="#0284C7">
+  <meta name="theme-color" content="#0D9488">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
   <!-- Open Graph -->
@@ -30,199 +30,149 @@
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "LocalDoc CamScanner Studio",
-    "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "All",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "Zero-upload client-side document scanner with fullscreen camera viewfinder, real-time paper edge detection, 4-corner perspective warp, Magic Pro shadow whitening, and custom PDF export."
-  }
-  </script>
-
   <style>
+    :root {
+      --cs-teal: #0D9488;
+      --cs-teal-light: #14B8A6;
+      --cs-teal-dark: #0F766E;
+      --cs-bg-dark: #090D16;
+      --cs-surface-dark: #0F172A;
+      --cs-line-dark: #1E293B;
+    }
+
     .cs-container {
       max-width: 1040px;
       margin: 0 auto;
       padding: 16px;
     }
 
-    /* Top Studio Navigation Tabs */
-    .cs-tabs-nav {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 2px solid var(--line);
-      margin-bottom: 20px;
-      padding-bottom: 2px;
-    }
-    .cs-tab-btn {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--text-secondary);
-      padding: 10px 18px;
-      border-radius: 10px 10px 0 0;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      position: relative;
-      transition: all 0.15s ease;
-    }
-    .cs-tab-btn:hover {
-      color: var(--primary);
-    }
-    .cs-tab-btn.active {
-      color: var(--primary);
-    }
-    .cs-tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--primary);
-      border-radius: 3px 3px 0 0;
-    }
-    .cs-tab-badge {
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 9999px;
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      color: var(--text-primary);
-    }
-    .cs-tab-btn.active .cs-tab-badge {
-      background: rgba(2, 132, 199, 0.12);
-      border-color: rgba(2, 132, 199, 0.3);
-      color: var(--primary);
-    }
-
-    /* Hero Action Header */
-    .cs-hero-panel {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 18px;
-    }
-    .cs-hero-info h1 {
-      font-size: 1.45rem;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin: 0 0 6px;
-      letter-spacing: -0.3px;
-    }
-    .cs-hero-info p {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      margin: 0;
-      max-width: 580px;
-      line-height: 1.5;
-    }
-    .cs-hero-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .btn-cam-launch {
-      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-      color: #FFFFFF !important;
-      font-size: 1rem;
-      font-weight: 800;
-      padding: 13px 24px;
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.15s ease;
-    }
-    .btn-cam-launch:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
-    }
-    .btn-cam-launch:active {
-      transform: scale(0.97);
-    }
-
-    /* Recent Scans Library Toolbar */
-    .cs-library-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-    .cs-search-box {
-      position: relative;
-      flex: 1;
-      max-width: 380px;
-      min-width: 240px;
-    }
-    .cs-search-box input {
-      width: 100%;
-      padding: 10px 14px 10px 36px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      font-size: 0.88rem;
-    }
-    .cs-search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    /* Recent Scans Grid & Cards */
-    .recent-scans-grid {
+    /* Top Quick Tools Strip (CamScanner App Pattern) */
+    .cs-quick-tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .recent-doc-card {
+    .cs-quick-tool-card {
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 14px 10px;
       display: flex;
-      gap: 14px;
+      flex-direction: column;
       align-items: center;
-      box-shadow: var(--shadow-sm);
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-primary);
       transition: all 0.15s ease;
-      position: relative;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
     }
-    .recent-doc-card:hover {
-      border-color: var(--primary);
+    .cs-quick-tool-card:hover {
+      border-color: var(--cs-teal);
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
+    .cs-tool-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+    }
+    .cs-quick-tool-card span {
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    /* Recents Section Header */
+    .cs-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .cs-section-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cs-badge-count {
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: rgba(13, 148, 136, 0.12);
+      color: var(--cs-teal);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      border: 1px solid rgba(13, 148, 136, 0.3);
+    }
+
+    /* Recents Search Bar */
+    .cs-search-bar {
+      position: relative;
+      margin-bottom: 18px;
+      width: 100%;
+    }
+    .cs-search-bar input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .cs-search-bar input:focus {
+      border-color: var(--cs-teal);
+    }
+    .cs-search-bar svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    /* Recent Document Cards */
+    .recent-scans-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .recent-doc-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+    .recent-doc-row:hover {
+      border-color: var(--cs-teal);
+      transform: translateX(2px);
+    }
     .recent-doc-thumb {
-      width: 68px;
-      height: 92px;
+      width: 54px;
+      height: 72px;
       border-radius: 8px;
       object-fit: cover;
       border: 1px solid var(--line);
-      background: #FFFFFF;
+      background: #FFF;
       flex-shrink: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
@@ -231,7 +181,7 @@
       min-width: 0;
     }
     .recent-doc-title {
-      font-size: 0.95rem;
+      font-size: 0.96rem;
       font-weight: 800;
       color: var(--text-primary);
       white-space: nowrap;
@@ -240,66 +190,31 @@
       margin-bottom: 4px;
     }
     .recent-doc-meta {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       color: var(--text-secondary);
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .recent-doc-actions {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
-    /* Empty State */
-    .cs-empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      background: var(--bg-surface);
-      border: 1.5px dashed var(--line);
-      border-radius: 18px;
-      margin: 10px 0;
-    }
-    .cs-empty-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: rgba(2, 132, 199, 0.1);
-      color: var(--primary);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-    }
-    .cs-empty-state h3 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin: 0 0 6px;
-    }
-    .cs-empty-state p {
-      color: var(--text-secondary);
-      font-size: 0.88rem;
-      max-width: 420px;
-      margin: 0 auto 20px;
-      line-height: 1.5;
-    }
-
-    /* Floating Camera FAB (Mobile & Desktop) */
-    .cs-camera-fab {
+    /* Floating Camera FAB */
+    .cs-floating-camera-btn {
       position: fixed;
       bottom: 28px;
       right: 28px;
-      width: 62px;
-      height: 62px;
+      width: 66px;
+      height: 66px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+      background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #FFFFFF;
-      border: none;
-      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.45);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 25px rgba(13, 148, 136, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -307,18 +222,18 @@
       z-index: 900;
       transition: all 0.15s ease;
     }
-    .cs-camera-fab:hover {
+    .cs-floating-camera-btn:hover {
       transform: scale(1.08) translateY(-2px);
-      box-shadow: 0 12px 30px rgba(2, 132, 199, 0.6);
+      box-shadow: 0 12px 30px rgba(13, 148, 136, 0.65);
     }
-    .cs-camera-fab:active {
-      transform: scale(0.95);
+    .cs-floating-camera-btn:active {
+      transform: scale(0.94);
     }
 
     /* =========================================================================
-       TRUE FULLSCREEN CAMERA VIEWFINDER OVERLAY
+       1. TRUE FULLSCREEN CAMERA VIEWFINDER OVERLAY (CAMSCANNER STYLE)
        ========================================================================= */
-    #cs-fullscreen-viewfinder {
+    #cs-fullscreen-camera {
       display: none;
       position: fixed;
       inset: 0;
@@ -332,56 +247,44 @@
       user-select: none;
       -webkit-user-select: none;
     }
-
-    /* Top Camera HUD */
-    .cs-hud-top {
+    .cs-cam-top-hud {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 60px;
+      height: 64px;
       padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
       z-index: 20;
     }
-    .cs-hud-btn {
+    .cs-cam-hud-btn {
       width: 42px;
       height: 42px;
       border-radius: 50%;
       background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #FFFFFF;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       backdrop-filter: blur(8px);
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
     }
-    .cs-hud-btn:active {
+    .cs-cam-hud-btn:active {
       transform: scale(0.92);
     }
-    .cs-hud-btn.active {
+    .cs-cam-hud-btn.active {
       background: #F59E0B;
       border-color: #F59E0B;
       color: #000;
     }
-    .cs-hud-pill {
-      font-size: 0.78rem;
-      font-weight: 800;
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(56, 189, 248, 0.5);
-      color: #38BDF8;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      letter-spacing: 0.3px;
-    }
 
-    /* Video Viewport Stage */
-    .cs-hud-viewport {
+    /* Live Video Feed Container */
+    .cs-cam-viewport {
       flex: 1;
       position: relative;
       width: 100%;
@@ -391,71 +294,52 @@
       justify-content: center;
       overflow: hidden;
     }
-    .cs-video-feed {
+    .cs-cam-video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    /* Real-Time Paper Target Brackets & Radar Laser */
-    .cs-target-box {
+    /* Dynamic Paper Tracking Overlay (Shown in Video 1 & 2) */
+    .cs-cam-paper-tracking {
       position: absolute;
-      width: 82%;
-      max-width: 420px;
+      width: 84%;
+      max-width: 440px;
       aspect-ratio: 1 / 1.414;
-      border: 1.5px dashed rgba(56, 189, 248, 0.4);
-      border-radius: 12px;
+      border: 2px solid #38BDF8;
+      border-radius: 8px;
       pointer-events: none;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s ease;
     }
-    .cs-bracket {
+    .cs-cam-tracking-pill {
       position: absolute;
-      width: 24px;
-      height: 24px;
-      border-color: #38BDF8;
-      border-style: solid;
-    }
-    .cs-bracket-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-radius: 6px 0 0 0; }
-    .cs-bracket-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-radius: 0 6px 0 0; }
-    .cs-bracket-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-radius: 0 0 0 6px; }
-    .cs-bracket-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-radius: 0 0 6px 0; }
-
-    /* Sweeping Laser Radar Line */
-    .cs-laser-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #38BDF8, #0284C7, #38BDF8, transparent);
-      box-shadow: 0 0 12px #38BDF8;
-      animation: laserSweep 2.4s ease-in-out infinite alternate;
-    }
-    @keyframes laserSweep {
-      0% { top: 4%; opacity: 0.2; }
-      50% { opacity: 1; }
-      100% { top: 96%; opacity: 0.2; }
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      color: #38BDF8;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.2px;
+      backdrop-filter: blur(6px);
     }
 
-    .cs-target-hint {
-      position: absolute;
-      bottom: -36px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    }
-
-    /* Bottom Camera HUD & Shutter */
-    .cs-hud-bottom {
+    /* Bottom Camera HUD */
+    .cs-cam-bottom-hud {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 12px 20px 24px;
-      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+      padding: 12px 20px 28px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 75%, transparent 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -463,45 +347,47 @@
       z-index: 20;
     }
 
-    /* Mode Switcher Pills */
-    .cs-mode-pills {
+    /* Mode Pill Carousel (Word, Sign, Single, Batch, ID Card) */
+    .cs-cam-mode-scroll {
       display: flex;
-      gap: 6px;
-      background: rgba(15, 23, 42, 0.75);
+      gap: 8px;
+      overflow-x: auto;
       padding: 4px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      scrollbar-width: none;
     }
-    .cs-mode-pill {
+    .cs-cam-mode-scroll::-webkit-scrollbar { display: none; }
+    .cs-cam-mode-item {
       background: none;
       border: none;
       color: #94A3B8;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 800;
       padding: 6px 14px;
       border-radius: 9999px;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.12s ease;
     }
-    .cs-mode-pill.active {
-      background: var(--primary);
+    .cs-cam-mode-item.active {
       color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.5);
+      background: rgba(20, 184, 166, 0.3);
+      border: 1px solid var(--cs-teal-light);
     }
 
-    .cs-shutter-bar {
+    /* Shutter Row */
+    .cs-cam-shutter-row {
       width: 100%;
       max-width: 420px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 16px;
     }
 
-    /* Shutter Button (Double Ring) */
-    .cs-shutter-btn {
-      width: 74px;
-      height: 74px;
+    /* Double Ring Shutter Button */
+    .cs-cam-shutter-btn {
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
       background: transparent;
       border: 4px solid #FFFFFF;
@@ -510,31 +396,30 @@
       justify-content: center;
       cursor: pointer;
       transition: transform 0.1s ease;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
-    .cs-shutter-btn:active {
+    .cs-cam-shutter-btn:active {
       transform: scale(0.92);
     }
-    .cs-shutter-inner {
-      width: 58px;
-      height: 58px;
+    .cs-cam-shutter-inner {
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      background: #FFFFFF;
+      background: var(--cs-teal-light);
       transition: background 0.1s ease;
     }
-    .cs-shutter-btn:active .cs-shutter-inner {
-      background: #38BDF8;
+    .cs-cam-shutter-btn:active .cs-cam-shutter-inner {
+      background: #FFFFFF;
     }
 
-    /* Scanned Stack Counter Thumbnail */
-    .cs-stack-badge-btn {
+    /* Stack Preview Thumbnail */
+    .cs-cam-stack-btn {
       width: 48px;
       height: 48px;
       border-radius: 12px;
       background: rgba(15, 23, 42, 0.75);
       border: 1.5px solid rgba(255, 255, 255, 0.3);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #FFFFFF;
@@ -542,35 +427,34 @@
       position: relative;
       overflow: hidden;
     }
-    .cs-stack-badge-btn img {
-      position: absolute;
-      inset: 0;
+    .cs-cam-stack-thumb {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: none;
     }
-    .cs-stack-count-pill {
+    .cs-cam-stack-pill {
       position: absolute;
-      top: -4px;
-      right: -4px;
-      background: var(--danger);
+      top: -3px;
+      right: -3px;
+      background: #EF4444;
       color: #FFF;
       font-size: 0.65rem;
       font-weight: 900;
-      padding: 2px 6px;
+      padding: 1px 5px;
       border-radius: 9999px;
       z-index: 2;
     }
 
     /* =========================================================================
-       FULLSCREEN 4-CORNER CROP STAGE
+       2. FULLSCREEN 4-CORNER CROP STAGE (WITH MAGNIFYING LOUPE)
        ========================================================================= */
-    #cs-crop-stage {
+    #cs-fullscreen-crop {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 10001;
-      background: #090D16;
+      background: #000000;
       width: 100vw;
       height: 100vh;
       height: 100dvh;
@@ -580,7 +464,7 @@
       -webkit-user-select: none;
     }
     .cs-crop-topbar {
-      height: 54px;
+      height: 56px;
       background: #0F172A;
       border-bottom: 1px solid #1E293B;
       padding: 0 16px;
@@ -599,26 +483,27 @@
       overflow: hidden;
       touch-action: none;
     }
-    #crop-canvas {
+    #crop-canvas-element {
       max-width: 100%;
       max-height: 100%;
       display: block;
       cursor: crosshair;
     }
-    /* Floating Magnifying Loupe */
-    #loupe-canvas {
+    /* Fixed Top-Corner Magnifying Loupe (Exact CamScanner Pattern from Video) */
+    #crop-magnifying-loupe {
       display: none;
       position: absolute;
-      width: 120px;
-      height: 120px;
+      top: 18px;
+      right: 18px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
-      border: 3px solid #38BDF8;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+      border: 3.5px solid var(--cs-teal-light);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.85);
+      background: #000;
       pointer-events: none;
       z-index: 100;
-      background: #000;
     }
-
     .cs-crop-bottombar {
       height: 64px;
       background: #0F172A;
@@ -628,16 +513,31 @@
       align-items: center;
       justify-content: space-between;
     }
+    .cs-crop-tool-btn {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .cs-crop-tool-btn:hover, .cs-crop-tool-btn:active {
+      color: #FFFFFF;
+    }
 
     /* =========================================================================
-       FULLSCREEN FILTER & ENHANCEMENT STAGE
+       3. FULLSCREEN ENHANCEMENT & FILTER STAGE (WITH COMPARE BUTTON)
        ========================================================================= */
-    #cs-filter-stage {
+    #cs-fullscreen-filter {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 10002;
-      background: #090D16;
+      background: #000000;
       width: 100vw;
       height: 100vh;
       height: 100dvh;
@@ -647,7 +547,7 @@
       -webkit-user-select: none;
     }
     .cs-filter-topbar {
-      height: 54px;
+      height: 56px;
       background: #0F172A;
       border-bottom: 1px solid #1E293B;
       padding: 0 16px;
@@ -655,6 +555,19 @@
       align-items: center;
       justify-content: space-between;
       color: #FFFFFF;
+    }
+    .cs-compare-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .cs-filter-canvas-box {
       flex: 1;
@@ -664,37 +577,36 @@
       justify-content: center;
       background: #020617;
       overflow: hidden;
-      padding: 16px;
+      padding: 14px;
     }
-    #filter-preview-canvas {
+    #filter-canvas-element {
       max-width: 100%;
       max-height: 100%;
-      border-radius: 6px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      border-radius: 4px;
       background: #FFF;
     }
     .cs-filter-bottombar {
       background: #0F172A;
       border-top: 1px solid #1E293B;
-      padding: 12px 16px 16px;
+      padding: 10px 16px 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-    .cs-filter-carousel {
+    .cs-filter-scroll {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       overflow-x: auto;
       padding-bottom: 4px;
       scrollbar-width: none;
     }
-    .cs-filter-carousel::-webkit-scrollbar { display: none; }
-
-    .cs-filter-card {
+    .cs-filter-scroll::-webkit-scrollbar { display: none; }
+    .cs-filter-pill-btn {
       background: #1E293B;
       border: 2px solid transparent;
       border-radius: 10px;
-      padding: 6px 10px;
+      padding: 8px 12px;
       color: #94A3B8;
       font-size: 0.78rem;
       font-weight: 800;
@@ -707,155 +619,156 @@
       flex-shrink: 0;
       transition: all 0.12s ease;
     }
-    .cs-filter-card.active {
-      border-color: #38BDF8;
-      background: rgba(2, 132, 199, 0.2);
-      color: #38BDF8;
+    .cs-filter-pill-btn.active {
+      border-color: var(--cs-teal-light);
+      background: rgba(13, 148, 136, 0.25);
+      color: #FFFFFF;
     }
 
     /* =========================================================================
-       ACTIVE DOCUMENT WORKSPACE TAB
+       4. DOCUMENT WORKSPACE & PAGE VIEWER (AS SEEN IN V4.MP4 01:16)
        ========================================================================= */
-    .cs-workspace-header {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 18px 22px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-    .cs-doc-title-input {
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: var(--text-primary);
-      background: transparent;
-      border: none;
-      border-bottom: 1.5px dashed var(--line);
-      padding: 2px 4px;
-      outline: none;
-    }
-    .cs-doc-title-input:focus {
-      border-bottom-color: var(--primary);
-    }
-
-    .cs-pages-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-    .cs-page-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
+    #cs-document-workspace {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #090D16;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
       flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.15s ease;
+      overflow: hidden;
+      color: #FFFFFF;
     }
-    .cs-page-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
+    .cs-doc-view-topbar {
+      height: 56px;
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .cs-page-thumb-box {
-      width: 100%;
-      aspect-ratio: 1 / 1.414;
-      background: #FFFFFF;
+    .cs-doc-title-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .cs-doc-title-text {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cs-doc-page-counter {
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      color: #94A3B8;
+    }
+    .cs-doc-page-stage {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
+      padding: 16px;
+      overflow: auto;
+      background: #020617;
       position: relative;
     }
-    .cs-page-thumb-img {
+    #doc-active-page-img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+      border-radius: 4px;
+      background: #FFF;
     }
-    .cs-page-reorder-bar {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      right: 8px;
+    .cs-doc-bottom-bar {
+      height: 70px;
+      background: #0F172A;
+      border-top: 1px solid #1E293B;
+      padding: 0 16px;
       display: flex;
-      justify-content: space-between;
-      pointer-events: none;
+      align-items: center;
+      justify-content: space-around;
     }
-    .cs-reorder-btn {
-      pointer-events: auto;
-      background: rgba(15, 23, 42, 0.7);
-      color: #FFF;
+    .cs-doc-action-btn {
+      background: none;
       border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-    }
-    .cs-page-footer {
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    /* Add Page Card */
-    .cs-add-page-card {
-      border: 2px dashed var(--line);
-      border-radius: 14px;
-      aspect-ratio: 1 / 1.414;
+      color: #94A3B8;
+      font-size: 0.76rem;
+      font-weight: 700;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      background: var(--bg-body);
+      gap: 4px;
       cursor: pointer;
-      gap: 10px;
-      transition: all 0.15s ease;
-      text-decoration: none;
+      transition: color 0.12s ease;
     }
-    .cs-add-page-card:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: rgba(2, 132, 199, 0.04);
-      transform: translateY(-2px);
+    .cs-doc-action-btn:hover, .cs-doc-action-btn:active {
+      color: var(--cs-teal-light);
     }
-    .cs-add-icon-circle {
-      width: 52px;
-      height: 52px;
+    .cs-doc-add-btn {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
+      background: var(--cs-teal);
+      color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.4rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
     }
 
-    /* Bottom SEO / FAQ Sections */
-    .cs-seo-section {
-      margin-top: 48px;
-      padding-top: 36px;
-      border-top: 1px solid var(--line);
+    /* Modal for Document Rename (Exact CamScanner Popup from Video) */
+    .cs-rename-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cs-rename-box {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 380px;
+      padding: 24px;
+      color: #FFF;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+    }
+    .cs-rename-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--cs-teal);
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 16px 0 20px;
+      outline: none;
     }
   </style>
 </head>
 <body>
   <div id="reading-progress"></div>
 
+  <!-- Site Header -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="../index.html" class="brand" title="LocalDoc Home">
@@ -894,274 +807,324 @@
       <span class="breadcrumb-sep">/</span>
       <a href="../index.html#category-filter-bar">Scanner & OCR</a>
       <span class="breadcrumb-sep">/</span>
-      <span>CamScanner Studio Online (A4 Document Scanner)</span>
+      <span>CamScanner Studio Online</span>
     </nav>
 
-    <!-- Studio Tabs Navigation -->
-    <div class="cs-tabs-nav">
-      <button type="button" class="cs-tab-btn active" id="tab-btn-recent" onclick="switchMainTab('recent')">
-        📁 My Scans (Recent Documents)
-        <span class="cs-tab-badge" id="badge-recent-count">0</span>
-      </button>
-      <button type="button" class="cs-tab-btn" id="tab-btn-active" onclick="switchMainTab('active')" style="display:none;">
-        📄 Active Document
-        <span class="cs-tab-badge" id="badge-active-pages">0 Pages</span>
+    <!-- Quick Tools Row (CamScanner Home Grid from Video) -->
+    <div class="cs-quick-tools-grid">
+      <div class="cs-quick-tool-card" onclick="openFullscreenCamera()">
+        <div class="cs-tool-icon-circle" style="background:rgba(13, 148, 136, 0.15); color:var(--cs-teal);">📷</div>
+        <span>Smart Scan</span>
+      </div>
+      <a href="../index.html#category-pdf" class="cs-quick-tool-card">
+        <div class="cs-tool-icon-circle" style="background:rgba(239, 68, 68, 0.15); color:#EF4444;">📄</div>
+        <span>PDF Tools</span>
+      </a>
+      <div class="cs-quick-tool-card" onclick="document.getElementById('home-import-files').click()">
+        <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6;">🖼️</div>
+        <span>Import Photos</span>
+      </div>
+      <a href="id-photo.html" class="cs-quick-tool-card">
+        <div class="cs-tool-icon-circle" style="background:rgba(168, 85, 247, 0.15); color:#A855F7;">🪪</div>
+        <span>ID Cards</span>
+      </a>
+      <a href="document-reader.html" class="cs-quick-tool-card">
+        <div class="cs-tool-icon-circle" style="background:rgba(245, 158, 11, 0.15); color:#F59E0B;">📖</div>
+        <span>Doc Reader</span>
+      </a>
+      <input type="file" id="home-import-files" accept="image/*" multiple style="display:none;" onchange="handleHomeFileImport(event)">
+    </div>
+
+    <!-- Recents Section Header -->
+    <div class="cs-section-header">
+      <div class="cs-section-title">
+        <span>Recents</span>
+        <span class="cs-badge-count" id="recents-badge-counter">0</span>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" onclick="openFullscreenCamera()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
+        📷 New Scan
       </button>
     </div>
 
-    <!-- =========================================================================
-         VIEW 1: RECENT SCANS / DOCUMENTS LIBRARY (DEFAULT TAB)
-         ========================================================================= -->
-    <section id="view-recent-library">
-      <!-- Hero Launch Panel -->
-      <div class="cs-hero-panel">
-        <div class="cs-hero-info">
-          <h1>CamScanner Studio Online</h1>
-          <p>
-            Fullscreen hardware camera scanner with automated 4-corner paper detection, Magic Pro whitening, and instant multi-page PDF compilation. All processing executes 100% locally in your browser memory.
-          </p>
-        </div>
-        <div class="cs-hero-actions">
-          <button type="button" class="btn-cam-launch" id="btn-launch-fullscreen-camera">
-            📷 Start Camera Scan
-          </button>
-          <button type="button" class="btn btn-outline" id="btn-hero-import-photos">
-            📁 Upload Document Photos
-          </button>
-          <input type="file" id="hero-file-input" accept="image/*" multiple style="display:none;">
-        </div>
-      </div>
+    <!-- Search Bar -->
+    <div class="cs-search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="recents-search-box" placeholder="Search scanned documents..." oninput="filterRecentsList()">
+    </div>
 
-      <!-- Toolbar: Search & Sort -->
-      <div class="cs-library-toolbar">
-        <div class="cs-search-box">
-          <svg class="cs-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="recent-search-input" placeholder="Search scanned documents by name..." oninput="filterRecentDocuments()">
-        </div>
-        <div style="font-size:0.85rem; color:var(--text-secondary);">
-          Securely saved in client <strong>IndexedDB</strong> • Zero cloud uploads
-        </div>
-      </div>
+    <!-- Recent Documents List -->
+    <div class="recent-scans-list" id="recents-list-container">
+      <!-- Dynamically rendered documents from IndexedDB -->
+    </div>
 
-      <!-- Recent Documents Grid -->
-      <div class="recent-scans-grid" id="recent-docs-container">
-        <!-- Rendered recent docs -->
-      </div>
-
-      <!-- Empty State -->
-      <div class="cs-empty-state" id="recent-empty-state" style="display:none;">
-        <div class="cs-empty-icon">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </div>
-        <h3>No Scanned Documents Yet</h3>
-        <p>Your scanned contracts, study notes, homework, receipts, and paperwork will appear here. Start your first scan in seconds!</p>
-        <button type="button" class="btn btn-primary" onclick="launchFullscreenCamera()">
-          📷 Scan Your First Document
-        </button>
-      </div>
-    </section>
-
-    <!-- =========================================================================
-         VIEW 2: ACTIVE DOCUMENT WORKSPACE (WHEN PAGES ARE SCANNED)
-         ========================================================================= -->
-    <section id="view-active-workspace" style="display:none;">
-      <div class="cs-workspace-header">
-        <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:260px;">
-          <input type="text" id="active-doc-title" class="cs-doc-title-input" value="LocalDoc_Scan">
-          <span style="font-size:0.82rem; color:var(--text-muted);" title="Click to rename">✏️</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <button type="button" class="btn btn-outline" onclick="launchFullscreenCamera()">
-            ➕ Add More Pages
-          </button>
-          <button type="button" class="btn btn-outline" id="btn-save-to-library" onclick="saveActiveDocumentToLibrary()">
-            💾 Save to My Scans
-          </button>
-          <button type="button" class="btn btn-primary" id="btn-export-pdf" onclick="exportAndOpenInReader()">
-            📖 Open in Reader & Download &rarr;
-          </button>
-        </div>
-      </div>
-
-      <!-- Scanned Pages Grid -->
-      <div class="cs-pages-grid" id="active-pages-grid">
-        <!-- Rendered page cards -->
-      </div>
-    </section>
-
-    <!-- Floating Camera FAB -->
-    <button type="button" class="cs-camera-fab" id="fab-camera" onclick="launchFullscreenCamera()" title="Start New Scan" aria-label="Start New Scan">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-    </button>
-
-    <!-- =========================================================================
-         SEO CONTENT & USER GUIDES (PRESERVED AT BOTTOM)
-         ========================================================================= -->
-    <section class="cs-seo-section">
-      <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">The 100% Zero-Upload Client-Side CamScanner Alternative</h2>
-      <p style="color:var(--text-secondary); line-height:1.6; margin-bottom:16px;">
-        Traditional mobile document scanning apps require you to upload your sensitive legal contracts, receipts, personal notes, and identity paperwork to remote cloud servers. LocalDoc CamScanner Studio changes this paradigm by running complete computer vision edge detection, homography perspective rectification, and photocopy-grade whitening filters 100% inside your browser's local RAM. No bytes ever leave your device.
+    <!-- Empty State -->
+    <div id="recents-empty-state" style="display:none; text-align:center; padding:48px 16px; background:var(--bg-surface); border:1.5px dashed var(--line); border-radius:16px;">
+      <div style="font-size:3rem; margin-bottom:12px;">📁</div>
+      <h3 style="font-size:1.2rem; font-weight:800; margin:0 0 6px; color:var(--text-primary);">No Scanned Documents</h3>
+      <p style="font-size:0.88rem; color:var(--text-secondary); max-width:380px; margin:0 auto 20px;">
+        Tap the camera button below or import images to scan your documents. Everything is saved privately in client-side IndexedDB.
       </p>
+      <button type="button" class="btn btn-primary" onclick="openFullscreenCamera()" style="background:var(--cs-teal); border-color:var(--cs-teal);">
+        📷 Start Scanning
+      </button>
+    </div>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-top:24px;">
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:18px;">
-          <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-primary); margin:0 0 6px;">📐 4-Corner Automatic Edge Detection</h3>
-          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0; line-height:1.5;">
-            Our localized Sobel gradient and convex quad detector instantly isolates the rectangular boundaries of paper against dark, wooden, or patterned desk surfaces.
-          </p>
-        </div>
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:18px;">
-          <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-primary); margin:0 0 6px;">✨ Magic Pro Whitening Filter</h3>
-          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0; line-height:1.5;">
-            Eliminates yellow lighting, shadows cast by your phone or hand, and paper creases while extracting razor-sharp dark ink text and preserving vibrant colored stamps and signatures.
-          </p>
-        </div>
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:18px;">
-          <h3 style="font-size:1.05rem; font-weight:800; color:var(--text-primary); margin:0 0 6px;">📄 Multi-Page PDF & Reader Integration</h3>
-          <p style="font-size:0.84rem; color:var(--text-secondary); margin:0; line-height:1.5;">
-            Scan multiple single pages or batch stacks, reorder pages with drag handles, and compile into standardized A4 PDFs with instant viewing in LocalDoc's built-in Reader.
-          </p>
-        </div>
-      </div>
+    <!-- SEO & Architecture Section -->
+    <section style="margin-top:54px; padding-top:36px; border-top:1px solid var(--line);">
+      <h2 style="font-size:1.35rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">The Complete Client-Side CamScanner Alternative</h2>
+      <p style="color:var(--text-secondary); line-height:1.6; margin-bottom:18px;">
+        LocalDoc CamScanner Studio provides the exact fluid workflow of native mobile document scanners: automatic 4-corner paper edge detection, homography perspective rectification, and signature Magic Pro shadow-removal filters. All processing runs 100% locally in your browser memory via WebAssembly and Canvas.
+      </p>
     </section>
   </main>
 
+  <!-- Floating Action Camera Button (FAB) -->
+  <button type="button" class="cs-floating-camera-btn" onclick="openFullscreenCamera()" title="Scan Document" aria-label="Scan Document">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+  </button>
+
   <!-- =========================================================================
-       TRUE FULLSCREEN CAMERA VIEWFINDER OVERLAY
+       1. TRUE FULLSCREEN CAMERA VIEWFINDER OVERLAY (CAMSCANNER STYLE)
        ========================================================================= -->
-  <div id="cs-fullscreen-viewfinder">
+  <div id="cs-fullscreen-camera">
     <!-- Top HUD -->
-    <div class="cs-hud-top">
-      <button type="button" class="cs-hud-btn" onclick="closeFullscreenCamera()" title="Exit Scanner">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <div class="cs-cam-top-hud">
+      <button type="button" class="cs-cam-hud-btn" onclick="closeFullscreenCamera()" title="Close">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
-      <div class="cs-hud-pill">
-        <span>A4 Paper Auto-Detect</span>
-      </div>
-
       <div style="display:flex; align-items:center; gap:8px;">
-        <button type="button" class="cs-hud-btn" id="btn-cam-torch" onclick="toggleCamTorch()" title="Toggle Flashlight">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        <button type="button" class="cs-cam-hud-btn" id="btn-camera-torch" onclick="toggleCameraTorch()" title="Flashlight">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         </button>
-        <button type="button" class="cs-hud-btn" id="btn-cam-flip" onclick="flipCamFacing()" title="Flip Camera">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.008.74 3.844 1.967 5.25L4 18h4.5M4 14c0 4.418 3.582 8 8 8s8-3.582 8-8c0-2.008-.74-3.844-1.967-5.25L20 6h-4.5"></path></svg>
+        <button type="button" class="cs-cam-hud-btn" onclick="flipCameraDirection()" title="Flip Camera">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.008.74 3.844 1.967 5.25L4 18h4.5M4 14c0 4.418 3.582 8 8 8s8-3.582 8-8c0-2.008-.74-3.844-1.967-5.25L20 6h-4.5"></path></svg>
         </button>
       </div>
     </div>
 
-    <!-- Center Viewport -->
-    <div class="cs-hud-viewport" id="cam-viewport-box">
-      <video id="camera-video-feed" class="cs-video-feed" playsinline autoplay muted></video>
+    <!-- Viewport Stage -->
+    <div class="cs-cam-viewport">
+      <video id="camera-feed-video" class="cs-cam-video" playsinline autoplay muted></video>
       <canvas id="camera-raw-canvas" style="display:none;"></canvas>
 
-      <!-- Paper Alignment Target Brackets -->
-      <div class="cs-target-box" id="cam-target-box">
-        <div class="cs-bracket cs-bracket-tl"></div>
-        <div class="cs-bracket cs-bracket-tr"></div>
-        <div class="cs-bracket cs-bracket-bl"></div>
-        <div class="cs-bracket cs-bracket-br"></div>
-        <div class="cs-laser-line"></div>
-        <div class="cs-target-hint">Align paper inside frame</div>
+      <!-- Live Dynamic Paper Boundary (as seen in Video 1: "Scanning... hold steady") -->
+      <div class="cs-cam-paper-tracking" id="cam-paper-tracking">
+        <div class="cs-cam-tracking-pill">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38BDF8; animation:pulse 1.2s infinite;"></span>
+          <span>Scanning... hold steady</span>
+        </div>
       </div>
     </div>
 
     <!-- Bottom HUD -->
-    <div class="cs-hud-bottom">
-      <div class="cs-mode-pills">
-        <button type="button" class="cs-mode-pill active" id="pill-mode-single" onclick="setScanMode('single')">Single Page</button>
-        <button type="button" class="cs-mode-pill" id="pill-mode-batch" onclick="setScanMode('batch')">Batch Mode</button>
+    <div class="cs-cam-bottom-hud">
+      <!-- Mode Carousel -->
+      <div class="cs-cam-mode-scroll">
+        <button type="button" class="cs-cam-mode-item" onclick="setCamMode('id')">ID Card</button>
+        <button type="button" class="cs-cam-mode-item active" id="mode-single-btn" onclick="setCamMode('single')">Single</button>
+        <button type="button" class="cs-cam-mode-item" id="mode-batch-btn" onclick="setCamMode('batch')">Batch</button>
+        <button type="button" class="cs-cam-mode-item" onclick="setCamMode('book')">Book</button>
       </div>
 
-      <div class="cs-shutter-bar">
-        <!-- Pick from Gallery -->
-        <button type="button" class="cs-hud-btn" onclick="document.getElementById('cam-gallery-input').click()" title="Upload from Device">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      <!-- Shutter Bar -->
+      <div class="cs-cam-shutter-row">
+        <!-- Gallery Import Button -->
+        <button type="button" class="cs-cam-hud-btn" onclick="document.getElementById('cam-gallery-file-input').click()" title="Import from Photos">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
-        <input type="file" id="cam-gallery-input" accept="image/*" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
+        <input type="file" id="cam-gallery-file-input" accept="image/*" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
 
-        <!-- Shutter Button -->
-        <button type="button" class="cs-shutter-btn" id="btn-camera-shutter" onclick="triggerShutterCapture()" aria-label="Snap Document">
-          <div class="cs-shutter-inner"></div>
+        <!-- Large Double Ring Shutter -->
+        <button type="button" class="cs-cam-shutter-btn" onclick="executeShutterSnap()" aria-label="Capture Scan">
+          <div class="cs-cam-shutter-inner"></div>
         </button>
 
-        <!-- Scanned Stack Thumbnail Badge -->
-        <button type="button" class="cs-stack-badge-btn" id="btn-stack-badge" onclick="exitToActiveWorkspace()" title="View Scanned Pages">
-          <span class="cs-stack-count-pill" id="stack-count-number">0</span>
-          <img id="stack-badge-thumb" src="" alt="Thumbnail" style="display:none;">
-          <svg id="stack-badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <!-- Stack Count Badge -->
+        <button type="button" class="cs-cam-stack-btn" id="btn-cam-stack" onclick="openDocumentWorkspaceView()" title="Review Scans">
+          <span class="cs-cam-stack-pill" id="cam-stack-counter">0</span>
+          <img class="cs-cam-stack-thumb" id="cam-stack-thumb" src="" alt="Thumb">
+          <svg id="cam-stack-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
         </button>
       </div>
     </div>
   </div>
 
   <!-- =========================================================================
-       FULLSCREEN 4-CORNER CROP STAGE
+       2. FULLSCREEN 4-CORNER CROP STAGE (WITH TOP-CORNER MAGNIFYING LOUPE)
        ========================================================================= -->
-  <div id="cs-crop-stage">
+  <div id="cs-fullscreen-crop">
     <div class="cs-crop-topbar">
-      <button type="button" class="cs-hud-btn" onclick="cancelCropStage()" title="Back to Camera">✕</button>
-      <span style="font-weight:800; font-size:0.92rem;" id="crop-stage-header">✂️ Adjust Paper Corners</span>
-      <button type="button" class="btn btn-primary btn-sm" onclick="advanceCropToEnhance()" style="font-weight:800;">Next &rarr;</button>
+      <button type="button" class="cs-cam-hud-btn" onclick="exitCropBackToCamera()" title="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+      <span style="font-weight:800; font-size:1rem;">Crop</span>
+      <button type="button" class="btn btn-primary btn-sm" onclick="advanceCropToFilter()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
+        Next &rarr;
+      </button>
     </div>
 
-    <div class="cs-crop-canvas-box" id="crop-stage-box">
-      <canvas id="crop-canvas"></canvas>
-      <canvas id="loupe-canvas"></canvas>
+    <div class="cs-crop-canvas-box" id="crop-canvas-container">
+      <canvas id="crop-canvas-element"></canvas>
+      <!-- Fixed Magnifying Loupe (Exact CamScanner Pattern from Video) -->
+      <canvas id="crop-magnifying-loupe"></canvas>
     </div>
 
     <div class="cs-crop-bottombar">
-      <button type="button" class="btn btn-outline btn-sm" onclick="resetCropToFull()">↺ Full Image</button>
-      <button type="button" class="btn btn-outline btn-sm" onclick="reDetectEdges()">📐 Auto Detect</button>
-      <button type="button" class="btn btn-outline btn-sm" onclick="rotateCropImage()">🔄 Rotate 90°</button>
-      <button type="button" class="btn btn-primary btn-sm" onclick="advanceCropToEnhance()">✓ Enhance &rarr;</button>
+      <button type="button" class="cs-crop-tool-btn" onclick="rotateCropCanvas(-90)">
+        <span>↶</span>
+        <span>Left</span>
+      </button>
+      <button type="button" class="cs-crop-tool-btn" onclick="rotateCropCanvas(90)">
+        <span>↷</span>
+        <span>Right</span>
+      </button>
+      <button type="button" class="cs-crop-tool-btn" onclick="resetCropToFull()">
+        <span>⤢</span>
+        <span>All</span>
+      </button>
+      <button type="button" class="cs-crop-tool-btn" onclick="advanceCropToFilter()" style="color:var(--cs-teal-light);">
+        <span>→</span>
+        <span>Next</span>
+      </button>
     </div>
   </div>
 
   <!-- =========================================================================
-       FULLSCREEN FILTER & ENHANCEMENT STAGE
+       3. FULLSCREEN ENHANCEMENT & FILTER STAGE (WITH COMPARE BUTTON)
        ========================================================================= -->
-  <div id="cs-filter-stage">
+  <div id="cs-fullscreen-filter">
     <div class="cs-filter-topbar">
-      <button type="button" class="cs-hud-btn" onclick="backToCropStage()" title="Back to Crop">✂️</button>
-      <span style="font-weight:800; font-size:0.92rem;" id="filter-stage-header">✨ Enhance Document</span>
-      <button type="button" class="btn btn-primary btn-sm" onclick="commitEnhancedPage()" style="font-weight:800;">✓ Save Page</button>
+      <button type="button" class="cs-cam-hud-btn" onclick="backFromFilterToCrop()" title="Back to Crop">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+      <span style="font-weight:800; font-size:0.95rem;" id="filter-stage-title">Enhance</span>
+      <button type="button" class="cs-compare-btn" id="btn-hold-compare" onmousedown="startCompareRaw()" onmouseup="endCompareRaw()" ontouchstart="startCompareRaw()" ontouchend="endCompareRaw()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20v-20z"></path></svg>
+        <span>Hold to Compare</span>
+      </button>
     </div>
 
     <div class="cs-filter-canvas-box">
-      <canvas id="filter-preview-canvas"></canvas>
+      <canvas id="filter-canvas-element"></canvas>
     </div>
 
     <div class="cs-filter-bottombar">
-      <!-- Filter Carousel -->
-      <div class="cs-filter-carousel">
-        <button type="button" class="cs-filter-card active" data-filter="magic-color" onclick="selectEnhanceFilter('magic-color')">
+      <!-- Filter Carousel with Live Miniature Preview Pills -->
+      <div class="cs-filter-scroll">
+        <button type="button" class="cs-filter-pill-btn active" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
           <span>✨ Magic Pro</span>
         </button>
-        <button type="button" class="cs-filter-card" data-filter="no-shadow" onclick="selectEnhanceFilter('no-shadow')">
-          <span>☀️ No Shadow</span>
-        </button>
-        <button type="button" class="cs-filter-card" data-filter="lighten" onclick="selectEnhanceFilter('lighten')">
+        <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
           <span>💡 Lighten</span>
         </button>
-        <button type="button" class="cs-filter-card" data-filter="clean-bw" onclick="selectEnhanceFilter('clean-bw')">
-          <span>📄 Clean B&W</span>
+        <button type="button" class="cs-filter-pill-btn" data-filter="no-shadow" onclick="applyEnhanceFilter('no-shadow')">
+          <span>☀️ No Shadow</span>
         </button>
-        <button type="button" class="cs-filter-card" data-filter="grayscale" onclick="selectEnhanceFilter('grayscale')">
+        <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
+          <span>📄 B&W</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="grayscale" onclick="applyEnhanceFilter('grayscale')">
           <span>🌫️ Grayscale</span>
         </button>
-        <button type="button" class="cs-filter-card" data-filter="original" onclick="selectEnhanceFilter('original')">
+        <button type="button" class="cs-filter-pill-btn" data-filter="original" onclick="applyEnhanceFilter('original')">
           <span>📷 Original</span>
         </button>
       </div>
 
-      <!-- Action Row -->
+      <!-- Bottom Actions -->
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="rotateFilteredImage()">🔄 Rotate</button>
+        <button type="button" class="cs-crop-tool-btn" onclick="rotateFilterCanvas(90)">
+          <span>🔄</span>
+          <span>Rotate</span>
+        </button>
+
         <div style="display:flex; gap:10px;">
-          <button type="button" class="btn btn-outline btn-sm" id="btn-enhance-and-next" onclick="commitAndSnapNext()" style="display:none;">➕ Snap Next</button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="commitEnhancedPage()">✓ Done / Add Page</button>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-batch-snap-next" onclick="finishAndSnapNextBatch()" style="display:none; color:#FFF; border-color:#334155;">
+            ➕ Snap Next
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="commitFilteredPageToDocument()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
+            ✓ Done
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       4. DOCUMENT WORKSPACE & PAGE VIEWER (AS SEEN IN V4.MP4 01:16)
+       ========================================================================= -->
+  <div id="cs-document-workspace">
+    <!-- Top Bar -->
+    <div class="cs-doc-view-topbar">
+      <button type="button" class="cs-cam-hud-btn" onclick="closeDocumentWorkspace()" title="Back to Recents">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+
+      <!-- Editable Title (v4 in Video) -->
+      <div class="cs-doc-title-box" onclick="openRenameDialog()">
+        <span class="cs-doc-title-text" id="doc-view-title-text">LocalDoc_Scan</span>
+        <span style="font-size:0.85rem; color:#94A3B8;">✏️</span>
+        <span class="cs-doc-page-counter" id="doc-view-page-badge">1/1</span>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="exportDocPDF()" style="color:#FFF; border-color:#334155;">
+          📥 PDF
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="openDocInLocalReader()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800;">
+          📖 Reader
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Document Stage (Full Height Page View) -->
+    <div class="cs-doc-page-stage" id="doc-page-viewport">
+      <img id="doc-active-page-img" src="" alt="Active Document Page">
+    </div>
+
+    <!-- Bottom Action Bar (Add Page, Edit, Share, Delete) -->
+    <div class="cs-doc-bottom-bar">
+      <!-- ➕ Add Page Button -->
+      <button type="button" class="cs-doc-action-btn" onclick="openFullscreenCamera()">
+        <div class="cs-doc-add-btn">➕</div>
+        <span>Add Page</span>
+      </button>
+
+      <!-- ✂️ Edit / Re-Crop -->
+      <button type="button" class="cs-doc-action-btn" onclick="reCropActivePage()">
+        <span style="font-size:1.2rem;">✂️</span>
+        <span>Edit</span>
+      </button>
+
+      <!-- 🔄 Rotate -->
+      <button type="button" class="cs-doc-action-btn" onclick="rotateActiveDocPage()">
+        <span style="font-size:1.2rem;">🔄</span>
+        <span>Rotate</span>
+      </button>
+
+      <!-- 📥 Download PDF -->
+      <button type="button" class="cs-doc-action-btn" onclick="exportDocPDF()">
+        <span style="font-size:1.2rem;">📥</span>
+        <span>PDF</span>
+      </button>
+
+      <!-- 🗑️ Delete Page -->
+      <button type="button" class="cs-doc-action-btn" onclick="deleteActiveDocPage()" style="color:#EF4444;">
+        <span style="font-size:1.2rem;">🗑️</span>
+        <span>Delete</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Rename Document Modal (Exact CamScanner Popup from Video) -->
+  <div class="cs-rename-modal" id="cs-rename-modal">
+    <div class="cs-rename-box">
+      <h3 style="font-size:1.15rem; font-weight:800; margin:0;">Title</h3>
+      <input type="text" class="cs-rename-input" id="rename-doc-input" placeholder="Enter a document title">
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+        <button type="button" class="btn btn-outline" onclick="closeRenameDialog()" style="color:#FFF; border-color:#475569;">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="confirmRenameDialog()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800;">OK</button>
       </div>
     </div>
   </div>
@@ -1174,79 +1137,47 @@
 
   <script>
     // =========================================================================
-    // GLOBAL STATE MANAGEMENT
+    // STATE MANAGEMENT
     // =========================================================================
     let scanner = null;
-    let scanMode = 'single'; // 'single' or 'batch'
-    let currentFacingMode = 'environment';
-    let isTorchActive = false;
+    let cameraFacing = 'environment';
+    let isTorchOn = false;
+    let camMode = 'single'; // 'single' or 'batch'
 
-    // Active document session state
-    let activeDocId = null;
-    let activeDocTitle = 'LocalDoc_Scan_' + new Date().toISOString().slice(0,10);
-    // Pages: [{ id, rawImg, corners, processedDataUrl, filter, rotation }]
-    let activePages = [];
+    // Active Document Stack
+    let docId = null;
+    let docTitle = 'CamScanner_' + new Date().toISOString().slice(0,10);
+    let docPages = []; // [{ id, rawImg, corners, filter, rotation, processedDataUrl }]
+    let currentViewingPageIndex = 0;
 
-    // Current page undergoing Crop / Enhancement
-    let stagingPage = null; // { rawImg, corners, rotation, filter }
-    let stagingPageIndex = -1; // -1 for new page, >= 0 for editing existing page
+    // Intermediate Staging Page for Crop & Filter
+    let stagingPage = null;
+    let stagingIsEditingIndex = -1;
 
-    // Canvas & Drag State for 4-Corner Crop
+    // Crop Canvas Variables
     let cropImg = null;
-    let cropCorners = null; // { topLeft, topRight, bottomRight, bottomLeft }
-    let activeDragPoint = null; // 'topLeft', 'topRight', 'bottomRight', 'bottomLeft'
-    let cropCanvasScale = 1;
-    let cropCanvasOffset = { x: 0, y: 0 };
+    let cropCorners = null;
+    let activeDragCorner = null;
+    let cropScale = 1;
 
-    const videoEl = document.getElementById("camera-video-feed");
+    const videoEl = document.getElementById("camera-feed-video");
     const rawCanvasEl = document.getElementById("camera-raw-canvas");
     scanner = new DocumentScanner(videoEl, rawCanvasEl);
 
     // =========================================================================
-    // INITIALIZATION & TAB SWITCHING
+    // INITIALIZATION & RECENTS
     // =========================================================================
     window.addEventListener("DOMContentLoaded", async () => {
-      await loadRecentDocumentsLibrary();
-
-      // Hook hero buttons
-      document.getElementById("btn-launch-fullscreen-camera").addEventListener("click", launchFullscreenCamera);
-      document.getElementById("btn-hero-import-photos").addEventListener("click", () => {
-        document.getElementById("hero-file-input").click();
-      });
-      document.getElementById("hero-file-input").addEventListener("change", handleHeroPhotosUpload);
+      await loadRecentsLibrary();
     });
 
-    function switchMainTab(tab) {
-      const recentBtn = document.getElementById("tab-btn-recent");
-      const activeBtn = document.getElementById("tab-btn-active");
-      const recentView = document.getElementById("view-recent-library");
-      const activeView = document.getElementById("view-active-workspace");
-
-      if (tab === 'recent') {
-        recentBtn.classList.add("active");
-        activeBtn.classList.remove("active");
-        recentView.style.display = "block";
-        activeView.style.display = "none";
-        loadRecentDocumentsLibrary();
-      } else {
-        recentBtn.classList.remove("active");
-        activeBtn.classList.add("active");
-        recentView.style.display = "none";
-        activeView.style.display = "block";
-        renderActiveWorkspaceGrid();
-      }
-    }
-
-    // =========================================================================
-    // 1. RECENT DOCUMENTS LIBRARY (INDEXEDDB POWERED)
-    // =========================================================================
-    async function loadRecentDocumentsLibrary() {
-      const container = document.getElementById("recent-docs-container");
-      const emptyState = document.getElementById("recent-empty-state");
-      const badgeCount = document.getElementById("badge-recent-count");
+    async function loadRecentsLibrary() {
+      const container = document.getElementById("recents-list-container");
+      const emptyState = document.getElementById("recents-empty-state");
+      const badge = document.getElementById("recents-badge-counter");
 
       const docs = await LocalDocScanDB.getAll();
-      badgeCount.textContent = docs.length;
+      badge.textContent = docs.length;
 
       if (docs.length === 0) {
         container.innerHTML = "";
@@ -1255,11 +1186,11 @@
       }
 
       emptyState.style.display = "none";
-      renderRecentDocuments(docs);
+      renderRecentsList(docs);
     }
 
-    function renderRecentDocuments(docs) {
-      const container = document.getElementById("recent-docs-container");
+    function renderRecentsList(docs) {
+      const container = document.getElementById("recents-list-container");
       container.innerHTML = docs.map(doc => {
         const title = doc.title || doc.name || "Untitled Scan";
         const pageCount = doc.pageCount || (doc.pages ? doc.pages.length : 1);
@@ -1267,69 +1198,74 @@
         const thumb = doc.thumbnail || (doc.pages && doc.pages[0] ? doc.pages[0].processedDataUrl : "../assets/icons/scan.svg");
 
         return `
-          <div class="recent-doc-card" id="card-${doc.id}">
-            <img class="recent-doc-thumb" src="${thumb}" alt="${title}" loading="lazy">
-            <div class="recent-doc-info">
-              <div class="recent-doc-title" title="${title}">${title}</div>
+          <div class="recent-doc-row" id="doc-row-${doc.id}">
+            <img class="recent-doc-thumb" src="${thumb}" alt="${title}" onclick="loadExistingDoc('${doc.id}')" style="cursor:pointer;">
+            <div class="recent-doc-info" onclick="loadExistingDoc('${doc.id}')" style="cursor:pointer;">
+              <div class="recent-doc-title">${title}</div>
               <div class="recent-doc-meta">
                 <span>📄 ${pageCount} Page(s)</span>
                 <span>•</span>
                 <span>${dateStr}</span>
               </div>
-              <div class="recent-doc-actions">
-                <button type="button" class="btn btn-primary btn-sm" onclick="openDocInReader('${doc.id}')" style="padding:4px 10px; font-size:0.75rem;">
-                  📖 Open
-                </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="downloadDocPDF('${doc.id}')" style="padding:4px 10px; font-size:0.75rem;">
-                  📥 PDF
-                </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="loadDocIntoWorkspace('${doc.id}')" style="padding:4px 8px; font-size:0.75rem;" title="Edit & Add Pages">
-                  ✏️ Edit
-                </button>
-                <button type="button" onclick="deleteDocItem('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.85rem; padding:4px;" title="Delete Document">
-                  🗑️
-                </button>
-              </div>
+            </div>
+            <div class="recent-doc-actions">
+              <button type="button" class="btn btn-outline btn-sm" onclick="downloadPdfDirect('${doc.id}')" style="padding:5px 10px; font-size:0.75rem;">
+                📥 PDF
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="openReaderDirect('${doc.id}')" style="padding:5px 10px; font-size:0.75rem; background:var(--cs-teal); border-color:var(--cs-teal);">
+                📖 Open
+              </button>
+              <button type="button" onclick="deleteDocItem('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.9rem; padding:6px;" title="Delete">
+                🗑️
+              </button>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    async function filterRecentDocuments() {
-      const q = document.getElementById("recent-search-input").value.toLowerCase().trim();
+    async function filterRecentsList() {
+      const q = document.getElementById("recents-search-box").value.toLowerCase().trim();
       const allDocs = await LocalDocScanDB.getAll();
       const filtered = allDocs.filter(d => (d.title || d.name || '').toLowerCase().includes(q));
-      renderRecentDocuments(filtered);
+      renderRecentsList(filtered);
     }
 
-    async function openDocInReader(id) {
+    async function loadExistingDoc(id) {
       const doc = await LocalDocScanDB.get(id);
-      if (!doc) return;
+      if (!doc || !doc.pages) return;
 
-      let dataUrl = doc.dataUrl;
-      if (!dataUrl && doc.pages && doc.pages.length > 0) {
-        const blob = await DocumentScanner.exportToPDF(doc.pages);
-        dataUrl = await UIUtils.readFileAsDataURL(blob);
+      docId = doc.id;
+      docTitle = doc.title || doc.name || "CamScanner_Doc";
+      docPages = [];
+
+      for (const p of doc.pages) {
+        const img = await UIUtils.loadImage(p.rawDataUrl || p.processedDataUrl);
+        docPages.push({
+          id: p.id,
+          rawImg: img,
+          corners: p.corners || DocumentScanner.getDefaultCorners(),
+          filter: p.filter || 'magic-color',
+          rotation: p.rotation || 0,
+          processedDataUrl: p.processedDataUrl
+        });
       }
 
-      if (dataUrl) {
-        sessionStorage.setItem("localdoc_view_document", JSON.stringify({
-          dataUrl: dataUrl,
-          filename: doc.title || doc.name || "LocalDoc_Scan.pdf",
-          type: 'application/pdf'
-        }));
-        window.location.href = "document-reader.html";
-      } else {
-        UIUtils.showToast("Could not prepare document for reader.", "error");
+      currentViewingPageIndex = 0;
+      openDocumentWorkspaceView();
+    }
+
+    async function deleteDocItem(id) {
+      if (confirm("Delete this document from storage?")) {
+        await LocalDocScanDB.delete(id);
+        await loadRecentsLibrary();
+        UIUtils.showToast("Document deleted.", "info");
       }
     }
 
-    async function downloadDocPDF(id) {
+    async function downloadPdfDirect(id) {
       const doc = await LocalDocScanDB.get(id);
       if (!doc) return;
-
-      UIUtils.showToast("Compiling PDF for download...", "info");
       let blob;
       if (doc.pages && doc.pages.length > 0) {
         blob = await DocumentScanner.exportToPDF(doc.pages);
@@ -1337,7 +1273,6 @@
         const res = await fetch(doc.dataUrl);
         blob = await res.blob();
       }
-
       if (blob) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1347,97 +1282,114 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        UIUtils.showToast("✓ Download complete!", "success");
       }
     }
 
-    async function loadDocIntoWorkspace(id) {
+    async function openReaderDirect(id) {
       const doc = await LocalDocScanDB.get(id);
-      if (!doc || !doc.pages) return;
+      if (!doc) return;
+      let dataUrl = doc.dataUrl;
+      if (!dataUrl && doc.pages && doc.pages.length > 0) {
+        const blob = await DocumentScanner.exportToPDF(doc.pages);
+        dataUrl = await UIUtils.readFileAsDataURL(blob);
+      }
+      if (dataUrl) {
+        sessionStorage.setItem("localdoc_view_document", JSON.stringify({
+          dataUrl: dataUrl,
+          filename: (doc.title || doc.name || "LocalDoc_Scan") + ".pdf",
+          type: 'application/pdf'
+        }));
+        window.location.href = "document-reader.html";
+      }
+    }
 
-      activeDocId = doc.id;
-      activeDocTitle = doc.title || doc.name || "LocalDoc_Scan";
-      document.getElementById("active-doc-title").value = activeDocTitle;
+    // Quick Home Import Photos
+    async function handleHomeFileImport(e) {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
 
-      activePages = [];
-      for (const p of doc.pages) {
-        const img = await UIUtils.loadImage(p.rawDataUrl || p.processedDataUrl);
-        activePages.push({
-          id: p.id || 'p_' + Math.random().toString(36).substr(2, 5),
+      UIUtils.showToast(`Importing ${files.length} document image(s)...`, "info");
+      docPages = [];
+      docId = 'scan_' + Date.now();
+      docTitle = 'CamScanner_' + new Date().toISOString().slice(0,10);
+
+      for (const file of files) {
+        const dataUrl = await UIUtils.readFileAsDataURL(file);
+        const img = await UIUtils.loadImage(dataUrl);
+        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+
+        docPages.push({
+          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           rawImg: img,
-          corners: p.corners || DocumentScanner.getDefaultCorners(),
-          processedDataUrl: p.processedDataUrl,
-          filter: p.filter || 'magic-color',
-          rotation: p.rotation || 0
+          corners: corners,
+          filter: 'magic-color',
+          rotation: 0,
+          processedDataUrl: processed
         });
       }
 
-      updateActiveTabState();
-      switchMainTab('active');
-    }
-
-    async function deleteDocItem(id) {
-      if (confirm("Delete this document from your local storage?")) {
-        await LocalDocScanDB.delete(id);
-        await loadRecentDocumentsLibrary();
-        UIUtils.showToast("Document deleted.", "info");
-      }
+      document.getElementById("home-import-files").value = "";
+      currentViewingPageIndex = 0;
+      await autoSaveDocumentToDB();
+      openDocumentWorkspaceView();
     }
 
     // =========================================================================
-    // 2. TRUE FULLSCREEN CAMERA VIEWFINDER MODE
+    // 1. FULLSCREEN CAMERA VIEWFINDER
     // =========================================================================
-    const fullscreenViewfinder = document.getElementById("cs-fullscreen-viewfinder");
+    const fullscreenCam = document.getElementById("cs-fullscreen-camera");
 
-    async function launchFullscreenCamera() {
-      fullscreenViewfinder.style.display = "flex";
+    async function openFullscreenCamera() {
+      fullscreenCam.style.display = "flex";
       try {
-        await scanner.startCamera(currentFacingMode);
-        updateStackBadge();
+        await scanner.startCamera(cameraFacing);
+        updateCamStackBadge();
         UIUtils.showToast("Camera active. Align paper document.", "success");
       } catch (err) {
-        alert("Camera error: " + err.message);
+        alert("Camera access error: " + err.message);
         closeFullscreenCamera();
       }
     }
 
     function closeFullscreenCamera() {
       scanner.stopCamera();
-      fullscreenViewfinder.style.display = "none";
-      if (activePages.length > 0) {
-        updateActiveTabState();
-        switchMainTab('active');
+      fullscreenCam.style.display = "none";
+      if (docPages.length > 0) {
+        openDocumentWorkspaceView();
       }
     }
 
-    function setScanMode(mode) {
-      scanMode = mode;
-      document.getElementById("pill-mode-single").classList.toggle("active", mode === 'single');
-      document.getElementById("pill-mode-batch").classList.toggle("active", mode === 'batch');
-      document.getElementById("btn-enhance-and-next").style.display = (mode === 'batch') ? 'inline-flex' : 'none';
-      UIUtils.showToast(mode === 'batch' ? "Batch Mode: Scan multiple pages continuously" : "Single Page Mode", "info");
+    async function toggleCameraTorch() {
+      isTorchOn = !isTorchOn;
+      const ok = await scanner.toggleTorch(isTorchOn);
+      document.getElementById("btn-camera-torch").classList.toggle("active", isTorchOn && ok);
     }
 
-    async function toggleCamTorch() {
-      isTorchActive = !isTorchActive;
-      const ok = await scanner.toggleTorch(isTorchActive);
-      document.getElementById("btn-cam-torch").classList.toggle("active", isTorchActive && ok);
+    async function flipCameraDirection() {
+      cameraFacing = (cameraFacing === 'environment') ? 'user' : 'environment';
+      await scanner.startCamera(cameraFacing);
     }
 
-    async function flipCamFacing() {
-      currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
-      await scanner.startCamera(currentFacingMode);
+    function setCamMode(mode) {
+      if (mode === 'id') {
+        window.location.href = "id-photo.html";
+        return;
+      }
+      camMode = mode;
+      document.getElementById("mode-single-btn").classList.toggle("active", mode === 'single');
+      document.getElementById("mode-batch-btn").classList.toggle("active", mode === 'batch');
+      document.getElementById("btn-batch-snap-next").style.display = (mode === 'batch') ? 'inline-flex' : 'none';
     }
 
-    function updateStackBadge() {
-      const badge = document.getElementById("stack-count-number");
-      const thumb = document.getElementById("stack-badge-thumb");
-      const icon = document.getElementById("stack-badge-icon");
+    function updateCamStackBadge() {
+      const counter = document.getElementById("cam-stack-counter");
+      const thumb = document.getElementById("cam-stack-thumb");
+      const icon = document.getElementById("cam-stack-icon");
 
-      badge.textContent = activePages.length;
-      if (activePages.length > 0) {
-        const lastPage = activePages[activePages.length - 1];
-        thumb.src = lastPage.processedDataUrl;
+      counter.textContent = docPages.length;
+      if (docPages.length > 0) {
+        thumb.src = docPages[docPages.length - 1].processedDataUrl;
         thumb.style.display = "block";
         icon.style.display = "none";
       } else {
@@ -1446,76 +1398,40 @@
       }
     }
 
-    function exitToActiveWorkspace() {
-      scanner.stopCamera();
-      fullscreenViewfinder.style.display = "none";
-      updateActiveTabState();
-      switchMainTab('active');
-    }
-
-    // Capture Frame from Camera
-    async function triggerShutterCapture() {
+    // Shutter Snap Capture
+    async function executeShutterSnap() {
       try {
         if (!videoEl || !videoEl.videoWidth) {
-          await scanner.startCamera(currentFacingMode);
+          await scanner.startCamera(cameraFacing);
           return;
         }
 
-        // Shutter flash effect
+        // Shutter flash
         videoEl.style.opacity = '0.15';
         setTimeout(() => videoEl.style.opacity = '1', 100);
 
         const rawDataUrl = await scanner.captureHighResFrame();
         const rawImg = await UIUtils.loadImage(rawDataUrl);
 
-        // Run auto edge detection
+        // Auto edge detection
         const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
 
-        // Launch into 4-Corner Crop stage
         stagingPage = {
           rawImg: rawImg,
           corners: corners,
           rotation: 0,
           filter: 'magic-color'
         };
-        stagingPageIndex = -1; // new page
+        stagingIsEditingIndex = -1;
 
-        launchCropStage();
+        openCropScreen();
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Capture failed: " + err.message, "error");
       }
     }
 
-    // Hero Upload Handler
-    async function handleHeroPhotosUpload(e) {
-      const files = Array.from(e.target.files || []);
-      if (files.length === 0) return;
-
-      UIUtils.showToast(`Processing ${files.length} image(s)...`, "info");
-      for (const file of files) {
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
-        const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-        const processedDataUrl = DocumentScanner.processImage(img, 'magic-color', 0, corners);
-
-        activePages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: img,
-          corners: corners,
-          processedDataUrl: processedDataUrl,
-          filter: 'magic-color',
-          rotation: 0
-        });
-      }
-
-      document.getElementById("hero-file-input").value = "";
-      updateActiveTabState();
-      switchMainTab('active');
-      UIUtils.showToast(`✓ Added ${files.length} page(s) to active document!`, "success");
-    }
-
-    // Camera HUD Gallery Upload Handler
+    // Camera HUD Gallery Upload
     async function handleCamGalleryUpload(e) {
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
@@ -1525,68 +1441,66 @@
         const img = await UIUtils.loadImage(dataUrl);
         const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
 
-        if (files.length === 1 && scanMode === 'single') {
-          // Open single in crop stage
+        if (files.length === 1 && camMode === 'single') {
           stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
-          stagingPageIndex = -1;
-          launchCropStage();
-          document.getElementById("cam-gallery-input").value = "";
+          stagingIsEditingIndex = -1;
+          openCropScreen();
+          document.getElementById("cam-gallery-file-input").value = "";
           return;
         }
 
-        // Batch upload straight to pages stack
-        const processedDataUrl = DocumentScanner.processImage(img, 'magic-color', 0, corners);
-        activePages.push({
+        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+        docPages.push({
           id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           rawImg: img,
           corners: corners,
-          processedDataUrl: processedDataUrl,
           filter: 'magic-color',
-          rotation: 0
+          rotation: 0,
+          processedDataUrl: processed
         });
       }
 
-      document.getElementById("cam-gallery-input").value = "";
-      updateStackBadge();
+      document.getElementById("cam-gallery-file-input").value = "";
+      updateCamStackBadge();
       UIUtils.showToast(`✓ Added ${files.length} page(s)!`, "success");
     }
 
     // =========================================================================
-    // 3. FULLSCREEN 4-CORNER CROP STAGE WITH MAGNIFYING LOUPE
+    // 2. 4-CORNER CROP SCREEN (WITH TOP-CORNER MAGNIFYING LOUPE)
     // =========================================================================
-    const cropStage = document.getElementById("cs-crop-stage");
-    const cropCanvas = document.getElementById("crop-canvas");
-    const loupeCanvas = document.getElementById("loupe-canvas");
+    const cropScreen = document.getElementById("cs-fullscreen-crop");
+    const cropCanvas = document.getElementById("crop-canvas-element");
+    const magnifyingLoupe = document.getElementById("crop-magnifying-loupe");
 
-    function launchCropStage() {
-      cropStage.style.display = "flex";
+    function openCropScreen() {
+      cropScreen.style.display = "flex";
       cropImg = stagingPage.rawImg;
       cropCorners = JSON.parse(JSON.stringify(stagingPage.corners));
 
-      setupCropCanvas();
-      attachCropInteractions();
+      initCropCanvasSize();
+      bindCropCanvasEvents();
     }
 
-    function cancelCropStage() {
-      cropStage.style.display = "none";
+    function exitCropBackToCamera() {
+      cropScreen.style.display = "none";
     }
 
-    function setupCropCanvas() {
-      const box = document.getElementById("crop-stage-box");
-      const boxW = box.clientWidth;
-      const boxH = box.clientHeight;
+    function initCropCanvasSize() {
+      const box = document.getElementById("crop-canvas-container");
+      const bw = box.clientWidth;
+      const bh = box.clientHeight;
 
-      const imgW = cropImg.naturalWidth || cropImg.width;
-      const imgH = cropImg.naturalHeight || cropImg.height;
+      const iw = cropImg.naturalWidth || cropImg.width;
+      const ih = cropImg.naturalHeight || cropImg.height;
 
-      cropCanvasScale = Math.min((boxW - 40) / imgW, (boxH - 40) / imgH);
-      cropCanvas.width = Math.round(imgW * cropCanvasScale);
-      cropCanvas.height = Math.round(imgH * cropCanvasScale);
+      cropScale = Math.min((bw - 40) / iw, (bh - 40) / ih);
+      cropCanvas.width = Math.round(iw * cropScale);
+      cropCanvas.height = Math.round(ih * cropScale);
 
-      renderCropCanvas();
+      drawCropCanvas();
     }
 
-    function renderCropCanvas() {
+    function drawCropCanvas() {
       const ctx = cropCanvas.getContext('2d');
       const w = cropCanvas.width;
       const h = cropCanvas.height;
@@ -1594,12 +1508,12 @@
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(cropImg, 0, 0, w, h);
 
-      // Darken outside boundary
       const tl = { x: cropCorners.topLeft.x * w, y: cropCorners.topLeft.y * h };
       const tr = { x: cropCorners.topRight.x * w, y: cropCorners.topRight.y * h };
       const br = { x: cropCorners.bottomRight.x * w, y: cropCorners.bottomRight.y * h };
       const bl = { x: cropCorners.bottomLeft.x * w, y: cropCorners.bottomLeft.y * h };
 
+      // Darken outside paper
       ctx.save();
       ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
       ctx.beginPath();
@@ -1611,9 +1525,9 @@
       ctx.closePath();
       ctx.fill();
 
-      // Polygon Outline
-      ctx.strokeStyle = "#38BDF8";
-      ctx.lineWidth = 2.5;
+      // Polygon Boundary Line (Teal/Cyan from Video)
+      ctx.strokeStyle = "#14B8A6";
+      ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(tl.x, tl.y);
       ctx.lineTo(tr.x, tr.y);
@@ -1622,37 +1536,45 @@
       ctx.closePath();
       ctx.stroke();
 
-      // Draw Corner & Midpoint Handles
-      const points = [
-        { key: 'topLeft', pt: tl },
-        { key: 'topRight', pt: tr },
-        { key: 'bottomRight', pt: br },
-        { key: 'bottomLeft', pt: bl }
-      ];
-
-      for (const p of points) {
+      // Draw 4 Corner Circles
+      const corners = [tl, tr, br, bl];
+      for (const c of corners) {
         ctx.fillStyle = "#FFFFFF";
-        ctx.strokeStyle = "#0284C7";
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#0D9488";
+        ctx.lineWidth = 3.5;
         ctx.beginPath();
-        ctx.arc(p.pt.x, p.pt.y, 11, 0, Math.PI * 2);
+        ctx.arc(c.x, c.y, 11, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
+      }
+
+      // Draw 4 Edge Midpoint Pill Handles (Exact CamScanner Pattern from Video)
+      const midpoints = [
+        { x: (tl.x + tr.x)/2, y: (tl.y + tr.y)/2 },
+        { x: (tr.x + br.x)/2, y: (tr.y + br.y)/2 },
+        { x: (br.x + bl.x)/2, y: (br.y + bl.y)/2 },
+        { x: (bl.x + tl.x)/2, y: (bl.y + tl.y)/2 }
+      ];
+      for (const m of midpoints) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.roundRect(m.x - 12, m.y - 4, 24, 8, 4);
+        ctx.fill();
       }
 
       ctx.restore();
     }
 
-    function attachCropInteractions() {
-      cropCanvas.onpointerdown = handleCropPointerDown;
-      window.onpointermove = handleCropPointerMove;
-      window.onpointerup = handleCropPointerUp;
+    function bindCropCanvasEvents() {
+      cropCanvas.onpointerdown = onCropDown;
+      window.onpointermove = onCropMove;
+      window.onpointerup = onCropUp;
     }
 
-    function handleCropPointerDown(e) {
+    function onCropDown(e) {
       const rect = cropCanvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
 
       const w = cropCanvas.width;
       const h = cropCanvas.height;
@@ -1664,299 +1586,271 @@
         { key: 'bottomLeft', x: cropCorners.bottomLeft.x * w, y: cropCorners.bottomLeft.y * h }
       ];
 
-      let closest = null;
-      let minDst = 45; // touch radius in px
+      let nearest = null;
+      let minD = 48; // Touch detection threshold
       for (const p of points) {
-        const dst = Math.hypot(p.x - clickX, p.y - clickY);
-        if (dst < minDst) {
-          minDst = dst;
-          closest = p.key;
+        const d = Math.hypot(p.x - cx, p.y - cy);
+        if (d < minD) {
+          minD = d;
+          nearest = p.key;
         }
       }
 
-      if (closest) {
-        activeDragPoint = closest;
-        showLoupe(e.clientX, e.clientY);
+      if (nearest) {
+        activeDragCorner = nearest;
+        renderMagnifyingLoupe();
       }
     }
 
-    function handleCropPointerMove(e) {
-      if (!activeDragPoint) return;
+    function onCropMove(e) {
+      if (!activeDragCorner) return;
 
       const rect = cropCanvas.getBoundingClientRect();
-      const mouseX = Math.max(0, Math.min(cropCanvas.width, e.clientX - rect.left));
-      const mouseY = Math.max(0, Math.min(cropCanvas.height, e.clientY - rect.top));
+      const mx = Math.max(0, Math.min(cropCanvas.width, e.clientX - rect.left));
+      const my = Math.max(0, Math.min(cropCanvas.height, e.clientY - rect.top));
 
-      cropCorners[activeDragPoint].x = mouseX / cropCanvas.width;
-      cropCorners[activeDragPoint].y = mouseY / cropCanvas.height;
+      cropCorners[activeDragCorner].x = mx / cropCanvas.width;
+      cropCorners[activeDragCorner].y = my / cropCanvas.height;
 
-      renderCropCanvas();
-      showLoupe(e.clientX, e.clientY);
+      drawCropCanvas();
+      renderMagnifyingLoupe();
     }
 
-    function handleCropPointerUp() {
-      activeDragPoint = null;
-      loupeCanvas.style.display = "none";
+    function onCropUp() {
+      activeDragCorner = null;
+      magnifyingLoupe.style.display = "none";
     }
 
-    function showLoupe(clientX, clientY) {
-      loupeCanvas.style.display = "block";
-      const box = document.getElementById("crop-stage-box");
-      const boxRect = box.getBoundingClientRect();
+    // Top-Corner Loupe Rendering (Exact CamScanner Video Feature)
+    function renderMagnifyingLoupe() {
+      magnifyingLoupe.style.display = "block";
+      magnifyingLoupe.width = 130;
+      magnifyingLoupe.height = 130;
+      const lCtx = magnifyingLoupe.getContext('2d');
+      lCtx.clearRect(0, 0, 130, 130);
 
-      // Position loupe ~75px above finger/mouse
-      let loupeX = clientX - boxRect.left - 60;
-      let loupeY = clientY - boxRect.top - 140;
+      const pt = cropCorners[activeDragCorner];
+      const iw = cropImg.naturalWidth || cropImg.width;
+      const ih = cropImg.naturalHeight || cropImg.height;
 
-      loupeCanvas.style.left = Math.max(10, Math.min(boxRect.width - 130, loupeX)) + "px";
-      loupeCanvas.style.top = Math.max(10, loupeY) + "px";
-
-      loupeCanvas.width = 120;
-      loupeCanvas.height = 120;
-      const lCtx = loupeCanvas.getContext('2d');
-      lCtx.clearRect(0, 0, 120, 120);
-
-      // Render 2.5x magnified view under cursor
-      const pt = cropCorners[activeDragPoint];
-      const imgW = cropImg.naturalWidth || cropImg.width;
-      const imgH = cropImg.naturalHeight || cropImg.height;
-
-      const centerX = pt.x * imgW;
-      const centerY = pt.y * imgH;
+      const px = pt.x * iw;
+      const py = pt.y * ih;
 
       lCtx.save();
       lCtx.beginPath();
-      lCtx.arc(60, 60, 60, 0, Math.PI * 2);
+      lCtx.arc(65, 65, 65, 0, Math.PI * 2);
       lCtx.clip();
 
-      const zoom = 2.5;
-      const srcW = 120 / zoom;
-      const srcH = 120 / zoom;
-      lCtx.drawImage(cropImg, centerX - srcW/2, centerY - srcH/2, srcW, srcH, 0, 0, 120, 120);
+      const zoom = 2.4;
+      const sw = 130 / zoom;
+      const sh = 130 / zoom;
+      lCtx.drawImage(cropImg, px - sw/2, py - sh/2, sw, sh, 0, 0, 130, 130);
 
-      // Green Crosshair
-      lCtx.strokeStyle = "#10B981";
-      lCtx.lineWidth = 1.5;
+      // Cyan Crosshairs
+      lCtx.strokeStyle = "#14B8A6";
+      lCtx.lineWidth = 2;
       lCtx.beginPath();
-      lCtx.moveTo(60, 0); lCtx.lineTo(60, 120);
-      lCtx.moveTo(0, 60); lCtx.lineTo(120, 60);
+      lCtx.moveTo(65, 0); lCtx.lineTo(65, 130);
+      lCtx.moveTo(0, 65); lCtx.lineTo(130, 65);
       lCtx.stroke();
+
       lCtx.restore();
     }
 
-    function resetCropToFull() {
-      cropCorners = DocumentScanner.getDefaultCorners();
-      renderCropCanvas();
-    }
-
-    function reDetectEdges() {
-      cropCorners = DocumentScanner.detectDocumentEdges(cropImg, 'a4');
-      renderCropCanvas();
-      UIUtils.showToast("4 Corners re-detected automatically.", "info");
-    }
-
-    function rotateCropImage() {
-      stagingPage.rotation = (stagingPage.rotation + 90) % 360;
-      // Rotate image onto temporary canvas
+    function rotateCropCanvas(deg) {
+      stagingPage.rotation = (stagingPage.rotation + deg + 360) % 360;
       const canvas = document.createElement('canvas');
       canvas.width = cropImg.naturalHeight;
       canvas.height = cropImg.naturalWidth;
       const ctx = canvas.getContext('2d');
       ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((90 * Math.PI) / 180);
+      ctx.rotate((deg * Math.PI) / 180);
       ctx.drawImage(cropImg, -cropImg.naturalWidth / 2, -cropImg.naturalHeight / 2);
 
-      const rotatedImg = new Image();
-      rotatedImg.onload = () => {
-        cropImg = rotatedImg;
-        stagingPage.rawImg = rotatedImg;
+      const rotated = new Image();
+      rotated.onload = () => {
+        cropImg = rotated;
+        stagingPage.rawImg = rotated;
         cropCorners = DocumentScanner.detectDocumentEdges(cropImg, 'a4');
-        setupCropCanvas();
+        initCropCanvasSize();
       };
-      rotatedImg.src = canvas.toDataURL();
+      rotated.src = canvas.toDataURL();
     }
 
-    function advanceCropToEnhance() {
+    function resetCropToFull() {
+      cropCorners = DocumentScanner.getDefaultCorners();
+      drawCropCanvas();
+    }
+
+    function advanceCropToFilter() {
       stagingPage.corners = JSON.parse(JSON.stringify(cropCorners));
-      cropStage.style.display = "none";
-      launchFilterStage();
+      cropScreen.style.display = "none";
+      openFilterScreen();
     }
 
     // =========================================================================
-    // 4. FULLSCREEN FILTER & ENHANCEMENT STAGE
+    // 3. ENHANCEMENT & FILTER STAGE (WITH COMPARE BUTTON)
     // =========================================================================
-    const filterStage = document.getElementById("cs-filter-stage");
-    const filterPreviewCanvas = document.getElementById("filter-preview-canvas");
-    let currentEnhancedDataUrl = null;
+    const filterScreen = document.getElementById("cs-fullscreen-filter");
+    const filterCanvas = document.getElementById("filter-canvas-element");
+    let currentEnhancedData = null;
+    let rawWarpedData = null;
 
-    function launchFilterStage() {
-      filterStage.style.display = "flex";
-      renderEnhancedPreview();
+    function openFilterScreen() {
+      filterScreen.style.display = "flex";
+      renderFilterPreview();
     }
 
-    function backToCropStage() {
-      filterStage.style.display = "none";
-      launchCropStage();
+    function backFromFilterToCrop() {
+      filterScreen.style.display = "none";
+      openCropScreen();
     }
 
-    function renderEnhancedPreview() {
-      const filter = stagingPage.filter || 'magic-color';
-      const corners = stagingPage.corners;
-
-      currentEnhancedDataUrl = DocumentScanner.processImage(
+    function renderFilterPreview() {
+      const filterKey = stagingPage.filter || 'magic-color';
+      currentEnhancedData = DocumentScanner.processImage(
         stagingPage.rawImg,
-        filter,
+        filterKey,
         stagingPage.rotation || 0,
-        corners
+        stagingPage.corners
       );
+
+      // Also compute raw unenhanced for the "Hold to Compare" button
+      if (!rawWarpedData) {
+        rawWarpedData = DocumentScanner.processImage(
+          stagingPage.rawImg,
+          'original',
+          stagingPage.rotation || 0,
+          stagingPage.corners
+        );
+      }
 
       const img = new Image();
       img.onload = () => {
-        filterPreviewCanvas.width = img.width;
-        filterPreviewCanvas.height = img.height;
-        const ctx = filterPreviewCanvas.getContext('2d');
+        filterCanvas.width = img.width;
+        filterCanvas.height = img.height;
+        const ctx = filterCanvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
       };
-      img.src = currentEnhancedDataUrl;
+      img.src = currentEnhancedData;
 
-      // Update active filter card
-      document.querySelectorAll(".cs-filter-card").forEach(c => {
-        c.classList.toggle("active", c.dataset.filter === filter);
+      // Update active filter pill
+      document.querySelectorAll(".cs-filter-pill-btn").forEach(p => {
+        p.classList.toggle("active", p.dataset.filter === filterKey);
       });
     }
 
-    function selectEnhanceFilter(filterKey) {
+    function applyEnhanceFilter(filterKey) {
       stagingPage.filter = filterKey;
-      renderEnhancedPreview();
+      renderFilterPreview();
     }
 
-    function rotateFilteredImage() {
-      stagingPage.rotation = (stagingPage.rotation + 90) % 360;
-      renderEnhancedPreview();
+    function rotateFilterCanvas(deg) {
+      stagingPage.rotation = (stagingPage.rotation + deg + 360) % 360;
+      rawWarpedData = null;
+      renderFilterPreview();
     }
 
-    function commitEnhancedPage() {
-      if (stagingPageIndex >= 0) {
-        // Update existing page
-        activePages[stagingPageIndex].corners = stagingPage.corners;
-        activePages[stagingPageIndex].filter = stagingPage.filter;
-        activePages[stagingPageIndex].rotation = stagingPage.rotation;
-        activePages[stagingPageIndex].processedDataUrl = currentEnhancedDataUrl;
+    // "Hold to Compare" Button
+    function startCompareRaw() {
+      if (!rawWarpedData) return;
+      const img = new Image();
+      img.onload = () => {
+        const ctx = filterCanvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = rawWarpedData;
+    }
+    function endCompareRaw() {
+      if (!currentEnhancedData) return;
+      const img = new Image();
+      img.onload = () => {
+        const ctx = filterCanvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = currentEnhancedData;
+    }
+
+    async function commitFilteredPageToDocument() {
+      if (stagingIsEditingIndex >= 0) {
+        docPages[stagingIsEditingIndex].corners = stagingPage.corners;
+        docPages[stagingIsEditingIndex].filter = stagingPage.filter;
+        docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
+        docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
       } else {
-        // Add new page to active document stack
-        activePages.push({
+        docPages.push({
           id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           rawImg: stagingPage.rawImg,
           corners: stagingPage.corners,
           filter: stagingPage.filter,
           rotation: stagingPage.rotation,
-          processedDataUrl: currentEnhancedDataUrl
+          processedDataUrl: currentEnhancedData
         });
       }
 
-      filterStage.style.display = "none";
+      filterScreen.style.display = "none";
+      await autoSaveDocumentToDB();
 
-      if (scanMode === 'batch' && stagingPageIndex === -1) {
-        // Continue camera scanning
-        updateStackBadge();
-        UIUtils.showToast(`✓ Page #${activePages.length} captured! Ready for next.`, "success");
+      if (camMode === 'batch' && stagingIsEditingIndex === -1) {
+        updateCamStackBadge();
+        UIUtils.showToast(`✓ Page #${docPages.length} saved! Snap next.`, "success");
       } else {
-        // Return to workspace
         closeFullscreenCamera();
-        updateActiveTabState();
-        switchMainTab('active');
-        UIUtils.showToast("✓ Page saved!", "success");
+        currentViewingPageIndex = docPages.length - 1;
+        openDocumentWorkspaceView();
       }
     }
 
-    function commitAndSnapNext() {
-      commitEnhancedPage();
-      launchFullscreenCamera();
+    function finishAndSnapNextBatch() {
+      commitFilteredPageToDocument();
+      openFullscreenCamera();
     }
 
     // =========================================================================
-    // 5. ACTIVE DOCUMENT WORKSPACE
+    // 4. DOCUMENT WORKSPACE VIEW (MULTI-PAGE VIEWER & ACTIONS)
     // =========================================================================
-    function updateActiveTabState() {
-      const activeTabBtn = document.getElementById("tab-btn-active");
-      const activeBadge = document.getElementById("badge-active-pages");
+    const docWorkspace = document.getElementById("cs-document-workspace");
+    const docPageImg = document.getElementById("doc-active-page-img");
 
-      activeBadge.textContent = `${activePages.length} Page(s)`;
-      activeTabBtn.style.display = (activePages.length > 0) ? "inline-flex" : "none";
+    function openDocumentWorkspaceView() {
+      if (docPages.length === 0) return;
+
+      docWorkspace.style.display = "flex";
+      renderDocPageViewer();
     }
 
-    function renderActiveWorkspaceGrid() {
-      const grid = document.getElementById("active-pages-grid");
-      grid.innerHTML = "";
-
-      activePages.forEach((page, idx) => {
-        const card = document.createElement("div");
-        card.className = "cs-page-card";
-        card.innerHTML = `
-          <div class="cs-page-thumb-box">
-            <img class="cs-page-thumb-img" src="${page.processedDataUrl}" alt="Page ${idx + 1}">
-            <div class="cs-page-reorder-bar">
-              ${idx > 0 ? `<button type="button" class="cs-reorder-btn" onclick="movePageLeft(${idx})" title="Move Left">◀</button>` : `<span></span>`}
-              ${idx < activePages.length - 1 ? `<button type="button" class="cs-reorder-btn" onclick="movePageRight(${idx})" title="Move Right">▶</button>` : `<span></span>`}
-            </div>
-          </div>
-          <div class="cs-page-footer">
-            <span style="font-weight:800; font-size:0.82rem; color:var(--text-primary);">Page ${idx + 1}</span>
-            <div style="display:flex; gap:4px;">
-              <button type="button" class="btn btn-outline btn-sm" onclick="editPageCrop(${idx})" title="Adjust Crop" style="padding:3px 7px; font-size:0.75rem;">✂️</button>
-              <button type="button" class="btn btn-outline btn-sm" onclick="editPageFilter(${idx})" title="Filter & Color" style="padding:3px 7px; font-size:0.75rem;">✨</button>
-              <button type="button" class="btn btn-outline btn-sm" onclick="quickRotatePage(${idx})" title="Rotate 90°" style="padding:3px 7px; font-size:0.75rem;">🔄</button>
-              <button type="button" class="btn btn-outline btn-sm" onclick="removePage(${idx})" title="Delete" style="padding:3px 7px; font-size:0.75rem; color:var(--danger);">🗑️</button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-
-      // Append "+ Add Page" card
-      const addCard = document.createElement("div");
-      addCard.className = "cs-add-page-card";
-      addCard.onclick = launchFullscreenCamera;
-      addCard.innerHTML = `
-        <div class="cs-add-icon-circle">➕</div>
-        <span style="font-weight:800; font-size:0.92rem;">Add More Pages</span>
-        <span style="font-size:0.75rem; color:var(--text-muted);">Snap photo or upload file</span>
-      `;
-      grid.appendChild(addCard);
+    function closeDocumentWorkspace() {
+      docWorkspace.style.display = "none";
+      loadRecentsLibrary();
     }
 
-    function movePageLeft(idx) {
-      if (idx <= 0) return;
-      const temp = activePages[idx];
-      activePages[idx] = activePages[idx - 1];
-      activePages[idx - 1] = temp;
-      renderActiveWorkspaceGrid();
+    function renderDocPageViewer() {
+      if (currentViewingPageIndex < 0 || currentViewingPageIndex >= docPages.length) {
+        currentViewingPageIndex = 0;
+      }
+
+      const page = docPages[currentViewingPageIndex];
+      docPageImg.src = page.processedDataUrl;
+
+      document.getElementById("doc-view-title-text").textContent = docTitle;
+      document.getElementById("doc-view-page-badge").textContent = `${currentViewingPageIndex + 1}/${docPages.length}`;
     }
 
-    function movePageRight(idx) {
-      if (idx >= activePages.length - 1) return;
-      const temp = activePages[idx];
-      activePages[idx] = activePages[idx + 1];
-      activePages[idx + 1] = temp;
-      renderActiveWorkspaceGrid();
+    function reCropActivePage() {
+      const page = docPages[currentViewingPageIndex];
+      stagingPage = {
+        rawImg: page.rawImg,
+        corners: page.corners,
+        rotation: page.rotation,
+        filter: page.filter
+      };
+      stagingIsEditingIndex = currentViewingPageIndex;
+      rawWarpedData = null;
+      openCropScreen();
     }
 
-    function editPageCrop(idx) {
-      stagingPage = JSON.parse(JSON.stringify(activePages[idx]));
-      stagingPage.rawImg = activePages[idx].rawImg;
-      stagingPageIndex = idx;
-      launchCropStage();
-    }
-
-    function editPageFilter(idx) {
-      stagingPage = JSON.parse(JSON.stringify(activePages[idx]));
-      stagingPage.rawImg = activePages[idx].rawImg;
-      stagingPageIndex = idx;
-      launchFilterStage();
-    }
-
-    function quickRotatePage(idx) {
-      const page = activePages[idx];
+    function rotateActiveDocPage() {
+      const page = docPages[currentViewingPageIndex];
       page.rotation = (page.rotation + 90) % 360;
       page.processedDataUrl = DocumentScanner.processImage(
         page.rawImg,
@@ -1964,35 +1858,36 @@
         page.rotation,
         page.corners
       );
-      renderActiveWorkspaceGrid();
-      UIUtils.showToast("Rotated 90°", "info");
+      renderDocPageViewer();
+      autoSaveDocumentToDB();
     }
 
-    function removePage(idx) {
-      if (confirm(`Remove Page ${idx + 1}?`)) {
-        activePages.splice(idx, 1);
-        updateActiveTabState();
-        if (activePages.length === 0) {
-          switchMainTab('recent');
+    function deleteActiveDocPage() {
+      if (confirm(`Delete Page ${currentViewingPageIndex + 1}?`)) {
+        docPages.splice(currentViewingPageIndex, 1);
+        if (docPages.length === 0) {
+          closeDocumentWorkspace();
         } else {
-          renderActiveWorkspaceGrid();
+          currentViewingPageIndex = Math.max(0, currentViewingPageIndex - 1);
+          renderDocPageViewer();
+          autoSaveDocumentToDB();
         }
       }
     }
 
-    // Save Active Document to IndexedDB
-    async function saveActiveDocumentToLibrary() {
-      if (activePages.length === 0) return;
+    // Auto-Save Document to IndexedDB
+    async function autoSaveDocumentToDB() {
+      if (docPages.length === 0) return;
+      if (!docId) docId = 'scan_' + Date.now();
 
-      const title = document.getElementById("active-doc-title").value.trim() || "LocalDoc_Scan";
       const docRecord = {
-        id: activeDocId || 'scan_' + Date.now(),
-        title: title,
-        name: title,
-        pageCount: activePages.length,
+        id: docId,
+        title: docTitle,
+        name: docTitle,
+        pageCount: docPages.length,
         date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        thumbnail: activePages[0].processedDataUrl,
-        pages: activePages.map(p => ({
+        thumbnail: docPages[0].processedDataUrl,
+        pages: docPages.map(p => ({
           id: p.id,
           corners: p.corners,
           filter: p.filter,
@@ -2002,70 +1897,68 @@
       };
 
       await LocalDocScanDB.save(docRecord);
-      UIUtils.showToast("✓ Saved to My Scans Library!", "success");
-      loadRecentDocumentsLibrary();
     }
 
-    // Export PDF & Open in Reader
-    async function exportAndOpenInReader() {
-      if (activePages.length === 0) return;
+    // Document Rename Dialog (v4 Dialog from Video)
+    function openRenameDialog() {
+      document.getElementById("rename-doc-input").value = docTitle;
+      document.getElementById("cs-rename-modal").style.display = "flex";
+    }
 
-      const title = document.getElementById("active-doc-title").value.trim() || "LocalDoc_Scan";
-      const btn = document.getElementById("btn-export-pdf");
-      btn.disabled = true;
-      btn.textContent = "Compiling PDF...";
+    function closeRenameDialog() {
+      document.getElementById("cs-rename-modal").style.display = "none";
+    }
+
+    async function confirmRenameDialog() {
+      const newTitle = document.getElementById("rename-doc-input").value.trim();
+      if (newTitle) {
+        docTitle = newTitle;
+        document.getElementById("doc-view-title-text").textContent = docTitle;
+        await autoSaveDocumentToDB();
+        UIUtils.showToast("Title updated: " + docTitle, "success");
+      }
+      closeRenameDialog();
+    }
+
+    // Export PDF
+    async function exportDocPDF() {
+      if (docPages.length === 0) return;
+      UIUtils.showToast("Compiling PDF with PDF-Lib...", "info");
 
       try {
-        const pdfBlob = await DocumentScanner.exportToPDF(activePages);
-        const dataUrl = await UIUtils.readFileAsDataURL(pdfBlob);
-
-        // Also save to recent library
-        await LocalDocScanDB.save({
-          id: activeDocId || 'scan_' + Date.now(),
-          title: title,
-          name: title,
-          pageCount: activePages.length,
-          date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          thumbnail: activePages[0].processedDataUrl,
-          dataUrl: dataUrl,
-          pages: activePages.map(p => ({
-            id: p.id,
-            corners: p.corners,
-            filter: p.filter,
-            rotation: p.rotation,
-            processedDataUrl: p.processedDataUrl
-          }))
-        });
-
-        // Trigger PDF Download automatically
-        const url = URL.createObjectURL(pdfBlob);
+        const blob = await DocumentScanner.exportToPDF(docPages);
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = title + ".pdf";
+        a.download = docTitle + ".pdf";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        UIUtils.showToast("✓ PDF Downloaded successfully!", "success");
+      } catch (e) {
+        alert("Export error: " + e.message);
+      }
+    }
 
-        UIUtils.showToast("✓ PDF Compiled & Downloaded! Opening in Reader...", "success");
+    // Open in LocalDoc Document Reader
+    async function openDocInLocalReader() {
+      if (docPages.length === 0) return;
+      UIUtils.showToast("Preparing document for Reader...", "info");
 
-        // Open in Document Reader
+      try {
+        const blob = await DocumentScanner.exportToPDF(docPages);
+        const dataUrl = await UIUtils.readFileAsDataURL(blob);
+
         sessionStorage.setItem("localdoc_view_document", JSON.stringify({
           dataUrl: dataUrl,
-          filename: title + ".pdf",
+          filename: docTitle + ".pdf",
           type: 'application/pdf'
         }));
 
-        setTimeout(() => {
-          window.location.href = "document-reader.html";
-        }, 900);
-
-      } catch (err) {
-        console.error(err);
-        UIUtils.showToast("PDF Export error: " + err.message, "error");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "📖 Open in Reader & Download →";
+        window.location.href = "document-reader.html";
+      } catch (e) {
+        alert("Reader error: " + e.message);
       }
     }
   </script>
