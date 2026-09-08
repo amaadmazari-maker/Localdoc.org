@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -7,36 +7,99 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Use LocalDoc as a Free CamScanner Alternative in Your Browser | LocalDoc Guides</title>
-  <meta name="description" content="Scan multi-page documents with your phone camera or laptop webcam, apply adaptive Sauvola B&W filters, and export to PDF.">
+  <title>How to Scan Documents to PDF with Your Phone (CamScanner Web Alternative) | LocalDoc Guides</title>
+  <meta name="description" content="Turn your phone camera into a professional 300 DPI flatbed document scanner. Learn 4-corner quad edge detection, shadow elimination, Magic Pro filters, and batch PDF generation with 100% client-side privacy.">
   <link rel="canonical" href="https://localdoc.org/blog/scan-to-pdf-guide.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Scan Documents to PDF with Your Phone: The Complete CamScanner Web Guide">
+  <meta property="og:description" content="Complete guide to browser-based mobile document scanning: automatic edge snapping, homography perspective rectification, and shadow removal with zero uploads.">
+  <meta property="og:url" content="https://localdoc.org/blog/scan-to-pdf-guide.html">
+  <meta property="og:image" content="../assets/icons/scan.svg">
+
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/blog.css">
   <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": "How to Scan Documents to PDF with Your Phone: The Complete CamScanner Web Guide",
+        "description": "Comprehensive tutorial on digitizing paper documents, legal contracts, receipts, and notes into clean 300 DPI PDFs using client-side computer vision.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Document Architect"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-08-18T10:00:00+00:00",
+        "dateModified": "2026-09-09T00:20:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/scan-to-pdf-guide.html"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does browser-based document scanning work without uploading files?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocalDoc uses HTML5 Canvas, WebAssembly (Wasm), and client-side computer vision algorithms directly inside your device's browser memory. Your camera feed is captured, analyzed for 4-corner document borders, perspective-corrected, and enhanced strictly in local RAM. Zero bytes are ever transmitted to cloud servers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I get rid of phone shadows when scanning paper documents?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Position your paper near a window or light source, but stand slightly to the side so your head and phone do not block the light. Alternatively, take the photo from a slight angle—LocalDoc's automatic 4-corner perspective correction will straighten the angled photo into a perfectly flat, rectangular A4 page."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the Magic Pro filter in document scanners?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Magic Pro filter uses adaptive binarization (Sauvola/Otsu thresholding) to separate ink text from background paper lighting variations. It turns yellowed, shadowed, or grey paper backgrounds into clean pure white while amplifying dark ink strokes, creating laser-sharp output identical to professional flatbed scanners."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I scan multiple pages into a single PDF file?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Switch the camera to Batch Mode in LocalDoc CamScanner Studio. You can snap consecutive pages, review and reorder the thumbnails in the tray, and export them into a single multi-page PDF document in seconds."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div id="reading-progress"></div>
 
   <header class="site-header">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-TKJ5FEYGWJ');
-  </script>
     <div class="container header-inner">
       <a href="../index.html" class="brand" title="LocalDoc Home">
         <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
@@ -46,10 +109,10 @@
 
       <ul class="nav-links">
         <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="../pages/scan.html" class="nav-link">CamScanner</a></li>
+        <li><a href="../pages/id-photo.html" class="nav-link">ID & Passport Photo</a></li>
         <li><a href="index.html" class="nav-link active">Blog & Guides</a></li>
-        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
         <li><a href="../about.html" class="nav-link">About</a></li>
-        <li><a href="../contact.html" class="nav-link">Contact</a></li>
       </ul>
 
       <div class="header-actions">
@@ -64,128 +127,185 @@
   </header>
 
   <main class="container" style="padding-top:28px; padding-bottom:60px;">
-    <!-- Direct Launch CTA Banner -->
+    
+    <!-- Launch CTA Banner -->
     <div class="cta-banner">
       <div style="display:flex; align-items:center; gap:14px;">
-        <img src="../assets/icons/scan.svg" width="38" height="38" alt="Document Scanner Online">
+        <img src="../assets/icons/scan.svg" width="40" height="40" alt="CamScanner Studio Web">
         <div>
-          <h3 style="margin:0 0 2px; font-size:1.1rem; color:var(--text-primary);">Try the Document Scanner Online</h3>
-          <p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Scan multi-page documents with your phone camera or laptop webcam, apply adaptive Sauvola B&W filters, and export to PDF.</p>
+          <h3 style="margin:0 0 2px; font-size:1.15rem; color:var(--text-primary); font-weight:800;">Launch CamScanner Studio Web (100% Free & Offline)</h3>
+          <p style="margin:0; font-size:0.86rem; color:var(--text-secondary);">True fullscreen camera, auto-corner edge detection, Magic Pro filters, and batch multi-page PDF generation.</p>
         </div>
       </div>
-      <a href="../pages/scan.html" class="btn btn-primary btn-lg">Launch Tool Now &rarr;</a>
+      <a href="../pages/scan.html" class="btn btn-primary btn-lg">Open Scanner &rarr;</a>
     </div>
 
     <article class="blog-article">
-      <div class="tool-workspace-badge">Mobile Scanning Architecture</div>
-      <h1>How to Use LocalDoc as a Free CamScanner Alternative in Your Browser</h1>
+      <div class="tool-workspace-badge">Computer Vision & Mobile Scanning</div>
+      <h1>How to Scan Documents to PDF with Your Phone: The Complete CamScanner Web Guide</h1>
+      
       <div class="blog-meta-bar">
         <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
         <span class="meta-dot"></span>
         <span>Lead Document Architect</span>
         <span class="meta-dot"></span>
-        <span>August 2026</span>
+        <span>Updated September 2026</span>
         <span class="meta-dot"></span>
-        <span>8 min read</span>
+        <span>11 min read</span>
       </div>
 
       <!-- Executive Summary Box -->
       <div class="exec-summary-box">
-        <h3>Executive Takeaways</h3>
+        <h3>Key Takeaways & Summary</h3>
         <ul>
-          <li><strong>Zero Network Transmission:</strong> Binary document operations execute 100% inside your local device browser RAM.</li>
-          <li><strong>Lossless Vector Precision:</strong> Retains native typography, character spacing, and table borders.</li>
-          <li><strong>Instant & Offline Ready:</strong> Works seamlessly on mobile or desktop without internet connectivity.</li>
+          <li><strong>Flatbed Scanner Quality in Your Pocket:</strong> Smartphone cameras combined with homography perspective warping produce digital scans that rival commercial flatbed hardware.</li>
+          <li><strong>Zero Cloud Privacy:</strong> Proprietary mobile scanning apps regularly upload contracts, banking slips, and tax forms to overseas servers. LocalDoc processes all computer vision algorithms 100% in local device RAM.</li>
+          <li><strong>Automatic Quad Corner Detection:</strong> Otsu binarization identifies document edges on contrasting tabletops and crops irregular quadrilaterals into flat, square rectangular A4 pages.</li>
+          <li><strong>Magic Pro Color Enhancement:</strong> Eliminates phone shadow gradients, clears background yellowing, and crisps faint pencil or ballpoint pen ink for crystal-clear readability.</li>
         </ul>
       </div>
 
-      <!-- 3D Architecture Visual Illustration -->
-      <div class="blog-visual-card">
-        <img src="../assets/images/scan-3d.jpg" alt="Zero-Upload Mobile Camera Scanning Architecture">
-        <div class="blog-visual-caption">Real-Time Optical Pipeline: Live Edge Detection, Perspective Homography Warp, and Sauvola Binarization</div>
+      <!-- Section 1 -->
+      <h2>1. The Evolution of Document Scanning: Hardware vs Browser Computer Vision</h2>
+      <p>
+        For decades, digitizing physical documents required cumbersome desktop flatbed scanners. While dedicated scanners provide uniform CCD sensor lighting, they are slow, tethered to AC power, and inconvenient for students, freelancers, and remote workers.
+      </p>
+      <p>
+        Modern mobile scanning apps bridged this gap by leveraging smartphone camera sensors. However, most popular apps (such as CamScanner or Adobe Scan) require mandatory user accounts, apply obtrusive watermarks to free tiers, and transmit your private legal and financial paperwork to remote cloud servers for processing.
+      </p>
+      <p>
+        <strong>LocalDoc CamScanner Studio</strong> shifts this paradigm by implementing high-performance computer vision algorithms entirely in client-side WebAssembly and HTML5 Canvas. You get all the advantages of instant mobile camera scanning with <strong>absolute privacy and zero data leakage</strong>.
+      </p>
+
+      <!-- Section 2: 3-Step Process -->
+      <h2>2. How Computer Vision Rectifies Angled Paper Scans</h2>
+      <p>When you hold a phone above a document on a desk, you rarely shoot from a mathematically perfect $90^\circ$ perpendicular angle. The resulting photo exhibits perspective trapezoidal distortion. Here is how LocalDoc corrects this:</p>
+
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:14px; padding:22px; margin:22px 0;">
+        <h3 style="font-size:1.05rem; color:var(--text-primary); margin-top:0;">🔬 The 3 Technical Phases of a Perfect Mobile Scan</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+          <div style="display:flex; gap:14px; align-items:flex-start;">
+            <span style="background:#0284C7; color:#FFF; font-weight:800; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+            <div>
+              <strong style="color:var(--text-primary);">Otsu Adaptive Edge Binarization:</strong>
+              <p style="font-size:0.86rem; color:var(--text-secondary); margin:4px 0 0; line-height:1.5;">The image is converted to grayscale and evaluated through histogram variance maximization. This isolates the four outer corners of the paper even under low-contrast desk lighting.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:14px; align-items:flex-start;">
+            <span style="background:#10B981; color:#FFF; font-weight:800; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">2</span>
+            <div>
+              <strong style="color:var(--text-primary);">Homography Perspective Transformation:</strong>
+              <p style="font-size:0.86rem; color:var(--text-secondary); margin:4px 0 0; line-height:1.5;">A $3 \times 3$ projective transformation matrix maps the four arbitrary corner points $(x_1, y_1) \dots (x_4, y_4)$ onto a canonical rectangular target $(0, 0) \dots (W, H)$, flattening out all skew and tilt.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:14px; align-items:flex-start;">
+            <span style="background:#8B5CF6; color:#FFF; font-weight:800; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">3</span>
+            <div>
+              <strong style="color:var(--text-primary);">Adaptive Sauvola Local Contrast Enhancement (Magic Pro):</strong>
+              <p style="font-size:0.86rem; color:var(--text-secondary); margin:4px 0 0; line-height:1.5;">Unlike global brightness adjustments that wash out faint text, local window variance calculates dynamic thresholds pixel-by-pixel, stripping away dark hand shadows while preserving pencil notes.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Step-by-Step Interactive Tutorial Flow -->
-      <div class="tutorial-flow-box">
-        <div class="tutorial-flow-header">
-          <h3 class="tutorial-flow-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            <span>Step-by-Step Mobile Document Scanning Tutorial</span>
-          </h3>
-          <span style="font-size:0.75rem; color:#059669; font-weight:700;">100% In-Browser</span>
-        </div>
-        <div class="tutorial-steps-grid">
-          <div class="tutorial-step-card">
-            <div class="tutorial-step-num">1</div>
-            <h4>Align & Detect Edges</h4>
-            <p>Point your smartphone or webcam at the document. The real-time edge detector automatically highlights paper boundaries with an emerald wireframe.</p>
-          </div>
-          <div class="tutorial-step-card">
-            <div class="tutorial-step-num">2</div>
-            <h4>Filter & Correct Perspective</h4>
-            <p>Choose Magic Color, Clean B&W, or Grayscale. The homography engine unwarps angled shots into flat, shadow-free pages instantly.</p>
-          </div>
-          <div class="tutorial-step-card">
-            <div class="tutorial-step-num">3</div>
-            <h4>Batch Name & Download</h4>
-            <p>Scan as many pages as you need, pick quick file tags, and compile into a multi-page PDF document without cloud uploads.</p>
-          </div>
-        </div>
-      </div>
-
-      <h2>1. Why You Don't Need Heavy Mobile Scanning Apps</h2>
-      <p>Mobile scanning apps like CamScanner often demand invasive phone permissions, display aggressive subscriptions, and place ugly watermarks across your personal contracts. With modern WebRTC browser APIs, your mobile browser has direct, hardware-accelerated access to your camera sensor.</p><p>LocalDoc turns any smartphone or laptop into an enterprise-grade document scanner with zero installations and zero cloud tracking.</p>
-
-      <!-- Educational Optical Flow Graphic -->
-      <div class="blog-visual-card" style="margin: 24px 0;">
-        <img src="../assets/images/camscanner-guide.jpg" alt="Document Scanning with Advanced Edge Detection & Magic Color" style="width:100%; border-radius:12px; box-shadow:var(--shadow-md);">
-        <div class="blog-visual-caption" style="text-align:center; font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">
-          Live Optical Pipeline: Real-time 8-point boundary crop, tap-to-focus, and Magic Color whitening filter.
-        </div>
-      </div>
-
-      <h2>2. Sauvola Adaptive Thresholding for Clean B&W Pages</h2>
-      <p>Capturing a paper document in uneven indoor lighting usually produces dark shadows and yellow tints. LocalDoc applies a real-time Sauvola adaptive binarization algorithm that computes local mean and standard deviation across image tiles. Shadows are eliminated, background paper becomes pure white, and text inks are boosted to crisp black.</p>
-
-      <h2>3. Technical Comparison Matrix</h2>
-      <table class="spec-table">
-        <thead>
-          <tr>
-            <th>Capability</th>
-            <th>Commercial Mobile Apps</th>
-            <th>LocalDoc CamScanner</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>App Installation</strong></td><td>Requires 150MB App Store download</td><td><strong>Zero install / Instant Web App</strong></td></tr>
-          <tr><td><strong>Watermarking</strong></td><td>Forces 'Scanned with App' stamp</td><td><strong>100% Clean / No Watermarks</strong></td></tr>
-          <tr><td><strong>Camera Security</strong></td><td>Transmits scans to developer servers</td><td><strong>100% Local RAM Processing</strong></td></tr>
-          <tr><td><strong>Page Limits</strong></td><td>3-5 pages on free tier</td><td><strong>Unlimited Pages Free</strong></td></tr>
-        </tbody>
-      </table>
-
-      <h2>4. Pro Tips for Maximum Quality</h2>
-      <ol>
-        <li>Place paper documents against a contrasting dark background to make edge alignment effortless.</li>
-          <li>Ensure even overhead lighting to reduce harsh glare on glossy paper.</li>
-          <li>Use the multi-page snapshot strip to capture 10+ pages in a single rapid session before exporting to PDF.</li>
+      <!-- Section 3: Pro Tips -->
+      <h2>3. 5 Pro Tips for Studio-Quality Phone Document Scans</h2>
+      <ol style="line-height:1.8; padding-left:22px; color:var(--text-secondary);">
+        <li><strong style="color:var(--text-primary);">Contrast Your Background:</strong> Place white paper on a dark wood desk, black laptop sleeve, or colored tabletop. High contrast enables the auto-edge algorithm to lock onto paper corners in milliseconds.</li>
+        <li><strong style="color:var(--text-primary);">Avoid Direct Overhead Ceiling Lights:</strong> Overhead lights cause your phone to cast an unavoidable hand silhouette onto the paper. Instead, position the document so light enters from the side.</li>
+        <li><strong style="color:var(--text-primary);">Shoot at a Slight Angle:</strong> Do not worry if you cannot hold the camera directly above. Standing slightly back and letting the homography algorithm warp the quad produces better lighting with zero shadows.</li>
+        <li><strong style="color:var(--text-primary);">Flatten Creases and Curled Pages:</strong> Smooth out fold lines with your hand before tapping the shutter button to prevent wave distortion.</li>
+        <li><strong style="color:var(--text-primary);">Use Batch Mode for Long Documents:</strong> If you are digitizing a multi-page legal contract or study notebook, switch to Batch Mode in LocalDoc CamScanner Studio to photograph 20+ pages continuously before exporting.</li>
       </ol>
 
+      <!-- Section 4: Comparison Table -->
+      <h2>4. LocalDoc CamScanner vs Cloud Scanner Apps Comparison</h2>
+      <div class="spec-table-wrap" style="overflow-x:auto; margin:20px 0;">
+        <table class="spec-table" style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+          <thead>
+            <tr style="background:var(--bg-surface); text-align:left;">
+              <th style="padding:10px 14px; border-bottom:1px solid var(--line);">Feature / Metric</th>
+              <th style="padding:10px 14px; border-bottom:1px solid var(--line);">LocalDoc CamScanner Web</th>
+              <th style="padding:10px 14px; border-bottom:1px solid var(--line);">Proprietary App (CamScanner/Adobe)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);"><strong>Data Privacy Architecture</strong></td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#10B981; font-weight:700;">100% In-Browser RAM (Air-Gapped)</td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#EF4444;">Uploaded to Cloud Servers</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);"><strong>Account Registration Required</strong></td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#10B981; font-weight:700;">None (Zero Signup)</td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#EF4444;">Mandatory Email / Phone</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);"><strong>PDF Watermarks</strong></td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#10B981; font-weight:700;">Never (100% Clean)</td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#EF4444;">Watermarked unless paying VIP ($49/yr)</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);"><strong>Offline Capability</strong></td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#10B981; font-weight:700;">Works completely without Internet</td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#EF4444;">Requires constant sync</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);"><strong>Cross-Platform PWA</strong></td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line); color:#10B981; font-weight:700;">Instant install on PC, Mac, Android & iOS</td>
+              <td style="padding:10px 14px; border-bottom:1px solid var(--line);">Separate store app downloads</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Section 5: FAQs -->
       <h2>5. Frequently Asked Questions</h2>
       <div class="faq-accordion">
-                <div class="faq-item">
-          <button class="faq-question" type="button">Can I switch between front and rear cameras?</button>
+        <div class="faq-item">
+          <button class="faq-question" type="button">Is LocalDoc CamScanner Studio completely free?</button>
           <div class="faq-answer">
-            <p>Yes. On mobile devices, LocalDoc automatically selects the high-definition rear camera with autofocus.</p>
+            <p>Yes, 100% free with no page limits, no subscriptions, and zero watermarks. All operations execute inside your own hardware RAM.</p>
           </div>
         </div>
+
         <div class="faq-item">
-          <button class="faq-question" type="button">What file format does the scanner output?</button>
+          <button class="faq-question" type="button">Can I use LocalDoc on my iPhone or Android phone?</button>
           <div class="faq-answer">
-            <p>It compiles all captured pages into a standardized, printable A4 PDF document.</p>
+            <p>Yes! Open localdoc.org in Safari or Chrome on your phone and tap "Install App" or "Add to Home Screen" to use it just like a native mobile app with direct camera viewfinder access.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">Can I extract text from my scans using OCR?</button>
+          <div class="faq-answer">
+            <p>Yes. Once scanned, you can send any page to LocalDoc's built-in Image-to-Text tool to perform local Optical Character Recognition without server uploads.</p>
           </div>
         </div>
       </div>
+
+      <!-- Related Internal Links & Tools Grid -->
+      <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">Explore Related Guides & Tools</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+          <a href="../pages/scan.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">📸 CamScanner Studio Web</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">Scan contracts, receipts, and documents directly in browser.</div>
+          </a>
+          <a href="best-free-camscanner-alternatives.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">📱 Best CamScanner Alternatives</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">Comprehensive benchmark of mobile scanners in 2026.</div>
+          </a>
+          <a href="id-card-scanner-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">🪪 ID Card Double-Sided Scanning</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">How to combine both sides of ID cards onto a 1-page A4 sheet.</div>
+          </a>
+        </div>
+      </div>
+
     </article>
   </main>
 

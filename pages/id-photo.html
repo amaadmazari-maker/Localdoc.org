@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -7,13 +7,12 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biometric ID & Passport Photo Studio (Visa, CNIC & Double-Sided A4 Sheet) — LocalDoc</title>
-  <meta name="description" content="Free online biometric passport, visa, and ID photo creator. Crop official 2x2 inch photos, 35x45mm visa shots, NADRA CNIC sizes, and compile double-sided ID cards on a single 1-page A4 sheet with zero uploads.">
+  <title>Biometric ID & Passport Photo Studio (US 2x2, Schengen, UK, CNIC, Canada, India) — LocalDoc</title>
+  <meta name="description" content="Free online biometric passport, visa, and ID photo creator. Crop official 2x2 inch photos, 35x45mm visa shots, Canada 50x70mm, NADRA CNIC sizes, add formal suits, change background color, and print 4x6 or A4 sheets with zero cloud uploads.">
   <link rel="canonical" href="https://localdoc.org/pages/id-photo.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -22,7 +21,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Biometric ID & Passport Photo Studio — 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Crop official Passport (2x2), Visa (35x45mm), CNIC photos and generate 4x6 print sheets or double-sided 1-page A4 ID cards in browser RAM.">
+  <meta property="og:description" content="Official passport & visa photo maker with formal attire overlays, background replacer, 4x6 print sheets, and 2-in-1 ID card compiler.">
   <meta property="og:url" content="https://localdoc.org/pages/id-photo.html">
   <meta property="og:image" content="../assets/icons/passport-photo.svg">
 
@@ -38,7 +37,7 @@
     "applicationCategory": "ProductivityApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "description": "Zero-upload biometric passport, visa, and double-sided ID card generator with printable 4x6 and A4 sheet layouts."
+    "description": "Zero-upload biometric passport, visa, and double-sided ID card generator with printable 4x6, 5x7, and A4 sheet layouts."
   }
   </script>
 
@@ -66,9 +65,7 @@
       gap: 8px;
       transition: all 0.2s ease;
     }
-    .studio-tab-btn:hover {
-      color: var(--primary);
-    }
+    .studio-tab-btn:hover { color: var(--primary); }
     .studio-tab-btn.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
@@ -77,15 +74,15 @@
     /* Preset Grid */
     .preset-selector-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 12px;
-      margin: 18px 0;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin: 16px 0 20px;
     }
     .preset-card {
       background: var(--bg-surface);
       border: 1px solid var(--line);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      padding: 10px 12px;
       cursor: pointer;
       text-align: left;
       transition: all 0.15s ease;
@@ -96,20 +93,20 @@
     }
     .preset-card.active {
       border-color: var(--primary);
-      background: var(--primary-subtle);
+      background: var(--primary-subtle, rgba(2, 132, 199, 0.08));
       box-shadow: 0 0 0 1px var(--primary);
     }
     .preset-card h4 {
-      font-size: 0.9rem;
+      font-size: 0.86rem;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .preset-card p {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--text-secondary);
       margin: 0;
     }
@@ -134,9 +131,7 @@
       cursor: grab;
       user-select: none;
     }
-    .crop-preview-box:active {
-      cursor: grabbing;
-    }
+    .crop-preview-box:active { cursor: grabbing; }
     .crop-canvas-elem {
       position: absolute;
       top: 0;
@@ -147,10 +142,10 @@
     }
     .face-guide-oval {
       position: absolute;
-      top: 15%;
+      top: 14%;
       left: 20%;
       width: 60%;
-      height: 70%;
+      height: 72%;
       border: 2px dashed rgba(2, 132, 199, 0.85);
       border-radius: 50%;
       pointer-events: none;
@@ -173,6 +168,59 @@
       height: 1px;
       background: rgba(2, 132, 199, 0.4);
       pointer-events: none;
+    }
+
+    /* Controls Panel */
+    .controls-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-top: 14px;
+      width: 100%;
+      max-width: 640px;
+    }
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .control-row:last-child { margin-bottom: 0; }
+    .control-row label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 130px;
+    }
+    .control-row input[type="range"] { flex: 1; }
+
+    /* Specification Comparison Table */
+    .spec-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+    }
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .spec-table th, .spec-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .spec-table th {
+      background: var(--bg-surface);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .spec-table tr:hover {
+      background: var(--bg-surface);
     }
 
     /* ID Card 2-in-1 Upload Cards */
@@ -207,51 +255,12 @@
       box-shadow: var(--shadow-sm);
       object-fit: contain;
     }
-
-    /* Controls Panel */
-    .controls-panel {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      margin-top: 16px;
-      width: 100%;
-      max-width: 600px;
-    }
-    .control-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .control-row:last-child {
-      margin-bottom: 0;
-    }
-    .control-row label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      min-width: 120px;
-    }
-    .control-row input[type="range"] {
-      flex: 1;
-    }
   </style>
 </head>
 <body>
   <div id="reading-progress"></div>
 
   <header class="site-header">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-TKJ5FEYGWJ');
-  </script>
     <div class="container header-inner">
       <a href="../index.html" class="brand" title="LocalDoc Home">
         <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
@@ -264,7 +273,7 @@
         <li><a href="create-pdf.html" class="nav-link">Create PDF</a></li>
         <li><a href="scan.html" class="nav-link">CamScanner</a></li>
         <li><a href="id-photo.html" class="nav-link active">ID & Passport Photo</a></li>
-        <li><a href="photo-resizer.html" class="nav-link">Photo Resizer</a></li>
+        <li><a href="scientific-calculator.html" class="nav-link">Calculator</a></li>
         <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
       </ul>
 
@@ -289,7 +298,7 @@
       <span class="breadcrumb-sep">/</span>
       <a href="../index.html#category-filter-bar">Photo & Document Tools</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Biometric ID & Photo Studio</span>
+      <span>Biometric ID & Passport Photo Studio</span>
     </nav>
 
     <section class="tool-workspace">
@@ -299,7 +308,7 @@
           <span>Official Biometric Compliance</span>
         </div>
         <h1>Biometric ID & Passport Photo Studio</h1>
-        <p class="tool-desc">All-in-one studio for official biometric Passport & Visa photos, printable multi-copy sheets (4x6", A4), and 2-in-1 double-sided ID Card A4 compilation.</p>
+        <p class="tool-desc">All-in-one studio for official biometric Passport & Visa photos, background color replacement, business attire overlays, printable multi-copy sheets (4x6", 5x7", A4), and 2-in-1 double-sided ID Card compilation.</p>
       </div>
 
       <!-- Studio Mode Tab Switcher -->
@@ -316,27 +325,56 @@
       <!-- SECTION 1: BIOMETRIC PORTRAIT / PASSPORT / VISA STUDIO    -->
       <!-- ========================================================= -->
       <div id="section-portrait-studio">
-        <!-- Presets Selector -->
+        
+        <!-- Presets Selector Grid -->
         <div class="preset-selector-grid">
           <div class="preset-card active" onclick="selectPortraitPreset('passport-us')">
-            <h4>🛂 US / Global Passport</h4>
+            <h4>🇺🇸 US Passport / Visa</h4>
             <p>2x2" (51x51mm, 600x600px)</p>
           </div>
-          <div class="preset-card" onclick="selectPortraitPreset('visa-schengen')">
-            <h4>✈️ Schengen / UK Visa</h4>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-uk')">
+            <h4>🇬🇧 UK Passport & Driver</h4>
             <p>35x45mm (413x531px)</p>
           </div>
+          <div class="preset-card" onclick="selectPortraitPreset('visa-schengen')">
+            <h4>🇪🇺 Schengen / Europe</h4>
+            <p>35x45mm (413x531px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-ca')">
+            <h4>🇨🇦 Canada Passport</h4>
+            <p>50x70mm (591x827px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-in')">
+            <h4>🇮🇳 India Passport & OCI</h4>
+            <p>35x45mm / 2x2" (51x51mm)</p>
+          </div>
           <div class="preset-card" onclick="selectPortraitPreset('cnic-pk')">
-            <h4>🪪 NADRA CNIC / License</h4>
-            <p>NADRA Standard 350x450px</p>
+            <h4>🇵🇰 Pakistan CNIC / Passport</h4>
+            <p>NADRA 35x45mm (413x531px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-au')">
+            <h4>🇦🇺 Australia / NZ</h4>
+            <p>35x45mm (413x531px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-cn')">
+            <h4>🇨🇳 China Passport</h4>
+            <p>33x48mm (390x567px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('passport-jp')">
+            <h4>🇯🇵 Japan Passport</h4>
+            <p>35x45mm (413x531px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('visa-uae')">
+            <h4>🇦🇪 UAE / Dubai Visa</h4>
+            <p>35x45mm (413x531px)</p>
+          </div>
+          <div class="preset-card" onclick="selectPortraitPreset('visa-saudi')">
+            <h4>🇸🇦 Saudi Umrah / Hajj</h4>
+            <p>2x2" (51x51mm, 600x600px)</p>
           </div>
           <div class="preset-card" onclick="selectPortraitPreset('photo-1x1')">
             <h4>📐 1x1 Inch Square</h4>
             <p>25x25mm (300x300px)</p>
-          </div>
-          <div class="preset-card" onclick="selectPortraitPreset('photo-2x2')">
-            <h4>📐 2x2 Inch Standard</h4>
-            <p>50x50mm (600x600px)</p>
           </div>
         </div>
 
@@ -346,8 +384,8 @@
             <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
           </div>
           <div class="drop-zone-text">
-            <h3>Upload portrait photo or take a snap</h3>
-            <p>JPG, PNG, or WEBP • Drag & drop or click select</p>
+            <h3>Upload portrait photo or take a live camera shot</h3>
+            <p>JPG, PNG, or WEBP • Drag & drop or click select • 100% Private in Browser RAM</p>
           </div>
           <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
             <button class="btn btn-primary" id="portrait-browse-btn">Select Portrait Image</button>
@@ -373,8 +411,8 @@
               <div class="biometric-eye-line"></div>
             </div>
 
-            <p style="font-size:0.8rem; color:var(--text-secondary); margin:0;">
-              💡 <em>Click & drag photo inside the box to reposition. Align eyes & chin inside the guide oval.</em>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin:0;">
+              💡 <em>Click & drag photo to reposition. Align eyes with horizontal eye-line and chin inside the biometric oval.</em>
             </p>
 
             <!-- Adjustments Panel -->
@@ -400,14 +438,32 @@
                 <span id="contrast-val" style="font-size:0.8rem; width:45px;">100%</span>
               </div>
 
-              <!-- Solid Background Color Selector -->
-              <div style="display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:12px;">
-                <span style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">Background Fill:</span>
-                <div style="display:flex; gap:8px;">
-                  <button class="btn btn-outline" style="padding:4px 10px; font-size:0.8rem;" onclick="setPortraitBg('#FFFFFF')">⚪ Pure White</button>
-                  <button class="btn btn-outline" style="padding:4px 10px; font-size:0.8rem;" onclick="setPortraitBg('#F8FAFC')">🌫️ Off-White</button>
-                  <button class="btn btn-outline" style="padding:4px 10px; font-size:0.8rem;" onclick="setPortraitBg('#E0F2FE')">🔵 Embassy Blue</button>
-                  <button class="btn btn-outline" style="padding:4px 10px; font-size:0.8rem;" onclick="setPortraitBg('#E2E8F0')">⚪ Light Gray</button>
+              <!-- Formal Attire / Suit Overlay -->
+              <div class="control-row" style="border-top:1px solid var(--line); padding-top:12px; margin-top:12px;">
+                <label for="suit-select">👔 Formal Attire Overlay:</label>
+                <select id="suit-select" style="flex:1; padding:7px 10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.86rem; font-weight:600;">
+                  <option value="none">No Overlay (Original Clothing)</option>
+                  <option value="men-dark-suit">👔 Men's Navy Business Suit & Red Tie</option>
+                  <option value="women-blazer">🧥 Women's Professional Dark Blazer</option>
+                </select>
+              </div>
+
+              <div class="control-row" id="suit-adjust-row" style="display:none;">
+                <label for="suit-offset-slider">Suit Collar Position:</label>
+                <input type="range" id="suit-offset-slider" min="-60" max="60" step="2" value="0">
+                <span id="suit-offset-val" style="font-size:0.8rem; width:45px;">0px</span>
+              </div>
+
+              <!-- Background Color Selector -->
+              <div style="display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:12px;">
+                <span style="font-size:0.85rem; font-weight:600; color:var(--text-primary);">Background Color:</span>
+                <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                  <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:0.78rem;" onclick="setPortraitBg('#FFFFFF')">⚪ White</button>
+                  <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:0.78rem;" onclick="setPortraitBg('#F8FAFC')">🌫️ Off-White</button>
+                  <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:0.78rem;" onclick="setPortraitBg('#E2E8F0')">⚪ Light Gray</button>
+                  <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:0.78rem;" onclick="setPortraitBg('#E0F2FE')">🔵 Embassy Blue</button>
+                  <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:0.78rem;" onclick="setPortraitBg('#DC2626')">🔴 Red</button>
+                  <input type="color" id="custom-color-picker" value="#FFFFFF" title="Custom background color" style="width:30px; height:28px; border:none; cursor:pointer; background:none;">
                 </div>
               </div>
             </div>
@@ -428,20 +484,24 @@
         <div class="result-card" id="portrait-result-card" style="display:none; margin-top:28px;">
           <div class="result-details">
             <h3 id="portrait-result-title">Official Biometric Photos Ready!</h3>
-            <p>Generated strictly in your browser RAM with 300 DPI print clarity and zero uploads.</p>
+            <p>Generated strictly in your device RAM with 300 DPI print clarity, scissors cutting guides, and zero cloud uploads.</p>
           </div>
-          <div class="result-actions" style="display:flex; flex-wrap:wrap; gap:12px;">
+          <div class="result-actions" style="display:flex; flex-wrap:wrap; gap:10px;">
             <button class="btn btn-primary" id="download-single-photo-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              Download Single Photo (Digital Portal)
+              Download Single Photo (Portal / Visa Form)
             </button>
             <button class="btn btn-outline" id="download-4x6-sheet-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-              Download 4x6" Print Sheet (8 Photos)
+              Download 4x6" Sheet (6-8 Photos)
+            </button>
+            <button class="btn btn-outline" id="download-5x7-sheet-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+              Download 5x7" Sheet (8-12 Photos)
             </button>
             <button class="btn btn-outline" id="download-a4-sheet-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-              Download A4 Multi-Copy Sheet
+              Download A4 Sheet (Multi-Copy)
             </button>
           </div>
         </div>
@@ -454,7 +514,7 @@
         <div style="text-align:center; max-width:650px; margin:0 auto 20px;">
           <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-primary);">Compile Front & Back of ID Card on 1-Page A4</h3>
           <p style="font-size:0.88rem; color:var(--text-secondary);">
-            Place both Front and Back sides of your ID Card, CNIC, Driving License, or Student Card onto a single standard 100% scale A4 page ready for official photocopy submissions.
+            Place both Front and Back sides of your National ID Card, CNIC, Driving License, or Student Badge onto a single standard 100% scale A4 page ready for official photocopy submissions.
           </p>
         </div>
 
@@ -466,7 +526,6 @@
 
         <!-- 2 Side Cards Grid -->
         <div class="id-cards-grid">
-          <!-- Front Side -->
           <div class="id-side-box" id="box-front">
             <div id="front-placeholder">
               <div style="font-size:2rem; margin-bottom:8px;">🪪</div>
@@ -483,7 +542,6 @@
             <input type="file" id="front-camera-input" accept="image/*" capture="environment" style="display:none;">
           </div>
 
-          <!-- Back Side -->
           <div class="id-side-box" id="box-back">
             <div id="back-placeholder">
               <div style="font-size:2rem; margin-bottom:8px;">💳</div>
@@ -528,31 +586,109 @@
       </div>
     </section>
 
-    <!-- 3-Step How To Use Section -->
-    <section class="how-to-use-section" style="margin:48px 0 32px;">
-      <div style="text-align:center; margin-bottom:28px;">
-        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">How to Create Compliant ID Photos & A4 Sheets</h2>
-        <p style="color:var(--text-secondary); font-size:0.92rem; max-width:600px; margin:0 auto;">Official compliance in three simple client-side steps.</p>
+    <!-- Official Biometric Specification Table -->
+    <section style="margin:48px 0 32px;">
+      <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">Global Passport & Visa Photo Specifications</h2>
+      <p style="color:var(--text-secondary); font-size:0.92rem; margin-bottom:16px;">Verified standards required by passport agencies and consular embassies worldwide:</p>
+      
+      <div class="spec-table-wrap">
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Country / Authority</th>
+              <th>Dimensions</th>
+              <th>Pixels (300 DPI)</th>
+              <th>Head Height</th>
+              <th>Background Color</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>United States</strong> (Passport, Visa, Green Card)</td>
+              <td>2 x 2 inches (51 x 51 mm)</td>
+              <td>600 x 600 px</td>
+              <td>50% - 69% (1 - 1 3/8 in)</td>
+              <td>Pure White or Off-White</td>
+            </tr>
+            <tr>
+              <td><strong>United Kingdom</strong> (HM Passport Office)</td>
+              <td>35 x 45 mm</td>
+              <td>413 x 531 px</td>
+              <td>70% - 80% (29 - 34 mm)</td>
+              <td>Light Grey or Cream</td>
+            </tr>
+            <tr>
+              <td><strong>Schengen Area</strong> (29 EU Nations)</td>
+              <td>35 x 45 mm</td>
+              <td>413 x 531 px</td>
+              <td>70% - 80% (32 - 36 mm)</td>
+              <td>Light Grey / Neutral</td>
+            </tr>
+            <tr>
+              <td><strong>Canada</strong> (Passport Program)</td>
+              <td>50 x 70 mm</td>
+              <td>591 x 827 px</td>
+              <td>44% - 51% (31 - 36 mm)</td>
+              <td>Pure White or Light</td>
+            </tr>
+            <tr>
+              <td><strong>India</strong> (Passport Seva & OCI)</td>
+              <td>35 x 45 mm or 2 x 2 in</td>
+              <td>413 x 531 px / 600 x 600 px</td>
+              <td>70% - 80%</td>
+              <td>White Background</td>
+            </tr>
+            <tr>
+              <td><strong>Pakistan</strong> (NADRA CNIC & Passport)</td>
+              <td>35 x 45 mm</td>
+              <td>413 x 531 px</td>
+              <td>70% - 80%</td>
+              <td>Light Blue or White</td>
+            </tr>
+            <tr>
+              <td><strong>Australia & New Zealand</strong></td>
+              <td>35 x 45 mm</td>
+              <td>413 x 531 px</td>
+              <td>70% - 80% (32 - 36 mm)</td>
+              <td>Plain White or Light Grey</td>
+            </tr>
+            <tr>
+              <td><strong>China</strong> (Entry-Exit Inspection)</td>
+              <td>33 x 48 mm</td>
+              <td>390 x 567 px</td>
+              <td>60% - 70% (28 - 33 mm)</td>
+              <td>White Background</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
-        <div class="how-to-card">
-          <div class="how-to-step-num">1</div>
-          <div class="how-to-icon">🪪</div>
-          <h3>Select Tool Mode</h3>
-          <p>Choose Biometric Portrait mode for Passport (2x2") or Visa (35x45mm), or 2-in-1 ID mode for front & back card photocopy sheets.</p>
-        </div>
-        <div class="how-to-card">
-          <div class="how-to-step-num">2</div>
-          <div class="how-to-icon">📐</div>
-          <h3>Align with Biometric Guides</h3>
-          <p>Drag, zoom, and center your portrait within the biometric oval guide to guarantee embassy and passport authority acceptance.</p>
-        </div>
-        <div class="how-to-card">
-          <div class="how-to-step-num">3</div>
-          <div class="how-to-icon">🖨️</div>
-          <h3>Print or Submit Online</h3>
-          <p>Download single high-res photos for digital visa forms, or download 4x6" and A4 sheets with cutting guides for easy scissors trimming.</p>
-        </div>
+    </section>
+
+    <!-- Comprehensive Guides & Backlinks -->
+    <section class="how-to-use-section" style="margin:40px 0;">
+      <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">Official Guides & Step-by-Step Tutorials</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <a href="../blog/passport-photo-maker-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; text-decoration:none; display:flex; gap:12px; align-items:flex-start; color:inherit;">
+          <span style="font-size:1.8rem;">🛂</span>
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:4px; color:var(--primary);">Passport Photo Maker Guide</h4>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin:0;">Complete guide to taking biometric photos at home, lighting rules, head proportions, and print sizing.</p>
+          </div>
+        </a>
+        <a href="../blog/cnic-photo-maker-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; text-decoration:none; display:flex; gap:12px; align-items:flex-start; color:inherit;">
+          <span style="font-size:1.8rem;">🪪</span>
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:4px; color:var(--primary);">NADRA CNIC Photo Guide</h4>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin:0;">Guidelines for Pakistan Smart Card, CNIC, and Pak-ID online portal photo submission standards.</p>
+          </div>
+        </a>
+        <a href="../blog/photo-resizer-kb-reducer-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; text-decoration:none; display:flex; gap:12px; align-items:flex-start; color:inherit;">
+          <span style="font-size:1.8rem;">📐</span>
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:4px; color:var(--primary);">Photo Resizer & KB Reducer</h4>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin:0;">How to compress photos to 20KB, 50KB, or 100KB for government portals and online visa forms.</p>
+          </div>
+        </a>
       </div>
     </section>
 
@@ -564,21 +700,21 @@
           <img src="../assets/icons/scan.svg" alt="CamScanner">
           <div>
             <h4>CamScanner Studio</h4>
-            <p>Clean A4 paper scanning & edge cropping</p>
+            <p>Clean A4 document scanning & quad edge cropping</p>
           </div>
         </a>
-        <a href="create-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/jpg-to-pdf.svg" alt="Create PDF">
+        <a href="scientific-calculator.html" class="related-tool-card">
+          <img src="../assets/icons/calculator.svg" alt="Calculator">
           <div>
-            <h4>Create PDF</h4>
-            <p>Combine photos into A4 or Letter PDFs</p>
+            <h4>Casio fx-5800P Calculator</h4>
+            <p>Programmable 4-line LCD & Base-N math</p>
           </div>
         </a>
-        <a href="document-reader.html" class="related-tool-card">
-          <img src="../assets/icons/pdf-reader.svg" alt="Document Reader">
+        <a href="photo-resizer.html" class="related-tool-card">
+          <img src="../assets/icons/photo-resizer.svg" alt="Photo Resizer">
           <div>
-            <h4>Built-in Document Reader</h4>
-            <p>View PDFs and scans locally without plugins</p>
+            <h4>Photo Resizer & KB Reducer</h4>
+            <p>Target file size compression without quality loss</p>
           </div>
         </a>
       </div>
@@ -598,15 +734,12 @@
   <script src="../js/tools/id-photo.js"></script>
 
   <script>
-    // -------------------------------------------------------------
-    // STATE & MODE CONTROLLER
-    // -------------------------------------------------------------
-    let currentMode = 'portrait'; // 'portrait' | 'idcard'
+    // State & Controller
+    let currentMode = 'portrait';
     let currentPresetKey = 'passport-us';
     let currentPortraitFile = null;
     let portraitImgElem = null;
 
-    // Portrait Adjustments
     let pScale = 1.0;
     let pOffsetX = 0;
     let pOffsetY = 0;
@@ -614,28 +747,23 @@
     let pBrightness = 100;
     let pContrast = 100;
     let pBgColor = '#FFFFFF';
+    let pSuitKey = 'none';
+    let pSuitOffsetY = 0;
 
-    // Dragging state
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
 
-    // Output Blobs
     let singleBlob = null;
     let sheet4x6Blob = null;
+    let sheet5x7Blob = null;
     let sheetA4Blob = null;
 
-    // ID Card Front & Back state
     let frontCardData = null;
     let backCardData = null;
     let idCardA4Blob = null;
-    let idCardA4DataUrl = null;
 
-    // -------------------------------------------------------------
-    // INITIALIZATION
-    // -------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
-      // Check URL parameters for direct preset routing
       const params = new URLSearchParams(window.location.search);
       const modeParam = params.get('mode');
       const presetParam = params.get('type') || params.get('preset');
@@ -649,370 +777,382 @@
         }
       }
 
-      setupPortraitEventListeners();
-      setupIDCardEventListeners();
+      setupEventListeners();
     });
 
-    // Switch Studio Mode
-    window.switchStudioMode = function(mode) {
+    function switchStudioMode(mode) {
       currentMode = mode;
-      const tabPortrait = document.getElementById('tab-mode-portrait');
-      const tabIDCard = document.getElementById('tab-mode-idcard');
-      const secPortrait = document.getElementById('section-portrait-studio');
-      const secIDCard = document.getElementById('section-idcard-studio');
+      document.querySelectorAll('.studio-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(mode === 'portrait' ? 'tab-mode-portrait' : 'tab-mode-idcard')?.classList.add('active');
 
-      if (mode === 'portrait') {
-        tabPortrait.classList.add('active');
-        tabIDCard.classList.remove('active');
-        secPortrait.style.display = 'block';
-        secIDCard.style.display = 'none';
-      } else {
-        tabPortrait.classList.remove('active');
-        tabIDCard.classList.add('active');
-        secPortrait.style.display = 'none';
-        secIDCard.style.display = 'block';
-      }
-    };
+      document.getElementById('section-portrait-studio').style.display = mode === 'portrait' ? 'block' : 'none';
+      document.getElementById('section-idcard-studio').style.display = mode === 'idcard' ? 'block' : 'none';
+    }
 
-    // -------------------------------------------------------------
-    // SECTION 1: PORTRAIT STUDIO LOGIC
-    // -------------------------------------------------------------
-    window.selectPortraitPreset = function(presetKey) {
-      currentPresetKey = presetKey;
-      const preset = IDPhoto.PRESETS[presetKey];
-      if (!preset) return;
+    function selectPortraitPreset(key) {
+      if (!IDPhoto.PRESETS[key]) return;
+      currentPresetKey = key;
+      const p = IDPhoto.PRESETS[key];
 
-      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+      document.querySelectorAll('.preset-card').forEach(card => card.classList.remove('active'));
+      const activeCard = Array.from(document.querySelectorAll('.preset-card')).find(c => c.getAttribute('onclick')?.includes(key));
+      if (activeCard) activeCard.classList.add('active');
+
+      document.getElementById('active-preset-title').textContent = p.name;
+      if (p.bgRecommended) {
+        pBgColor = p.bgRecommended;
       }
 
-      document.getElementById('active-preset-title').textContent = preset.name;
-
-      // Adjust preview aspect ratio
+      // Adjust aspect ratio of preview box
       const box = document.getElementById('portrait-preview-box');
-      box.style.aspectRatio = `${preset.width} / ${preset.height}`;
+      if (box) {
+        if (p.width === p.height) {
+          box.style.width = '320px';
+          box.style.height = '320px';
+        } else {
+          box.style.width = '280px';
+          box.style.height = Math.round((280 * p.height) / p.width) + 'px';
+        }
+      }
 
-      renderLivePortrait();
-    };
+      if (portraitImgElem) renderInteractivePreview();
+    }
 
-    function setupPortraitEventListeners() {
+    function setPortraitBg(color) {
+      pBgColor = color;
+      document.getElementById('custom-color-picker').value = color;
+      if (portraitImgElem) renderInteractivePreview();
+    }
+
+    document.getElementById('custom-color-picker')?.addEventListener('input', (e) => {
+      setPortraitBg(e.target.value);
+    });
+
+    function setupEventListeners() {
+      // Drop zone
       const dropZone = document.getElementById('portrait-drop-zone');
       const fileInput = document.getElementById('portrait-file-input');
-      const cameraInput = document.getElementById('portrait-camera-input');
-      const browseBtn = document.getElementById('portrait-browse-btn');
-      const cameraBtn = document.getElementById('portrait-camera-btn');
+      const camInput = document.getElementById('portrait-camera-input');
+
+      document.getElementById('portrait-browse-btn')?.addEventListener('click', () => fileInput.click());
+      document.getElementById('portrait-camera-btn')?.addEventListener('click', () => camInput.click());
+
+      fileInput?.addEventListener('change', (e) => {
+        if (e.target.files?.[0]) loadPortraitFile(e.target.files[0]);
+      });
+      camInput?.addEventListener('change', (e) => {
+        if (e.target.files?.[0]) loadPortraitFile(e.target.files[0]);
+      });
+
+      dropZone?.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+      dropZone?.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+      dropZone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files?.[0]) loadPortraitFile(e.dataTransfer.files[0]);
+      });
+
+      // Interactive Canvas Dragging
       const previewBox = document.getElementById('portrait-preview-box');
-
-      browseBtn.addEventListener('click', () => fileInput.click());
-      cameraBtn.addEventListener('click', () => cameraInput.click());
-
-      UIUtils.setupDropZone(dropZone, fileInput, loadPortraitImage);
-      cameraInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          loadPortraitImage(e.target.files);
-        }
-      });
-
-      // Controls
-      const zoomSlider = document.getElementById('zoom-slider');
-      zoomSlider.addEventListener('input', (e) => {
-        pScale = parseFloat(e.target.value);
-        document.getElementById('zoom-val').textContent = pScale.toFixed(2) + 'x';
-        renderLivePortrait();
-      });
-
-      const rotSlider = document.getElementById('rotate-slider');
-      rotSlider.addEventListener('input', (e) => {
-        pRotation = parseInt(e.target.value);
-        document.getElementById('rotate-val').textContent = pRotation + '°';
-        renderLivePortrait();
-      });
-
-      const brightSlider = document.getElementById('bright-slider');
-      brightSlider.addEventListener('input', (e) => {
-        pBrightness = parseInt(e.target.value);
-        document.getElementById('bright-val').textContent = pBrightness + '%';
-        renderLivePortrait();
-      });
-
-      const contrastSlider = document.getElementById('contrast-slider');
-      contrastSlider.addEventListener('input', (e) => {
-        pContrast = parseInt(e.target.value);
-        document.getElementById('contrast-val').textContent = pContrast + '%';
-        renderLivePortrait();
-      });
-
-      // Drag repositioning inside preview box
-      previewBox.addEventListener('mousedown', (e) => {
+      previewBox?.addEventListener('mousedown', (e) => {
         isDragging = true;
         dragStartX = e.clientX - pOffsetX;
         dragStartY = e.clientY - pOffsetY;
       });
-
       window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         pOffsetX = e.clientX - dragStartX;
         pOffsetY = e.clientY - dragStartY;
-        renderLivePortrait();
+        renderInteractivePreview();
       });
-
       window.addEventListener('mouseup', () => { isDragging = false; });
 
-      // Touch drag support
-      previewBox.addEventListener('touchstart', (e) => {
+      // Touch Dragging
+      previewBox?.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
           isDragging = true;
           dragStartX = e.touches[0].clientX - pOffsetX;
           dragStartY = e.touches[0].clientY - pOffsetY;
         }
-      }, { passive: true });
-
+      });
       window.addEventListener('touchmove', (e) => {
         if (!isDragging || e.touches.length !== 1) return;
         pOffsetX = e.touches[0].clientX - dragStartX;
         pOffsetY = e.touches[0].clientY - dragStartY;
-        renderLivePortrait();
-      }, { passive: true });
-
+        renderInteractivePreview();
+      });
       window.addEventListener('touchend', () => { isDragging = false; });
 
+      // Sliders
+      const zoomS = document.getElementById('zoom-slider');
+      zoomS?.addEventListener('input', (e) => {
+        pScale = parseFloat(e.target.value);
+        document.getElementById('zoom-val').textContent = pScale.toFixed(2) + 'x';
+        renderInteractivePreview();
+      });
+
+      const rotS = document.getElementById('rotate-slider');
+      rotS?.addEventListener('input', (e) => {
+        pRotation = parseInt(e.target.value, 10);
+        document.getElementById('rotate-val').textContent = pRotation + '°';
+        renderInteractivePreview();
+      });
+
+      const brightS = document.getElementById('bright-slider');
+      brightS?.addEventListener('input', (e) => {
+        pBrightness = parseInt(e.target.value, 10);
+        document.getElementById('bright-val').textContent = pBrightness + '%';
+        renderInteractivePreview();
+      });
+
+      const contS = document.getElementById('contrast-slider');
+      contS?.addEventListener('input', (e) => {
+        pContrast = parseInt(e.target.value, 10);
+        document.getElementById('contrast-val').textContent = pContrast + '%';
+        renderInteractivePreview();
+      });
+
+      // Suit Overlay
+      const suitSelect = document.getElementById('suit-select');
+      const suitRow = document.getElementById('suit-adjust-row');
+      suitSelect?.addEventListener('change', (e) => {
+        pSuitKey = e.target.value;
+        suitRow.style.display = pSuitKey !== 'none' ? 'flex' : 'none';
+        renderInteractivePreview();
+      });
+
+      const suitOffsetS = document.getElementById('suit-offset-slider');
+      suitOffsetS?.addEventListener('input', (e) => {
+        pSuitOffsetY = parseInt(e.target.value, 10);
+        document.getElementById('suit-offset-val').textContent = pSuitOffsetY + 'px';
+        renderInteractivePreview();
+      });
+
       // Reset
-      document.getElementById('reset-portrait-btn').addEventListener('click', () => {
+      document.getElementById('reset-portrait-btn')?.addEventListener('click', () => {
         pScale = 1.0;
         pOffsetX = 0;
         pOffsetY = 0;
         pRotation = 0;
         pBrightness = 100;
         pContrast = 100;
-        pBgColor = '#FFFFFF';
-        document.getElementById('zoom-slider').value = 1.0;
+        pBgColor = IDPhoto.PRESETS[currentPresetKey]?.bgRecommended || '#FFFFFF';
+        pSuitKey = 'none';
+        pSuitOffsetY = 0;
+
+        zoomS.value = 1.0;
         document.getElementById('zoom-val').textContent = '1.0x';
-        document.getElementById('rotate-slider').value = 0;
+        rotS.value = 0;
         document.getElementById('rotate-val').textContent = '0°';
-        document.getElementById('bright-slider').value = 100;
+        brightS.value = 100;
         document.getElementById('bright-val').textContent = '100%';
-        document.getElementById('contrast-slider').value = 100;
+        contS.value = 100;
         document.getElementById('contrast-val').textContent = '100%';
-        renderLivePortrait();
+        suitSelect.value = 'none';
+        suitRow.style.display = 'none';
+
+        renderInteractivePreview();
       });
 
-      // Generate button
-      document.getElementById('generate-portrait-btn').addEventListener('click', generatePortraitOutputs);
+      // Generate Button
+      document.getElementById('generate-portrait-btn')?.addEventListener('click', generateAllOutputs);
 
-      // Download buttons
-      document.getElementById('download-single-photo-btn').addEventListener('click', () => {
-        if (singleBlob) UIUtils.downloadBlob(singleBlob, `LocalDoc_Biometric_Photo_${currentPresetKey}.jpg`);
+      // Download Buttons
+      document.getElementById('download-single-photo-btn')?.addEventListener('click', () => {
+        if (singleBlob) UIUtils.downloadBlob(singleBlob, `localdoc_biometric_${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-4x6-sheet-btn')?.addEventListener('click', () => {
+        if (sheet4x6Blob) UIUtils.downloadBlob(sheet4x6Blob, `localdoc_print_sheet_4x6_${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-5x7-sheet-btn')?.addEventListener('click', () => {
+        if (sheet5x7Blob) UIUtils.downloadBlob(sheet5x7Blob, `localdoc_print_sheet_5x7_${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-a4-sheet-btn')?.addEventListener('click', () => {
+        if (sheetA4Blob) UIUtils.downloadBlob(sheetA4Blob, `localdoc_print_sheet_a4_${currentPresetKey}.jpg`);
       });
 
-      document.getElementById('download-4x6-sheet-btn').addEventListener('click', () => {
-        if (sheet4x6Blob) UIUtils.downloadBlob(sheet4x6Blob, `LocalDoc_4x6_Print_Sheet_${currentPresetKey}.jpg`);
-      });
-
-      document.getElementById('download-a4-sheet-btn').addEventListener('click', () => {
-        if (sheetA4Blob) UIUtils.downloadBlob(sheetA4Blob, `LocalDoc_A4_Print_Sheet_${currentPresetKey}.jpg`);
-      });
+      // ID Card 2-in-1 Handlers
+      setupIDCardHandlers();
     }
 
-    async function loadPortraitImage(files) {
-      if (!files || files.length === 0) return;
-      currentPortraitFile = files[0];
-      const dataUrl = await UIUtils.readFileAsDataURL(currentPortraitFile);
+    async function loadPortraitFile(file) {
+      currentPortraitFile = file;
+      const dataUrl = await UIUtils.readFileAsDataURL(file);
       portraitImgElem = await UIUtils.loadImage(dataUrl);
 
+      document.getElementById('portrait-drop-zone').style.display = 'none';
       document.getElementById('portrait-workspace').style.display = 'block';
-      document.getElementById('portrait-result-card').style.display = 'none';
-
-      pOffsetX = 0;
-      pOffsetY = 0;
-      pScale = 1.0;
-
-      renderLivePortrait();
-      UIUtils.showToast("Portrait loaded! Reposition within guide oval.", "info");
+      selectPortraitPreset(currentPresetKey);
+      renderInteractivePreview();
     }
 
-    window.setPortraitBg = function(color) {
-      pBgColor = color;
-      document.getElementById('portrait-preview-box').style.background = color;
-      renderLivePortrait();
-    };
-
-    function renderLivePortrait() {
+    async function renderInteractivePreview() {
       if (!portraitImgElem) return;
-      const preset = IDPhoto.PRESETS[currentPresetKey] || IDPhoto.PRESETS['passport-us'];
+      const p = IDPhoto.PRESETS[currentPresetKey];
       const canvas = document.getElementById('portrait-canvas');
-      canvas.width = preset.width;
-      canvas.height = preset.height;
+      const box = document.getElementById('portrait-preview-box');
+
+      canvas.width = box.clientWidth;
+      canvas.height = box.clientHeight;
       const ctx = canvas.getContext('2d');
 
+      // 1. Background
       ctx.fillStyle = pBgColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.filter = `brightness(${pBrightness}%) contrast(${pContrast}%)`;
-
+      // 2. Portrait
       ctx.save();
+      ctx.filter = `brightness(${pBrightness}%) contrast(${pContrast}%)`;
       ctx.translate(canvas.width / 2 + pOffsetX, canvas.height / 2 + pOffsetY);
-      if (pRotation !== 0) {
-        ctx.rotate((pRotation * Math.PI) / 180);
-      }
+      if (pRotation !== 0) ctx.rotate((pRotation * Math.PI) / 180);
 
       const baseScale = Math.max(canvas.width / portraitImgElem.naturalWidth, canvas.height / portraitImgElem.naturalHeight);
       const finalScale = baseScale * pScale;
-      const dw = portraitImgElem.naturalWidth * finalScale;
-      const dh = portraitImgElem.naturalHeight * finalScale;
+      const drawW = portraitImgElem.naturalWidth * finalScale;
+      const drawH = portraitImgElem.naturalHeight * finalScale;
 
-      ctx.drawImage(portraitImgElem, -dw / 2, -dh / 2, dw, dh);
+      ctx.drawImage(portraitImgElem, -drawW / 2, -drawH / 2, drawW, drawH);
       ctx.restore();
-    }
 
-    async function generatePortraitOutputs() {
-      if (!portraitImgElem) return;
-      const generateBtn = document.getElementById('generate-portrait-btn');
-      try {
-        generateBtn.disabled = true;
-        generateBtn.textContent = 'Generating 300 DPI Sheets...';
-
-        const preset = IDPhoto.PRESETS[currentPresetKey] || IDPhoto.PRESETS['passport-us'];
-        const rendered = await IDPhoto.renderPortraitPhoto({
-          imageFileOrUrl: portraitImgElem.src,
-          targetWidth: preset.width,
-          targetHeight: preset.height,
-          scale: pScale,
-          offsetX: pOffsetX,
-          offsetY: pOffsetY,
-          rotation: pRotation,
-          bgColor: pBgColor,
-          brightness: pBrightness,
-          contrast: pContrast
-        });
-
-        singleBlob = rendered.blob;
-
-        // Generate 4x6" Sheet
-        const s4x6 = await IDPhoto.generate4x6Sheet(rendered.canvas, currentPresetKey);
-        sheet4x6Blob = s4x6.blob;
-
-        // Generate A4 Sheet
-        const sA4 = await IDPhoto.generateA4Sheet(rendered.canvas);
-        sheetA4Blob = sA4.blob;
-
-        document.getElementById('portrait-result-card').style.display = 'flex';
-        document.getElementById('portrait-result-card').scrollIntoView({ behavior: 'smooth' });
-        UIUtils.showToast("Biometric photos & printable sheets generated successfully!", "success");
-      } catch (err) {
-        console.error(err);
-        UIUtils.showToast("Failed to generate photos: " + err.message, "error");
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.textContent = '✨ Generate Biometric Photos & Print Sheets';
+      // 3. Suit Overlay Preview
+      if (pSuitKey !== 'none' && IDPhoto.SUIT_TEMPLATES[pSuitKey]) {
+        const suitSvg = IDPhoto.SUIT_TEMPLATES[pSuitKey].svg;
+        const suitImg = await UIUtils.loadImage('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitSvg));
+        ctx.save();
+        const sW = canvas.width * 1.05;
+        const sH = (sW * 240) / 400;
+        const sX = (canvas.width - sW) / 2;
+        const sY = canvas.height - sH + pSuitOffsetY;
+        ctx.drawImage(suitImg, sX, sY, sW, sH);
+        ctx.restore();
       }
     }
 
-    // -------------------------------------------------------------
-    // SECTION 2: ID CARD 2-IN-1 COMPILER LOGIC
-    // -------------------------------------------------------------
-    function setupIDCardEventListeners() {
+    async function generateAllOutputs() {
+      if (!portraitImgElem) return;
+      UIUtils.showToast("Generating 300 DPI biometric sheets...", "info");
+
+      const p = IDPhoto.PRESETS[currentPresetKey];
+      const box = document.getElementById('portrait-preview-box');
+
+      // Map interactive coordinates to 300 DPI master canvas
+      const scaleMultiplier = p.width / box.clientWidth;
+      const masterOffsetX = pOffsetX * scaleMultiplier;
+      const masterOffsetY = pOffsetY * scaleMultiplier;
+
+      // Single photo
+      const singleRes = await IDPhoto.renderPortraitPhoto({
+        imageFileOrUrl: portraitImgElem.src,
+        targetWidth: p.width,
+        targetHeight: p.height,
+        scale: pScale,
+        offsetX: masterOffsetX,
+        offsetY: masterOffsetY,
+        rotation: pRotation,
+        bgColor: pBgColor,
+        brightness: pBrightness,
+        contrast: pContrast,
+        suitKey: pSuitKey,
+        suitOffsetY: pSuitOffsetY * scaleMultiplier,
+        quality: 0.98
+      });
+      singleBlob = singleRes.blob;
+
+      // 4x6 Sheet
+      const sheet4x6Res = await IDPhoto.generate4x6Sheet(singleRes.canvas);
+      sheet4x6Blob = sheet4x6Res.blob;
+
+      // 5x7 Sheet
+      const sheet5x7Res = await IDPhoto.generate5x7Sheet(singleRes.canvas);
+      sheet5x7Blob = sheet5x7Res.blob;
+
+      // A4 Sheet
+      const sheetA4Res = await IDPhoto.generateA4Sheet(singleRes.canvas);
+      sheetA4Blob = sheetA4Res.blob;
+
+      document.getElementById('portrait-result-card').style.display = 'block';
+      document.getElementById('portrait-result-title').textContent = `Official ${p.name} Sheets Ready!`;
+      UIUtils.showToast("All photo sizes and print sheets ready!", "success");
+    }
+
+    // ID Card 2-in-1 Handlers
+    function setupIDCardHandlers() {
       const frontInput = document.getElementById('front-file-input');
       const frontCam = document.getElementById('front-camera-input');
       const backInput = document.getElementById('back-file-input');
       const backCam = document.getElementById('back-camera-input');
 
-      frontInput.addEventListener('change', (e) => loadIDCardSide('front', e.target.files));
-      frontCam.addEventListener('change', (e) => loadIDCardSide('front', e.target.files));
-      backInput.addEventListener('change', (e) => loadIDCardSide('back', e.target.files));
-      backCam.addEventListener('change', (e) => loadIDCardSide('back', e.target.files));
+      frontInput?.addEventListener('change', (e) => { if (e.target.files?.[0]) loadCardSide('front', e.target.files[0]); });
+      frontCam?.addEventListener('change', (e) => { if (e.target.files?.[0]) loadCardSide('front', e.target.files[0]); });
+      backInput?.addEventListener('change', (e) => { if (e.target.files?.[0]) loadCardSide('back', e.target.files[0]); });
+      backCam?.addEventListener('change', (e) => { if (e.target.files?.[0]) loadCardSide('back', e.target.files[0]); });
 
-      document.getElementById('generate-idcard-a4-btn').addEventListener('click', compileIDCardSheet);
-
-      document.getElementById('download-idcard-a4-btn').addEventListener('click', () => {
-        if (idCardA4Blob) {
-          UIUtils.downloadBlob(idCardA4Blob, 'LocalDoc_ID_Card_A4_Photocopy_Sheet.jpg');
-        }
+      document.getElementById('generate-idcard-a4-btn')?.addEventListener('click', async () => {
+        if (!frontCardData || !backCardData) return;
+        UIUtils.showToast("Compiling 2-in-1 A4 ID Card Sheet...", "info");
+        const docTitle = document.getElementById('idcard-doc-title').value.trim() || 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET';
+        const res = await IDPhoto.generate2in1IDCardSheet({
+          frontImageOrUrl: frontCardData,
+          backImageOrUrl: backCardData,
+          docTitle
+        });
+        idCardA4Blob = res.blob;
+        document.getElementById('idcard-result-card').style.display = 'block';
+        UIUtils.showToast("A4 ID Card Photocopy Sheet Ready!", "success");
       });
 
-      document.getElementById('view-idcard-reader-btn').addEventListener('click', () => {
-        if (idCardA4DataUrl) {
-          sessionStorage.setItem('localdoc_view_document', JSON.stringify({
-            dataUrl: idCardA4DataUrl,
-            filename: 'LocalDoc_ID_Card_A4_Sheet.jpg',
-            type: 'image/jpeg'
-          }));
-          window.location.href = 'document-reader.html';
+      document.getElementById('download-idcard-a4-btn')?.addEventListener('click', () => {
+        if (idCardA4Blob) UIUtils.downloadBlob(idCardA4Blob, 'localdoc_id_card_2in1_a4.jpg');
+      });
+
+      document.getElementById('view-idcard-reader-btn')?.addEventListener('click', () => {
+        if (idCardA4Blob) {
+          const url = URL.createObjectURL(idCardA4Blob);
+          window.open(url, '_blank');
         }
       });
     }
 
-    async function loadIDCardSide(side, files) {
-      if (!files || files.length === 0) return;
-      const file = files[0];
+    async function loadCardSide(side, file) {
       const dataUrl = await UIUtils.readFileAsDataURL(file);
-
       if (side === 'front') {
         frontCardData = dataUrl;
-        document.getElementById('front-preview-img').src = dataUrl;
-        document.getElementById('front-preview-img').style.display = 'block';
         document.getElementById('front-placeholder').style.display = 'none';
-        document.getElementById('front-remove-btn').style.display = 'inline-block';
+        const img = document.getElementById('front-preview-img');
+        img.src = dataUrl;
+        img.style.display = 'block';
+        document.getElementById('front-remove-btn').style.display = 'inline-flex';
         document.getElementById('box-front').classList.add('has-image');
       } else {
         backCardData = dataUrl;
-        document.getElementById('back-preview-img').src = dataUrl;
-        document.getElementById('back-preview-img').style.display = 'block';
         document.getElementById('back-placeholder').style.display = 'none';
-        document.getElementById('back-remove-btn').style.display = 'inline-block';
+        const img = document.getElementById('back-preview-img');
+        img.src = dataUrl;
+        img.style.display = 'block';
+        document.getElementById('back-remove-btn').style.display = 'inline-flex';
         document.getElementById('box-back').classList.add('has-image');
       }
 
-      // Enable compile button if at least Front is loaded
-      document.getElementById('generate-idcard-a4-btn').disabled = !frontCardData;
-      UIUtils.showToast(`${side.toUpperCase()} side loaded successfully!`, "info");
+      if (frontCardData && backCardData) {
+        document.getElementById('generate-idcard-a4-btn').disabled = false;
+      }
     }
 
-    window.removeIDSide = function(side) {
+    function removeIDSide(side) {
       if (side === 'front') {
         frontCardData = null;
-        document.getElementById('front-preview-img').style.display = 'none';
         document.getElementById('front-placeholder').style.display = 'block';
+        document.getElementById('front-preview-img').style.display = 'none';
         document.getElementById('front-remove-btn').style.display = 'none';
         document.getElementById('box-front').classList.remove('has-image');
       } else {
         backCardData = null;
-        document.getElementById('back-preview-img').style.display = 'none';
         document.getElementById('back-placeholder').style.display = 'block';
+        document.getElementById('back-preview-img').style.display = 'none';
         document.getElementById('back-remove-btn').style.display = 'none';
         document.getElementById('box-back').classList.remove('has-image');
       }
-      document.getElementById('generate-idcard-a4-btn').disabled = !frontCardData;
-    };
-
-    async function compileIDCardSheet() {
-      if (!frontCardData) return;
-      const btn = document.getElementById('generate-idcard-a4-btn');
-      try {
-        btn.disabled = true;
-        btn.textContent = 'Compiling 1-Page A4 Sheet...';
-
-        const title = document.getElementById('idcard-doc-title').value || 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET';
-        const res = await IDPhoto.compileIDCardA4({
-          frontImgOrUrl: frontCardData,
-          backImgOrUrl: backCardData,
-          documentTitle: title,
-          includeCutGuides: true
-        });
-
-        idCardA4Blob = res.blob;
-        idCardA4DataUrl = res.dataUrl;
-
-        document.getElementById('idcard-result-card').style.display = 'flex';
-        document.getElementById('idcard-result-card').scrollIntoView({ behavior: 'smooth' });
-        UIUtils.showToast("1-Page A4 ID card sheet compiled successfully!", "success");
-      } catch (err) {
-        console.error(err);
-        UIUtils.showToast("Compilation failed: " + err.message, "error");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = '📄 Compile 2-in-1 A4 Sheet →';
-      }
+      document.getElementById('generate-idcard-a4-btn').disabled = true;
     }
   </script>
 </body>

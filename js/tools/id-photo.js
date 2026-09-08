@@ -1,20 +1,141 @@
 /**
  * localdoc.org — Biometric ID & Photo Studio Engine (js/tools/id-photo.js)
- * High-precision biometric passport/visa photo cropping, multi-copy print sheet generation (4x6", A4),
- * and 2-in-1 Front & Back ID Card composite compilation on 1-Page A4 with zero uploads.
+ * High-precision biometric passport/visa photo cropping, multi-copy print sheet generation (4x6", 5x7", A4),
+ * suit/attire overlays, background color changer, and 2-in-1 Front & Back ID Card composite compilation.
+ * 100% Client-Side RAM Execution. Zero Cloud Uploads.
  */
 
 const IDPhoto = {
-  // Preset definitions
+  // Global Country & Dimension Presets
   PRESETS: {
-    'passport-us': { name: 'US / Global Passport (2x2" / 51x51mm)', width: 600, height: 600, dpi: 300, mmW: 51, mmH: 51 },
-    'visa-schengen': { name: 'Schengen / UK / European Visa (35x45mm)', width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45 },
-    'cnic-pk': { name: 'NADRA CNIC / Pakistan ID (350x450px)', width: 350, height: 450, dpi: 300, mmW: 30, mmH: 40 },
-    'photo-1x1': { name: '1x1 Inch Photo (25x25mm)', width: 300, height: 300, dpi: 300, mmW: 25, mmH: 25 },
-    'photo-2x2': { name: '2x2 Inch Standard (50x50mm)', width: 600, height: 600, dpi: 300, mmW: 50, mmH: 50 }
+    'passport-us': {
+      name: 'US Passport, Visa & Green Card (2x2" / 51x51mm)',
+      country: 'United States',
+      width: 600, height: 600, dpi: 300, mmW: 51, mmH: 51,
+      headRatio: 0.70, // 70-80% head height
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-uk': {
+      name: 'UK / British Passport & Driving Licence (35x45mm)',
+      country: 'United Kingdom',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#E2E8F0' // Light grey / off-white
+    },
+    'visa-schengen': {
+      name: 'Schengen Visa & European Union (35x45mm)',
+      country: 'European Union',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#F8FAFC'
+    },
+    'passport-ca': {
+      name: 'Canada Passport (50x70mm)',
+      country: 'Canada',
+      width: 591, height: 827, dpi: 300, mmW: 50, mmH: 70,
+      headRatio: 0.72,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-in': {
+      name: 'India Passport, OCI & Visa (35x45mm & 2x2")',
+      country: 'India',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'cnic-pk': {
+      name: 'Pakistan NADRA CNIC, NICOP & Passport (35x45mm)',
+      country: 'Pakistan',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#E0F2FE' // Light blue / White
+    },
+    'passport-au': {
+      name: 'Australia & New Zealand Passport (35x45mm)',
+      country: 'Australia',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-cn': {
+      name: 'China Passport & Visa (33x48mm)',
+      country: 'China',
+      width: 390, height: 567, dpi: 300, mmW: 33, mmH: 48,
+      headRatio: 0.72,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-jp': {
+      name: 'Japan Passport & Residence Card (35x45mm)',
+      country: 'Japan',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'visa-uae': {
+      name: 'UAE / Dubai Tourist & Resident Visa (35x45mm)',
+      country: 'United Arab Emirates',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'visa-saudi': {
+      name: 'Saudi Arabia Umrah & Hajj Visa (2x2" / 51x51mm)',
+      country: 'Saudi Arabia',
+      width: 600, height: 600, dpi: 300, mmW: 51, mmH: 51,
+      headRatio: 0.70,
+      bgRecommended: '#FFFFFF'
+    },
+    'photo-1x1': {
+      name: '1x1 Inch Square Photo (25x25mm)',
+      country: 'Standard',
+      width: 300, height: 300, dpi: 300, mmW: 25, mmH: 25,
+      headRatio: 0.70,
+      bgRecommended: '#FFFFFF'
+    },
+    'photo-2x2': {
+      name: '2x2 Inch Standard Photo (51x51mm)',
+      country: 'Standard',
+      width: 600, height: 600, dpi: 300, mmW: 51, mmH: 51,
+      headRatio: 0.70,
+      bgRecommended: '#FFFFFF'
+    },
+    'photo-3x4': {
+      name: '30x40mm Standard ID Photo',
+      country: 'Standard',
+      width: 354, height: 472, dpi: 300, mmW: 30, mmH: 40,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    }
   },
 
-  // Process and crop single portrait photo with scale, offset, rotation, background and filter adjustments
+  // Suit Overlays (Vector SVG Data URLs)
+  SUIT_TEMPLATES: {
+    'none': null,
+    'men-dark-suit': {
+      name: "Men's Dark Navy Business Suit & Tie",
+      svg: `<svg viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 240C50 180 85 140 140 120L170 145L125 240H50Z" fill="#1E293B"/>
+        <path d="M350 240C350 180 315 140 260 120L230 145L275 240H350Z" fill="#1E293B"/>
+        <path d="M140 120L185 190L170 240H230L215 190L260 120C240 110 225 105 200 105C175 105 160 110 140 120Z" fill="#F8FAFC"/>
+        <path d="M190 125L200 135L210 125L205 240H195L190 125Z" fill="#B91C1C"/>
+        <path d="M185 115L200 128L215 115L205 110H195L185 115Z" fill="#991B1B"/>
+        <path d="M125 125L175 195L160 240H120L95 180L125 125Z" fill="#0F172A"/>
+        <path d="M275 125L225 195L240 240H280L305 180L275 125Z" fill="#0F172A"/>
+      </svg>`
+    },
+    'women-blazer': {
+      name: "Women's Elegant Dark Blazer & Collar",
+      svg: `<svg viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 240C50 170 90 135 145 115L175 155L135 240H50Z" fill="#1E1B4B"/>
+        <path d="M350 240C350 170 310 135 255 115L225 155L265 240H350Z" fill="#1E1B4B"/>
+        <path d="M145 115L190 190L175 240H225L210 190L255 115C235 105 220 100 200 100C180 100 165 105 145 115Z" fill="#F8FAFC"/>
+        <path d="M135 120L185 195L165 240H115L90 175L135 120Z" fill="#0F172A"/>
+        <path d="M265 120L215 195L235 240H285L310 175L265 120Z" fill="#0F172A"/>
+      </svg>`
+    }
+  },
+
+  // Process and crop single portrait photo with background, zoom, pan, rotation, filters, suit overlay
   async renderPortraitPhoto({
     imageFileOrUrl,
     targetWidth = 600,
@@ -26,6 +147,9 @@ const IDPhoto = {
     bgColor = '#FFFFFF',
     brightness = 100,
     contrast = 100,
+    suitKey = 'none',
+    suitScale = 1.0,
+    suitOffsetY = 0,
     quality = 0.95
   }) {
     let img;
@@ -41,21 +165,18 @@ const IDPhoto = {
     canvas.height = targetHeight;
     const ctx = canvas.getContext('2d');
 
-    // Draw solid background
+    // 1. Draw solid background
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-    // Apply brightness & contrast filters
-    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
-
-    // Calculate centering with scale and offset
+    // 2. Draw portrait with brightness & contrast filters
     ctx.save();
+    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
     ctx.translate(targetWidth / 2 + offsetX, targetHeight / 2 + offsetY);
     if (rotation !== 0) {
       ctx.rotate((rotation * Math.PI) / 180);
     }
 
-    // Cover scale factor
     const baseScale = Math.max(targetWidth / img.naturalWidth, targetHeight / img.naturalHeight);
     const finalScale = baseScale * scale;
     const drawW = img.naturalWidth * finalScale;
@@ -63,6 +184,21 @@ const IDPhoto = {
 
     ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
     ctx.restore();
+
+    // 3. Draw Suit Overlay if enabled
+    if (suitKey && suitKey !== 'none' && this.SUIT_TEMPLATES[suitKey]) {
+      const suitInfo = this.SUIT_TEMPLATES[suitKey];
+      const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
+      const suitImg = await UIUtils.loadImage(suitSvgData);
+
+      ctx.save();
+      const sW = targetWidth * 1.05 * suitScale;
+      const sH = (sW * 240) / 400;
+      const sX = (targetWidth - sW) / 2;
+      const sY = targetHeight - sH + suitOffsetY;
+      ctx.drawImage(suitImg, sX, sY, sW, sH);
+      ctx.restore();
+    }
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
     return {
@@ -75,20 +211,20 @@ const IDPhoto = {
   },
 
   // Generate 4x6" Printable Grid Sheet (1800 x 1200 px @ 300 DPI)
-  async generate4x6Sheet(photoCanvas, presetKey = 'passport-us') {
+  async generate4x6Sheet(photoCanvas) {
     const sheetCanvas = document.createElement('canvas');
     sheetCanvas.width = 1800; // 6 inches @ 300 DPI
     sheetCanvas.height = 1200; // 4 inches @ 300 DPI
     const ctx = sheetCanvas.getContext('2d');
 
-    // Crisp white photographic paper background
+    // Clean white photo paper
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
 
     const pw = photoCanvas.width;
     const ph = photoCanvas.height;
 
-    // Calculate best layout fit for 4x6" sheet
+    // Layout configuration
     let cols = 4;
     let rows = 2;
     if (pw === ph) {
@@ -101,53 +237,109 @@ const IDPhoto = {
       rows = 2;
     }
 
-    const marginX = 60;
-    const marginY = 50;
-    const availW = sheetCanvas.width - marginX * 2;
-    const availH = sheetCanvas.height - marginY * 2;
+    const marginX = 80;
+    const marginY = 80;
+    const availW = sheetCanvas.width - 2 * marginX;
+    const availH = sheetCanvas.height - 2 * marginY;
 
-    const cellW = availW / cols;
-    const cellH = availH / rows;
+    // Target photo size scaled to fit standard layout
+    const targetScale = Math.min(
+      (availW / cols - 30) / pw,
+      (availH / rows - 30) / ph
+    );
+    const itemW = pw * targetScale;
+    const itemH = ph * targetScale;
 
-    const scale = Math.min((cellW - 30) / pw, (cellH - 30) / ph, 1.0);
-    const renderW = pw * scale;
-    const renderH = ph * scale;
+    const gapX = (availW - cols * itemW) / (cols + 1);
+    const gapY = (availH - rows * itemH) / (rows + 1);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const cx = marginX + c * cellW + (cellW - renderW) / 2;
-        const cy = marginY + r * cellH + (cellH - renderH) / 2;
+        const x = marginX + gapX + c * (itemW + gapX);
+        const y = marginY + gapY + r * (itemH + gapY);
 
-        ctx.drawImage(photoCanvas, cx, cy, renderW, renderH);
+        ctx.drawImage(photoCanvas, x, y, itemW, itemH);
 
-        // Subtle cutting guide border
+        // Dashed scissors cutting lines
+        ctx.save();
         ctx.strokeStyle = '#CBD5E1';
         ctx.lineWidth = 1;
-        ctx.strokeRect(cx, cy, renderW, renderH);
-
-        // Corner crop marks
-        this._drawCornerCropMarks(ctx, cx, cy, renderW, renderH);
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(x, y, itemW, itemH);
+        ctx.restore();
       }
     }
 
-    // Sheet metadata watermark
+    // Sheet metadata footer
+    ctx.font = '700 14px "Outfit", Arial, sans-serif';
     ctx.fillStyle = '#94A3B8';
-    ctx.font = '14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('localdoc.org — Biometric 4x6" Print Sheet (300 DPI) • Zero Uploads', sheetCanvas.width / 2, sheetCanvas.height - 15);
+    ctx.fillText('localdoc.org — Official Biometric Photo Sheet (4x6" @ 300 DPI) • Zero Uploads', sheetCanvas.width / 2, sheetCanvas.height - 22);
 
-    const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/jpeg', 0.95));
-    return {
-      canvas: sheetCanvas,
-      dataUrl: sheetCanvas.toDataURL('image/jpeg', 0.95),
-      blob
-    };
+    const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/jpeg', 0.98));
+    return { canvas: sheetCanvas, blob, dataUrl: sheetCanvas.toDataURL('image/jpeg', 0.98) };
+  },
+
+  // Generate 5x7" Printable Grid Sheet (2100 x 1500 px @ 300 DPI)
+  async generate5x7Sheet(photoCanvas) {
+    const sheetCanvas = document.createElement('canvas');
+    sheetCanvas.width = 2100;
+    sheetCanvas.height = 1500;
+    const ctx = sheetCanvas.getContext('2d');
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+
+    const pw = photoCanvas.width;
+    const ph = photoCanvas.height;
+
+    let cols = 4;
+    let rows = 3;
+    if (pw === ph) {
+      cols = 3;
+      rows = 2;
+    }
+
+    const marginX = 90;
+    const marginY = 90;
+    const availW = sheetCanvas.width - 2 * marginX;
+    const availH = sheetCanvas.height - 2 * marginY;
+
+    const targetScale = Math.min((availW / cols - 35) / pw, (availH / rows - 35) / ph);
+    const itemW = pw * targetScale;
+    const itemH = ph * targetScale;
+
+    const gapX = (availW - cols * itemW) / (cols + 1);
+    const gapY = (availH - rows * itemH) / (rows + 1);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = marginX + gapX + c * (itemW + gapX);
+        const y = marginY + gapY + r * (itemH + gapY);
+        ctx.drawImage(photoCanvas, x, y, itemW, itemH);
+
+        ctx.save();
+        ctx.strokeStyle = '#CBD5E1';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(x, y, itemW, itemH);
+        ctx.restore();
+      }
+    }
+
+    ctx.font = '700 15px "Outfit", Arial, sans-serif';
+    ctx.fillStyle = '#94A3B8';
+    ctx.textAlign = 'center';
+    ctx.fillText('localdoc.org — Official Biometric Photo Sheet (5x7" @ 300 DPI) • Zero Uploads', sheetCanvas.width / 2, sheetCanvas.height - 25);
+
+    const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/jpeg', 0.98));
+    return { canvas: sheetCanvas, blob, dataUrl: sheetCanvas.toDataURL('image/jpeg', 0.98) };
   },
 
   // Generate A4 Printable Grid Sheet (2480 x 3508 px @ 300 DPI)
   async generateA4Sheet(photoCanvas) {
     const sheetCanvas = document.createElement('canvas');
-    sheetCanvas.width = 2480; // A4 @ 300 DPI
+    sheetCanvas.width = 2480;
     sheetCanvas.height = 3508;
     const ctx = sheetCanvas.getContext('2d');
 
@@ -157,228 +349,146 @@ const IDPhoto = {
     const pw = photoCanvas.width;
     const ph = photoCanvas.height;
 
-    const cols = pw === ph ? 4 : 5;
-    const rows = pw === ph ? 5 : 6;
+    let cols = 4;
+    let rows = 6;
+    if (pw === ph) {
+      cols = 4;
+      rows = 5;
+    }
 
     const marginX = 140;
-    const marginY = 160;
-    const availW = sheetCanvas.width - marginX * 2;
-    const availH = sheetCanvas.height - marginY * 2;
+    const marginY = 180;
+    const availW = sheetCanvas.width - 2 * marginX;
+    const availH = sheetCanvas.height - 2 * marginY;
 
-    const cellW = availW / cols;
-    const cellH = availH / rows;
+    const targetScale = Math.min((availW / cols - 40) / pw, (availH / rows - 40) / ph);
+    const itemW = pw * targetScale;
+    const itemH = ph * targetScale;
 
-    const scale = Math.min((cellW - 40) / pw, (cellH - 40) / ph, 1.0);
-    const renderW = pw * scale;
-    const renderH = ph * scale;
+    const gapX = (availW - cols * itemW) / (cols + 1);
+    const gapY = (availH - rows * itemH) / (rows + 1);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const cx = marginX + c * cellW + (cellW - renderW) / 2;
-        const cy = marginY + r * cellH + (cellH - renderH) / 2;
+        const x = marginX + gapX + c * (itemW + gapX);
+        const y = marginY + gapY + r * (itemH + gapY);
+        ctx.drawImage(photoCanvas, x, y, itemW, itemH);
 
-        ctx.drawImage(photoCanvas, cx, cy, renderW, renderH);
+        ctx.save();
         ctx.strokeStyle = '#CBD5E1';
         ctx.lineWidth = 1;
-        ctx.strokeRect(cx, cy, renderW, renderH);
-        this._drawCornerCropMarks(ctx, cx, cy, renderW, renderH);
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(x, y, itemW, itemH);
+        ctx.restore();
       }
     }
 
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = '20px sans-serif';
+    // A4 Header & Footer
+    ctx.font = '800 24px "Outfit", Arial, sans-serif';
+    ctx.fillStyle = '#0F172A';
     ctx.textAlign = 'center';
-    ctx.fillText('localdoc.org — Official Biometric A4 Multi-Copy Print Sheet (300 DPI)', sheetCanvas.width / 2, sheetCanvas.height - 40);
+    ctx.fillText('OFFICIAL BIOMETRIC PASSPORT & VISA PHOTO SHEET', sheetCanvas.width / 2, 100);
 
-    const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/jpeg', 0.95));
-    return {
-      canvas: sheetCanvas,
-      dataUrl: sheetCanvas.toDataURL('image/jpeg', 0.95),
-      blob
-    };
+    ctx.font = '600 16px "Outfit", Arial, sans-serif';
+    ctx.fillStyle = '#64748B';
+    ctx.fillText('Generated with LocalDoc (100% In-Browser RAM Execution) • Standard A4 300 DPI', sheetCanvas.width / 2, 132);
+
+    ctx.fillText('Scissors trimming lines included around each photograph.', sheetCanvas.width / 2, sheetCanvas.height - 60);
+
+    const blob = await new Promise(resolve => sheetCanvas.toBlob(resolve, 'image/jpeg', 0.98));
+    return { canvas: sheetCanvas, blob, dataUrl: sheetCanvas.toDataURL('image/jpeg', 0.98) };
   },
 
-  // Draw corner crop lines for easy scissor trimming
-  _drawCornerCropMarks(ctx, x, y, w, h) {
-    const markLen = 8;
-    ctx.strokeStyle = '#94A3B8';
-    ctx.lineWidth = 1;
-
-    ctx.beginPath();
-    // Top-Left
-    ctx.moveTo(x - markLen, y); ctx.lineTo(x, y);
-    ctx.moveTo(x, y - markLen); ctx.lineTo(x, y);
-    // Top-Right
-    ctx.moveTo(x + w, y); ctx.lineTo(x + w + markLen, y);
-    ctx.moveTo(x + w, y - markLen); ctx.lineTo(x + w, y);
-    // Bottom-Left
-    ctx.moveTo(x - markLen, y + h); ctx.lineTo(x, y + h);
-    ctx.moveTo(x, y + h); ctx.lineTo(x, y + h + markLen);
-    // Bottom-Right
-    ctx.moveTo(x + w, y + h); ctx.lineTo(x + w + markLen, y + h);
-    ctx.moveTo(x + w, y + h); ctx.lineTo(x + w, y + h + markLen);
-    ctx.stroke();
-  },
-
-  // -------------------------------------------------------------
-  // MODE B: 2-in-1 ID Card Front & Back Compiler (A4 Sheet & Card)
-  // -------------------------------------------------------------
-
-  /**
-   * Compiles Front and Back ID photos onto a standard 1-Page A4 Sheet (300 DPI)
-   * Standard ID Card Physical Size: 85.6mm x 53.98mm (CR80 standard / NADRA CNIC / DL)
-   * 85.6mm @ 300 DPI ≈ 1011 px, 53.98mm ≈ 638 px
-   */
-  async compileIDCardA4({
-    frontImgOrUrl,
-    backImgOrUrl,
-    documentTitle = 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET',
-    includeCutGuides = true,
-    filterMode = 'magic-color'
+  // 2-in-1 Double Sided ID Card Sheet on A4
+  async generate2in1IDCardSheet({
+    frontImageOrUrl,
+    backImageOrUrl,
+    docTitle = 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET'
   }) {
-    let frontImg, backImg;
+    const frontImg = typeof frontImageOrUrl === 'string' ? await UIUtils.loadImage(frontImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(frontImageOrUrl));
+    const backImg = typeof backImageOrUrl === 'string' ? await UIUtils.loadImage(backImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(backImageOrUrl));
 
-    if (typeof frontImgOrUrl === 'string') {
-      frontImg = await UIUtils.loadImage(frontImgOrUrl);
-    } else {
-      const u = await UIUtils.readFileAsDataURL(frontImgOrUrl);
-      frontImg = await UIUtils.loadImage(u);
-    }
-
-    if (backImgOrUrl) {
-      if (typeof backImgOrUrl === 'string') {
-        backImg = await UIUtils.loadImage(backImgOrUrl);
-      } else {
-        const u = await UIUtils.readFileAsDataURL(backImgOrUrl);
-        backImg = await UIUtils.loadImage(u);
-      }
-    }
-
-    // A4 Standard @ 300 DPI
-    const a4Canvas = document.createElement('canvas');
-    a4Canvas.width = 2480;
-    a4Canvas.height = 3508;
-    const ctx = a4Canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    canvas.width = 2480;
+    canvas.height = 3508;
+    const ctx = canvas.getContext('2d');
 
     // Clean white A4 page
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, a4Canvas.width, a4Canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Header Title
+    // Official Header Banner
     ctx.fillStyle = '#0F172A';
-    ctx.font = 'bold 36px sans-serif';
+    ctx.font = '900 32px "Outfit", Arial, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(documentTitle, a4Canvas.width / 2, 220);
+    ctx.fillText(docTitle.toUpperCase(), canvas.width / 2, 220);
 
     ctx.fillStyle = '#64748B';
-    ctx.font = '22px sans-serif';
-    ctx.fillText(`Scale: 100% (Actual Physical Size 85.6mm × 54mm) • Generated on ${new Date().toLocaleDateString()} via localdoc.org`, a4Canvas.width / 2, 270);
+    ctx.font = '600 18px "Outfit", Arial, sans-serif';
+    ctx.fillText('OFFICIAL 100% SCALE PHOTOCOPY DOCUMENT • GENERATED LOCALLY ON DEVICE', canvas.width / 2, 265);
 
-    // Decorative separator line
-    ctx.strokeStyle = '#0284C7';
-    ctx.lineWidth = 3;
+    // Subtle divider
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(300, 310);
-    ctx.lineTo(a4Canvas.width - 300, 310);
+    ctx.lineTo(canvas.width - 300, 310);
     ctx.stroke();
 
-    // Standard card dimensions @ 300 DPI
-    const cardW = 1011; // 85.6mm
-    const cardH = 638;  // 53.98mm
-    const cardX = (a4Canvas.width - cardW) / 2;
+    // Standard ID-1 Card Dimensions (85.6mm x 53.98mm @ 300 DPI = ~1011 x 638 px)
+    const cardTargetW = 1100;
+    const cardTargetH = 690;
+    const centerX = (canvas.width - cardTargetW) / 2;
 
-    // Slot 1: Front Side
-    const frontY = 480;
-    this._drawIDCardSlot(ctx, frontImg, cardX, frontY, cardW, cardH, 'FRONT SIDE / رخ اول', includeCutGuides);
-
-    // Slot 2: Back Side
-    const backY = 1380;
-    if (backImg) {
-      this._drawIDCardSlot(ctx, backImg, cardX, backY, cardW, cardH, 'BACK SIDE / رخ دوم', includeCutGuides);
-    } else {
-      // Placeholder for Back
-      this._drawEmptyIDCardSlot(ctx, cardX, backY, cardW, cardH, 'BACK SIDE (NOT PROVIDED)');
-    }
-
-    // Footer info
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = '20px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('100% Zero-Upload Privacy Guarantee • Processed entirely in Client RAM • localdoc.org', a4Canvas.width / 2, 3400);
-
-    const blob = await new Promise(resolve => a4Canvas.toBlob(resolve, 'image/jpeg', 0.95));
-    return {
-      canvas: a4Canvas,
-      dataUrl: a4Canvas.toDataURL('image/jpeg', 0.95),
-      blob
-    };
-  },
-
-  _drawIDCardSlot(ctx, img, x, y, w, h, label, includeCutGuides) {
-    // Section label
-    ctx.fillStyle = '#334155';
-    ctx.font = 'bold 24px sans-serif';
+    // 1. FRONT CARD SECTION
+    const frontY = 520;
+    ctx.fillStyle = '#0284C7';
+    ctx.font = '800 20px "Outfit", Arial, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(label, x, y - 20);
+    ctx.fillText('1. FRONT SIDE OF IDENTITY CARD', centerX, frontY - 18);
 
-    // Card border / container
-    ctx.save();
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 20);
-    ctx.clip();
-
-    // Fill white
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(x, y, w, h);
-
-    // Draw card image with cover fit
-    const imgAspect = img.naturalWidth / img.naturalHeight;
-    const targetAspect = w / h;
-    let dw, dh, dx, dy;
-
-    if (imgAspect > targetAspect) {
-      dh = h;
-      dw = img.naturalWidth * (h / img.naturalHeight);
-      dx = x + (w - dw) / 2;
-      dy = y;
-    } else {
-      dw = w;
-      dh = img.naturalHeight * (w / img.naturalWidth);
-      dx = x;
-      dy = y + (h - dh) / 2;
-    }
-
-    ctx.drawImage(img, dx, dy, dw, dh);
-    ctx.restore();
-
-    // Outer card border
-    ctx.strokeStyle = '#0284C7';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 20);
-    ctx.stroke();
-
-    if (includeCutGuides) {
-      // Dashed cut guide lines
-      ctx.strokeStyle = '#94A3B8';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([8, 6]);
-      ctx.strokeRect(x - 20, y - 20, w + 40, h + 40);
-      ctx.setLineDash([]); // Reset
-    }
-  },
-
-  _drawEmptyIDCardSlot(ctx, x, y, w, h, placeholderText) {
+    // Draw card border
     ctx.strokeStyle = '#CBD5E1';
     ctx.lineWidth = 2;
-    ctx.setLineDash([10, 8]);
-    ctx.strokeRect(x, y, w, h);
+    ctx.strokeRect(centerX - 1, frontY - 1, cardTargetW + 2, cardTargetH + 2);
+    ctx.drawImage(frontImg, centerX, frontY, cardTargetW, cardTargetH);
+
+    // 2. BACK CARD SECTION
+    const backY = 1580;
+    ctx.fillStyle = '#0284C7';
+    ctx.font = '800 20px "Outfit", Arial, sans-serif';
+    ctx.fillText('2. BACK SIDE OF IDENTITY CARD', centerX, backY - 18);
+
+    ctx.strokeRect(centerX - 1, backY - 1, cardTargetW + 2, cardTargetH + 2);
+    ctx.drawImage(backImg, centerX, backY, cardTargetW, cardTargetH);
+
+    // Verification Box
+    const verifY = 2520;
+    ctx.strokeStyle = '#94A3B8';
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(centerX, verifY, cardTargetW, 420);
     ctx.setLineDash([]);
 
+    ctx.fillStyle = '#64748B';
+    ctx.font = '700 16px "Outfit", Arial, sans-serif';
+    ctx.fillText('SIGNATURE / OFFICIAL STAMP VERIFICATION AREA', centerX + 30, verifY + 45);
+
+    ctx.font = '500 15px "Outfit", Arial, sans-serif';
+    ctx.fillText('Date: ________________________', centerX + 30, verifY + 360);
+    ctx.fillText('Verified By: ________________________', centerX + cardTargetW - 350, verifY + 360);
+
+    // Footer
     ctx.fillStyle = '#94A3B8';
-    ctx.font = '24px sans-serif';
+    ctx.font = '600 15px "Outfit", Arial, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(placeholderText, x + w / 2, y + h / 2);
+    ctx.fillText('localdoc.org — Private Zero-Upload Document Architecture • No Server Logs', canvas.width / 2, canvas.height - 80);
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+    return {
+      canvas,
+      blob,
+      dataUrl: canvas.toDataURL('image/jpeg', 0.95)
+    };
   }
 };
 
