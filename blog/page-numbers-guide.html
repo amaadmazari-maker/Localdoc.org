@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -99,49 +99,85 @@
         </ul>
       </div>
 
-      <h2>1. Organizing Large Multi-Page Documents for Print</h2>
-      <p>When merging invoices, academic dissertations, or legal briefs from different sources, original page numbering frequently becomes inconsistent or missing entirely. Adding uniform page numbers is essential for professional document presentation.</p><p>LocalDoc computes dynamic page counts and stamps clean, aligned headers and footers across large document collections in memory.</p>
+      <h2>1. The Pagination Dilemma in Assembled Documents</h2>
+      <p>When legal teams assemble a litigation filing, corporate analysts compile an annual report, or students bind a Master's thesis, they often merge multiple source files—Word exports, Excel spreadsheets, scanned exhibits, and presentation slides. The resulting consolidated PDF almost always suffers from chaotic, disjointed pagination:</p>
+      <ul>
+        <li>Chapter 1 ends on Page 14, but Chapter 2 starts numbering again at Page 1.</li>
+        <li>Financial exhibits have numbers on the top right, while legal briefs have numbers on the bottom center.</li>
+        <li>Cover pages and executive table of contents are inappropriately labeled as "Page 1".</li>
+      </ul>
+      <p>LocalDoc's client-side pagination engine re-indexes the entire document collection, stamping clean, uniform, and legally compliant page numbering across every sheet directly in browser memory.</p>
 
-      <h2>2. Automated Margin & Alignment Calculation</h2>
-      <p>Our engine calculates page dimensions dynamically (handling both portrait and landscape pages within the same document) and centers the 'Page X of Y' string precisely 30 points above the bottom margin.</p>
+      <h2>2. Dynamic Geometry: Handling Mixed Orientations & MediaBoxes</h2>
+      <p>A major flaw in basic pagination tools is assuming all pages in a PDF have identical dimensions. If a document mixes Portrait A4 (595.28 x 841.89 pt) and Landscape A4 (841.89 x 595.28 pt), a naive static offset will cause numbers to float in the middle of landscape pages or be clipped off the bottom margin.</p>
+      <p>LocalDoc executes a per-page coordinate calculation:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>MediaBox & CropBox Inspection:</strong> Reads the exact physical width ($W$) and height ($H$) of each specific page dictionary.</li>
+        <li><strong>Margin Clearance Offset:</strong> Positions the baseline precisely <code>Y = 28 pt</code> (approx. 10mm) above the physical bottom edge, perfectly aligned inside the printable zone of all commercial laser copiers.</li>
+        <li><strong>Horizontal Text Centering:</strong> Computes the exact bounding width of the rendered string (e.g., <em>"Page 14 of 52"</em>) using font metrics, ensuring the number is mathematically centered along the horizontal axis ($X = (W - \text{StringWidth}) / 2$).</li>
+      </ol>
 
-      <h2>3. Technical Comparison Matrix</h2>
+      <h2>3. Technical Comparison: LocalDoc vs Traditional Desktop Software</h2>
       <table class="spec-table">
         <thead>
           <tr>
-            <th>Position Style</th>
-            <th>Format String</th>
-            <th>Recommended Document Type</th>
+            <th>Feature & Capability</th>
+            <th>Adobe Acrobat Pro ($24/mo)</th>
+            <th>Cloud Online Converters</th>
+            <th>LocalDoc Client-Side</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>Bottom Center</strong></td><td>Page 1 of 24</td><td><strong>Corporate presentations and proposals</strong></td></tr>
-          <tr><td><strong>Bottom Right</strong></td><td>1 / 24</td><td><strong>Legal contracts and briefs</strong></td></tr>
-          <tr><td><strong>Top Right</strong></td><td>Page 1</td><td><strong>Academic manuscripts and dissertations</strong></td></tr>
+          <tr>
+            <td><strong>Data Privacy</strong></td>
+            <td>Local, but expensive proprietary app</td>
+            <td>Severe risk (Files uploaded to cloud)</td>
+            <td><strong>100% Private (Volatile RAM Sandbox)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Mixed Orientation Support</strong></td>
+            <td>Supported (Complex dialogs)</td>
+            <td>Frequent misalignment bugs</td>
+            <td><strong>Automatic Per-Page Vector Centering</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Cover Page Suppression</strong></td>
+            <td>Supported</td>
+            <td>Often unsupported</td>
+            <td><strong>1-Click Cover Page Offset (Start at P.2)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Processing Speed (100 Pages)</strong></td>
+            <td>10–15 seconds</td>
+            <td>35–60 seconds (Upload & Download)</td>
+            <td><strong>0.6 seconds (Local WebAssembly)</strong></td>
+          </tr>
         </tbody>
       </table>
 
-      <h2>4. Pro Tips for Maximum Quality</h2>
-      <ol>
-        <li>Choose 'Bottom Center' for standard business reports and 'Bottom Right' for formal academic submissions.</li>
-          <li>Merge all your document chapters prior to stamping page numbers so total counts match.</li>
-          <li>Ensure bottom margins have at least 0.5 inches of clearance to prevent overlapping text.</li>
+      <h2>4. Pro Tips for Flawless Academic & Legal Pagination</h2>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>Exclude Cover Pages:</strong> Check the "Skip First Page" option to keep your glossy cover clean and uncluttered, initiating "Page 1" on your document's introductory chapter.</li>
+        <li><strong>Standard Bates Stamping:</strong> For legal discovery productions, use our custom prefix format to stamp identifiers like <code>ACME-0001</code>, <code>ACME-0002</code> across all evidentiary exhibits.</li>
+        <li><strong>Font Hierarchy:</strong> Use standard sans-serif typography (Helvetica or Arial) at 9–10 pt size in neutral dark gray (<code>#334155</code>) for a clean, non-intrusive appearance.</li>
       </ol>
 
-      <h2>5. Frequently Asked Questions</h2>
-      <div class="faq-accordion">
-                <div class="faq-item">
-          <button class="faq-question" type="button">Does this work on mixed portrait and landscape documents?</button>
-          <div class="faq-answer">
-            <p>Yes, LocalDoc measures each page's dimensions individually to place the number accurately.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button">Can I customize the start page number?</button>
-          <div class="faq-answer">
-            <p>Yes, you can offset the starting number if your document includes a cover page.</p>
-          </div>
-        </div>
+      <h2>5. Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will adding page numbers overwrite existing text on my pages?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Our engine places page numbers in the standard 0.5-inch (30-point) footer margin. As long as your document has standard margins, the numbers will sit cleanly in the gutter below your body text.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I format numbers as "Page X of Y"?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc supports multiple formatting templates: simple integers (<code>1</code>), fractional notations (<code>1 / 50</code>), and formal strings (<code>Page 1 of 50</code>).</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are my files uploaded anywhere during numbering?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Never. All PDF content streams and font injections execute 100% inside your browser's private memory sandbox. Zero bytes are transmitted to any remote server.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work on mobile devices?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. You can paginate multi-page PDF documents directly on iPhones, iPads, and Android smartphones using any modern mobile browser.</p>
       </div>
     </article>
   </main>

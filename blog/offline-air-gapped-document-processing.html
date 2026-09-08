@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -143,6 +143,47 @@
         </tbody>
       </table>
 
+      <h2>3. The Threat Landscape of Cloud Document Ingestion</h2>
+      <p>Why do compliance frameworks like HIPAA, GDPR, ISO 27001, and SOC 2 view cloud document converters with extreme skepticism? When an employee uploads an unredacted document to a third-party server, the enterprise incurs four immediate threat vectors:</p>
+      <ul>
+        <li><strong>Unauthorized Sub-Processor Exposure:</strong> Most freemium cloud PDF utilities do not host their own servers; they forward payloads through multi-tenant cloud storage buckets or third-party OCR APIs located in jurisdictions outside national regulatory boundaries.</li>
+        <li><strong>Residual Data Retention:</strong> Even when a service promises "files deleted after 1 hour," transient cache layers, crash dump logs, and automated backup snapshots often retain file fragments for months.</li>
+        <li><strong>AI Model Scraping:</strong> Without transparent contractual indemnification, uploaded proprietary documents and intellectual property may be ingested into training corpora for large language models.</li>
+        <li><strong>Man-in-the-Middle (MitM) & DNS Hijacking:</strong> Network transit introduces vulnerability to SSL inspection proxies, compromised Wi-Fi networks, and rogue certificate authorities.</li>
+      </ul>
+
+      <h2>4. Progressive Web App (PWA) Service Worker Mechanics</h2>
+      <p>LocalDoc achieves permanent offline capability using an advanced <strong>Cache-First Service Worker architecture</strong> registered via the <code>sw.js</code> controller script. When you navigate to LocalDoc for the first time:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li>The Service Worker intercepts all network requests for core JavaScript modules, WebAssembly binaries (<code>pdf-lib</code>, <code>tesseract</code>), and CSS stylesheets.</li>
+        <li>Assets are stored inside the browser's persistent <strong>CacheStorage API</strong> partition.</li>
+        <li>Upon subsequent visits, the Service Worker serves assets directly from local storage with a <strong>0ms latency</strong> network bypass.</li>
+        <li>Even if your operating system has no network adapter active, the application loads instantaneously as a native standalone desktop or mobile app.</li>
+      </ol>
+
+      <h2>5. Enterprise Air-Gapped Verification Protocol</h2>
+      <p>If your organization requires formal verification before clearing LocalDoc for internal staff use, your security engineering team can perform this definitive audit:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li>Install LocalDoc as a PWA by clicking <strong>Install LocalDoc</strong> in the address bar or browser menu.</li>
+        <li>Physically isolate the test machine: unplug Ethernet cabling and disable all Wi-Fi and Bluetooth radios.</li>
+        <li>Launch LocalDoc from your desktop or application launcher.</li>
+        <li>Open an enterprise document containing synthetic PII (Personally Identifiable Information) and perform multi-page compression, merging, and cryptographic signing.</li>
+        <li>Verify through local network packet capture tools (such as Wireshark) that <strong>0 network packets</strong> were generated during the entire lifecycle.</li>
+      </ol>
+
+      <h2>6. Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will LocalDoc continue to work if I restart my computer while offline?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Once the PWA is installed or cached, the browser stores the compiled assets in permanent disk cache. You can shut down, restart, and launch LocalDoc in the middle of a flight without internet access.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Do offline tools have file size limits?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">The only limit is your device's available physical RAM. On modern laptops with 8GB or 16GB of RAM, LocalDoc can effortlessly process PDFs containing hundreds of pages and hundreds of megabytes without stuttering.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">How are updates delivered if I use the tool offline?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Whenever your device reconnects to the internet, the Service Worker silently checks for updated script revisions in the background, updates the local cache, and activates new features seamlessly on your next launch.</p>
+      </div>
       <div class="cta-banner">
         <div>
           <h3 style="color:var(--text-primary); font-size:1.3rem; margin-bottom:4px;">Install LocalDoc PWA Today</h3>

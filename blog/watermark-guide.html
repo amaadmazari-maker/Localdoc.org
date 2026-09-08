@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -99,49 +99,73 @@
         </ul>
       </div>
 
-      <h2>1. Protecting Confidential Business Intelligence</h2>
-      <p>When distributing internal pitch decks, confidential employee contracts, or financial audit reports, stamping a prominent 'CONFIDENTIAL' or 'INTERNAL DRAFT' watermark deters unauthorized forwarding and screenshots.</p><p>LocalDoc stamps custom semi-transparent vector watermarks directly onto PDF page streams inside browser memory.</p>
+      <h2>1. The Strategic Role of Dynamic Document Watermarks</h2>
+      <p>Whether preparing a venture capital pitch deck, distributing draft M&A purchase agreements, or emailing sensitive medical reports, unwatermarked PDF documents pose serious information leakage risks. A recipient can easily take a screenshot or forward the document to competitors with zero attribution.</p>
+      <p>Stamping a persistent, semi-transparent diagonal watermark achieves two vital operational objectives:</p>
+      <ul>
+        <li><strong>Psychological Deterrence:</strong> Prominent diagonal markings like <em>"CONFIDENTIAL — PROPERTY OF ACME CORP"</em> immediately dissuade recipients from unauthorized external sharing.</li>
+        <li><strong>Forensic Tracking:</strong> Dynamic watermarks that embed the recipient's name or email address ensure that any photographed leak can be traced back to the source.</li>
+      </ul>
 
-      <h2>2. Custom Angle, Opacity & Layering</h2>
-      <p>Our watermarking engine places rotated text streams at a standardized 45-degree angle with 30-40% alpha opacity. The watermark remains clearly legible while allowing readers to easily view underlying text and data tables.</p>
+      <h2>2. The PDF Graphics State: ExtGState & Alpha Compositing</h2>
+      <p>In legacy software, adding a watermark often involved flattening the entire PDF into a low-resolution raster image, destroying text searchability. LocalDoc uses modern vector PDF stream injection running in client-side WebAssembly.</p>
+      <p>Our engine modifies the page's <code>/Resources</code> dictionary by registering an <strong>Extended Graphics State (<code>/ExtGState</code>)</strong> object. This specifies exact alpha compositing values:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><code>/ca 0.30</code>: Sets stroke alpha to 30% transparency.</li>
+        <li><code>/CA 0.30</code>: Sets non-stroke fill alpha to 30% transparency.</li>
+        <li><code>/BM /Normal</code>: Specifies the blend mode to ensure clean mathematical compositing over underlying vector text and raster imagery.</li>
+        <li><strong>Matrix Trigonometry:</strong> Calculates exact rotational angle matrices (<code>[cos θ, sin θ, -sin θ, cos θ, Tx, Ty]</code>) to center text across diverse page dimensions (A4, US Letter, Legal).</li>
+      </ol>
 
-      <h2>3. Technical Comparison Matrix</h2>
+      <h2>3. Layering Architecture: Foreground Overlay vs Background Underlay</h2>
       <table class="spec-table">
         <thead>
           <tr>
-            <th>Watermark Type</th>
-            <th>Standard Text</th>
-            <th>Security Use Case</th>
+            <th>Layering Strategy</th>
+            <th>How It Operates</th>
+            <th>Best Suited For</th>
+            <th>Known Limitations</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td><strong>Confidentiality Stamp</strong></td><td>CONFIDENTIAL / STRICTLY PRIVATE</td><td><strong>Corporate audit and acquisition dossiers</strong></td></tr>
-          <tr><td><strong>Draft Marker</strong></td><td>DRAFT - FOR REVIEW ONLY</td><td><strong>Legal contract negotiations</strong></td></tr>
-          <tr><td><strong>Sample Stamp</strong></td><td>SAMPLE COPY</td><td><strong>Portfolio previews and client quotes</strong></td></tr>
+          <tr>
+            <td><strong>Foreground Overlay (Recommended)</strong></td>
+            <td>Injected at the end of the page content stream with 30% alpha</td>
+            <td><strong>All documents, contracts, and scanned PDFs</strong></td>
+            <td>None; text underneath remains fully readable</td>
+          </tr>
+          <tr>
+            <td><strong>Background Underlay</strong></td>
+            <td>Injected at the beginning of the page content stream</td>
+            <td>Digital vector PDFs with transparent backgrounds</td>
+            <td>Hidden behind opaque scanned images or white paper fills</td>
+          </tr>
         </tbody>
       </table>
 
-      <h2>4. Pro Tips for Maximum Quality</h2>
-      <ol>
-        <li>Use uppercase text strings like 'CONFIDENTIAL', 'DO NOT DISTRIBUTE', or 'SAMPLE'.</li>
-          <li>Keep opacity between 0.25 and 0.40 to prevent obscuring important small-print clauses.</li>
-          <li>Stamp page numbers and watermarks in a single session before client distribution.</li>
+      <h2>4. Pro Tips for High-Security Document Stamping</h2>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>Optimal Font Size & Rotation:</strong> A 45-degree diagonal angle running from bottom-left to top-right offers maximum screen coverage while avoiding obstruction of paragraph margins.</li>
+        <li><strong>Color Selection:</strong> Medium neutral gray (<code>#64748B</code>) or muted crimson provides high visual authority without triggering eye fatigue during prolonged reading.</li>
+        <li><strong>Chain Operations in Browser RAM:</strong> Before sending out a contract, use LocalDoc to add watermarks, insert page numbers, and compress the file—all in consecutive client-side steps without server latency.</li>
       </ol>
 
-      <h2>5. Frequently Asked Questions</h2>
-      <div class="faq-accordion">
-                <div class="faq-item">
-          <button class="faq-question" type="button">Can a watermark be easily removed by the recipient?</button>
-          <div class="faq-answer">
-            <p>The watermark is embedded directly into the PDF content stream, making casual removal difficult without specialized vector editors.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" type="button">Will the watermark apply to all pages?</button>
-          <div class="faq-answer">
-            <p>Yes, LocalDoc stamps the watermark uniformly across every page in the document.</p>
-          </div>
-        </div>
+      <h2>5. Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does adding a watermark increase the PDF file size?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Barely. Because LocalDoc uses pure vector text streams rather than bitmap images, each watermarked page adds only a few dozen bytes of raw text instructions. A 50-page document will grow by less than 5 KB.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can someone delete the watermark using standard tools?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Because the watermark is compiled directly into the PDF content stream, standard viewers (Chrome, Safari, Acrobat Reader) cannot remove it. Casual recipients cannot select or delete it without advanced desktop vector editing software.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does the tool upload my confidential documents to any server?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Zero bytes are uploaded. All stream injection and font calculations happen in your local browser tab memory. Your confidential contracts remain strictly on your machine.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I apply different watermarks to odd and even pages?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc allows you to customize the watermark text globally or target specific page ranges within your document.</p>
       </div>
     </article>
   </main>

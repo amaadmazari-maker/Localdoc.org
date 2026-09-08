@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -112,9 +112,73 @@
         <li><strong>HTML5 2D/WebGL Canvas:</strong> Hardware-accelerated GPU rendering for instant signature drawing, image rotation, and watermarking.</li>
       </ol>
 
-      <h2>2. Memory Allocation & Tab Destruction</h2>
-      <p>When a file is loaded into LocalDoc, the browser's JavaScript V8/SpiderMonkey engine allocates a scoped TypedArray buffer. Once the user downloads the output or closes the browser tab, the garbage collector immediately purges the allocation.</p>
+      <h2>2. Volatile Memory Allocation & Automatic Tab Destruction</h2>
+      <p>When you drop a file into LocalDoc, your browser's V8 or SpiderMonkey engine allocates a scoped TypedArray buffer in physical RAM. Unlike cloud upload tools that persist files to server SSDs or databases, LocalDoc operates purely in volatile memory. As soon as you save your converted file or close the browser tab, the browser's native garbage collector immediately unlinks the memory pointers and completely purges all document remnants from RAM.</p>
 
+      <h2>3. The Mechanics of In-Browser PDF Stream Parsing</h2>
+      <p>A PDF is not merely an image or a text file; it is an object-oriented hierarchical graph of binary dictionary streams, font descriptors, and cross-reference tables (XREF). Traditional software required native desktop C/C++ runtimes to unpack this structure.</p>
+      <p>LocalDoc compiles robust low-level parser engines directly into WebAssembly modules. When a document is dropped into the application, the engine executes four core internal transformations:</p>
+      <ul>
+        <li><strong>XREF Table Reconstruction:</strong> Scans the byte offsets of the trailer dictionary to build an in-memory index of every text block, vector drawing path, and embedded JPEG/PNG image stream.</li>
+        <li><strong>FlateDecode Deflation:</strong> Compressed streams are decompressed in volatile RAM using high-speed zlib WebAssembly routines, eliminating disk I/O bottlenecks entirely.</li>
+        <li><strong>Content Stream Tokenization:</strong> PDF graphic state operators (such as <code>BT</code> for Begin Text, <code>Tf</code> for Font Selection, and <code>cm</code> for Transformation Matrices) are tokenized into a structured memory graph.</li>
+        <li><strong>Deterministic Garbage Collection:</strong> As soon as the user exports or transforms the document, memory pointers are unreferenced, allowing the browser's native engine to reclaim 100% of the allocated heap space.</li>
+      </ul>
+
+      <h2>4. WebAssembly Linear Memory & Process Sandboxing</h2>
+      <p>Security is inherent to WebAssembly's sandboxed design. Unlike native desktop executables (.exe or .pkg) that have full read and write access to your local hard drive, WebAssembly runs inside a tightly constrained <strong>Linear Memory Sandbox</strong>:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li>The Wasm module can only read and write within its designated contiguous memory array buffer.</li>
+        <li>It has <strong>zero access</strong> to your operating system's file system, registry, or peripheral devices.</li>
+        <li>It has <strong>no network capabilities</strong> of its own—any HTTP request would require explicit JavaScript fetch calls, which LocalDoc's codebase does not make during tool operations.</li>
+      </ol>
+
+      <h2>5. Architecture Comparison: Client-Side vs Legacy Cloud</h2>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Security & Operational Vector</th>
+            <th>Legacy Cloud Server Models</th>
+            <th>LocalDoc Client-Side Wasm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Data Custody</strong></td>
+            <td>Transferred to remote cloud provider</td>
+            <td><strong>Retained 100% on user's device</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Network Attack Surface</strong></td>
+            <td>Vulnerable to MITM, interception & breach</td>
+            <td><strong>Zero outbound attack surface</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Regulatory Scope</strong></td>
+            <td>Requires complex DPA / Subprocessor agreements</td>
+            <td><strong>Exempt (No data processing off-device)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Availability & Uptime</strong></td>
+            <td>Subject to server outages & queue delays</td>
+            <td><strong>100% Available (Operates offline)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>6. Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">How can I be certain no data leaves my browser?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">You can independently inspect network traffic using Chrome/Firefox DevTools (F12 > Network tab) or by enabling Airplane Mode. LocalDoc continues to function completely without an internet connection.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this technology work on mobile phones and tablets?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. All modern mobile browsers—including Safari on iOS and Chrome on Android—support WebAssembly, Web Workers, and HTML5 Canvas with native hardware acceleration.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Why didn't websites work this way ten years ago?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Ten years ago, web browsers lacked WebAssembly and multi-threaded Web Workers. Processing large documents in pure JavaScript was too slow and would freeze the user interface. Recent advancements in browser runtimes made client-side document processing possible.</p>
+      </div>
       <div class="cta-banner">
         <div>
           <h3 style="color:var(--text-primary); font-size:1.3rem; margin-bottom:4px;">Experience In-Browser Speed</h3>
