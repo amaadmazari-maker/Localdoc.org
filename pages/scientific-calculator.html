@@ -7,13 +7,12 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Casio fx-5800P / fx-3650P II Programmable Scientific Calculator Online | LocalDoc</title>
-  <meta name="description" content="Authentic Casio fx-5800P & fx-3650P II Super-FX Plus Programmable Scientific & Programmer Calculator online. Write, save and run custom programs (P1-P4), Base-N (HEX/DEC/BIN/OCT), calculus (d/dx, ∫dx), fractions (a b/c), and formulas. 100% private offline RAM execution.">
+  <meta name="description" content="Authentic Casio fx-5800P & fx-3650P II Super-FX Plus Programmable Scientific Calculator online. Run programs directly on the 4-line LCD screen, edit programs (P1-P4), Base-N (HEX/DEC/BIN/OCT), calculus (d/dx, ∫dx), fractions (a b/c), and formulas. 100% private offline RAM execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scientific-calculator.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#1E293B">
@@ -21,21 +20,21 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Casio fx-5800P Programmable Scientific Calculator Online | LocalDoc">
-  <meta property="og:description" content="Casio fx-5800P & fx-3650P II style programmable scientific calculator with program editor (P1-P4), Base-N HEX/BIN/OCT, d/dx calculus, fractions, and memory variables.">
-  <meta property="og:url" content="https://localdoc.org/pages/scientific-calculator.html">
-  <meta property="og:image" content="../assets/icons/calculator.svg">
-
+  <meta property="og:description" content="Casio fx-5800P & fx-3650P II style programmable scientific calculator with native 4-line LCD program runner, Base-N HEX/BIN/OCT, d/dx calculus, fractions, and memory variables.">
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@400;600;700;800;900&display=swap');
+
     body {
-      background: #0B0F19;
+      background: #090D16;
       color: #F8FAFC;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .calc-app-wrap {
@@ -44,447 +43,420 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px 12px 36px;
+      padding: 14px 10px 32px;
     }
 
-    /* Handheld Casio fx-5800P / fx-3650P Chassis */
+    /* Handheld Casio fx-5800P / fx-3650P II Chassis */
     .fx-calculator {
       width: 100%;
-      max-width: 450px;
-      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-      border-radius: 34px 34px 28px 28px;
-      padding: 20px 16px 22px;
+      max-width: 440px;
+      background: linear-gradient(180deg, #242938 0%, #151922 40%, #0D1017 100%);
+      border-radius: 36px 36px 30px 30px;
+      padding: 16px 14px 20px;
       box-shadow: 
-        0 24px 60px rgba(0, 0, 0, 0.75),
-        inset 0 1px 1px rgba(255, 255, 255, 0.2),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+        0 26px 70px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        inset 0 2px 3px rgba(255, 255, 255, 0.25),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.6);
       border: 2px solid #334155;
       position: relative;
       user-select: none;
     }
 
-    /* Top Badging & Solar Cell */
-    .fx-top-header {
+    /* Silver Metallic Header Plate (fx-5800P signature design) */
+    .fx-silver-plate {
+      background: linear-gradient(180deg, #CBD5E1 0%, #94A3B8 60%, #64748B 100%);
+      border-radius: 20px 20px 8px 8px;
+      padding: 10px 14px 12px;
+      margin-bottom: 12px;
+      box-shadow: 
+        inset 0 1px 2px rgba(255,255,255,0.8),
+        inset 0 -2px 4px rgba(0,0,0,0.4),
+        0 3px 6px rgba(0,0,0,0.3);
+      border: 1px solid #475569;
+    }
+
+    .fx-plate-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .fx-casio-logo {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #0F172A;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .fx-model-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-style: italic;
+      color: #0F172A;
+      letter-spacing: 0.5px;
+    }
+
+    .fx-plate-sub {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 2.2px;
+      color: #0F766E;
+      font-style: italic;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Authentic 4-Line Dot-Matrix LCD Screen */
+    .fx-lcd-bezel {
+      background: #050811;
+      border-radius: 8px;
+      padding: 6px;
+      border: 2px solid #1E293B;
+      box-shadow: inset 0 3px 8px rgba(0,0,0,0.95);
+    }
+
+    .fx-lcd-screen {
+      background: #C4D9B6; /* Authentic Casio Gray-Green Dot-Matrix LCD */
+      border-radius: 4px;
+      padding: 6px 10px;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+      border: 1px solid #9BB88B;
+      min-height: 124px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      color: #121F0E;
+      position: relative;
+    }
+
+    /* Status Indicator Flags across top of screen */
+    .fx-lcd-flags {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.64rem;
+      font-weight: 800;
+      line-height: 1;
+      border-bottom: 1px solid rgba(18, 31, 14, 0.2);
+      padding-bottom: 3px;
+      margin-bottom: 2px;
+    }
+
+    .fx-flag {
+      opacity: 0.15;
+      letter-spacing: 0.5px;
+    }
+    .fx-flag.active {
+      opacity: 1;
+      color: #0A1407;
+      font-weight: 900;
+    }
+
+    /* 4-Line Matrix Content Area */
+    .fx-lcd-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      justify-content: space-around;
+      font-size: 0.96rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .fx-line {
+      min-height: 20px;
+      white-space: pre;
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    .fx-line-left { text-align: left; }
+    .fx-line-right { text-align: right; margin-left: auto; }
+    .fx-line-center { text-align: center; width: 100%; }
+
+    /* Blinking LCD Cursor */
+    .fx-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: #121F0E;
+      vertical-align: middle;
+      animation: fxBlink 0.9s infinite;
+      margin-left: 2px;
+    }
+    @keyframes fxBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    /* Blinking Output Pause Indicator (◢) */
+    .fx-disp-arrow {
+      display: inline-block;
+      font-weight: 900;
+      color: #0A1407;
+      animation: fxBlink 0.7s infinite;
+    }
+
+    /* Control Rows (MODE, FUNCTION, REPLAY D-PAD) */
+    .fx-top-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 12px;
       padding: 0 4px;
     }
-    .fx-brand-title {
-      font-size: 1.05rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      color: #E2E8F0;
-      text-transform: uppercase;
+
+    .fx-round-btn-group {
       display: flex;
       flex-direction: column;
-    }
-    .fx-brand-subtitle {
-      font-size: 0.65rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #14B8A6;
-      margin-top: 1px;
-    }
-
-    .fx-solar-panel {
-      width: 82px;
-      height: 22px;
-      background: linear-gradient(90deg, #38271D 0%, #451A03 50%, #38271D 100%);
-      border: 1.5px solid #1E293B;
-      border-radius: 3px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      padding: 1px;
-    }
-    .fx-solar-cell {
-      background: rgba(217, 119, 6, 0.15);
-      border-right: 1px solid rgba(0,0,0,0.4);
-    }
-
-    /* Authentic Casio Dot-Matrix LCD Screen */
-    .fx-screen-bezel {
-      background: #020617;
-      border-radius: 12px;
-      padding: 8px;
-      border: 2px solid #1E293B;
-      box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
-      margin-bottom: 12px;
-    }
-    .fx-lcd-screen {
-      background: #C2D7B4; /* Authentic Gray-Green Casio LCD */
-      border-radius: 6px;
-      padding: 6px 10px;
-      min-height: 84px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-      position: relative;
-      overflow: hidden;
-      font-family: 'Consolas', 'Courier New', monospace;
-    }
-
-    /* LCD Status Badges Header */
-    .fx-lcd-indicators {
-      display: flex;
       gap: 6px;
-      font-size: 0.64rem;
+    }
+
+    .fx-round-btn {
+      width: 44px;
+      height: 30px;
+      border-radius: 15px;
+      background: linear-gradient(180deg, #334155 0%, #1E293B 100%);
+      border: 1px solid #475569;
+      color: #E2E8F0;
+      font-size: 0.68rem;
       font-weight: 800;
-      color: #2F3E28;
-      height: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .fx-lcd-indicator {
-      opacity: 0.18;
-      transition: opacity 0.1s ease;
-    }
-    .fx-lcd-indicator.active {
-      opacity: 1;
-    }
-
-    /* LCD Expressions & Result Lines */
-    .fx-lcd-expr {
-      font-size: 1.08rem;
-      font-weight: 700;
-      color: #1A2416;
-      text-align: left;
-      overflow-x: auto;
-      white-space: nowrap;
-      min-height: 22px;
-      line-height: 1.2;
-    }
-    .fx-lcd-result {
-      font-size: 1.75rem;
-      font-weight: 900;
-      color: #111810;
-      text-align: right;
-      overflow-x: auto;
-      white-space: nowrap;
-      line-height: 1.1;
-      letter-spacing: -0.5px;
-    }
-
-    /* Mode Navigation Tabs (COMP, BASE-N, PRGM, SOLVE) */
-    .fx-mode-strip {
+      cursor: pointer;
       display: flex;
-      gap: 4px;
-      background: #0B1120;
-      padding: 3px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #1E293B;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
+      transition: transform 0.05s, background 0.1s;
     }
-    .fx-mode-pill {
-      flex: 1;
+    .fx-round-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+
+    /* Replay Oval 4-Way D-Pad */
+    .fx-replay-pad {
+      width: 120px;
+      height: 68px;
+      background: linear-gradient(180deg, #334155 0%, #1E293B 100%);
+      border: 2px solid #475569;
+      border-radius: 34px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fx-replay-center-text {
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      color: #94A3B8;
+      pointer-events: none;
+    }
+    .fx-pad-btn {
+      position: absolute;
       background: none;
       border: none;
-      color: #94A3B8;
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 5px 0;
-      border-radius: 6px;
+      color: #CBD5E1;
+      font-size: 0.82rem;
       cursor: pointer;
-      text-align: center;
-      transition: all 0.12s ease;
-    }
-    .fx-mode-pill.active {
-      background: #0284C7;
-      color: #FFFFFF;
-      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
-    }
-    .fx-mode-pill:hover:not(.active) {
-      color: #E2E8F0;
-      background: rgba(255,255,255,0.05);
-    }
-
-    /* Top Control Row: Shift, Alpha, Replay D-Pad, Mode, On */
-    .fx-top-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.6fr 1fr 1fr;
+      display: flex;
       align-items: center;
+      justify-content: center;
+      padding: 6px;
+      transition: color 0.1s, transform 0.05s;
+    }
+    .fx-pad-btn:hover { color: #38BDF8; }
+    .fx-pad-btn:active { transform: scale(0.9); }
+    .fx-pad-up { top: 2px; left: 50%; transform: translateX(-50%); }
+    .fx-pad-down { bottom: 2px; left: 50%; transform: translateX(-50%); }
+    .fx-pad-left { left: 4px; top: 50%; transform: translateY(-50%); }
+    .fx-pad-right { right: 4px; top: 50%; transform: translateY(-50%); }
+
+    /* Upper Function Row (SHIFT, ALPHA, EXIT, FMLA, CALC, SOLVE) */
+    .fx-upper-fn-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
       gap: 6px;
       margin-bottom: 10px;
     }
 
-    .fx-ctrl-btn {
+    /* Key Wrappers with Yellow (Shift) and Red (Alpha) Labels */
+    .fx-key-col {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      background: #334155;
-      border: 1px solid #475569;
-      border-radius: 9999px;
-      height: 32px;
-      font-size: 0.72rem;
+      position: relative;
+    }
+
+    .fx-labels-top {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 2px;
+      font-size: 0.62rem;
       font-weight: 800;
-      color: #F1F5F9;
+      line-height: 1;
+      margin-bottom: 2px;
+      min-height: 12px;
+    }
+    .fx-lbl-shift { color: #F59E0B; text-align: left; }
+    .fx-lbl-alpha { color: #F43F5E; text-align: right; margin-left: auto; }
+    .fx-lbl-base { color: #38BDF8; font-weight: 800; }
+
+    /* Key Buttons Styles */
+    .fx-btn {
+      width: 100%;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #334155 0%, #1E293B 100%);
+      border: 1px solid #475569;
+      color: #F8FAFC;
+      font-size: 0.85rem;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 3px 0 #1E293B, 0 4px 6px rgba(0,0,0,0.3);
-      transition: all 0.08s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.18);
+      transition: transform 0.05s, background 0.1s, box-shadow 0.1s;
     }
-    .fx-ctrl-btn:active, .fx-ctrl-btn.active {
+    .fx-btn:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 #1E293B;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
     }
+
+    /* Color Specializations */
     .fx-btn-shift {
-      background: #475569;
-      color: #F59E0B;
+      background: linear-gradient(180deg, #B45309 0%, #78350F 100%);
       border-color: #D97706;
+      color: #FEF3C7;
     }
     .fx-btn-shift.active {
-      background: #D97706;
-      color: #FFF;
+      background: #F59E0B;
+      color: #000;
+      box-shadow: 0 0 10px #F59E0B;
     }
+
     .fx-btn-alpha {
-      background: #475569;
-      color: #F43F5E;
+      background: linear-gradient(180deg, #BE123C 0%, #881337 100%);
       border-color: #E11D48;
+      color: #FFE4E6;
     }
     .fx-btn-alpha.active {
-      background: #E11D48;
-      color: #FFF;
+      background: #F43F5E;
+      color: #000;
+      box-shadow: 0 0 10px #F43F5E;
     }
 
-    /* D-Pad */
-    .fx-dpad-center {
-      position: relative;
-      width: 72px;
-      height: 44px;
-      margin: 0 auto;
-      background: #1E293B;
-      border: 2px solid #475569;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 0 #0F172A;
-      cursor: pointer;
-    }
-    .fx-dpad-label {
-      font-size: 0.58rem;
-      font-weight: 800;
-      color: #64748B;
-    }
-    .fx-dpad-arrow {
-      position: absolute;
-      font-size: 0.6rem;
-      color: #94A3B8;
-    }
-    .fx-arrow-up { top: 2px; }
-    .fx-arrow-down { bottom: 2px; }
-    .fx-arrow-left { left: 4px; }
-    .fx-arrow-right { right: 4px; }
-
-    /* Function Keypad Grid */
-    .fx-fn-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
-      margin-bottom: 8px;
-    }
-    .fx-key-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .fx-key-subtext {
-      font-size: 0.54rem;
-      font-weight: 700;
-      color: #F59E0B;
-      height: 10px;
-      line-height: 10px;
-      margin-bottom: 1px;
-      white-space: nowrap;
-    }
-    .fx-fn-btn {
-      width: 100%;
-      height: 30px;
-      background: #1E293B;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      color: #F8FAFC;
-      font-size: 0.78rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #090D16, 0 4px 6px rgba(0,0,0,0.3);
-      transition: all 0.08s ease;
-    }
-    .fx-fn-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #090D16;
-    }
-
-    /* Main Number Pad Grid */
-    .fx-num-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
-    }
-    .fx-num-btn {
-      height: 40px;
-      background: #E2E8F0;
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      color: #0F172A;
-      font-size: 1.2rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 0 #94A3B8, 0 5px 8px rgba(0,0,0,0.4);
-      transition: all 0.08s ease;
-    }
-    .fx-num-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 #94A3B8;
+    .fx-btn-exit {
+      background: linear-gradient(180deg, #475569 0%, #334155 100%);
+      color: #E2E8F0;
     }
 
     .fx-btn-del {
-      background: #D97706;
-      color: #FFFFFF;
-      border-color: #B45309;
-      box-shadow: 0 4px 0 #78350F;
-      font-size: 0.9rem;
+      background: linear-gradient(180deg, #DC2626 0%, #991B1B 100%);
+      border-color: #EF4444;
+      color: #FFF;
+      font-weight: 900;
     }
-    .fx-btn-del:active { box-shadow: 0 1px 0 #78350F; }
 
     .fx-btn-ac {
-      background: #DC2626;
-      color: #FFFFFF;
-      border-color: #B91C1C;
-      box-shadow: 0 4px 0 #7F1D1D;
-      font-size: 0.9rem;
+      background: linear-gradient(180deg, #EA580C 0%, #9A3412 100%);
+      border-color: #F97316;
+      color: #FFF;
+      font-weight: 900;
     }
-    .fx-btn-ac:active { box-shadow: 0 1px 0 #7F1D1D; }
 
-    .fx-btn-op {
-      background: #334155;
+    .fx-btn-exe {
+      background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+      border-color: #3B82F6;
+      color: #FFF;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+    }
+
+    .fx-btn-num {
+      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+      border-color: #334155;
+      font-size: 1.05rem;
+      font-weight: 700;
       color: #F8FAFC;
-      border-color: #475569;
-      box-shadow: 0 4px 0 #1E293B;
-      font-size: 1.2rem;
     }
-    .fx-btn-op:active { box-shadow: 0 1px 0 #1E293B; }
 
-    .fx-btn-equals {
-      background: #0284C7;
-      color: #FFFFFF;
-      border-color: #0369A1;
-      box-shadow: 0 4px 0 #075985;
-      font-size: 1.3rem;
-    }
-    .fx-btn-equals:active { box-shadow: 0 1px 0 #075985; }
-
-    /* Programmer Base-N Mode Sub-bar */
-    .fx-basen-panel {
-      display: none;
-      background: #0B1120;
-      border: 1px solid #1E293B;
-      border-radius: 8px;
-      padding: 8px 10px;
+    /* 6-Column Function Keypad Grids */
+    .fx-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
       margin-bottom: 8px;
     }
-    .fx-basen-row {
+
+    /* 5-Column Numeric Keypad Grid */
+    .fx-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    /* Bottom Quick Action Strip */
+    .fx-quick-strip {
       display: flex;
       justify-content: space-between;
-      font-size: 0.74rem;
-      font-family: monospace;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #1E293B;
+      font-size: 0.76rem;
       color: #94A3B8;
-      padding: 2px 0;
-      cursor: pointer;
-    }
-    .fx-basen-row.active {
-      color: #38BDF8;
-      font-weight: 800;
     }
 
-    /* Program Manager Modal (PRGM) */
-    .fx-modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .fx-modal-card {
-      background: #0F172A;
-      border: 1.5px solid #334155;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 500px;
-      padding: 20px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-      color: #FFF;
-      display: flex;
-      flex-direction: column;
-      max-height: 85vh;
-    }
-    .fx-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #1E293B;
-      padding-bottom: 10px;
-      margin-bottom: 14px;
-    }
-    .fx-modal-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Tape History Drawer */
-    .fx-tape-drawer {
+    /* Calculation Tape Drawer */
+    .fx-tape-card {
       margin-top: 16px;
       width: 100%;
-      max-width: 450px;
+      max-width: 440px;
       background: #0F172A;
       border: 1px solid #334155;
       border-radius: 16px;
-      padding: 14px 18px;
+      padding: 12px 16px;
     }
-    .fx-tape-header {
+    .fx-tape-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #1E293B;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       margin-bottom: 8px;
       font-size: 0.82rem;
       font-weight: 700;
       color: #94A3B8;
     }
     .fx-tape-list {
-      max-height: 120px;
+      max-height: 110px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .fx-tape-item {
       background: #1E293B;
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 5px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: monospace;
-      font-size: 0.86rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
       cursor: pointer;
     }
     .fx-tape-item:hover { background: #334155; }
@@ -500,14 +472,15 @@
           <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
           <span class="brand-name">LocalDoc</span>
         </a>
-        <span class="header-tag">100% Offline Math</span>
+        <span class="header-tag">100% Offline RAM Math</span>
       </div>
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">All Tools</a>
         <a href="scan.html" class="nav-link">CamScanner</a>
         <a href="document-reader.html" class="nav-link">Document Reader</a>
-        <a href="scientific-calculator.html" class="nav-link active">Scientific Calculator</a>
+        <a href="photo-resizer.html" class="nav-link">Photo Resizer</a>
+        <a href="scientific-calculator.html" class="nav-link active">fx-5800P Calculator</a>
         <a href="../about.html" class="nav-link">About</a>
       </nav>
 
@@ -522,191 +495,283 @@
 
   <main class="calc-app-wrap">
     
-    <!-- Realistic Casio fx-5800P / fx-3650P II Super-FX Plus Calculator -->
-    <div class="fx-calculator">
+    <!-- Authentic Casio fx-5800P Super-FX Plus Handheld Calculator -->
+    <div class="fx-calculator" id="fx-calc-chassis">
       
-      <!-- Top Brand Header & Solar Cell -->
-      <div class="fx-top-header">
-        <div class="fx-brand-title">
-          <span>LocalDoc</span>
-          <span class="fx-brand-subtitle">fx-5800P • PROGRAMMABLE SUPER-FX</span>
+      <!-- Signature Metallic Silver Bezel Header Plate -->
+      <div class="fx-silver-plate">
+        <div class="fx-plate-top">
+          <span class="fx-casio-logo">CASIO</span>
+          <span class="fx-model-name">fx-5800P</span>
         </div>
-        <div class="fx-solar-panel" title="Solar Power Cell">
-          <div class="fx-solar-cell"></div>
-          <div class="fx-solar-cell"></div>
-          <div class="fx-solar-cell"></div>
-          <div class="fx-solar-cell"></div>
-        </div>
-      </div>
+        <div class="fx-plate-sub">SUPER-FX PLUS</div>
 
-      <!-- Mode Selector Tabs: COMP, BASE-N, PRGM, SOLVE -->
-      <div class="fx-mode-strip">
-        <button type="button" class="fx-mode-pill active" data-calc-mode="comp" onclick="switchCalcMode('comp')">1: COMP</button>
-        <button type="button" class="fx-mode-pill" data-calc-mode="basen" onclick="switchCalcMode('basen')">2: BASE-N</button>
-        <button type="button" class="fx-mode-pill" data-calc-mode="prgm" onclick="openProgramModal()">3: PRGM</button>
-        <button type="button" class="fx-mode-pill" data-calc-mode="solve" onclick="switchCalcMode('solve')">4: SOLVE</button>
-      </div>
+        <!-- Authentic 4-Line Dot-Matrix LCD Screen -->
+        <div class="fx-lcd-bezel">
+          <div class="fx-lcd-screen" id="fx-screen">
+            
+            <!-- Top Status Indicator Row -->
+            <div class="fx-lcd-flags">
+              <span class="fx-flag" id="flg-shift">S</span>
+              <span class="fx-flag" id="flg-alpha">A</span>
+              <span class="fx-flag" id="flg-m">M</span>
+              <span class="fx-flag" id="flg-prgm">PRGM</span>
+              <span class="fx-flag active" id="flg-deg">D</span>
+              <span class="fx-flag" id="flg-rad">R</span>
+              <span class="fx-flag" id="flg-gra">G</span>
+              <span class="fx-flag" id="flg-base">DEC</span>
+              <span class="fx-flag active" id="flg-math">Math</span>
+            </div>
 
-      <!-- Natural LCD Dot-Matrix Screen -->
-      <div class="fx-screen-bezel">
-        <div class="fx-lcd-screen">
-          <div class="fx-lcd-indicators">
-            <span class="fx-lcd-indicator" id="ind-shift">S</span>
-            <span class="fx-lcd-indicator" id="ind-alpha">A</span>
-            <span class="fx-lcd-indicator" id="ind-m">M</span>
-            <span class="fx-lcd-indicator active" id="ind-deg">D</span>
-            <span class="fx-lcd-indicator" id="ind-rad">R</span>
-            <span class="fx-lcd-indicator" id="ind-prgm">PRGM</span>
-            <span class="fx-lcd-indicator" id="ind-base">DEC</span>
-            <span class="fx-lcd-indicator active" id="ind-math">Math</span>
+            <!-- 4 Full Lines of Dot Matrix LCD Display -->
+            <div class="fx-lcd-lines">
+              <div class="fx-line" id="fx-line-1"><span class="fx-line-left" id="l1-txt"></span><span class="fx-line-right" id="l1-tag"></span></div>
+              <div class="fx-line" id="fx-line-2"><span class="fx-line-left" id="l2-txt">0</span><span class="fx-cursor" id="l2-cursor"></span></div>
+              <div class="fx-line" id="fx-line-3"><span class="fx-line-left" id="l3-txt"></span><span class="fx-disp-arrow" id="l3-arrow"></span></div>
+              <div class="fx-line" id="fx-line-4"><span class="fx-line-left" id="l4-txt"></span><span class="fx-line-right" id="l4-ans">0</span></div>
+            </div>
+
           </div>
-          <div class="fx-lcd-expr" id="fx-expr-line">0</div>
-          <div class="fx-lcd-result" id="fx-result-line">0</div>
         </div>
       </div>
 
-      <!-- Programmer Base-N Active Live Panel -->
-      <div class="fx-basen-panel" id="fx-basen-panel">
-        <div class="fx-basen-row active" id="base-row-dec" onclick="setBase('DEC')"><span>DEC:</span> <span id="val-dec">0</span></div>
-        <div class="fx-basen-row" id="base-row-hex" onclick="setBase('HEX')"><span>HEX:</span> <span id="val-hex">0x0</span></div>
-        <div class="fx-basen-row" id="base-row-bin" onclick="setBase('BIN')"><span>BIN:</span> <span id="val-bin">0b0</span></div>
-        <div class="fx-basen-row" id="base-row-oct" onclick="setBase('OCT')"><span>OCT:</span> <span id="val-oct">0o0</span></div>
-      </div>
-
-      <!-- Top Row Controls (Shift, Alpha, Replay D-Pad, Mode, On) -->
-      <div class="fx-top-controls">
-        <button type="button" class="fx-ctrl-btn fx-btn-shift" id="btn-shift">SHIFT</button>
-        <button type="button" class="fx-ctrl-btn fx-btn-alpha" id="btn-alpha">ALPHA</button>
-        
-        <!-- Replay D-Pad -->
-        <div class="fx-dpad-center" id="btn-replay" title="Replay History">
-          <span class="fx-dpad-arrow fx-arrow-up">▲</span>
-          <span class="fx-dpad-arrow fx-arrow-down">▼</span>
-          <span class="fx-dpad-arrow fx-arrow-left">◀</span>
-          <span class="fx-dpad-arrow fx-arrow-right">▶</span>
-          <span class="fx-dpad-label">REPLAY</span>
+      <!-- Top Row Controls: MODE SETUP, FUNCTION, REPLAY D-PAD -->
+      <div class="fx-top-nav-row">
+        <div class="fx-round-btn-group">
+          <div class="fx-key-col">
+            <span class="fx-labels-top"><span class="fx-lbl-shift">SETUP</span></span>
+            <button type="button" class="fx-round-btn" id="key-mode" title="Mode / Setup Menu">MODE</button>
+          </div>
         </div>
 
-        <button type="button" class="fx-ctrl-btn" id="btn-mode" onclick="toggleAngleUnit()">D/R</button>
-        <button type="button" class="fx-ctrl-btn" id="btn-on" style="background:#0284C7; color:#FFF;">ON</button>
-      </div>
+        <div class="fx-round-btn-group">
+          <div class="fx-key-col">
+            <span class="fx-labels-top"><span class="fx-lbl-shift">CALC</span></span>
+            <button type="button" class="fx-round-btn" id="key-fn" title="Math & Calculus Functions">FUNC</button>
+          </div>
+        </div>
 
-      <!-- Row 1 Functions: d/dx, ∫dx, x², xʸ, log, ln -->
-      <div class="fx-fn-grid">
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">d/dx</span>
-          <button type="button" class="fx-fn-btn" data-fn="integral">∫dx</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">³√</span>
-          <button type="button" class="fx-fn-btn" data-fn="sqrt">√</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">x³</span>
-          <button type="button" class="fx-fn-btn" data-fn="square">x²</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">ʸ√x</span>
-          <button type="button" class="fx-fn-btn" data-fn="power">xʸ</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">10ˣ</span>
-          <button type="button" class="fx-fn-btn" data-fn="log">log</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">eˣ</span>
-          <button type="button" class="fx-fn-btn" data-fn="ln">ln</button>
+        <!-- Oval 4-Way REPLAY Rocker D-Pad -->
+        <div class="fx-replay-pad" title="Replay Navigation Pad">
+          <button type="button" class="fx-pad-btn fx-pad-up" id="pad-up" aria-label="Replay Up">▲</button>
+          <button type="button" class="fx-pad-btn fx-pad-down" id="pad-down" aria-label="Replay Down">▼</button>
+          <button type="button" class="fx-pad-btn fx-pad-left" id="pad-left" aria-label="Replay Left">◀</button>
+          <button type="button" class="fx-pad-btn fx-pad-right" id="pad-right" aria-label="Replay Right">▶</button>
+          <span class="fx-replay-center-text">REPLAY</span>
         </div>
       </div>
 
-      <!-- Row 2 Functions: (-), DMS, hyp, sin, cos, tan -->
-      <div class="fx-fn-grid">
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">A</span>
-          <button type="button" class="fx-fn-btn" data-fn="negate">(-)</button>
+      <!-- Upper Key Row: SHIFT, ALPHA, EXIT, FMLA, CALC, SOLVE -->
+      <div class="fx-upper-fn-row">
+        <div class="fx-key-col">
+          <span class="fx-labels-top"></span>
+          <button type="button" class="fx-btn fx-btn-shift" id="key-shift">SHIFT</button>
         </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">B</span>
-          <button type="button" class="fx-fn-btn" data-fn="fact">n!</button>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-alpha">A-LOCK</span></span>
+          <button type="button" class="fx-btn fx-btn-alpha" id="key-alpha">ALPHA</button>
         </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">C</span>
-          <button type="button" class="fx-fn-btn" data-fn="reciprocal">x⁻¹</button>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">QUIT</span></span>
+          <button type="button" class="fx-btn fx-btn-exit" id="key-exit">EXIT</button>
         </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">sin⁻¹</span>
-          <button type="button" class="fx-fn-btn" data-fn="sin">sin</button>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">LIB</span></span>
+          <button type="button" class="fx-btn" id="key-fmla">FMLA</button>
         </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">cos⁻¹</span>
-          <button type="button" class="fx-fn-btn" data-fn="cos">cos</button>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">EVAL</span></span>
+          <button type="button" class="fx-btn" id="key-calc">CALC</button>
         </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">tan⁻¹</span>
-          <button type="button" class="fx-fn-btn" data-fn="tan">tan</button>
-        </div>
-      </div>
-
-      <!-- Row 3 Functions: STO, RCL, (, ), S<=>D, M+ -->
-      <div class="fx-fn-grid">
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">STO</span>
-          <button type="button" class="fx-fn-btn" data-fn="rcl">RCL</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">a b/c</span>
-          <button type="button" class="fx-fn-btn" data-fn="fraction">a/b</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">%</span>
-          <button type="button" class="fx-fn-btn" data-fn="paren-left">(</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">,</span>
-          <button type="button" class="fx-fn-btn" data-fn="paren-right">)</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">e</span>
-          <button type="button" class="fx-fn-btn" data-fn="sd">S⇔D</button>
-        </div>
-        <div class="fx-key-wrap">
-          <span class="fx-key-subtext">M-</span>
-          <button type="button" class="fx-fn-btn" data-fn="m-plus">M+</button>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">ROOT</span></span>
+          <button type="button" class="fx-btn" id="key-solve">SOLVE</button>
         </div>
       </div>
 
-      <!-- Main Numeric Keypad Grid -->
-      <div class="fx-num-grid">
-        <button type="button" class="fx-num-btn" data-key="7">7</button>
-        <button type="button" class="fx-num-btn" data-key="8">8</button>
-        <button type="button" class="fx-num-btn" data-key="9">9</button>
-        <button type="button" class="fx-num-btn fx-btn-del" data-key="del">DEL</button>
-        <button type="button" class="fx-num-btn fx-btn-ac" data-key="ac">AC</button>
+      <!-- Function Row 1: FILE/Prog, √, x², log, ln, x^■ -->
+      <div class="fx-grid-6">
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Prog</span></span>
+          <button type="button" class="fx-btn" data-key="prog" id="key-prog">FILE</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">:</span><span class="fx-lbl-alpha">"</span></span>
+          <button type="button" class="fx-btn" data-key="sqrt">√</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">x³</span><span class="fx-lbl-base">DEC</span></span>
+          <button type="button" class="fx-btn" data-key="sqr">x²</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">10ˣ</span><span class="fx-lbl-base">HEX</span></span>
+          <button type="button" class="fx-btn" data-key="log">log</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">eˣ</span><span class="fx-lbl-base">BIN</span></span>
+          <button type="button" class="fx-btn" data-key="ln">ln</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">ʸ√x</span><span class="fx-lbl-base">OCT</span></span>
+          <button type="button" class="fx-btn" data-key="pow">xʸ</button>
+        </div>
+      </div>
 
-        <button type="button" class="fx-num-btn" data-key="4">4</button>
-        <button type="button" class="fx-num-btn" data-key="5">5</button>
-        <button type="button" class="fx-num-btn" data-key="6">6</button>
-        <button type="button" class="fx-num-btn fx-btn-op" data-key="*">×</button>
-        <button type="button" class="fx-num-btn fx-btn-op" data-key="/">÷</button>
+      <!-- Function Row 2: i, a b/c, ° ' ", sin, cos, tan -->
+      <div class="fx-grid-6">
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">∠</span><span class="fx-lbl-alpha">A</span></span>
+          <button type="button" class="fx-btn" data-key="i">i</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">d/c</span><span class="fx-lbl-alpha">B</span></span>
+          <button type="button" class="fx-btn" data-key="frac">a b/c</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">←</span><span class="fx-lbl-alpha">C</span></span>
+          <button type="button" class="fx-btn" data-key="dms">° ' "</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">sin⁻¹</span><span class="fx-lbl-alpha">D</span></span>
+          <button type="button" class="fx-btn" data-key="sin">sin</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">cos⁻¹</span><span class="fx-lbl-alpha">E</span></span>
+          <button type="button" class="fx-btn" data-key="cos">cos</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">tan⁻¹</span><span class="fx-lbl-alpha">F</span></span>
+          <button type="button" class="fx-btn" data-key="tan">tan</button>
+        </div>
+      </div>
 
-        <button type="button" class="fx-num-btn" data-key="1">1</button>
-        <button type="button" class="fx-num-btn" data-key="2">2</button>
-        <button type="button" class="fx-num-btn" data-key="3">3</button>
-        <button type="button" class="fx-num-btn fx-btn-op" data-key="+">+</button>
-        <button type="button" class="fx-num-btn fx-btn-op" data-key="-">−</button>
+      <!-- Function Row 3: RCL, S<=>D, (, ), ,, M+ -->
+      <div class="fx-grid-6">
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">STO</span><span class="fx-lbl-alpha">=</span></span>
+          <button type="button" class="fx-btn" data-key="rcl">RCL</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">a b/c</span></span>
+          <button type="button" class="fx-btn" data-key="sd">S⇔D</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">³√</span><span class="fx-lbl-alpha">G</span></span>
+          <button type="button" class="fx-btn" data-key="(">(</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">x⁻¹</span><span class="fx-lbl-alpha">H</span></span>
+          <button type="button" class="fx-btn" data-key=")">)</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">%</span><span class="fx-lbl-alpha">?</span></span>
+          <button type="button" class="fx-btn" data-key=",">,</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">M-</span><span class="fx-lbl-alpha">M</span></span>
+          <button type="button" class="fx-btn" data-key="mplus">M+</button>
+        </div>
+      </div>
 
-        <button type="button" class="fx-num-btn" data-key="0">0</button>
-        <button type="button" class="fx-num-btn" data-key=".">.</button>
-        <button type="button" class="fx-num-btn" data-key="exp" style="font-size:0.85rem;">×10ˣ</button>
-        <button type="button" class="fx-num-btn" data-key="ans" style="font-size:0.85rem;">Ans</button>
-        <button type="button" class="fx-num-btn fx-btn-equals" data-key="=">=</button>
+      <!-- Main Numeric Keypad Grid (5 Columns) -->
+      <div class="fx-grid-5">
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">d/dx</span><span class="fx-lbl-alpha">K</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="7">7</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">∫dx</span><span class="fx-lbl-alpha">L</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="8">8</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">nPr</span><span class="fx-lbl-alpha">M</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="9">9</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">INS</span></span>
+          <button type="button" class="fx-btn fx-btn-del" data-key="del">DEL</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">OFF</span></span>
+          <button type="button" class="fx-btn fx-btn-ac" data-key="ac">AC/ON</button>
+        </div>
+
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">nCr</span><span class="fx-lbl-alpha">N</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="4">4</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">x!</span><span class="fx-lbl-alpha">O</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="5">5</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Ran#</span><span class="fx-lbl-alpha">P</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="6">6</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">ENG</span><span class="fx-lbl-alpha">Q</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="*">×</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">ENG←</span><span class="fx-lbl-alpha">R</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="/">÷</button>
+        </div>
+
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Pol(</span><span class="fx-lbl-alpha">S</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="1">1</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Rec(</span><span class="fx-lbl-alpha">T</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="2">2</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Abs</span><span class="fx-lbl-alpha">U</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="3">3</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">GCD</span><span class="fx-lbl-alpha">V</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="+">+</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">LCM</span><span class="fx-lbl-alpha">W</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="-">−</button>
+        </div>
+
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Rnd</span><span class="fx-lbl-alpha">X</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="0">0</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">RanInt</span><span class="fx-lbl-alpha">Y</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key=".">.</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">π</span><span class="fx-lbl-alpha">e</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="exp">×10ˣ</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Ans</span><span class="fx-lbl-alpha">SPACE</span></span>
+          <button type="button" class="fx-btn fx-btn-num" data-key="neg">(-)</button>
+        </div>
+        <div class="fx-key-col">
+          <span class="fx-labels-top"><span class="fx-lbl-shift">Disp</span><span class="fx-lbl-alpha">◢</span></span>
+          <button type="button" class="fx-btn fx-btn-exe" data-key="exe">EXE</button>
+        </div>
+      </div>
+
+      <!-- Bottom Quick Action Strip -->
+      <div class="fx-quick-strip">
+        <span>💡 <strong>Prog:</strong> Run on-screen</span>
+        <span>💾 <strong>Auto-Save:</strong> P1-P4 Slots</span>
+        <span>🔒 <strong>100% Offline:</strong> Local RAM</span>
       </div>
 
     </div>
 
     <!-- Calculation Reel History Drawer -->
-    <div class="fx-tape-drawer">
-      <div class="fx-tape-header">
+    <div class="fx-tape-card">
+      <div class="fx-tape-head">
         <span>📜 Calculation Tape History</span>
         <button type="button" id="btn-clear-tape" style="background:none; border:none; color:#EF4444; font-size:0.76rem; font-weight:700; cursor:pointer;">Clear</button>
       </div>
@@ -717,567 +782,942 @@
 
   </main>
 
-  <!-- =========================================================================
-       CASIO PRGM (PROGRAMMABLE CALCULATOR) MODAL
-       ========================================================================= -->
-  <div class="fx-modal-backdrop" id="modal-prgm">
-    <div class="fx-modal-card">
-      <div class="fx-modal-header">
-        <div class="fx-modal-title">
-          <span>📟 Casio PRGM Studio (fx-5800P)</span>
-        </div>
-        <button type="button" onclick="closeProgramModal()" style="background:none; border:none; color:#94A3B8; font-size:1.4rem; cursor:pointer;">✕</button>
-      </div>
-
-      <!-- Program Slot Selection -->
-      <div style="display:flex; gap:6px; margin-bottom:12px;">
-        <button type="button" class="btn btn-sm" id="tab-p1" onclick="selectProgramSlot(1)" style="flex:1; background:#0284C7; color:#FFF; font-weight:800;">P1</button>
-        <button type="button" class="btn btn-sm" id="tab-p2" onclick="selectProgramSlot(2)" style="flex:1; background:#1E293B; color:#94A3B8; font-weight:800;">P2</button>
-        <button type="button" class="btn btn-sm" id="tab-p3" onclick="selectProgramSlot(3)" style="flex:1; background:#1E293B; color:#94A3B8; font-weight:800;">P3</button>
-        <button type="button" class="btn btn-sm" id="tab-p4" onclick="selectProgramSlot(4)" style="flex:1; background:#1E293B; color:#94A3B8; font-weight:800;">P4</button>
-      </div>
-
-      <!-- Program Title -->
-      <div style="margin-bottom:8px;">
-        <label style="font-size:0.75rem; color:#94A3B8; font-weight:700;">Program Name:</label>
-        <input type="text" id="prgm-name-input" style="width:100%; padding:8px 12px; background:#020617; border:1px solid #334155; border-radius:6px; color:#38BDF8; font-weight:800; font-size:0.92rem; outline:none; margin-top:4px;">
-      </div>
-
-      <!-- Quick Syntax Helpers -->
-      <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px;">
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode('? -> ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#F59E0B;">? -> (Input)</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode(' -> ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#38BDF8;">-> (Store)</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode(' : ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#FFF;">: (Next)</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode(' ◢ ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#10B981;">◢ (Print)</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode('If ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#EC4899;">If</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode('Then ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#EC4899;">Then</button>
-        <button type="button" class="btn btn-sm" onclick="insertPrgmCode('For 1->N To 100 : ')" style="padding:2px 8px; font-size:0.75rem; background:#334155; color:#8B5CF6;">For Loop</button>
-      </div>
-
-      <!-- Program Code Editor -->
-      <textarea id="prgm-code-input" rows="7" style="width:100%; background:#020617; border:1px solid #334155; border-radius:8px; color:#C2D7B4; font-family:'Consolas', monospace; font-size:0.95rem; font-weight:700; padding:10px; line-height:1.4; outline:none; resize:none;" placeholder="Enter Casio fx-5800P program steps..."></textarea>
-
-      <!-- Action Buttons -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-        <button type="button" class="btn btn-sm" onclick="saveActiveProgram()" style="background:#0F766E; color:#FFF; font-weight:800; padding:8px 16px;">💾 Save Program</button>
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn btn-sm" onclick="runActiveProgram()" style="background:#0284C7; color:#FFF; font-weight:800; padding:8px 20px;">▶ RUN</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
   <script src="../js/core/pwa-register.js"></script>
-  <script src="../js/tools/calculator.js"></script>
 
   <script>
-    // Audio Click
-    let audioCtx = null;
-    function playKeyClick(isHeavy) {
-      if (window.AndroidNative) {
-        if (isHeavy && window.AndroidNative.hapticHeavy) window.AndroidNative.hapticHeavy();
-        else if (window.AndroidNative.hapticClick) window.AndroidNative.hapticClick();
-      } else if (navigator.vibrate) {
-        try { navigator.vibrate(isHeavy ? 24 : 10); } catch(e) {}
-      }
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(isHeavy ? 900 : 1400, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(isHeavy ? 200 : 300, audioCtx.currentTime + 0.025);
-        gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.025);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.025);
-      } catch (e) {}
-    }
+    /**
+     * Casio fx-5800P / fx-3650P II Super-FX Plus Engine
+     * Fully On-Screen Program Execution, Program Editing, Base-N, CALC, and Calculus.
+     */
+    (function() {
+      'use strict';
 
-    // State
-    let expr = '';
-    let result = '0';
-    let ans = '0';
-    let isShift = false;
-    let isAlpha = false;
-    let angleUnit = 'DEG';
-    let calcMode = 'comp'; // 'comp', 'basen', 'prgm', 'solve'
-    let currentBase = 'DEC';
-    let memoryVal = 0;
-    let hasMemoryVal = false;
-    let isNewCalculation = false;
-    let tapeHistory = [];
-    let activeSlot = 1;
-
-    // Memory Variables A, B, C, D, E, F, X, Y, M
-    let variables = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, X: 0, Y: 0, M: 0 };
-
-    // Default Casio Sample Programs (Permanent Local Storage)
-    const DEFAULT_PROGRAMS = {
-      1: {
-        name: "Quadratic Equation (ax²+bx+c=0)",
-        code: "? -> A : ? -> B : ? -> C : (B²-4AC) -> D : ((-B+√D)/(2A)) -> X : ((-B-√D)/(2A)) -> Y : X ◢ Y ◢"
-      },
-      2: {
-        name: "Heron's Triangle Area",
-        code: "? -> A : ? -> B : ? -> C : ((A+B+C)/2) -> S : √(S*(S-A)*(S-B)*(S-C)) -> X : X ◢"
-      },
-      3: {
-        name: "Ohm's Law & Power (V=IR, P=VI)",
-        code: "? -> I : ? -> R : (I*R) -> V : (V*I) -> P : V ◢ P ◢"
-      },
-      4: {
-        name: "2D Distance Formula",
-        code: "? -> A : ? -> B : ? -> C : ? -> D : √((C-A)²+(D-B)²) -> X : X ◢"
-      }
-    };
-
-    function getSavedPrograms() {
-      try {
-        const saved = localStorage.getItem('casio_fx_programs');
-        return saved ? JSON.parse(saved) : DEFAULT_PROGRAMS;
-      } catch(e) {
-        return DEFAULT_PROGRAMS;
-      }
-    }
-
-    function saveProgramsToStorage(progs) {
-      try {
-        localStorage.setItem('casio_fx_programs', JSON.stringify(progs));
-      } catch(e) {}
-    }
-
-    const exprLine = document.getElementById("fx-expr-line");
-    const resultLine = document.getElementById("fx-result-line");
-    const indShift = document.getElementById("ind-shift");
-    const indAlpha = document.getElementById("ind-alpha");
-    const indM = document.getElementById("ind-m");
-    const indDeg = document.getElementById("ind-deg");
-    const indRad = document.getElementById("ind-rad");
-    const indPrgm = document.getElementById("ind-prgm");
-    const indBase = document.getElementById("ind-base");
-    const tapeList = document.getElementById("fx-tape-list");
-
-    function updateLCD() {
-      exprLine.textContent = expr || '0';
-      resultLine.textContent = result || '0';
-      indShift.classList.toggle("active", isShift);
-      indAlpha.classList.toggle("active", isAlpha);
-      indM.classList.toggle("active", hasMemoryVal);
-      indDeg.classList.toggle("active", angleUnit === 'DEG');
-      indRad.classList.toggle("active", angleUnit === 'RAD');
-      indPrgm.classList.toggle("active", calcMode === 'prgm');
-      indBase.textContent = (calcMode === 'basen') ? currentBase : '';
-      indBase.classList.toggle("active", calcMode === 'basen');
-
-      if (calcMode === 'basen') {
-        updateBaseNLiveDisplay();
-      }
-    }
-
-    function switchCalcMode(mode) {
-      playKeyClick();
-      calcMode = mode;
-      document.querySelectorAll('.fx-mode-pill').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-calc-mode') === mode);
-      });
-      document.getElementById('fx-basen-panel').style.display = (mode === 'basen') ? 'block' : 'none';
-      UIUtils.showToast(`Mode: ${mode.toUpperCase()}`, 'info');
-      updateLCD();
-    }
-
-    function toggleAngleUnit() {
-      playKeyClick();
-      angleUnit = (angleUnit === 'DEG') ? 'RAD' : 'DEG';
-      UIUtils.showToast("Angle: " + angleUnit, "info");
-      updateLCD();
-      if (expr) evaluateLive();
-    }
-
-    // Toggle Shift
-    document.getElementById("btn-shift").addEventListener("click", () => {
-      playKeyClick();
-      isShift = !isShift;
-      if (isShift) isAlpha = false;
-      document.getElementById("btn-shift").classList.toggle("active", isShift);
-      document.getElementById("btn-alpha").classList.remove("active");
-      updateLCD();
-    });
-
-    // Toggle Alpha
-    document.getElementById("btn-alpha").addEventListener("click", () => {
-      playKeyClick();
-      isAlpha = !isAlpha;
-      if (isAlpha) isShift = false;
-      document.getElementById("btn-alpha").classList.toggle("active", isAlpha);
-      document.getElementById("btn-shift").classList.remove("active");
-      updateLCD();
-    });
-
-    // ON Button
-    document.getElementById("btn-on").addEventListener("click", () => {
-      playKeyClick();
-      expr = '';
-      result = '0';
-      isShift = false;
-      isAlpha = false;
-      document.getElementById("btn-shift").classList.remove("active");
-      document.getElementById("btn-alpha").classList.remove("active");
-      updateLCD();
-    });
-
-    // Keypad Handlers
-    document.querySelectorAll(".fx-num-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        playKeyClick();
-        const key = btn.getAttribute("data-key");
-        handleKey(key);
-      });
-    });
-
-    document.querySelectorAll(".fx-fn-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        playKeyClick();
-        const fn = btn.getAttribute("data-fn");
-        handleFn(fn);
-      });
-    });
-
-    function handleKey(key) {
-      if (key === 'ac') {
-        expr = '';
-        result = '0';
-        isNewCalculation = false;
-      } else if (key === 'del') {
-        if (expr.length > 0) expr = expr.slice(0, -1);
-      } else if (key === '=') {
-        calculateFinal();
-        return;
-      } else if (key === 'ans') {
-        expr += ans;
-      } else if (key === 'exp') {
-        expr += 'e';
-      } else {
-        if (isNewCalculation && !['+', '-', '*', '/'].includes(key)) {
-          expr = '';
-          isNewCalculation = false;
+      // Audio Haptic Synthesis
+      let audioCtx = null;
+      function playClick(isHeavy) {
+        if (window.AndroidNative) {
+          if (isHeavy && window.AndroidNative.hapticHeavy) window.AndroidNative.hapticHeavy();
+          else if (window.AndroidNative.hapticClick) window.AndroidNative.hapticClick();
+        } else if (navigator.vibrate) {
+          try { navigator.vibrate(isHeavy ? 20 : 8); } catch(e) {}
         }
-        expr += key;
-      }
-      updateLCD();
-      evaluateLive();
-    }
-
-    function handleFn(fn) {
-      if (fn === 'sin') expr += isShift ? 'asin(' : 'sin(';
-      else if (fn === 'cos') expr += isShift ? 'acos(' : 'cos(';
-      else if (fn === 'tan') expr += isShift ? 'atan(' : 'tan(';
-      else if (fn === 'sqrt') expr += isShift ? 'cbrt(' : 'sqrt(';
-      else if (fn === 'square') expr += isShift ? '^3' : '^2';
-      else if (fn === 'power') expr += '^';
-      else if (fn === 'log') expr += isShift ? '10^(' : 'log(';
-      else if (fn === 'ln') expr += isShift ? 'exp(' : 'ln(';
-      else if (fn === 'integral') expr += isShift ? 'd/dx(' : '∫(';
-      else if (fn === 'fraction') expr += '/';
-      else if (fn === 'reciprocal') expr += '^(-1)';
-      else if (fn === 'negate') expr += '-';
-      else if (fn === 'paren-left') expr += '(';
-      else if (fn === 'paren-right') expr += ')';
-      else if (fn === 'fact') expr += '!';
-      else if (fn === 'm-plus') {
-        const val = parseFloat(result || '0');
-        memoryVal += (isShift ? -val : val);
-        variables.M = memoryVal;
-        hasMemoryVal = (memoryVal !== 0);
-        UIUtils.showToast("Memory M = " + memoryVal, "info");
-      } else if (fn === 'rcl') {
-        if (isShift) {
-          // STO prompt
-          const varName = prompt("Store result to Variable (A, B, C, D, E, F, X, Y):", "A");
-          if (varName && variables.hasOwnProperty(varName.toUpperCase())) {
-            variables[varName.toUpperCase()] = parseFloat(result || '0');
-            UIUtils.showToast(`Stored in ${varName.toUpperCase()} = ${variables[varName.toUpperCase()]}`, "success");
-          }
-        } else {
-          expr += variables.M.toString();
-        }
-      } else if (fn === 'sd') {
         try {
-          const num = parseFloat(result);
-          if (!isNaN(num)) {
-            result = result.includes('/') ? evaluateExpression(result).toString() : toFraction(num);
-          }
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(isHeavy ? 850 : 1300, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(isHeavy ? 180 : 260, audioCtx.currentTime + 0.022);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.022);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.022);
         } catch(e) {}
       }
 
-      if (isShift) {
-        isShift = false;
-        document.getElementById("btn-shift").classList.remove("active");
-      }
-      updateLCD();
-      evaluateLive();
-    }
-
-    function evaluateLive() {
-      if (!expr) {
-        result = '0';
-        updateLCD();
-        return;
-      }
-      try {
-        const val = evaluateExpression(expr);
-        if (!isNaN(val) && isFinite(val)) {
-          result = formatResult(val);
-        }
-      } catch(e) {}
-      updateLCD();
-    }
-
-    function calculateFinal() {
-      if (!expr) return;
-      try {
-        const val = evaluateExpression(expr);
-        if (isNaN(val) || !isFinite(val)) {
-          result = 'Math ERROR';
-        } else {
-          result = formatResult(val);
-          ans = result;
-          isNewCalculation = true;
-          addTapeEntry(expr, result);
-        }
-      } catch(e) {
-        result = 'Syntax ERROR';
-      }
-      updateLCD();
-    }
-
-    function formatResult(num) {
-      if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-6 && num !== 0)) {
-        return num.toExponential(6).replace('e+', 'e');
-      }
-      return parseFloat(num.toFixed(8)).toString();
-    }
-
-    function toFraction(val) {
-      let tolerance = 1.0e-6;
-      let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
-      let b = val;
-      do {
-        let a = Math.floor(b);
-        let aux = h1; h1 = a * h1 + h2; h2 = aux;
-        aux = k1; k1 = a * k1 + k2; k2 = aux;
-        b = 1 / (b - a);
-      } while (Math.abs(val - h1 / k1) > val * tolerance);
-      return `${h1}/${k1}`;
-    }
-
-    // Mathematical Expression Parser
-    function evaluateExpression(s) {
-      let parsed = s
-        .replace(/×/g, '*')
-        .replace(/÷/g, '/')
-        .replace(/−/g, '-')
-        .replace(/π/g, 'Math.PI')
-        .replace(/e/g, 'Math.E');
-
-      // Replace variable names
-      for (const [v, val] of Object.entries(variables)) {
-        parsed = parsed.replace(new RegExp(`\\b${v}\\b`, 'g'), `(${val})`);
-      }
-
-      parsed = parsed.replace(/(\d+)!/g, (_, n) => factorial(parseInt(n)));
-      parsed = parsed.replace(/([0-9\.]+|\([^\)]+\))\^([0-9\.]+|\([^\)]+\))/g, 'Math.pow($1,$2)');
-
-      const degFactor = (angleUnit === 'DEG') ? '(Math.PI/180)*' : '';
-      const radFactor = (angleUnit === 'DEG') ? '*(180/Math.PI)' : '';
-
-      parsed = parsed.replace(/sin\(/g, `Math.sin(${degFactor}`);
-      parsed = parsed.replace(/cos\(/g, `Math.cos(${degFactor}`);
-      parsed = parsed.replace(/tan\(/g, `Math.tan(${degFactor}`);
-      parsed = parsed.replace(/asin\(/g, `(${radFactor}Math.asin(`);
-      parsed = parsed.replace(/acos\(/g, `(${radFactor}Math.acos(`);
-      parsed = parsed.replace(/atan\(/g, `(${radFactor}Math.atan(`);
-      parsed = parsed.replace(/sqrt\(/g, 'Math.sqrt(');
-      parsed = parsed.replace(/cbrt\(/g, 'Math.cbrt(');
-      parsed = parsed.replace(/log\(/g, 'Math.log10(');
-      parsed = parsed.replace(/ln\(/g, 'Math.log(');
-
-      return Function(`'use strict'; return (${parsed})`)();
-    }
-
-    function factorial(n) {
-      if (n < 0) return NaN;
-      if (n === 0 || n === 1) return 1;
-      let r = 1;
-      for (let i = 2; i <= Math.min(n, 170); i++) r *= i;
-      return r;
-    }
-
-    // Base-N Live Update
-    function setBase(b) {
-      currentBase = b;
-      document.querySelectorAll('.fx-basen-row').forEach(el => el.classList.remove('active'));
-      document.getElementById(`base-row-${b.toLowerCase()}`)?.classList.add('active');
-      updateLCD();
-    }
-
-    function updateBaseNLiveDisplay() {
-      const num = parseInt(result || '0', 10);
-      if (!isNaN(num)) {
-        document.getElementById("val-dec").textContent = num.toString(10);
-        document.getElementById("val-hex").textContent = '0x' + num.toString(16).toUpperCase();
-        document.getElementById("val-bin").textContent = '0b' + num.toString(2);
-        document.getElementById("val-oct").textContent = '0o' + num.toString(8);
-      }
-    }
-
-    // Program Modal (PRGM)
-    const prgmModal = document.getElementById("modal-prgm");
-    function openProgramModal() {
-      playKeyClick();
-      prgmModal.style.display = "flex";
-      selectProgramSlot(activeSlot);
-    }
-    function closeProgramModal() {
-      prgmModal.style.display = "none";
-    }
-
-    function selectProgramSlot(slot) {
-      activeSlot = slot;
-      for (let i = 1; i <= 4; i++) {
-        const tab = document.getElementById(`tab-p${i}`);
-        if (tab) {
-          tab.style.background = (i === slot) ? '#0284C7' : '#1E293B';
-          tab.style.color = (i === slot) ? '#FFF' : '#94A3B8';
-        }
-      }
-      const progs = getSavedPrograms();
-      const p = progs[slot] || { name: `Program P${slot}`, code: "" };
-      document.getElementById("prgm-name-input").value = p.name;
-      document.getElementById("prgm-code-input").value = p.code;
-    }
-
-    function insertPrgmCode(text) {
-      const textarea = document.getElementById("prgm-code-input");
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-      textarea.focus();
-      textarea.selectionStart = textarea.selectionEnd = start + text.length;
-    }
-
-    function saveActiveProgram() {
-      const progs = getSavedPrograms();
-      progs[activeSlot] = {
-        name: document.getElementById("prgm-name-input").value.trim() || `Program P${activeSlot}`,
-        code: document.getElementById("prgm-code-input").value.trim()
+      // Memory Variables (A, B, C, D, E, F, G, H, I, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+      const variables = {
+        A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0, H: 0, I: 0,
+        K: 0, L: 0, M: 0, N: 0, O: 0, P: 0, Q: 0, R: 0, S: 0,
+        T: 0, U: 0, V: 0, W: 0, X: 0, Y: 0, Z: 0, Ans: 0
       };
-      saveProgramsToStorage(progs);
-      UIUtils.showToast(`Saved Program P${activeSlot} successfully!`, "success");
-    }
 
-    function runActiveProgram() {
-      saveActiveProgram();
-      closeProgramModal();
-      calcMode = 'prgm';
-      updateLCD();
+      // Default Built-in Casio Programs (Stored permanently in localStorage)
+      const DEFAULT_PROGRAMS = {
+        1: {
+          name: "QUADRATIC",
+          code: "?→A:?→B:?→C:(B²-4AC)→D:(-B+√D)/(2A)→X:(-B-√D)/(2A)→Y:\"X1=\"X◢\"X2=\"Y◢"
+        },
+        2: {
+          name: "HERON-AREA",
+          code: "?→A:?→B:?→C:(A+B+C)/2→S:√(S(S-A)(S-B)(S-C))→X:\"AREA=\"X◢"
+        },
+        3: {
+          name: "OHM-POWER",
+          code: "?→I:?→R:I*R→V:V*I→P:\"VOLT=\"V◢\"WATT=\"P◢"
+        },
+        4: {
+          name: "2D-DIST",
+          code: "?→A:?→B:?→C:?→D:√((C-A)²+(D-B)²)→X:\"DIST=\"X◢"
+        }
+      };
 
-      const progs = getSavedPrograms();
-      const p = progs[activeSlot];
-      if (!p || !p.code) {
-        alert("Program is empty.");
-        return;
+      // Built-in Formula Library (FMLA)
+      const FORMULA_LIB = [
+        { id: 1, name: "QUADRATIC (ax²+bx+c)", vars: ['A','B','C'], expr: "((-B+sqrt(B^2-4*A*C))/(2*A))" },
+        { id: 2, name: "KINETIC ENERGY (0.5mv²)", vars: ['M','V'], expr: "0.5*M*V^2" },
+        { id: 3, name: "COULOMB FORCE (k*q1*q2/r²)", vars: ['Q','R'], expr: "8.98755e9*Q/R^2" },
+        { id: 4, name: "IDEAL GAS (P=nRT/V)", vars: ['N','T','V'], expr: "(N*8.314*T)/V" },
+        { id: 5, name: "PARALLEL RESISTORS", vars: ['A','B'], expr: "(A*B)/(A+B)" },
+        { id: 6, name: "PYTHAGOREAN (√(a²+b²))", vars: ['A','B'], expr: "sqrt(A^2+B^2)" }
+      ];
+
+      function loadPrograms() {
+        try {
+          const s = localStorage.getItem('casio_fx_programs_v2');
+          return s ? JSON.parse(s) : DEFAULT_PROGRAMS;
+        } catch(e) {
+          return DEFAULT_PROGRAMS;
+        }
       }
 
-      // Execute Casio syntax: statements separated by ':'
-      const statements = p.code.split(':').map(s => s.trim()).filter(Boolean);
-      let outputBuffer = [];
+      function savePrograms(progs) {
+        try {
+          localStorage.setItem('casio_fx_programs_v2', JSON.stringify(progs));
+        } catch(e) {}
+      }
 
-      for (const stmt of statements) {
-        // Input: ? -> VAR
-        if (stmt.startsWith('?') && stmt.includes('->')) {
-          const varName = stmt.split('->')[1].trim().toUpperCase();
-          const userVal = prompt(`[PRGM P${activeSlot}: ${p.name}]\nEnter value for ${varName}:`, "0");
-          if (userVal === null) return;
-          variables[varName] = parseFloat(userVal) || 0;
-        } 
-        // Store: expr -> VAR
-        else if (stmt.includes('->')) {
-          const parts = stmt.split('->');
-          const val = evaluateExpression(parts[0].trim());
-          const varName = parts[1].trim().toUpperCase();
-          variables[varName] = val;
-        } 
-        // Output with ◢
-        else if (stmt.includes('◢')) {
-          const exprToPrint = stmt.replace(/◢/g, '').trim();
-          if (exprToPrint) {
-            const val = evaluateExpression(exprToPrint);
-            outputBuffer.push(`${exprToPrint} = ${formatResult(val)}`);
+      let userPrograms = loadPrograms();
+
+      // LCD State Engine
+      // Modes: 'COMP', 'MODE_MENU', 'PRGM_MENU', 'PRGM_RUN', 'PRGM_EDIT', 'CALC_PROMPT', 'FMLA_MENU', 'FMLA_RUN', 'BASE_N'
+      let appState = {
+        mode: 'COMP',
+        angle: 'DEG', // 'DEG', 'RAD', 'GRA'
+        base: 'DEC',  // 'DEC', 'HEX', 'BIN', 'OCT'
+        shift: false,
+        alpha: false,
+        expr: '',
+        ans: '0',
+        result: '0',
+        cursorPos: 0,
+        hasMemory: false,
+        menuIndex: 1,
+
+        // Program Execution State (On LCD)
+        prgmSlot: 1,
+        prgmStatements: [],
+        prgmStmtIdx: 0,
+        prgmPromptVar: '',
+        prgmInputBuffer: '',
+        prgmOutputs: [],
+        prgmOutIdx: 0,
+        prgmWaitingForExe: false,
+
+        // CALC Prompt State
+        calcVarsToPrompt: [],
+        calcPromptIdx: 0,
+        calcBaseExpr: '',
+
+        // FMLA State
+        fmlaActive: null,
+        fmlaPromptIdx: 0
+      };
+
+      let tapeHistory = [];
+
+      // DOM Screen Elements
+      const flgShift = document.getElementById('flg-shift');
+      const flgAlpha = document.getElementById('flg-alpha');
+      const flgM = document.getElementById('flg-m');
+      const flgPrgm = document.getElementById('flg-prgm');
+      const flgDeg = document.getElementById('flg-deg');
+      const flgRad = document.getElementById('flg-rad');
+      const flgGra = document.getElementById('flg-gra');
+      const flgBase = document.getElementById('flg-base');
+      const flgMath = document.getElementById('flg-math');
+
+      const l1Txt = document.getElementById('l1-txt');
+      const l1Tag = document.getElementById('l1-tag');
+      const l2Txt = document.getElementById('l2-txt');
+      const l2Cursor = document.getElementById('l2-cursor');
+      const l3Txt = document.getElementById('l3-txt');
+      const l3Arrow = document.getElementById('l3-arrow');
+      const l4Txt = document.getElementById('l4-txt');
+      const l4Ans = document.getElementById('l4-ans');
+
+      const tapeListEl = document.getElementById('fx-tape-list');
+
+      // Update Screen LCD
+      function renderLCD() {
+        // Flags
+        flgShift.classList.toggle('active', appState.shift);
+        flgAlpha.classList.toggle('active', appState.alpha);
+        flgM.classList.toggle('active', appState.hasMemory || variables.M !== 0);
+        flgPrgm.classList.toggle('active', ['PRGM_MENU', 'PRGM_RUN', 'PRGM_EDIT'].includes(appState.mode));
+        flgDeg.classList.toggle('active', appState.angle === 'DEG');
+        flgRad.classList.toggle('active', appState.angle === 'RAD');
+        flgGra.classList.toggle('active', appState.angle === 'GRA');
+        flgBase.textContent = appState.mode === 'BASE_N' ? appState.base : '';
+        flgBase.classList.toggle('active', appState.mode === 'BASE_N');
+
+        // Reset LCD lines
+        l1Txt.textContent = '';
+        l1Tag.textContent = '';
+        l2Txt.textContent = '';
+        l2Cursor.style.display = 'none';
+        l3Txt.textContent = '';
+        l3Arrow.textContent = '';
+        l4Txt.textContent = '';
+        l4Ans.textContent = '';
+
+        switch(appState.mode) {
+          case 'COMP':
+            l1Tag.textContent = appState.angle;
+            l2Txt.textContent = appState.expr || '0';
+            l2Cursor.style.display = 'inline-block';
+            l4Ans.textContent = appState.result || '0';
+            break;
+
+          case 'MODE_MENU':
+            l1Txt.textContent = "--- SELECT MODE ---";
+            l2Txt.textContent = "1:COMP    2:BASE-N";
+            l3Txt.textContent = "3:PRGM    4:FMLA";
+            l4Txt.textContent = "5:DEG     6:RAD";
+            break;
+
+          case 'PRGM_MENU':
+            l1Txt.textContent = "--- PRGM FILE MENU ---";
+            l1Tag.textContent = "[1-4]:RUN";
+            l2Txt.textContent = `1:P1 ${userPrograms[1]?.name || 'PROG1'}`;
+            l3Txt.textContent = `2:P2 ${userPrograms[2]?.name || 'PROG2'}`;
+            l4Txt.textContent = `3:P3 ${userPrograms[3]?.name || 'PROG3'} 4:P4`;
+            break;
+
+          case 'PRGM_RUN':
+            const activeProg = userPrograms[appState.prgmSlot];
+            l1Txt.textContent = `[P${appState.prgmSlot}:${activeProg?.name || 'PRGM'}]`;
+            l1Tag.textContent = "RUN";
+
+            if (appState.prgmWaitingForExe) {
+              // Showing intermediate ◢ output or final result
+              const currentOut = appState.prgmOutputs[appState.prgmOutIdx] || '';
+              l2Txt.textContent = "EXE to continue...";
+              l3Txt.textContent = currentOut;
+              l3Arrow.textContent = "◢";
+              l4Ans.textContent = "Disp";
+            } else if (appState.prgmPromptVar) {
+              // Prompting for variable: e.g. A? 5
+              l2Txt.textContent = `${appState.prgmPromptVar}? ${appState.prgmInputBuffer}`;
+              l2Cursor.style.display = 'inline-block';
+              l4Txt.textContent = `Enter val & press EXE`;
+            }
+            break;
+
+          case 'PRGM_EDIT':
+            const pEdit = userPrograms[appState.prgmSlot];
+            l1Txt.textContent = `[EDIT P${appState.prgmSlot}:${pEdit?.name}]`;
+            l1Tag.textContent = "EXIT:SAVE";
+            l2Txt.textContent = appState.expr;
+            l2Cursor.style.display = 'inline-block';
+            l3Txt.textContent = "Type code with keys";
+            l4Txt.textContent = "EXIT when done";
+            break;
+
+          case 'CALC_PROMPT':
+            l1Txt.textContent = "[CALC EVALUATION]";
+            const curVar = appState.calcVarsToPrompt[appState.calcPromptIdx];
+            l2Txt.textContent = `${curVar}? [curr: ${variables[curVar] || 0}] ${appState.prgmInputBuffer}`;
+            l2Cursor.style.display = 'inline-block';
+            l3Txt.textContent = appState.calcBaseExpr;
+            l4Txt.textContent = "EXE to confirm";
+            break;
+
+          case 'FMLA_MENU':
+            l1Txt.textContent = "--- FORMULA LIBRARY ---";
+            l2Txt.textContent = "1:QUAD 2:EK 3:COULOMB";
+            l3Txt.textContent = "4:GAS  5:RESIST 6:PYTH";
+            l4Txt.textContent = "Select [1-6] or EXIT";
+            break;
+
+          case 'FMLA_RUN':
+            l1Txt.textContent = `[FMLA: ${appState.fmlaActive.name}]`;
+            const fVar = appState.fmlaActive.vars[appState.fmlaPromptIdx];
+            l2Txt.textContent = `${fVar}? ${appState.prgmInputBuffer}`;
+            l2Cursor.style.display = 'inline-block';
+            l3Txt.textContent = appState.fmlaActive.expr;
+            l4Txt.textContent = "EXE to calculate";
+            break;
+
+          case 'BASE_N':
+            const decVal = parseInt(appState.result || '0', 10) || 0;
+            l1Txt.textContent = `BASE-N [${appState.base}]`;
+            if (appState.base === 'DEC') {
+              l2Txt.textContent = `DEC: ${decVal.toString(10)}`;
+              l3Txt.textContent = `HEX: 0x${(decVal >>> 0).toString(16).toUpperCase()}`;
+              l4Txt.textContent = `BIN: 0b${(decVal >>> 0).toString(2)}`;
+            } else if (appState.base === 'HEX') {
+              l2Txt.textContent = `HEX: 0x${(decVal >>> 0).toString(16).toUpperCase()}`;
+              l3Txt.textContent = `DEC: ${decVal.toString(10)}`;
+              l4Txt.textContent = `BIN: 0b${(decVal >>> 0).toString(2)}`;
+            } else if (appState.base === 'BIN') {
+              l2Txt.textContent = `BIN: 0b${(decVal >>> 0).toString(2)}`;
+              l3Txt.textContent = `DEC: ${decVal.toString(10)}`;
+              l4Txt.textContent = `HEX: 0x${(decVal >>> 0).toString(16).toUpperCase()}`;
+            } else if (appState.base === 'OCT') {
+              l2Txt.textContent = `OCT: 0o${(decVal >>> 0).toString(8)}`;
+              l3Txt.textContent = `DEC: ${decVal.toString(10)}`;
+              l4Txt.textContent = `HEX: 0x${(decVal >>> 0).toString(16).toUpperCase()}`;
+            }
+            break;
+        }
+      }
+
+      // Handle Keypad Actions
+      function processKey(key) {
+        playClick(key === 'exe' || key === 'ac');
+
+        // Handle Shift / Alpha States
+        const isShift = appState.shift;
+        const isAlpha = appState.alpha;
+
+        // Reset Shift / Alpha after single keypress unless it was toggled
+        if (key !== 'shift' && key !== 'alpha') {
+          appState.shift = false;
+          appState.alpha = false;
+          document.getElementById('key-shift').classList.remove('active');
+          document.getElementById('key-alpha').classList.remove('active');
+        }
+
+        // Global AC / ON Handler
+        if (key === 'ac') {
+          if (isShift) {
+            // Power off / Reset
+            appState.mode = 'COMP';
+            appState.expr = '';
+            appState.result = '0';
+          } else {
+            if (appState.mode === 'PRGM_RUN' || appState.mode === 'CALC_PROMPT' || appState.mode === 'FMLA_RUN') {
+              appState.mode = 'COMP';
+              appState.expr = '';
+            } else {
+              appState.expr = '';
+              appState.result = '0';
+            }
+          }
+          renderLCD();
+          return;
+        }
+
+        // Global EXIT Handler
+        if (key === 'exit') {
+          if (appState.mode === 'PRGM_EDIT') {
+            // Save program
+            userPrograms[appState.prgmSlot].code = appState.expr;
+            savePrograms(userPrograms);
+            UIUtils.showToast(`Saved P${appState.prgmSlot} successfully!`, 'success');
+            appState.mode = 'PRGM_MENU';
+          } else {
+            appState.mode = 'COMP';
+          }
+          renderLCD();
+          return;
+        }
+
+        // State Machine Key Handling
+        switch(appState.mode) {
+          case 'MODE_MENU':
+            handleModeMenuKey(key);
+            break;
+          case 'PRGM_MENU':
+            handlePrgmMenuKey(key, isShift);
+            break;
+          case 'PRGM_RUN':
+            handlePrgmRunKey(key);
+            break;
+          case 'PRGM_EDIT':
+            handlePrgmEditKey(key, isShift, isAlpha);
+            break;
+          case 'CALC_PROMPT':
+            handleCalcPromptKey(key);
+            break;
+          case 'FMLA_MENU':
+            handleFmlaMenuKey(key);
+            break;
+          case 'FMLA_RUN':
+            handleFmlaRunKey(key);
+            break;
+          case 'BASE_N':
+            handleBaseNKey(key);
+            break;
+          case 'COMP':
+          default:
+            handleCompKey(key, isShift, isAlpha);
+            break;
+        }
+
+        renderLCD();
+      }
+
+      // MODE Menu selection
+      function handleModeMenuKey(key) {
+        if (key === '1') appState.mode = 'COMP';
+        else if (key === '2') { appState.mode = 'BASE_N'; appState.base = 'DEC'; }
+        else if (key === '3') appState.mode = 'PRGM_MENU';
+        else if (key === '4') appState.mode = 'FMLA_MENU';
+        else if (key === '5') { appState.angle = 'DEG'; appState.mode = 'COMP'; }
+        else if (key === '6') { appState.angle = 'RAD'; appState.mode = 'COMP'; }
+      }
+
+      // PRGM Menu selection
+      function handlePrgmMenuKey(key, isShift) {
+        const slot = parseInt(key, 10);
+        if (slot >= 1 && slot <= 4) {
+          appState.prgmSlot = slot;
+          if (isShift) {
+            // Edit mode
+            appState.mode = 'PRGM_EDIT';
+            appState.expr = userPrograms[slot]?.code || '';
+          } else {
+            // Run mode directly on LCD
+            startOnScreenProgram(slot);
           }
         }
       }
 
-      if (outputBuffer.length > 0) {
-        result = outputBuffer[outputBuffer.length - 1].split('=')[1].trim();
-        expr = `[P${activeSlot}: ${p.name}]`;
-        alert(`[P${activeSlot} Execution Complete]\n\n` + outputBuffer.join('\n'));
-      } else {
-        UIUtils.showToast(`Program P${activeSlot} executed successfully!`, "success");
+      // Start running program on LCD
+      function startOnScreenProgram(slot) {
+        const prog = userPrograms[slot];
+        if (!prog || !prog.code) {
+          UIUtils.showToast("Program slot empty!", "warning");
+          return;
+        }
+
+        appState.mode = 'PRGM_RUN';
+        appState.prgmSlot = slot;
+        appState.prgmStatements = prog.code.split(':').map(s => s.trim()).filter(Boolean);
+        appState.prgmStmtIdx = 0;
+        appState.prgmOutputs = [];
+        appState.prgmOutIdx = 0;
+        appState.prgmInputBuffer = '';
+        appState.prgmWaitingForExe = false;
+
+        advanceProgramStep();
       }
-      updateLCD();
-    }
 
-    function addTapeEntry(e, r) {
-      tapeHistory.unshift({ expr: e, res: r });
-      if (tapeHistory.length > 25) tapeHistory.pop();
-      renderTape();
-    }
+      // Advance program step on LCD
+      function advanceProgramStep() {
+        if (appState.prgmStmtIdx >= appState.prgmStatements.length) {
+          // Finished all statements
+          if (appState.prgmOutputs.length > 0) {
+            appState.prgmWaitingForExe = true;
+          } else {
+            UIUtils.showToast(`P${appState.prgmSlot} Complete!`, "success");
+            appState.mode = 'COMP';
+          }
+          return;
+        }
 
-    function renderTape() {
-      if (tapeHistory.length === 0) {
-        tapeList.innerHTML = '<div style="color:#64748B; font-size:0.8rem; text-align:center; padding:10px;">Calculations appear here</div>';
-        return;
+        const stmt = appState.prgmStatements[appState.prgmStmtIdx];
+
+        // 1. Input: ? -> A or ?→A
+        if (stmt.startsWith('?') && (stmt.includes('->') || stmt.includes('→'))) {
+          const varName = stmt.replace('?', '').replace('->', '').replace('→', '').trim().toUpperCase();
+          appState.prgmPromptVar = varName;
+          appState.prgmInputBuffer = '';
+          appState.prgmWaitingForExe = false;
+        }
+        // 2. Assignment / Formula: (B²-4AC) -> D or expr→D
+        else if (stmt.includes('->') || stmt.includes('→')) {
+          const sep = stmt.includes('→') ? '→' : '->';
+          const parts = stmt.split(sep);
+          const val = evaluateCasioMath(parts[0].trim());
+          const varName = parts[1].trim().toUpperCase();
+          variables[varName] = val;
+          appState.prgmStmtIdx++;
+          advanceProgramStep();
+        }
+        // 3. Print Output: expr ◢ or "TXT="X◢
+        else if (stmt.includes('◢')) {
+          const cleanStmt = stmt.replace(/◢/g, '').trim();
+          let outStr = '';
+          if (cleanStmt.startsWith('"') && cleanStmt.includes('"')) {
+            const quoteEnd = cleanStmt.indexOf('"', 1);
+            const label = cleanStmt.substring(1, quoteEnd);
+            const varPart = cleanStmt.substring(quoteEnd + 1).trim();
+            const val = evaluateCasioMath(varPart);
+            outStr = `${label} ${formatResult(val)}`;
+          } else {
+            const val = evaluateCasioMath(cleanStmt);
+            outStr = `${cleanStmt} = ${formatResult(val)}`;
+          }
+          appState.prgmOutputs.push(outStr);
+          appState.prgmWaitingForExe = true;
+        }
+        // 4. Standalone evaluation
+        else {
+          const val = evaluateCasioMath(stmt);
+          appState.result = formatResult(val);
+          appState.prgmStmtIdx++;
+          advanceProgramStep();
+        }
       }
-      tapeList.innerHTML = tapeHistory.map(item => `
-        <div class="fx-tape-item" onclick="restoreTape('${item.expr.replace(/'/g, "\\'")}', '${item.res}')">
-          <span style="color:#94A3B8;">${item.expr}</span>
-          <span style="font-weight:800; color:#38BDF8;">= ${item.res}</span>
-        </div>
-      `).join('');
-    }
 
-    window.restoreTape = function(e, r) {
-      expr = e;
-      result = r;
-      updateLCD();
-    };
+      // PRGM Running Key Handling on LCD
+      function handlePrgmRunKey(key) {
+        if (appState.prgmWaitingForExe) {
+          if (key === 'exe') {
+            appState.prgmOutIdx++;
+            if (appState.prgmOutIdx < appState.prgmOutputs.length) {
+              // Next output
+              renderLCD();
+            } else {
+              // Advance to next statement
+              appState.prgmWaitingForExe = false;
+              appState.prgmStmtIdx++;
+              advanceProgramStep();
+            }
+          }
+          return;
+        }
 
-    document.getElementById("btn-clear-tape")?.addEventListener("click", () => {
-      tapeHistory = [];
-      renderTape();
-    });
+        // Typing variable value
+        if (['0','1','2','3','4','5','6','7','8','9','.'].includes(key)) {
+          appState.prgmInputBuffer += key;
+        } else if (key === 'neg') {
+          appState.prgmInputBuffer = (appState.prgmInputBuffer.startsWith('-') ? appState.prgmInputBuffer.slice(1) : '-' + appState.prgmInputBuffer);
+        } else if (key === 'del') {
+          appState.prgmInputBuffer = appState.prgmInputBuffer.slice(0, -1);
+        } else if (key === 'exe') {
+          const inputVal = parseFloat(appState.prgmInputBuffer) || 0;
+          variables[appState.prgmPromptVar] = inputVal;
+          appState.prgmPromptVar = '';
+          appState.prgmInputBuffer = '';
+          appState.prgmStmtIdx++;
+          advanceProgramStep();
+        }
+      }
 
-    // Keyboard bindings
-    document.addEventListener("keydown", (e) => {
-      if (prgmModal.style.display === "flex") return;
-      if (e.key >= '0' && e.key <= '9') handleKey(e.key);
-      else if (e.key === '.') handleKey('.');
-      else if (e.key === '+') handleKey('+');
-      else if (e.key === '-') handleKey('-');
-      else if (e.key === '*') handleKey('*');
-      else if (e.key === '/') { e.preventDefault(); handleKey('/'); }
-      else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculateFinal(); }
-      else if (e.key === 'Backspace') handleKey('del');
-      else if (e.key === 'Escape') handleKey('ac');
-    });
+      // PRGM Code Edit Key Handling
+      function handlePrgmEditKey(key, isShift, isAlpha) {
+        if (key === 'del') {
+          appState.expr = appState.expr.slice(0, -1);
+        } else if (key === 'exe') {
+          appState.expr += ':';
+        } else if (isAlpha) {
+          if (key === ',') appState.expr += '?→';
+          else if (key === 'exe') appState.expr += '◢';
+          else if (key >= 'A' && key <= 'Z') appState.expr += key;
+          else appState.expr += getAlphaSymbol(key);
+        } else if (isShift) {
+          if (key === 'sqrt') appState.expr += ':';
+          else if (key === 'rcl') appState.expr += '→';
+          else appState.expr += getShiftSymbol(key);
+        } else {
+          if (['0','1','2','3','4','5','6','7','8','9','+','-','*','/','.','(',')'].includes(key)) {
+            appState.expr += key;
+          } else if (key === 'sqr') appState.expr += '²';
+          else if (key === 'sqrt') appState.expr += '√(';
+        }
+      }
 
-    updateLCD();
+      // CALC (Variable prompt evaluator)
+      function handleCalcPromptKey(key) {
+        if (['0','1','2','3','4','5','6','7','8','9','.'].includes(key)) {
+          appState.prgmInputBuffer += key;
+        } else if (key === 'neg') {
+          appState.prgmInputBuffer = (appState.prgmInputBuffer.startsWith('-') ? appState.prgmInputBuffer.slice(1) : '-' + appState.prgmInputBuffer);
+        } else if (key === 'del') {
+          appState.prgmInputBuffer = appState.prgmInputBuffer.slice(0, -1);
+        } else if (key === 'exe') {
+          const curVar = appState.calcVarsToPrompt[appState.calcPromptIdx];
+          if (appState.prgmInputBuffer) {
+            variables[curVar] = parseFloat(appState.prgmInputBuffer) || 0;
+          }
+          appState.calcPromptIdx++;
+          appState.prgmInputBuffer = '';
+
+          if (appState.calcPromptIdx >= appState.calcVarsToPrompt.length) {
+            // Evaluated
+            const val = evaluateCasioMath(appState.calcBaseExpr);
+            appState.mode = 'COMP';
+            appState.expr = appState.calcBaseExpr;
+            appState.result = formatResult(val);
+            addTape(appState.expr, appState.result);
+          }
+        }
+      }
+
+      // FMLA Menu Key
+      function handleFmlaMenuKey(key) {
+        const id = parseInt(key, 10);
+        const fmla = FORMULA_LIB.find(f => f.id === id);
+        if (fmla) {
+          appState.mode = 'FMLA_RUN';
+          appState.fmlaActive = fmla;
+          appState.fmlaPromptIdx = 0;
+          appState.prgmInputBuffer = '';
+        }
+      }
+
+      // FMLA Run Key
+      function handleFmlaRunKey(key) {
+        if (['0','1','2','3','4','5','6','7','8','9','.'].includes(key)) {
+          appState.prgmInputBuffer += key;
+        } else if (key === 'del') {
+          appState.prgmInputBuffer = appState.prgmInputBuffer.slice(0, -1);
+        } else if (key === 'exe') {
+          const fVar = appState.fmlaActive.vars[appState.fmlaPromptIdx];
+          variables[fVar] = parseFloat(appState.prgmInputBuffer) || 0;
+          appState.fmlaPromptIdx++;
+          appState.prgmInputBuffer = '';
+
+          if (appState.fmlaPromptIdx >= appState.fmlaActive.vars.length) {
+            const val = evaluateCasioMath(appState.fmlaActive.expr);
+            appState.mode = 'COMP';
+            appState.expr = `${appState.fmlaActive.name}`;
+            appState.result = formatResult(val);
+            addTape(appState.expr, appState.result);
+          }
+        }
+      }
+
+      // BASE-N Key
+      function handleBaseNKey(key) {
+        if (key === 'sqr') appState.base = 'DEC';
+        else if (key === 'log') appState.base = 'HEX';
+        else if (key === 'ln') appState.base = 'BIN';
+        else if (key === 'pow') appState.base = 'OCT';
+        else if (['0','1','2','3','4','5','6','7','8','9'].includes(key)) {
+          appState.result = (appState.result === '0' ? key : appState.result + key);
+        } else if (key === 'del') {
+          appState.result = appState.result.slice(0, -1) || '0';
+        } else if (key === 'ac') {
+          appState.result = '0';
+        }
+      }
+
+      // Normal COMP Mode Key
+      function handleCompKey(key, isShift, isAlpha) {
+        if (key === 'prog') {
+          appState.mode = 'PRGM_MENU';
+          return;
+        }
+        if (key === 'fmla') {
+          appState.mode = 'FMLA_MENU';
+          return;
+        }
+        if (key === 'calc') {
+          // Prompt variables in current formula
+          const foundVars = [...new Set(appState.expr.match(/\b[A-Z]\b/g))];
+          if (foundVars.length > 0) {
+            appState.mode = 'CALC_PROMPT';
+            appState.calcVarsToPrompt = foundVars;
+            appState.calcPromptIdx = 0;
+            appState.calcBaseExpr = appState.expr;
+            appState.prgmInputBuffer = '';
+          } else {
+            executeFinalCalculation();
+          }
+          return;
+        }
+        if (key === 'solve') {
+          executeFinalCalculation();
+          return;
+        }
+
+        // ALPHA Character Inputs
+        if (isAlpha) {
+          const alphaChar = getAlphaSymbol(key);
+          if (alphaChar) {
+            appState.expr += alphaChar;
+            return;
+          }
+        }
+
+        // SHIFT Function Inputs
+        if (isShift) {
+          const shiftFn = getShiftSymbol(key);
+          if (shiftFn) {
+            appState.expr += shiftFn;
+            return;
+          }
+        }
+
+        // Standard Numbers & Operators
+        if (['0','1','2','3','4','5','6','7','8','9'].includes(key)) {
+          appState.expr += key;
+        } else if (key === '.') {
+          appState.expr += '.';
+        } else if (key === '+') {
+          appState.expr += '+';
+        } else if (key === '-') {
+          appState.expr += '-';
+        } else if (key === '*') {
+          appState.expr += '×';
+        } else if (key === '/') {
+          appState.expr += '÷';
+        } else if (key === '(') {
+          appState.expr += '(';
+        } else if (key === ')') {
+          appState.expr += ')';
+        } else if (key === ',') {
+          appState.expr += ',';
+        } else if (key === 'sqr') {
+          appState.expr += '²';
+        } else if (key === 'pow') {
+          appState.expr += '^(';
+        } else if (key === 'sqrt') {
+          appState.expr += '√(';
+        } else if (key === 'log') {
+          appState.expr += 'log(';
+        } else if (key === 'ln') {
+          appState.expr += 'ln(';
+        } else if (key === 'sin') {
+          appState.expr += 'sin(';
+        } else if (key === 'cos') {
+          appState.expr += 'cos(';
+        } else if (key === 'tan') {
+          appState.expr += 'tan(';
+        } else if (key === 'frac') {
+          appState.expr += '/';
+        } else if (key === 'neg') {
+          appState.expr += '-';
+        } else if (key === 'exp') {
+          appState.expr += 'e';
+        } else if (key === 'i') {
+          appState.expr += 'i';
+        } else if (key === 'dms') {
+          appState.expr += '°';
+        } else if (key === 'sd') {
+          toggleFractionDecimal();
+        } else if (key === 'mplus') {
+          const val = parseFloat(appState.result || '0');
+          variables.M += val;
+          appState.hasMemory = (variables.M !== 0);
+          UIUtils.showToast(`M+ -> M = ${variables.M}`, 'info');
+        } else if (key === 'rcl') {
+          appState.expr += variables.M.toString();
+        } else if (key === 'del') {
+          appState.expr = appState.expr.slice(0, -1);
+        } else if (key === 'exe') {
+          executeFinalCalculation();
+        }
+      }
+
+      function getAlphaSymbol(key) {
+        const map = {
+          'i': 'A', 'frac': 'B', 'dms': 'C', 'sin': 'D', 'cos': 'E', 'tan': 'F',
+          '(': 'G', ')': 'H', '7': 'K', '8': 'L', '9': 'M', '4': 'N', '5': 'O',
+          '6': 'P', '*': 'Q', '/': 'R', '1': 'S', '2': 'T', '3': 'U', '+': 'V',
+          '-': 'W', '0': 'X', '.': 'Y', 'exp': 'Z', 'neg': ' '
+        };
+        return map[key] || '';
+      }
+
+      function getShiftSymbol(key) {
+        const map = {
+          'sqrt': ':', 'sqr': '^3', 'log': '10^(', 'ln': 'exp(', 'pow': 'cbrt(',
+          'sin': 'asin(', 'cos': 'acos(', 'tan': 'atan(', 'i': '∠', 'frac': 'd/c',
+          '7': 'd/dx(', '8': '∫(', '9': 'nPr(', '4': 'nCr(', '5': '!', '6': 'Ran#',
+          '1': 'Pol(', '2': 'Rec(', '3': 'Abs(', 'exp': 'π', 'neg': 'Ans'
+        };
+        return map[key] || '';
+      }
+
+      function executeFinalCalculation() {
+        if (!appState.expr) return;
+        try {
+          const val = evaluateCasioMath(appState.expr);
+          if (isNaN(val) || !isFinite(val)) {
+            appState.result = 'Math ERROR';
+          } else {
+            appState.result = formatResult(val);
+            variables.Ans = val;
+            addTape(appState.expr, appState.result);
+          }
+        } catch(e) {
+          appState.result = 'Syntax ERROR';
+        }
+      }
+
+      // Mathematical Core Parser
+      function evaluateCasioMath(raw) {
+        let s = raw
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/')
+          .replace(/−/g, '-')
+          .replace(/²/g, '^2')
+          .replace(/³/g, '^3')
+          .replace(/π/g, 'Math.PI')
+          .replace(/Ans/g, variables.Ans || 0);
+
+        // Replace Variable Names
+        for (const [v, val] of Object.entries(variables)) {
+          s = s.replace(new RegExp(`\\b${v}\\b`, 'g'), `(${val})`);
+        }
+
+        // Implicit Multiplications: 2(3) -> 2*(3), 2A -> 2*A, 2√ -> 2*√
+        s = s.replace(/(\d+)\(/g, '$1*(');
+        s = s.replace(/\)(\d+)/g, ')*$1');
+        s = s.replace(/(\d+)Math\./g, '$1*Math.');
+        s = s.replace(/(\d+)sqrt\(/g, '$1*Math.sqrt(');
+
+        s = s.replace(/(\d+)!/g, (_, n) => factorial(parseInt(n)));
+        s = s.replace(/([0-9\.]+|\([^\)]+\))\^([0-9\.]+|\([^\)]+\))/g, 'Math.pow($1,$2)');
+
+        const deg = (appState.angle === 'DEG') ? '(Math.PI/180)*' : '';
+        const invDeg = (appState.angle === 'DEG') ? '*(180/Math.PI)' : '';
+
+        s = s.replace(/sin\(/g, `Math.sin(${deg}`);
+        s = s.replace(/cos\(/g, `Math.cos(${deg}`);
+        s = s.replace(/tan\(/g, `Math.tan(${deg}`);
+        s = s.replace(/asin\(/g, `(${invDeg}Math.asin(`);
+        s = s.replace(/acos\(/g, `(${invDeg}Math.acos(`);
+        s = s.replace(/atan\(/g, `(${invDeg}Math.atan(`);
+        s = s.replace(/sqrt\(/g, 'Math.sqrt(');
+        s = s.replace(/cbrt\(/g, 'Math.cbrt(');
+        s = s.replace(/log\(/g, 'Math.log10(');
+        s = s.replace(/ln\(/g, 'Math.log(');
+        s = s.replace(/Abs\(/g, 'Math.abs(');
+
+        return Function(`'use strict'; return (${s})`)();
+      }
+
+      function factorial(n) {
+        if (n < 0) return NaN;
+        if (n === 0 || n === 1) return 1;
+        let r = 1;
+        for (let i = 2; i <= Math.min(n, 150); i++) r *= i;
+        return r;
+      }
+
+      function formatResult(num) {
+        if (Math.abs(num) > 1e12 || (Math.abs(num) < 1e-6 && num !== 0)) {
+          return num.toExponential(6).replace('e+', 'e');
+        }
+        return parseFloat(num.toFixed(8)).toString();
+      }
+
+      function toggleFractionDecimal() {
+        const val = parseFloat(appState.result);
+        if (!isNaN(val)) {
+          if (appState.result.includes('/')) {
+            appState.result = evaluateCasioMath(appState.result).toString();
+          } else {
+            appState.result = toFraction(val);
+          }
+        }
+      }
+
+      function toFraction(val) {
+        let tolerance = 1.0e-6;
+        let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
+        let b = val;
+        do {
+          let a = Math.floor(b);
+          let aux = h1; h1 = a * h1 + h2; h2 = aux;
+          aux = k1; k1 = a * k1 + k2; k2 = aux;
+          b = 1 / (b - a);
+        } while (Math.abs(val - h1 / k1) > val * tolerance);
+        return `${h1}/${k1}`;
+      }
+
+      function addTape(expr, res) {
+        tapeHistory.unshift({ expr, res });
+        if (tapeHistory.length > 25) tapeHistory.pop();
+        renderTape();
+      }
+
+      function renderTape() {
+        if (tapeHistory.length === 0) {
+          tapeListEl.innerHTML = '<div style="color:#64748B; font-size:0.8rem; text-align:center; padding:10px;">Calculations appear here</div>';
+          return;
+        }
+        tapeListEl.innerHTML = tapeHistory.map(item => `
+          <div class="fx-tape-item" onclick="window.restoreTape('${item.expr.replace(/'/g, "\\'")}', '${item.res}')">
+            <span style="color:#94A3B8;">${item.expr}</span>
+            <span style="font-weight:800; color:#38BDF8;">= ${item.res}</span>
+          </div>
+        `).join('');
+      }
+
+      window.restoreTape = function(expr, res) {
+        appState.expr = expr;
+        appState.result = res;
+        appState.mode = 'COMP';
+        renderLCD();
+      };
+
+      document.getElementById('btn-clear-tape')?.addEventListener('click', () => {
+        tapeHistory = [];
+        renderTape();
+      });
+
+      // Bind Hardware Buttons
+      document.querySelectorAll('[data-key]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-key');
+          processKey(key);
+        });
+      });
+
+      document.getElementById('key-shift').addEventListener('click', () => {
+        playClick();
+        appState.shift = !appState.shift;
+        if (appState.shift) appState.alpha = false;
+        document.getElementById('key-shift').classList.toggle('active', appState.shift);
+        document.getElementById('key-alpha').classList.remove('active');
+        renderLCD();
+      });
+
+      document.getElementById('key-alpha').addEventListener('click', () => {
+        playClick();
+        appState.alpha = !appState.alpha;
+        if (appState.alpha) appState.shift = false;
+        document.getElementById('key-alpha').classList.toggle('active', appState.alpha);
+        document.getElementById('key-shift').classList.remove('active');
+        renderLCD();
+      });
+
+      document.getElementById('key-mode').addEventListener('click', () => {
+        playClick();
+        appState.mode = (appState.mode === 'MODE_MENU' ? 'COMP' : 'MODE_MENU');
+        renderLCD();
+      });
+
+      document.getElementById('key-fn').addEventListener('click', () => {
+        playClick();
+        appState.mode = (appState.mode === 'FMLA_MENU' ? 'COMP' : 'FMLA_MENU');
+        renderLCD();
+      });
+
+      document.getElementById('key-exit').addEventListener('click', () => {
+        playClick();
+        processKey('exit');
+      });
+
+      document.getElementById('key-fmla').addEventListener('click', () => {
+        playClick();
+        processKey('fmla');
+      });
+
+      document.getElementById('key-calc').addEventListener('click', () => {
+        playClick();
+        processKey('calc');
+      });
+
+      document.getElementById('key-solve').addEventListener('click', () => {
+        playClick();
+        processKey('solve');
+      });
+
+      // Replay Navigation Pad
+      document.getElementById('pad-up')?.addEventListener('click', () => { playClick(); });
+      document.getElementById('pad-down')?.addEventListener('click', () => { playClick(); });
+      document.getElementById('pad-left')?.addEventListener('click', () => { playClick(); });
+      document.getElementById('pad-right')?.addEventListener('click', () => { playClick(); });
+
+      // Physical Keyboard Binding
+      document.addEventListener('keydown', (e) => {
+        if (e.key >= '0' && e.key <= '9') processKey(e.key);
+        else if (e.key === '.') processKey('.');
+        else if (e.key === '+') processKey('+');
+        else if (e.key === '-') processKey('-');
+        else if (e.key === '*') processKey('*');
+        else if (e.key === '/') { e.preventDefault(); processKey('/'); }
+        else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); processKey('exe'); }
+        else if (e.key === 'Backspace') processKey('del');
+        else if (e.key === 'Escape') processKey('ac');
+      });
+
+      renderLCD();
+    })();
   </script>
 </body>
 </html>
