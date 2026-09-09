@@ -219,4 +219,5 @@
     showInstallModal,
     setupIosBanner
   };
+  window.localdocPromptInstall = showInstallModal;
 })();
