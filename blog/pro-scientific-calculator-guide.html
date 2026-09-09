@@ -76,6 +76,22 @@
           },
           {
             "@type": "Question",
+            "name": "How do surveyors use Pol(N1-N2, E1-E2) to calculate distance and bearing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Land surveyors calculate the coordinate inverse between Station 1 (N1, E1) and Station 2 (N2, E2) by entering Pol(N1-N2, E1-E2). The calculator computes horizontal distance r = √((ΔN)² + (ΔE)²) and whole-circle bearing θ = atan2(ΔE, ΔN). If θ is negative, adding 360° converts it into clockwise azimuth."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where are the results of Pol and Rec functions stored on Casio calculators?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "On authentic Casio scientific calculators (including fx-5800P, fx-3650P II, and fx-991EX), Pol(x, y) stores the radius r into variable X and the angle θ into variable Y (accessible via RCL X and RCL Y). Conversely, Rec(r, θ) stores the X-component into variable X and the Y-component into variable Y."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "How does Base-N mode work on Casio calculators?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -234,11 +250,11 @@
 
       <!-- Section 3 -->
       <h2>3. Ready-to-Use Engineering Program Codes</h2>
-      <p>Here are three practical programs that you can enter directly into slots P1–P4 on the <a href="../pages/scientific-calculator.html" style="color:var(--primary); font-weight:700;">LocalDoc fx-5800P Calculator</a>:</p>
+      <p>Here are four essential field programs that you can enter directly into slots P1–P4 on the <a href="../pages/scientific-calculator.html" style="color:var(--primary); font-weight:700;">LocalDoc fx-5800P Calculator</a>:</p>
 
       <!-- Program 1 -->
       <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px;">
-        <h4 style="color:#0284C7; margin:0 0 8px;">Program 1: Complete Quadratic Equation Solver (P1)</h4>
+        <h4 style="color:#0284C7; margin:0 0 8px;">Program 1: Complete Quadratic Equation Solver (P1: QUAD)</h4>
         <pre style="background:#020617; color:#C2D7B4; padding:12px; border-radius:8px; font-family:monospace; font-size:0.9rem; overflow-x:auto;">?→A:?→B:?→C:(B²-4AC)→D:(-B+√D)/(2A)→X:(-B-√D)/(2A)→Y:"X1="X◢"X2="Y◢</pre>
         <p style="font-size:0.84rem; color:var(--text-secondary); margin:6px 0 0;">
           <strong>How it works:</strong> Prompts for coefficients $a$, $b$, and $c$, evaluates the discriminant $\Delta = b^2 - 4ac$, computes both roots, and presents $X_1$ and $X_2$ consecutively on the LCD.
@@ -247,7 +263,7 @@
 
       <!-- Program 2 -->
       <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px;">
-        <h4 style="color:#10B981; margin:0 0 8px;">Program 2: Heron's Formula for Irregular Land Parcels (P2)</h4>
+        <h4 style="color:#10B981; margin:0 0 8px;">Program 2: Heron's Formula for Irregular Land Parcels (P2: HERON)</h4>
         <pre style="background:#020617; color:#C2D7B4; padding:12px; border-radius:8px; font-family:monospace; font-size:0.9rem; overflow-x:auto;">?→A:?→B:?→C:(A+B+C)/2→S:√(S(S-A)(S-B)(S-C))→X:"AREA="X◢</pre>
         <p style="font-size:0.84rem; color:var(--text-secondary); margin:6px 0 0;">
           <strong>How it works:</strong> Widely used by surveyors to calculate parcel acreage from three measured boundaries without needing angles.
@@ -255,27 +271,157 @@
       </div>
 
       <!-- Program 3 -->
-      <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:24px;">
-        <h4 style="color:#F59E0B; margin:0 0 8px;">Program 3: Electrical Power & Voltage Calculator (P3)</h4>
+      <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px;">
+        <h4 style="color:#F59E0B; margin:0 0 8px;">Program 3: Electrical Power & Voltage Calculator (P3: OHM)</h4>
         <pre style="background:#020617; color:#C2D7B4; padding:12px; border-radius:8px; font-family:monospace; font-size:0.9rem; overflow-x:auto;">?→I:?→R:I*R→V:V*I→P:"VOLT="V◢"WATT="P◢</pre>
         <p style="font-size:0.84rem; color:var(--text-secondary); margin:6px 0 0;">
           <strong>How it works:</strong> Solves Ohm's Law ($V = IR$) and Joule Heating ($P = VI$) given Current and Resistance.
         </p>
       </div>
 
+      <!-- Program 4 -->
+      <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:24px;">
+        <h4 style="color:#38BDF8; margin:0 0 8px;">Program 4: Land Surveying Coordinate Inverse & Bearing (P4: SURVEY-INV)</h4>
+        <pre style="background:#020617; color:#C2D7B4; padding:12px; border-radius:8px; font-family:monospace; font-size:0.9rem; overflow-x:auto;">?→A:?→B:?→C:?→D:Pol(A-C,B-D)→R:Y→T:T&lt;0=&gt;T+360→T:"DIST="R◢"BRG="T◢</pre>
+        <p style="font-size:0.84rem; color:var(--text-secondary); margin:6px 0 0;">
+          <strong>How it works:</strong> Solves the fundamental traverse inverse between two known control points. Prompts for Station 1 Northing (<code>A</code>) and Easting (<code>B</code>), then Station 2 Northing (<code>C</code>) and Easting (<code>D</code>). Computes horizontal distance $R = \sqrt{(A-C)^2 + (B-D)^2}$ and whole-circle bearing $T$. The conditional branch <code>T&lt;0=&gt;T+360→T</code> normalizes south-west and north-west bearings into standard $0^\circ$ to $360^\circ$ civil engineering azimuth format.
+        </p>
+        <div style="background:rgba(56, 189, 248, 0.08); border-left:3px solid #38BDF8; padding:10px 14px; margin-top:12px; border-radius:6px; font-size:0.84rem; color:var(--text-secondary);">
+          <strong style="color:var(--text-primary);">Worked Field Survey Example:</strong><br>
+          Given STN 1 $(N_1 = 41512.000\text{ m}, E_1 = 48686.000\text{ m})$ and STN 2 $(N_2 = 41412.000\text{ m}, E_2 = 48586.000\text{ m})$:<br>
+          • Inputs: <code>A = 41512</code>, <code>B = 48686</code>, <code>C = 41412</code>, <code>D = 48586</code>.<br>
+          • Difference: $\Delta N = 41512 - 41412 = 100.000\text{ m}$, $\Delta E = 48686 - 48586 = 100.000\text{ m}$.<br>
+          • LCD Output 1: <strong>DIST = 141.421 m</strong> (pause symbol <code>◢</code> blinks; press <strong>EXE</strong>).<br>
+          • LCD Output 2: <strong>BRG = 45°00'00"</strong> (Whole-Circle Bearing North-East).
+        </div>
+      </div>
+
       <!-- Section 4 -->
-      <h2>4. Programmer Base-N Digital Arithmetic</h2>
+      <h2>4. Land Surveying Traversing: Polar vs Rectangular (<code>Pol</code> & <code>Rec</code>)</h2>
       <p>
-        Computer scientists and embedded systems engineers frequently need to work across number systems. In <strong>BASE-N mode</strong>, the fx-5800P transforms into a digital logic powerhouse:
+        Field surveyors, geomatics engineers, and civil site teams rely on the Casio fx-5800P to calculate traverse lines, road curves, boundary closures, and staking-out radiation coordinates directly on construction sites.
+      </p>
+
+      <h3>4.1 Coordinate Inverse vs Forward Radiation</h3>
+      <p>
+        Two primary calculations underpin all land and engineering surveys:
       </p>
       <ul>
-        <li><strong>Instant Hardware Switching:</strong> Press <code>x²</code> (DEC), <code>log</code> (HEX), <code>ln</code> (BIN), or <code>xʸ</code> (OCT) to convert active values immediately.</li>
-        <li><strong>Bitwise Operators:</strong> Use <code>AND</code>, <code>OR</code>, <code>XOR</code>, <code>NOT</code>, and <code>NEG</code> to calculate network subnet masks and bit flags.</li>
-        <li><strong>Two's Complement:</strong> Handles negative integers seamlessly in binary representation.</li>
+        <li>
+          <strong>Coordinate Inverse (Polar Transformation - <code>Pol</code>):</strong> Given coordinates for two control points $(N_1, E_1)$ and $(N_2, E_2)$, determine horizontal distance $r$ and azimuth $\theta$:<br>
+          $$\Delta N = N_1 - N_2, \quad \Delta E = E_1 - E_2$$
+          $$r = \sqrt{(\Delta N)^2 + (\Delta E)^2}, \quad \theta = \arctan\left(\frac{\Delta E}{\Delta N}\right)$$
+        </li>
+        <li>
+          <strong>Forward Radiation / Traversing (Rectangular Transformation - <code>Rec</code>):</strong> Given an occupied instrument station $(N_0, E_0)$, target distance $D$, and bearing $\theta$, determine the coordinates of the new station:<br>
+          $$\Delta N = D \cos(\theta), \quad \Delta E = D \sin(\theta)$$
+          $$N_1 = N_0 + \Delta N, \quad E_1 = E_0 + \Delta E$$
+        </li>
       </ul>
 
-      <!-- Section 5: FAQs -->
-      <h2>5. Frequently Asked Questions</h2>
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:14px; padding:20px; margin:22px 0;">
+        <h3 style="font-size:1.05rem; color:var(--text-primary); margin-top:0;">🧭 Hardware Memory Register Conventions in Casio Calculators</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin:0 0 10px 0;">
+          Authentic Casio calculators follow a strict memory assignment convention that simplifies chained field calculations:
+        </p>
+        <ul style="margin:0; padding-left:20px; line-height:1.7; color:var(--text-secondary); font-size:0.88rem;">
+          <li><strong>When evaluating <code>Pol(ΔN, ΔE)</code>:</strong> Distance $r$ is saved into memory register <strong>X</strong>, and azimuth angle $\theta$ is saved into memory register <strong>Y</strong>. Both can be recalled at any time via <strong>RCL &rarr; X</strong> and <strong>RCL &rarr; Y</strong>.</li>
+          <li><strong>When evaluating <code>Rec(Distance, Bearing)</code>:</strong> Latitude ($\Delta N$) is saved into memory register <strong>X</strong>, and Departure ($\Delta E$) is saved into memory register <strong>Y</strong>.</li>
+          <li><strong>Dual-Line LCD Output:</strong> On the LocalDoc fx-5800P, Line 3 displays distance $r$ while Line 4 displays $\theta$ simultaneously in decimal degrees and sexagesimal DMS (e.g. <code>45°00'00"</code>).</li>
+        </ul>
+      </div>
+
+      <h3>4.2 Working with Degrees, Minutes, Seconds (DMS - <code>° ' "</code>)</h3>
+      <p>
+        Surveying bearings and angles are universally recorded in sexagesimal units: degrees ($^\circ$), minutes ($'$), and seconds ($''$).
+      </p>
+      <ul>
+        <li><strong>Entering Angles:</strong> To enter $124^\circ 45' 30''$, type <code>124 [° ' "] 45 [° ' "] 30 [° ' "]</code>.</li>
+        <li><strong>Toggling DMS on Screen:</strong> After computing an angle (e.g. $124.7583^\circ$), press the dedicated <strong>° ' " (DMS)</strong> key to toggle between decimal degrees and sexagesimal notation.</li>
+        <li><strong>Whole Circle Bearing (WCB):</strong> Azimuth measured clockwise from True or Grid North ($0^\circ$ to $360^\circ$). If your calculation yields a negative bearing (such as $-45^\circ$), adding $360^\circ$ gives the standard azimuth of $315^\circ00'00''$ (North-West).</li>
+      </ul>
+
+      <!-- Section 5 -->
+      <h2>5. Programmer Base-N Digital Arithmetic</h2>
+      <p>
+        Computer scientists, network administrators, and embedded systems engineers frequently need to work across multiple number systems. In <strong>BASE-N mode</strong> (press <code>MODE &rarr; 2:BASE-N</code>), the fx-5800P functions as a dedicated digital logic workstation:
+      </p>
+      <ul>
+        <li><strong>Instant Hardware Switching:</strong> Press <code>x²</code> (DEC), <code>log</code> (HEX), <code>ln</code> (BIN), or <code>xʸ</code> (OCT) to convert active values immediately across bases.</li>
+        <li><strong>Bitwise Operators:</strong> Calculate network subnet masks, IP ranges, and microcontroller bit flags using <code>AND</code>, <code>OR</code>, <code>XOR</code>, <code>NOT</code>, and <code>NEG</code>.</li>
+        <li><strong>Two's Complement:</strong> Negative binary numbers are represented in standard 32-bit two's complement format.</li>
+      </ul>
+
+      <!-- Section 6 -->
+      <h2>6. Built-in Engineering Formula Library (FMLA)</h2>
+      <p>
+        Press the <strong>FMLA</strong> key to open the built-in engineering library. You can evaluate complex parametric equations instantly by inputting variable values on the LCD without writing custom programs:
+      </p>
+      <div class="spec-table-wrap" style="overflow-x:auto; margin:16px 0;">
+        <table class="spec-table" style="width:100%; border-collapse:collapse; font-size:0.86rem;">
+          <thead>
+            <tr style="background:var(--bg-surface); text-align:left;">
+              <th style="padding:8px 12px; border-bottom:1px solid var(--line);">ID</th>
+              <th style="padding:8px 12px; border-bottom:1px solid var(--line);">Formula Name</th>
+              <th style="padding:8px 12px; border-bottom:1px solid var(--line);">Variables</th>
+              <th style="padding:8px 12px; border-bottom:1px solid var(--line);">Mathematical Expression</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">1</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Quadratic Roots</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">A, B, C</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>(-B + √(B² - 4AC)) / (2A)</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">2</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Kinetic Energy</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">M, V</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>½ m v²</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">3</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Coulomb Force</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Q, R</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>(8.98755 × 10⁹ × Q) / R²</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">4</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Ideal Gas Law</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">N, T, V</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>(N × 8.314 × T) / V</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">5</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Parallel Resistors</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">A, B</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>(A × B) / (A + B)</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">6</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Pythagorean Hypotenuse</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">A, B</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>√(A² + B²)</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">7</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Civil Grade Slope %</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">H, L, D</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>((H - L) / D) × 100</code></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">8</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">Circle Area</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);">R</td>
+              <td style="padding:8px 12px; border-bottom:1px solid var(--line);"><code>π × R²</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Section 7: FAQs -->
+      <h2>7. Frequently Asked Questions</h2>
       <div class="faq-accordion">
         <div class="faq-item">
           <button class="faq-question" type="button">Does the online calculator save my programs when I refresh the page?</button>
@@ -292,9 +438,30 @@
         </div>
 
         <div class="faq-item">
+          <button class="faq-question" type="button">How do surveyors use Pol(N1-N2, E1-E2) to calculate distance and bearing?</button>
+          <div class="faq-answer">
+            <p>Land surveyors calculate the coordinate inverse between Station 1 (N1, E1) and Station 2 (N2, E2) by entering <code>Pol(N1-N2, E1-E2)</code>. The calculator computes horizontal distance $r = \sqrt{(\Delta N)^2 + (\Delta E)^2}$ and whole-circle bearing $\theta = \text{atan2}(\Delta E, \Delta N)$. If $\theta$ is negative, adding $360^\circ$ converts it into clockwise azimuth.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">Where are the results of Pol and Rec functions stored on Casio calculators?</button>
+          <div class="faq-answer">
+            <p>On authentic Casio scientific calculators (including fx-5800P, fx-3650P II, and fx-991EX), <code>Pol(x, y)</code> stores the radius $r$ into variable <strong>X</strong> and the angle $\theta$ into variable <strong>Y</strong> (accessible via <strong>RCL X</strong> and <strong>RCL Y</strong>). Conversely, <code>Rec(r, θ)</code> stores the X-component into variable <strong>X</strong> and the Y-component into variable <strong>Y</strong>.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
           <button class="faq-question" type="button">What does the S⇔D button do?</button>
           <div class="faq-answer">
             <p>The <strong>S⇔D</strong> (Standard to Decimal) button toggles fractions into decimals and vice-versa (e.g. converting <code>0.75</code> into <code>3/4</code> or <code>1/3</code> into <code>0.33333333</code>).</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">How does Program 4 (SURVEY-INV) handle bearings in the third and fourth quadrants?</button>
+          <div class="faq-answer">
+            <p>In standard trigonometric functions, angles south of east/west yield negative degree values between $0^\circ$ and $-180^\circ$. Program 4 includes the conditional branch <code>T&lt;0=&gt;T+360→T</code>, which automatically adds $360^\circ$ whenever an angle is negative, producing whole-circle bearings between $0^\circ$ and $360^\circ$.</p>
           </div>
         </div>
       </div>

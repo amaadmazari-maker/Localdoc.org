@@ -919,7 +919,9 @@
         { id: 3, name: "COULOMB FORCE (k*q1*q2/r²)", vars: ['Q','R'], expr: "8.98755e9*Q/R^2" },
         { id: 4, name: "IDEAL GAS (P=nRT/V)", vars: ['N','T','V'], expr: "(N*8.314*T)/V" },
         { id: 5, name: "PARALLEL RESISTORS", vars: ['A','B'], expr: "(A*B)/(A+B)" },
-        { id: 6, name: "PYTHAGOREAN (√(a²+b²))", vars: ['A','B'], expr: "sqrt(A^2+B^2)" }
+        { id: 6, name: "PYTHAGOREAN (√(a²+b²))", vars: ['A','B'], expr: "sqrt(A^2+B^2)" },
+        { id: 7, name: "GRADE SLOPE % ((H-L)/D*100)", vars: ['H','L','D'], expr: "((H-L)/D)*100" },
+        { id: 8, name: "CIRCLE AREA (π*R²)", vars: ['R'], expr: "pi*R^2" }
       ];
 
       function loadPrograms() {
@@ -1132,9 +1134,9 @@
 
           case 'FMLA_MENU':
             l1Txt.textContent = "--- FORMULA LIBRARY ---";
-            l2Txt.textContent = "1:QUAD 2:EK 3:COULOMB";
-            l3Txt.textContent = "4:GAS  5:RESIST 6:PYTH";
-            l4Txt.textContent = "Select [1-6] or EXIT";
+            l2Txt.textContent = "1:QUAD 2:EK 3:COULOMB 4:GAS";
+            l3Txt.textContent = "5:RESIST 6:PYTH 7:SLOPE 8:AREA";
+            l4Txt.textContent = "Select [1-8] or EXIT";
             break;
 
           case 'FMLA_RUN':
