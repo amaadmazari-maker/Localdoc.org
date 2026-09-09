@@ -179,7 +179,44 @@
     });
   }
 
+  // Smart iOS Safari Install Banner (iPhone & iPad Safari only, when not in standalone mode)
+  function setupIosBanner() {
+    const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    const dismissed = sessionStorage.getItem('localdoc_ios_banner_dismissed');
+
+    if (isIos && !isStandalone && !dismissed) {
+      const banner = document.createElement('div');
+      banner.id = 'ios-install-banner';
+      banner.style.cssText = 'position:fixed; bottom:16px; left:16px; right:16px; max-width:440px; margin:0 auto; background:rgba(15, 23, 42, 0.95); backdrop-filter:blur(14px); border:1.5px solid #0284C7; border-radius:18px; padding:12px 14px; box-shadow:0 14px 36px rgba(0,0,0,0.65); z-index:99999; display:flex; align-items:center; gap:12px; color:#F8FAFC; font-family:system-ui,-apple-system,sans-serif; transition:all 0.3s ease;';
+      banner.innerHTML = `
+        <div style="background:linear-gradient(135deg, #0284C7, #0369A1); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.3rem; box-shadow:0 4px 10px rgba(2,132,199,0.4);">📲</div>
+        <div style="flex:1; font-size:0.82rem; line-height:1.38;">
+          <strong style="color:#FFF; display:block; font-size:0.88rem; font-weight:800; margin-bottom:2px;">Install LocalDoc on iPhone</strong>
+          <span>Tap the <strong style="color:#38BDF8;">Share button ⎋</strong> then select <strong style="color:#38BDF8;">Add to Home Screen ⊞</strong> for offline full-screen app access.</span>
+        </div>
+        <button type="button" id="ios-banner-close" style="background:none; border:none; color:#94A3B8; font-size:1.3rem; cursor:pointer; padding:4px 6px; line-height:1; display:flex; align-items:center;" aria-label="Close">✕</button>
+      `;
+      document.body.appendChild(banner);
+
+      document.getElementById('ios-banner-close')?.addEventListener('click', () => {
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(20px)';
+        setTimeout(() => banner.remove(), 300);
+        sessionStorage.setItem('localdoc_ios_banner_dismissed', '1');
+      });
+    }
+  }
+
+  // Trigger iOS check on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupIosBanner);
+  } else {
+    setupIosBanner();
+  }
+
   window.LocalDocPWA = {
-    showInstallModal
+    showInstallModal,
+    setupIosBanner
   };
 })();
