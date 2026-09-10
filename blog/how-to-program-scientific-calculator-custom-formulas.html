@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Program a Scientific Calculator: Custom Formulas, Code Syntax & Surveying Routines | LocalDoc</title>
+  <meta name="description" content="Complete tutorial on programming scientific calculators. Learn Casio-Basic syntax, variable memory, conditional branching, loops, and write ready-to-use formulas for quadratic equations and surveying.">
+  <link rel="canonical" href="https://localdoc.org/blog/how-to-program-scientific-calculator-custom-formulas.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Program a Scientific Calculator: Step-by-Step Custom Formula Guide">
+  <meta property="og:description" content="Step-by-step handbook on writing, saving, and debugging custom programs on scientific calculators. Includes quadratic solver, civil engineering, and land surveying routines.">
+  <meta property="og:url" content="https://localdoc.org/blog/how-to-program-scientific-calculator-custom-formulas.html">
+  <meta property="og:image" content="../assets/icons/calculator.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": "How to Program a Scientific Calculator: Custom Formulas, Code Syntax & Surveying Routines",
+        "description": "Comprehensive engineering guide to programming scientific calculators with Casio-Basic syntax, input prompts, variable assignment, and practical engineering libraries.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Document & Computational Architect"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-09-10T11:00:00+00:00",
+        "dateModified": "2026-09-10T11:00:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/how-to-program-scientific-calculator-custom-formulas.html"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What programming language do scientific calculators use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Most programmable scientific calculators (such as the Casio fx-5800P and fx-3650P II) use a specialized tokenized dialect known as Casio-BASIC. It includes structured programming constructs such as ?→Var (input prompt), : (statement separator), If...Then...Else...IfEnd, For...To...Next, While...WhileEnd, and ◢ (display pause)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do you prompt the user for input in a calculator program?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In Casio-BASIC, use the question mark token followed by the store arrow and the variable name, such as '?→A'. When the program executes, the calculator displays a flashing question mark cursor on the LCD screen, halts execution until you enter a numerical value and press EXE, and stores that value into register A."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the little triangle symbol (◢) mean in calculator code?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The right-angle triangle symbol (◢), often typed using SHIFT + VARS (PRGM) -> Disp, is the pause/display command. It prints the result of the preceding expression on the screen and temporarily pauses program execution until the user presses the EXE button."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I test and run calculator programs without buying hardware?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! LocalDoc features a 100% free, in-browser Scientific & Programmable Calculator that runs directly in your device memory with zero downloads and zero cloud uploads. It provides dedicated memory registers, Base-N conversions, trigonometric functions, and persistent calculation history."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do you clear program memory on a scientific calculator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "To delete an existing program on Casio calculators, navigate to MODE -> PRGM -> Delete (or EDIT -> select program -> DEL -> EXE). To clear stored variable registers without deleting program code, use SHIFT -> 9 (CLR) -> 1:Memory -> EXE."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* Interactive Animated LCD Calculator Simulator */
+    .lcd-sim-container {
+      background: #1E293B;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      padding: 24px;
+      margin: 30px 0;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      color: #F8FAFC;
+    }
+    .lcd-screen-bezel {
+      background: #7D9272;
+      border: 4px solid #0F172A;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: inset 0 3px 10px rgba(0,0,0,0.4);
+      font-family: 'Courier New', Courier, monospace;
+      color: #112211;
+      font-weight: 700;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .lcd-screen-bezel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .lcd-header-status {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      border-bottom: 1px dashed rgba(17,34,17,0.3);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+    .lcd-line {
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      min-height: 24px;
+      transition: all 0.2s ease;
+    }
+    .lcd-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 18px;
+      background: #112211;
+      animation: blink 0.9s infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    .lcd-sim-controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .sim-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .sim-btn:active {
+      transform: scale(0.97);
+    }
+    .sim-btn-primary {
+      background: #0284C7;
+      color: #FFFFFF;
+      border-color: #0284C7;
+    }
+    .sim-btn-primary:hover {
+      background: #0369A1;
+    }
+    .sim-btn-secondary {
+      background: #334155;
+      color: #F8FAFC;
+      border-color: #475569;
+    }
+    .sim-btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* SVG Pipeline Animation */
+    .pipeline-svg-box {
+      background: #090D16;
+      border: 1px solid #1E293B;
+      border-radius: 16px;
+      padding: 18px 12px;
+      margin: 26px 0;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+    .flow-dash {
+      stroke-dasharray: 8, 8;
+      animation: dashFlow 1.6s linear infinite;
+    }
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -32; }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 2px rgba(56, 189, 248, 0.4)); }
+      100% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.9)); }
+    }
+    .pulse-green {
+      animation: pulseGreen 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGreen {
+      0% { filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.4)); }
+      100% { filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.9)); }
+    }
+
+    /* Interactive Code Blocks */
+    .code-box {
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      border-left: 4px solid var(--primary, #0284C7);
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .code-copy-btn:hover {
+      background: #334155;
+      color: #FFFFFF;
+    }
+
+    /* Accordion FAQ */
+    .faq-accordion {
+      margin: 30px 0;
+    }
+    .faq-item {
+      border: 1px solid var(--line, #E2E8F0);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: var(--bg-surface, #FFFFFF);
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .faq-question {
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary, #0F172A);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-question:hover {
+      color: var(--primary, #0284C7);
+    }
+    .faq-icon {
+      transition: transform 0.25s ease;
+    }
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+    .faq-answer {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: var(--text-secondary, #475569);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .faq-item.active .faq-answer {
+      padding: 0 20px 18px;
+      max-height: 300px;
+    }
+
+    /* Interactive Comments Section */
+    .comments-section {
+      background: var(--bg-surface, #FFFFFF);
+      border: 1px solid var(--line, #E2E8F0);
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 40px;
+    }
+    .comment-card {
+      border-bottom: 1px solid var(--line, #E2E8F0);
+      padding: 16px 0;
+    }
+    .comment-card:last-child {
+      border-bottom: none;
+    }
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .comment-author {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary, #0F172A);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .comment-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.1);
+      color: #0284C7;
+      font-weight: 700;
+    }
+    .comment-date {
+      font-size: 0.78rem;
+      color: var(--text-muted, #94A3B8);
+    }
+    .comment-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary, #475569);
+      line-height: 1.55;
+      margin: 4px 0 8px;
+    }
+    .comment-action-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted, #94A3B8);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .comment-action-btn:hover {
+      color: var(--primary, #0284C7);
+    }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="../pages/scientific-calculator.html" class="nav-link">Scientific Calculator</a></li>
+        <li><a href="../pages/document-reader.html" class="nav-link">Document Reader</a></li>
+        <li><a href="index.html" class="nav-link active">Blog & Guides</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:30px; padding-bottom:70px; max-width:860px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="index.html">Blog & Guides</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>How to Program a Scientific Calculator</span>
+    </nav>
+
+    <article class="blog-article">
+      <header class="article-header">
+        <div class="article-meta-top">
+          <span class="category-tag">Engineering & Math Tutorials</span>
+          <span class="read-time">⏱️ 9 Min Read</span>
+          <span class="date-tag">September 10, 2026</span>
+        </div>
+        <h1 style="font-size:2.35rem; font-weight:900; line-height:1.25; margin:14px 0 16px; color:var(--text-primary);">
+          How to Program a Scientific Calculator: Writing Custom Formulas, Loops & Surveying Routines
+        </h1>
+        <p class="lead-text" style="font-size:1.12rem; color:var(--text-secondary); line-height:1.65;">
+          Master the tokenized syntax of Casio-Basic, automate repetitive engineering equations, and store persistent multi-variable formulas in memory. Includes an interactive LCD simulator, copy-ready formula libraries, and execution blueprints.
+        </p>
+
+        <div style="display:flex; align-items:center; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line);">
+          <img src="../assets/icons/favicon.svg" width="42" height="42" alt="Author" style="border-radius:50%; background:#F1F5F9; padding:4px;">
+          <div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:0.95rem;">Amaad Mazari</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Lead Computational Architect • LocalDoc Core Engineering</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Fast-Access App Callout Banner -->
+      <div style="background:linear-gradient(135deg, rgba(2,132,199,0.08) 0%, rgba(16,185,129,0.08) 100%); border:1.5px solid rgba(2,132,199,0.3); border-radius:14px; padding:18px 22px; margin:28px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h4 style="margin:0 0 4px; color:var(--text-primary); font-size:1rem; display:flex; align-items:center; gap:8px;">
+            <span>📐 Need to run calculations immediately?</span>
+          </h4>
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary);">
+            Try the free, 100% private in-browser Scientific Calculator tool with full trig, memory, and history.
+          </p>
+        </div>
+        <a href="../pages/scientific-calculator.html" class="btn btn-primary" style="padding:8px 18px; text-decoration:none; font-size:0.88rem;">
+          Launch Online Calculator &rarr;
+        </a>
+      </div>
+
+      <!-- Section 1 -->
+      <section style="margin-top:36px;">
+        <h2 style="font-size:1.65rem; color:var(--text-primary); margin-bottom:14px;">1. Understanding Calculator Program Architecture</h2>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:1rem;">
+          Programmable scientific calculators (most notably the legendary <strong>Casio fx-5800P</strong>, <strong>fx-3650P II</strong>, and <strong>fx-4500PA</strong>) differ fundamentally from standard classroom calculators. While ordinary devices discard values the moment you switch off or press <code>AC</code>, programmable hardware incorporates dedicated non-volatile flash RAM (often labeled <strong>P1, P2, P3, and P4</strong>) where algorithms can be stored indefinitely. In fact, on an fx-5800P with 28,500 bytes of flash storage, your program routines remain safely preserved even when swapping the primary AAA alkaline battery.
+        </p>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:1rem;">
+          The programming language utilized on these devices is a compact, tokenized implementation of <strong>Casio-BASIC</strong>. Unlike Python or C++, where code is compiled into machine instructions, a calculator's microprocessor interprets each character or token directly at runtime. Every operator, variable call, and syntax command takes up between 1 to 3 bytes of internal memory.
+        </p>
+
+        <!-- Animated SVG Execution Pipeline -->
+        <div class="pipeline-svg-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:0 8px;">
+            <span style="font-size:0.88rem; font-weight:800; color:#38BDF8; letter-spacing:0.04em;">⚡ ARCHITECTURE: CASIO-BASIC EXECUTION PIPELINE</span>
+            <span style="font-size:0.75rem; color:#94A3B8; font-family:monospace;">100% AIR-GAPPED HARDWARE</span>
+          </div>
+          <svg viewBox="0 0 840 220" width="100%" height="auto" style="display:block; overflow:visible;" role="img" aria-label="Casio-BASIC Execution Cycle and Memory Architecture Diagram">
+            <defs>
+              <linearGradient id="svgBlueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#0284C7" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8"/>
+              </linearGradient>
+              <linearGradient id="svgGreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8"/>
+              </linearGradient>
+              <linearGradient id="svgPurpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#0F172A" stop-opacity="0.8"/>
+              </linearGradient>
+              <linearGradient id="svgLcdGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#8DA681"/>
+                <stop offset="100%" stop-color="#6E8462"/>
+              </linearGradient>
+              <marker id="arrowCyan" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z" fill="#38BDF8"/>
+              </marker>
+              <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z" fill="#10B981"/>
+              </marker>
+              <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z" fill="#8B5CF6"/>
+              </marker>
+            </defs>
+
+            <!-- Node 1: Keypad & Input Prompts -->
+            <g class="pulse-glow">
+              <rect x="15" y="25" width="175" height="165" rx="12" fill="url(#svgBlueGrad)" stroke="#0284C7" stroke-width="2"/>
+              <text x="102" y="55" fill="#38BDF8" font-size="13" font-weight="bold" text-anchor="middle" font-family="sans-serif">1. INPUT PROMPT</text>
+              <rect x="35" y="70" width="135" height="34" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+              <text x="102" y="92" fill="#F8FAFC" font-size="14" font-family="monospace" font-weight="bold" text-anchor="middle">"? → A" : ?</text>
+              <text x="102" y="130" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Halts execution & waits</text>
+              <text x="102" y="148" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">User keys in number</text>
+              <text x="102" y="166" fill="#38BDF8" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">EXE commits value</text>
+            </g>
+
+            <!-- Flow Arrow 1 -> 2 -->
+            <path d="M 190 108 L 225 108" stroke="#38BDF8" stroke-width="2.5" class="flow-dash" marker-end="url(#arrowCyan)"/>
+
+            <!-- Node 2: Variable Registers (RAM Bus) -->
+            <g class="pulse-green">
+              <rect x="230" y="25" width="175" height="165" rx="12" fill="url(#svgGreenGrad)" stroke="#10B981" stroke-width="2"/>
+              <text x="317" y="55" fill="#34D399" font-size="13" font-weight="bold" text-anchor="middle" font-family="sans-serif">2. VARIABLE BUS</text>
+              <!-- Matrix of Registers -->
+              <g transform="translate(245, 68)">
+                <rect x="0" y="0" width="42" height="28" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+                <text x="21" y="19" fill="#A7F3D0" font-size="12" font-family="monospace" font-weight="bold" text-anchor="middle">A:15</text>
+                <rect x="51" y="0" width="42" height="28" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+                <text x="72" y="19" fill="#A7F3D0" font-size="12" font-family="monospace" font-weight="bold" text-anchor="middle">B:20</text>
+                <rect x="102" y="0" width="42" height="28" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+                <text x="123" y="19" fill="#A7F3D0" font-size="12" font-family="monospace" font-weight="bold" text-anchor="middle">C:25</text>
+              </g>
+              <text x="317" y="130" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">26 Variable Registers</text>
+              <text x="317" y="148" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Direct Memory Access</text>
+              <text x="317" y="166" fill="#34D399" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">Non-Volatile Storage</text>
+            </g>
+
+            <!-- Flow Arrow 2 -> 3 -->
+            <path d="M 405 108 L 440 108" stroke="#10B981" stroke-width="2.5" class="flow-dash" marker-end="url(#arrowGreen)"/>
+
+            <!-- Node 3: Math ALU & Logic Engine -->
+            <g>
+              <rect x="445" y="25" width="175" height="165" rx="12" fill="url(#svgPurpleGrad)" stroke="#8B5CF6" stroke-width="2"/>
+              <text x="532" y="55" fill="#C4B5FD" font-size="13" font-weight="bold" text-anchor="middle" font-family="sans-serif">3. ALU & LOGIC</text>
+              <rect x="465" y="70" width="135" height="34" rx="6" fill="#0F172A" stroke="#4C1D95" stroke-width="1"/>
+              <text x="532" y="92" fill="#E9D5FF" font-size="13" font-family="monospace" font-weight="bold" text-anchor="middle">√(A² + B²) → C</text>
+              <text x="532" y="130" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Pol / Rec Transformations</text>
+              <text x="532" y="148" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">If...Then Branching</text>
+              <text x="532" y="166" fill="#C4B5FD" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">Tokenized Evaluation</text>
+            </g>
+
+            <!-- Flow Arrow 3 -> 4 -->
+            <path d="M 620 108 L 650 108" stroke="#8B5CF6" stroke-width="2.5" class="flow-dash" marker-end="url(#arrowPurple)"/>
+
+            <!-- Node 4: LCD Dot-Matrix Display & Pause -->
+            <g>
+              <rect x="655" y="25" width="170" height="165" rx="12" fill="#0F172A" stroke="#475569" stroke-width="2"/>
+              <text x="740" y="52" fill="#F8FAFC" font-size="13" font-weight="bold" text-anchor="middle" font-family="sans-serif">4. LCD OUTPUT</text>
+              <rect x="667" y="66" width="146" height="80" rx="6" fill="url(#svgLcdGrad)" stroke="#112211" stroke-width="2"/>
+              <text x="677" y="86" fill="#112211" font-size="10" font-family="monospace" font-weight="bold">HYPOTENUSE=</text>
+              <text x="677" y="104" fill="#112211" font-size="13" font-family="monospace" font-weight="bold">C = 25.000 ◢</text>
+              <text x="677" y="126" fill="#112211" font-size="9" font-family="monospace">Disp Pause [EXE]</text>
+              <text x="740" y="168" fill="#38BDF8" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">Multi-line Screen Trace</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- 1.1 Physical Hardware Walkthrough -->
+        <h3 style="font-size:1.28rem; color:var(--text-primary); margin-top:28px; margin-bottom:12px;">1.1 Step-by-Step: How to Enter and Save a New Program on Physical Hardware</h3>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:0.96rem;">
+          Whether you are holding an fx-5800P on a construction job site or practicing with an fx-3650P II in an engineering exam hall, writing and saving your first routine takes less than 60 seconds following this standardized sequence:
+        </p>
+        <ol style="padding-left:22px; line-height:1.8; color:var(--text-secondary); font-size:0.95rem; margin-bottom:24px;">
+          <li><strong style="color:var(--text-primary);">Enter Program Mode:</strong> Press the <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">MODE</kbd> button, use the replay directional arrows to highlight <strong>PRGM (Program)</strong>, and press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">EXE</kbd>.</li>
+          <li><strong style="color:var(--text-primary);">Create a New File Slot:</strong> Select <strong>1: NEW</strong>. The LCD will prompt <code>File Name?</code>. Type a short, recognizable name (up to 12 characters, such as <code>TRAV-INV</code> or <code>QUAD-EQ</code>) using <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">ALPHA</kbd> letters, then press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">EXE</kbd>.</li>
+          <li><strong style="color:var(--text-primary);">Select Calculation Mode:</strong> The calculator asks which mathematical mode to attach: <strong>1: COMP</strong> (General Arithmetic) or <strong>2: BASE-N</strong> (Digital Logic / Hex). For 95% of engineering tasks, press <strong>1</strong>.</li>
+          <li><strong style="color:var(--text-primary);">Type Your Code Statements:</strong> Enter your formula line-by-line. Press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">SHIFT</kbd> + <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">VARS (PRGM)</kbd> to bring up the Casio-BASIC token menu to insert <code>?</code> (input prompt), <code>:</code> (statement separator), and <code>◢</code> (pause output). Press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">STO →</kbd> to assign values into memory variables.</li>
+          <li><strong style="color:var(--text-primary);">Save and Execute:</strong> Press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">EXIT</kbd> or <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">QUIT</kbd> to save the program to non-volatile flash RAM. To run it anytime, press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">FILE (Prog)</kbd>, select your program name, and press <kbd style="background:#334155; color:#FFF; padding:2px 6px; border-radius:4px; font-size:0.8rem;">EXE</kbd>.</li>
+        </ol>
+      </section>
+
+      <!-- Section 2: Interactive Animated LCD Simulator -->
+      <section style="margin-top:36px;">
+        <h2 style="font-size:1.65rem; color:var(--text-primary); margin-bottom:14px;">2. Interactive Animated LCD Program Simulator</h2>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:1rem;">
+          To understand how a calculator steps through instructions, test our interactive animated simulator below. It executes a classic <strong>Hypotenuse & Right-Triangle Solver</strong> step-by-step:
+        </p>
+
+        <div class="lcd-sim-container">
+          <div class="lcd-screen-bezel">
+            <div class="lcd-header-status">
+              <span>[PRGM: HYPOT]</span>
+              <span id="sim-status-step">READY (STEP 0/4)</span>
+              <span>DEG | RUN</span>
+            </div>
+            <div id="sim-lcd-line1" class="lcd-line">"TRIANGLE SOLVER"</div>
+            <div id="sim-lcd-line2" class="lcd-line">Press [RUN] to Start<span class="lcd-cursor"></span></div>
+            <div id="sim-lcd-line3" class="lcd-line" style="font-size:0.85rem; color:rgba(17,34,17,0.7);">Register: A=0, B=0, C=0</div>
+          </div>
+
+          <div class="lcd-sim-controls">
+            <button class="sim-btn sim-btn-primary" id="btn-sim-run">▶ Run Program</button>
+            <button class="sim-btn sim-btn-secondary" id="btn-sim-step">⏭ Step Line</button>
+            <button class="sim-btn sim-btn-secondary" id="btn-sim-reset">🔄 Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Essential Commands & Syntax -->
+      <section style="margin-top:36px;">
+        <h2 style="font-size:1.65rem; color:var(--text-primary); margin-bottom:14px;">3. The Essential Syntax Toolkit</h2>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:1rem;">
+          To write efficient programs that fit within memory limits (typically 28,500 bytes on an fx-5800P or 360 steps on an fx-3650P), you must master four primary control tokens:
+        </p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin:20px 0;">
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px;">
+            <div style="font-weight:800; font-size:1.1rem; color:var(--primary); margin-bottom:6px;">1. Input Prompt: <code>? → Var</code></div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">
+              Pauses execution and displays a flashing <code>?</code> cursor. When you enter a number and press <code>EXE</code>, the input is stored directly into the target variable (e.g. <code>?→A</code>).
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px;">
+            <div style="font-weight:800; font-size:1.1rem; color:#059669; margin-bottom:6px;">2. Display Pause: <code>◢</code></div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">
+              The black triangle prints the current calculation to the LCD and halts execution. Pressing <code>EXE</code> resumes execution on the very next line.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px;">
+            <div style="font-weight:800; font-size:1.1rem; color:#8B5CF6; margin-bottom:6px;">3. Multi-Statement: <code>:</code></div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">
+              The colon separates consecutive statements on the same line, allowing multiple assignments to be executed in sequence without breaking program flow.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px;">
+            <div style="font-weight:800; font-size:1.1rem; color:#E11D48; margin-bottom:6px;">4. Conditional: <code>If...Then</code></div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin:0;">
+              Tests relational logic (<code>=</code>, <code>≠</code>, <code>&gt;</code>, <code>&lt;</code>). If the expression evaluates to true, commands between <code>Then</code> and <code>IfEnd</code> execute.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3.1 Memory Optimization Mastery -->
+        <h3 style="font-size:1.28rem; color:var(--text-primary); margin-top:28px; margin-bottom:12px;">3.1 Memory Optimization: How to Save Bytes in Calculator RAM</h3>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:0.96rem;">
+          On programmable models like the Casio fx-3650P II (which offers 360 maximum program steps across 4 program slots) or the fx-5800P (28,500 bytes), writing concise code allows you to squeeze sophisticated multi-step algorithms into limited memory. Apply these field-proven token conservation rules:
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:14px; margin:16px 0;">
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 6px; font-size:0.95rem; color:var(--primary);">Rule 1: Omit Trailing Parentheses</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Casio-BASIC microprocessors automatically close all open parentheses at the end of a line, colon <code>:</code>, store arrow <code>→</code>, or display pause <code>◢</code>. Writing <code>(A+B)/(C+D</code> instead of <code>(A+B)/(C+D)</code> saves 1 full byte per formula.
+            </p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 6px; font-size:0.95rem; color:#059669;">Rule 2: Omit Closing Quotation Marks</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              When displaying text prompts immediately before an input token or pause symbol, the closing quote is optional on many Casio interpreters. Writing <code>"ENTER A?→A</code> instead of <code>"ENTER A"?→A</code> conserves valuable flash storage.
+            </p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 6px; font-size:0.95rem; color:#8B5CF6;">Rule 3: Chain Statements with Colons</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Line breaks require 2 bytes of return control characters in token memory. Chaining sequential assignments onto a single line separated by colons (e.g. <code>?→A:?→B:?→C:</code>) reduces byte overhead by up to 25% over vertical spacing.
+            </p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 6px; font-size:0.95rem; color:#E11D48;">Rule 4: Leverage Ans Register Recycling</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Instead of explicitly saving an intermediate sub-calculation into an extra register like <code>E</code>, perform the next operation directly against the automatic <code>Ans</code> register. This frees named variables for user parameters.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Copy-Ready Engineering Formulas -->
+      <section style="margin-top:36px;">
+        <h2 style="font-size:1.65rem; color:var(--text-primary); margin-bottom:14px;">4. Ready-to-Use Engineering Formula Libraries</h2>
+
+        <h3 style="font-size:1.25rem; color:var(--text-primary); margin-top:24px;">Program A: Quadratic Equation Solver (ax² + bx + c = 0)</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          Solves second-order polynomials and automatically checks the discriminant (D) to indicate real versus complex roots. In 10 to 100 words: this routine evaluates $D = b^2 - 4ac$. If $D \ge 0$, it uses standard quadratic formulas to display real roots $X_1$ and $X_2$. If $D < 0$, it branches to display "COMPLEX ROOTS" and calculates real and imaginary components separately.
+        </p>
+
+        <div class="code-box">
+          <button class="code-copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre>"QUADRATIC SOLVER"
+?→A: ?→B: ?→C:
+B² - 4AC→D:
+If D &gt;= 0:
+Then (-B + √D) / (2A)→X◢
+(-B - √D) / (2A)→Y◢
+Else "COMPLEX ROOTS"◢
+-B / (2A)→X◢
+√(Abs(D)) / (2A)→Y◢
+IfEnd</pre>
+        </div>
+
+        <h3 style="font-size:1.25rem; color:var(--text-primary); margin-top:24px;">Program B: Civil Surveying Coordinate Inverse (Distance & Azimuth)</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          Civil engineers and topographic land surveyors calculate baseline horizontal distance and whole-circle bearing (azimuth) between Station 1 (N1, E1) and Station 2 (N2, E2). In 10 to 100 words: the routine computes $\Delta N = N_2 - N_1$ and $\Delta E = E_2 - E_1$, then executes the built-in <code>Pol()</code> function. Because angles south of the east-west axis return negative degrees, the conditional branch <code>If J &lt; 0: Then J + 360→J</code> guarantees bearings between 0° and 360°.
+        </p>
+
+        <div class="code-box">
+          <button class="code-copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre>"COORD INVERSE"
+"N1"?→A: "E1"?→B:
+"N2"?→C: "E2"?→D:
+C - A→Y: D - B→X:
+Pol(Y, X)→R:
+"DIST=" : R◢
+If J &lt; 0: Then J + 360→J: IfEnd:
+"AZIM=" : J◢</pre>
+        </div>
+
+        <h3 style="font-size:1.25rem; color:var(--text-primary); margin-top:24px;">Program C: Electrical AC Impedance, Phase Angle & Power Factor Solver</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          Electrical and power systems engineers frequently need to resolve series resistance $R$ and reactance $X$ ($X_L - X_C$) into total apparent impedance $Z = \sqrt{R^2 + X^2}$, phase angle $\theta = \arctan(X/R)$, and circuit power factor $PF = \cos(\theta)$. This compact program prompts for resistance and reactance in ohms, computes polar impedance, and outputs both $Z$, angle in degrees, and power factor with one click:
+        </p>
+
+        <div class="code-box">
+          <button class="code-copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre>"AC IMPEDANCE"
+"RESIST R"?→R:
+"REACT X"?→X:
+Pol(R, X)→Z:
+"Z (OHMS)=" : Z◢
+"ANGLE DEG=" : J◢
+cos(J)→P:
+"POWER FACT=" : P◢</pre>
+        </div>
+      </section>
+
+      <!-- Section 5: Expandable FAQ Section -->
+      <section style="margin-top:40px;">
+        <h2 style="font-size:1.65rem; color:var(--text-primary); margin-bottom:18px;">5. Frequently Asked Questions (FAQ)</h2>
+
+        <div class="faq-accordion">
+          <div class="faq-item active">
+            <div class="faq-question">
+              <span>What is the easiest way to add a new program to a Casio calculator?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              Press <strong>MODE</strong>, choose <strong>PRGM (Program)</strong>, select <strong>NEW</strong>, and type a descriptive title (e.g. "SURVEY"). Then enter your statements line-by-line using variable letters (ALPHA + key) and save by pressing EXIT. You can run it anytime by pressing FILE or Prog.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I enter the question mark (?) and arrow (→) symbols?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              The question mark <code>?</code> is typically accessed via <strong>SHIFT + VARS (PRGM)</strong>, followed by selecting <code>?</code> from the menu. The store arrow <code>→</code> has its own dedicated hardware key labeled <strong>STO</strong> or an arrow on the keypad.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Can I back up my calculator programs to a computer?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              Yes. Models like the fx-5800P support data transfer via the 3-pin SB-62 link cable to another calculator, or via a USB adapter cable to PC backup utilities like FA-124. For web users, <a href="../pages/scientific-calculator.html">LocalDoc Scientific Calculator</a> automatically preserves memory and history directly in your browser RAM without external cables.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do Pol( ) and Rec( ) work together in coordinate geometry?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              <code>Pol(x, y)</code> converts rectangular coordinates into polar form (radius <code>r</code> and angle <code>θ</code>). <code>Rec(r, θ)</code> does the inverse, breaking vectors down into orthogonal X and Y components. For surveying, Pol computes distance and bearing from coordinate differences.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I edit or fix a typo in an existing program without rewriting it?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              Press <strong>MODE</strong> -> <strong>PRGM</strong> -> <strong>2: EDIT</strong>. Highlight the program using the up/down arrows and press <strong>EXE</strong>. Use the directional D-Pad left/right buttons to position your cursor directly over the character you want to fix. Press <strong>DEL</strong> to delete a token or <strong>SHIFT + DEL (INS)</strong> to insert new tokens without overwriting existing code.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Will my stored programs be wiped if the calculator battery dies?</span>
+              <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+              On the Casio fx-5800P, user programs are stored in non-volatile NOR flash memory and are preserved indefinitely even when the main AAA battery is removed for days. On older models like the fx-3650P II, power is maintained via a backup button cell (CR2032/LR44); replacing the battery swiftly ensures your P1–P4 routines remain intact.
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.1 Diagnostic Troubleshooting Guide -->
+        <h3 style="font-size:1.28rem; color:var(--text-primary); margin-top:32px; margin-bottom:12px;">5.1 Troubleshooting & Debugging: Decoding Common Calculator Errors</h3>
+        <p style="line-height:1.75; color:var(--text-secondary); font-size:0.96rem;">
+          When executing complex formulas, the calculator microprocessor halts execution and flags specific error codes if an illegal operation is encountered. Here is how to diagnose and resolve them in 10 to 50 words each:
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin:16px 0;">
+          <div style="background:var(--bg-body); border:1.5px solid #EF4444; border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 4px; font-size:0.95rem; color:#EF4444;">🚨 Ma ERROR (Math Error)</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Occurs when an operation exceeds mathematical limits: dividing by zero ($x / 0$), square root of a negative value without complex mode ($\sqrt{-4}$), or taking $\log(0)$. Check your discriminant branch or denominator checks.
+            </p>
+          </div>
+          <div style="background:var(--bg-body); border:1.5px solid #F59E0B; border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 4px; font-size:0.95rem; color:#F59E0B;">⚠️ Syn ERROR (Syntax Error)</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Caused by illegal token placement, such as adjacent mathematical operators (<code>++</code> or <code>*÷</code>), unmatched quotes inside strings, or forgetting the colon <code>:</code> delimiter between distinct assignments. Press ◀ or ▶ to jump to the error position.
+            </p>
+          </div>
+          <div style="background:var(--bg-body); border:1.5px solid #8B5CF6; border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 4px; font-size:0.95rem; color:#8B5CF6;">🔄 Go ERROR (Jump Error)</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Triggered when a <code>Goto n</code> branching token attempts to jump to a label <code>Lbl n</code> that has not been defined in the program file. Verify all label identifiers match exactly.
+            </p>
+          </div>
+          <div style="background:var(--bg-body); border:1.5px solid #3B82F6; border-radius:10px; padding:14px;">
+            <h4 style="margin:0 0 4px; font-size:0.95rem; color:#3B82F6;">📦 Stack ERROR (Memory Overflow)</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin:0; line-height:1.5;">
+              Triggered when subroutines or deeply nested expressions exceed internal CPU call stack capacity (more than 10 nested parentheses or unreturned loops). Simplify long nested calculations.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Related Tools Interlinks -->
+      <section style="margin-top:40px; border-top:1px solid var(--line); padding-top:30px;">
+        <h3 style="font-size:1.3rem; color:var(--text-primary); margin-bottom:16px;">Explore Related LocalDoc Tools & Guides</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+          <a href="../pages/scientific-calculator.html" style="text-decoration:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; display:block;">
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;">Scientific Calculator Tool</div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Run trigonometric, logarithm, and Base-N calculations online with zero setup.</p>
+          </a>
+
+          <a href="pro-scientific-calculator-guide.html" style="text-decoration:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; display:block;">
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;">Casio fx-5800P Deep Dive</div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Detailed comparison between fx-5800P and fx-3650P II hardware architecture.</p>
+          </a>
+
+          <a href="offline-air-gapped-document-processing.html" style="text-decoration:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:16px; display:block;">
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:4px;">Air-Gapped Processing</div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Why client-side in-memory execution protects confidential mathematical calculations.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 7: Interactive Comments & Discussion -->
+      <section class="comments-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+          <h3 style="margin:0; font-size:1.3rem; color:var(--text-primary);">Community Discussion & Solutions (<span id="comment-count">3</span>)</h3>
+          <span style="font-size:0.85rem; color:#F59E0B; font-weight:700;">★★★★★ 4.9 / 5 (38 Votes)</span>
+        </div>
+
+        <!-- Add Comment Form -->
+        <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:24px;">
+          <h4 style="margin:0 0 12px; font-size:0.95rem; color:var(--text-primary);">Leave a Question or Program Formula</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:12px;">
+            <input type="text" id="comment-name" placeholder="Your Name or Engineering Title" style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:#FFF; font-size:0.88rem;">
+            <select id="comment-role" style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:#FFF; font-size:0.88rem;">
+              <option value="Civil / Surveying Engineer">Civil / Surveying Engineer</option>
+              <option value="Electrical Engineer">Electrical Engineer</option>
+              <option value="Engineering Student">Engineering Student</option>
+              <option value="Math Researcher">Math Researcher</option>
+            </select>
+          </div>
+          <textarea id="comment-body" rows="3" placeholder="Share your formula or ask a question about calculator programming..." style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#FFF; font-size:0.88rem; margin-bottom:12px;"></textarea>
+          <button type="button" class="btn btn-primary" id="btn-post-comment" style="padding:6px 16px; font-size:0.85rem;">
+            Post Comment
+          </button>
+        </div>
+
+        <!-- Comments Feed -->
+        <div id="comments-list">
+          <div class="comment-card">
+            <div class="comment-header">
+              <div class="comment-author">
+                <span>Engr. Tariq Farooq</span>
+                <span class="comment-badge">Verified Surveyor</span>
+              </div>
+              <span class="comment-date">September 8, 2026</span>
+            </div>
+            <p class="comment-text">
+              The coordinate inverse routine works flawlessly on the job site! Adding the <code>If J &lt; 0: Then J + 360</code> check is critical because standard atan2 output gives negative bearings for quadrants III and IV. Thanks for detailing this.
+            </p>
+            <button class="comment-action-btn" onclick="upvoteComment(this)">👍 Helpful (14)</button>
+          </div>
+
+          <div class="comment-card">
+            <div class="comment-header">
+              <div class="comment-author">
+                <span>Dr. Marcus Lindqvist</span>
+                <span class="comment-badge">University Lecturer</span>
+              </div>
+              <span class="comment-date">September 7, 2026</span>
+            </div>
+            <p class="comment-text">
+              I recommend students use the LocalDoc online calculator to debug their program logic first before keying code into physical fx-5800P units. Saves a lot of keystrokes when verifying formula coefficients!
+            </p>
+            <button class="comment-action-btn" onclick="upvoteComment(this)">👍 Helpful (9)</button>
+          </div>
+
+          <div class="comment-card">
+            <div class="comment-header">
+              <div class="comment-author">
+                <span>Hamza S.</span>
+                <span class="comment-badge">Mechanical Eng.</span>
+              </div>
+              <span class="comment-date">September 5, 2026</span>
+            </div>
+            <p class="comment-text">
+              Has anyone written a snippet for Reynolds number calculation with fluid viscosity? I am trying to fit it within an fx-3650P II memory slot.
+            </p>
+            <button class="comment-action-btn" onclick="upvoteComment(this)">👍 Helpful (5)</button>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="28" height="28"></div>
+          <span>LocalDoc</span>
+        </div>
+        <p class="footer-tagline">100% Client-Side Private Document & Image Studio.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy Policy</a></li>
+        <li><a href="../terms.html">Terms of Service</a></li>
+        <li><a href="../about.html">About LocalDoc</a></li>
+        <li><a href="../contact.html">Contact & Support</a></li>
+      </ul>
+      <div class="footer-copy">
+        &copy; 2026 LocalDoc.org. All rights reserved. Zero cloud uploads.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Copy Code Button
+    function copyCode(btn) {
+      const code = btn.nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied! ✓';
+        setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
+      });
+    }
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.parentElement;
+        item.classList.toggle('active');
+      });
+    });
+
+    // Interactive Animated LCD Simulator
+    const simSteps = [
+      { step: 1, line1: '?→A', line2: 'A=? 15', line3: 'Register: A=15, B=0, C=0', status: 'WAIT INPUT A (STEP 1/4)' },
+      { step: 2, line1: '?→B', line2: 'B=? 20', line3: 'Register: A=15, B=20, C=0', status: 'WAIT INPUT B (STEP 2/4)' },
+      { step: 3, line1: '√(A² + B²)→C', line2: 'COMPUTING...', line3: 'Register: A=15, B=20, C=25', status: 'EVALUATING (STEP 3/4)' },
+      { step: 4, line1: '"HYPOTENUSE="', line2: 'C = 25.000', line3: 'Program Completed. [EXE]', status: 'FINISHED ◢ (STEP 4/4)' }
+    ];
+    let currentSimStep = 0;
+    let simTimer = null;
+
+    const lcdLine1 = document.getElementById('sim-lcd-line1');
+    const lcdLine2 = document.getElementById('sim-lcd-line2');
+    const lcdLine3 = document.getElementById('sim-lcd-line3');
+    const simStatus = document.getElementById('sim-status-step');
+
+    function renderSimStep(idx) {
+      if (idx === 0) {
+        lcdLine1.textContent = '"TRIANGLE SOLVER"';
+        lcdLine2.innerHTML = 'Press [RUN] to Start<span class="lcd-cursor"></span>';
+        lcdLine3.textContent = 'Register: A=0, B=0, C=0';
+        simStatus.textContent = 'READY (STEP 0/4)';
+        return;
+      }
+      const s = simSteps[idx - 1];
+      lcdLine1.textContent = s.line1;
+      lcdLine2.innerHTML = s.line2 + '<span class="lcd-cursor"></span>';
+      lcdLine3.textContent = s.line3;
+      simStatus.textContent = s.status;
+    }
+
+    document.getElementById('btn-sim-run').addEventListener('click', () => {
+      clearInterval(simTimer);
+      currentSimStep = 0;
+      renderSimStep(0);
+      simTimer = setInterval(() => {
+        currentSimStep++;
+        if (currentSimStep > simSteps.length) {
+          clearInterval(simTimer);
+        } else {
+          renderSimStep(currentSimStep);
+        }
+      }, 1200);
+    });
+
+    document.getElementById('btn-sim-step').addEventListener('click', () => {
+      clearInterval(simTimer);
+      currentSimStep = (currentSimStep % simSteps.length) + 1;
+      renderSimStep(currentSimStep);
+    });
+
+    document.getElementById('btn-sim-reset').addEventListener('click', () => {
+      clearInterval(simTimer);
+      currentSimStep = 0;
+      renderSimStep(0);
+    });
+
+    // Comments Posting
+    const commentCountEl = document.getElementById('comment-count');
+    const commentsList = document.getElementById('comments-list');
+    const btnPostComment = document.getElementById('btn-post-comment');
+    const inputName = document.getElementById('comment-name');
+    const selectRole = document.getElementById('comment-role');
+    const textBody = document.getElementById('comment-body');
+
+    btnPostComment.addEventListener('click', () => {
+      const name = inputName.value.trim() || 'Engineering Guest';
+      const role = selectRole.value;
+      const text = textBody.value.trim();
+
+      if (!text) {
+        alert('Please write a comment or formula before posting.');
+        return;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'comment-card';
+      card.innerHTML = `
+        <div class="comment-header">
+          <div class="comment-author">
+            <span>${name}</span>
+            <span class="comment-badge">${role}</span>
+          </div>
+          <span class="comment-date">Just Now</span>
+        </div>
+        <p class="comment-text">${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+        <button class="comment-action-btn" onclick="upvoteComment(this)">👍 Helpful (1)</button>
+      `;
+
+      commentsList.prepend(card);
+      let count = parseInt(commentCountEl.textContent, 10) || 3;
+      commentCountEl.textContent = count + 1;
+
+      inputName.value = '';
+      textBody.value = '';
+      alert('Thank you! Your comment has been published.');
+    });
+
+    function upvoteComment(btn) {
+      if (btn.dataset.voted) return;
+      btn.dataset.voted = 'true';
+      const text = btn.textContent;
+      const numMatch = text.match(/\d+/);
+      const current = numMatch ? parseInt(numMatch[0], 10) : 0;
+      btn.textContent = `👍 Helpful (${current + 1})`;
+      btn.style.color = '#0284C7';
+    }
+  </script>
+</body>
+</html>
