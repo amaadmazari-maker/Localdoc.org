@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -104,12 +104,6 @@
         <p class="tool-desc">Extract custom page ranges into a new document or burst every single page into individual PDF files bundled as a ZIP archive.</p>
       </div>
 
-      <!-- Standard Error Banner -->
-      <div class="error-banner" id="error-banner" style="display:none; margin-bottom:16px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span id="error-text">Invalid page range. Please enter valid page numbers.</span>
-      </div>
-
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
@@ -117,7 +111,7 @@
         </div>
         <div class="drop-zone-text">
           <h3>Drop your PDF document here</h3>
-          <p>Or click to browse from your device. 100% in-browser private execution (Ctrl+O).</p>
+          <p>Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
         <input type="file" id="file-input" accept="application/pdf" style="display:none;">
@@ -142,8 +136,8 @@
         <div class="control-group">
           <span class="control-label">Split Mode:</span>
           <div class="control-btn-group" id="split-mode-toggle">
-            <button type="button" class="control-btn-opt active" data-val="range">Split by Range</button>
-            <button type="button" class="control-btn-opt" data-val="burst">Split Every Page</button>
+            <button type="button" class="control-btn-opt active" data-val="range">Custom Range / Selection</button>
+            <button type="button" class="control-btn-opt" data-val="burst">Burst Every Page to ZIP</button>
           </div>
         </div>
 
@@ -268,7 +262,6 @@
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
   <script src="../js/lib/pdf.min.js"></script>
-  <script src="../js/lib/pdf.worker.min.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/lib/docx.min.js"></script>
   <script src="../js/tools/convert.js"></script>
@@ -449,105 +442,12 @@
       document.getElementById("workflow-progress").style.display = "none";
     });
 
-    function showError(msg) {
-      const eb = document.getElementById("error-banner");
-      const et = document.getElementById("error-text");
-      if (eb && et) {
-        et.textContent = msg;
-        eb.style.display = "flex";
-      } else {
-        UIUtils.showToast(msg, "error");
-      }
-    }
-
-    function clearError() {
-      const eb = document.getElementById("error-banner");
-      if (eb) eb.style.display = "none";
-    }
-
-    // Interactive range input parser and strict validator
-    rangeInput.addEventListener("input", () => {
-      const text = rangeInput.value.trim();
-      clearError();
-      if (!text) {
-        selectedPagesSet.clear();
-        updateSelectionUI(false);
-        return;
-      }
-
-      const parts = text.split(',');
-      const newSet = new Set();
-      let hasError = false;
-
-      for (const rawPart of parts) {
-        const part = rawPart.trim();
-        if (!part) continue;
-
-        if (part.includes('-')) {
-          const rangeParts = part.split('-');
-          if (rangeParts.length !== 2) {
-            showError(`Invalid range format: "${part}". Example: 1-3, 5-8`);
-            hasError = true;
-            break;
-          }
-          const s = parseInt(rangeParts[0].trim(), 10);
-          const e = parseInt(rangeParts[1].trim(), 10);
-
-          if (isNaN(s) || isNaN(e)) {
-            showError(`Invalid non-numeric page range: "${part}"`);
-            hasError = true;
-            break;
-          }
-          if (s > e) {
-            showError(`Invalid range: Start page ${s} cannot be greater than end page ${e}.`);
-            hasError = true;
-            break;
-          }
-          if (s < 1) {
-            showError(`Page numbers must start at 1.`);
-            hasError = true;
-            break;
-          }
-          if (e > totalDocPages) {
-            showError(`Range exceeds total page count (${totalDocPages}). Entered page ${e}.`);
-            hasError = true;
-            break;
-          }
-          for (let p = s; p <= e; p++) newSet.add(p);
-        } else {
-          const num = parseInt(part, 10);
-          if (isNaN(num)) {
-            showError(`Invalid non-numeric page entry: "${part}"`);
-            hasError = true;
-            break;
-          }
-          if (num < 1) {
-            showError(`Page numbers must start at 1.`);
-            hasError = true;
-            break;
-          }
-          if (num > totalDocPages) {
-            showError(`Page ${num} exceeds total document page count (${totalDocPages}).`);
-            hasError = true;
-            break;
-          }
-          newSet.add(num);
-        }
-      }
-
-      if (!hasError) {
-        selectedPagesSet = newSet;
-        updateSelectionUI(false);
-      }
-    });
-
     function progressCb(pct, status) {
       const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
     processBtn.addEventListener("click", async function() {
-      clearError();
       if (!selectedFile) return;
 
       try {
@@ -560,14 +460,10 @@
           resultFilename = res.filename;
           downloadBtnText.textContent = "Download ZIP Archive (.zip)";
           document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.totalPages} Individual PDF Pages Bundled`;
-          
-          if (resultBlob) {
-            UIUtils.downloadBlob(resultBlob, resultFilename);
-          }
         } else {
           const pagesList = Array.from(selectedPagesSet);
           if (pagesList.length === 0) {
-            showError("Please select or specify at least 1 page to extract.");
+            UIUtils.showToast("Please select at least 1 page to extract.", "error");
             return;
           }
           const res = await PDFOrganize.splitPDF(selectedFile, pagesList, progressCb);
@@ -576,18 +472,14 @@
           resultFilename = `${baseName}-extracted-${res.extractedPagesCount}pages.pdf`;
           downloadBtnText.textContent = "Download Extracted PDF";
           document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.extractedPagesCount} of ${res.totalPages} Page(s) Extracted`;
-          
-          if (resultBlob) {
-            UIUtils.downloadBlob(resultBlob, resultFilename);
-          }
         }
 
         UIUtils.setWorkflowStep(3, 100, "Split completed successfully!");
         resultCard.style.display = "flex";
-        UIUtils.showToast("Operation completed and downloaded successfully!", "success");
+        UIUtils.showToast("Operation completed successfully!", "success");
       } catch (err) {
         console.error(err);
-        showError("Failed to split PDF: " + (err.message || "Operation failed."));
+        UIUtils.showToast(err.message || "Operation failed", "error");
       } finally {
         processBtn.disabled = false;
       }
@@ -596,23 +488,6 @@
     downloadBtn.addEventListener("click", function() {
       if (resultBlob) {
         UIUtils.downloadBlob(resultBlob, resultFilename);
-      }
-    });
-
-    // Keyboard Shortcuts (Ctrl+O, Ctrl+S, Escape)
-    window.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "o") {
-        e.preventDefault();
-        fileInput.click();
-      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        if (selectedFile && !processBtn.disabled) {
-          processBtn.click();
-        } else if (resultBlob) {
-          downloadBtn.click();
-        }
-      } else if (e.key === "Escape") {
-        if (selectedFile) clearBtn.click();
       }
     });
   </script>

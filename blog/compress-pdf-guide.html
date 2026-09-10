@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -7,131 +7,36 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Compress PDF Files Without Losing Text Quality (2026 Engineering Guide) | LocalDoc</title>
-  <meta name="description" content="In-depth technical guide to client-side PDF compression. Learn how FlateDecode, LZ77 stream defragmentation, and adaptive DCT downsampling reduce PDF file size by up to 85% in local RAM.">
+  <title>How to Compress PDF Files Without Losing Text & Image Quality (2026 Guide) | LocalDoc Guides</title>
+  <meta name="description" content="Reduce PDF file sizes by up to 85% directly in browser RAM using stream defragmentation and FlateDecode compression.">
   <link rel="canonical" href="https://localdoc.org/blog/compress-pdf-guide.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="PDF Compression Architecture: How to Reduce PDF Size Losslessly">
-  <meta property="og:description" content="Master client-side PDF compression without server uploads. Includes FlateDecode algorithms, DPI downsampling charts, and interactive savings calculator.">
-  <meta property="og:url" content="https://localdoc.org/blog/compress-pdf-guide.html">
-  <meta property="og:image" content="../assets/icons/compress-pdf.svg">
-
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/blog.css">
   <link rel="stylesheet" href="../css/rtl.css">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "TechArticle",
-        "headline": "How to Compress PDF Files Without Losing Text Quality (2026 Engineering Guide)",
-        "description": "Comprehensive engineering breakdown of PDF compression algorithms including FlateDecode, cross-reference object stream compaction, and client-side canvas downsampling.",
-        "author": {
-          "@type": "Person",
-          "name": "Amaad Mazari",
-          "jobTitle": "Lead Document Architect"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "LocalDoc",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
-          }
-        },
-        "datePublished": "2026-08-15T10:00:00+00:00",
-        "dateModified": "2026-09-10T12:00:00+00:00",
-        "mainEntityOfPage": "https://localdoc.org/blog/compress-pdf-guide.html"
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does PDF compression make text blurry or unreadable?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. In LocalDoc, vector typography, TrueType font outlines, Bézier curves, and mathematical tables are compressed using lossless FlateDecode (deflate/inflate) algorithms. Vector text remains mathematically sharp at infinite zoom. Only embedded high-resolution raster bitmap images are downsampled."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How much can a typical PDF file size be reduced?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "For scanned contracts, textbooks, or presentation decks containing 300+ DPI camera photos, compression achieves reductions between 65% and 88%. A 45 MB document is routinely compressed down to 4.2 MB while maintaining clean readability."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I compress password-protected PDF files?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. If the PDF has an owner or user password, first open LocalDoc Unlock PDF to decrypt the stream in browser RAM. Then load the decrypted PDF into the Compress tool to achieve maximum compression."
-            }
-          }
-        ]
-      }
-    ]
-  }
-  </script>
-
-  <style>
-    .tech-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .comp-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 0.92rem;
-    }
-    .comp-table th, .comp-table td {
-      border: 1px solid var(--line);
-      padding: 12px 14px;
-      text-align: left;
-    }
-    .comp-table th {
-      background: var(--bg-surface-2);
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-    .comp-table tr:hover td {
-      background: rgba(2, 132, 199, 0.04);
-    }
-    .slider-box {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(56, 189, 248, 0.08));
-      border: 1px solid rgba(2, 132, 199, 0.25);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin: 28px 0;
-      text-align: center;
-    }
-    .stars { color: #f59e0b; margin-bottom: 6px; }
-    .review-item { border-bottom: 1px solid var(--line); padding: 16px 0; }
-    .review-item:last-child { border-bottom: none; }
-  </style>
 </head>
 <body>
   <div id="reading-progress"></div>
 
   <header class="site-header">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
     <div class="container header-inner">
       <a href="../index.html" class="brand" title="LocalDoc Home">
         <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
@@ -142,9 +47,9 @@
       <ul class="nav-links">
         <li><a href="../index.html" class="nav-link">All Tools</a></li>
         <li><a href="index.html" class="nav-link active">Blog & Guides</a></li>
-        <li><a href="../pages/compress-pdf.html" class="nav-link">Compress PDF</a></li>
-        <li><a href="../faq.html" class="nav-link">FAQs</a></li>
-        <li><a href="../privacy.html" class="nav-link">Privacy</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+        <li><a href="../contact.html" class="nav-link">Contact</a></li>
       </ul>
 
       <div class="header-actions">
@@ -162,272 +67,129 @@
     <!-- Direct Launch CTA Banner -->
     <div class="cta-banner">
       <div style="display:flex; align-items:center; gap:14px;">
-        <img src="../assets/icons/compress-pdf.svg" width="40" height="40" alt="Compress PDF Online">
+        <img src="../assets/icons/compress-pdf.svg" width="38" height="38" alt="Compress PDF Online">
         <div>
-          <h3 style="margin:0 0 2px; font-size:1.15rem; color:var(--text-primary);">Launch Compress PDF Tool</h3>
-          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary);">Reduce PDF file size up to 85% directly inside browser memory. 100% offline, zero server uploads.</p>
+          <h3 style="margin:0 0 2px; font-size:1.1rem; color:var(--text-primary);">Try the Compress PDF Online</h3>
+          <p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Reduce PDF file sizes by up to 85% directly in browser RAM using stream defragmentation and FlateDecode compression.</p>
         </div>
       </div>
-      <a href="../pages/compress-pdf.html" class="btn btn-primary btn-lg">Compress PDF Now &rarr;</a>
+      <a href="../pages/compress-pdf.html" class="btn btn-primary btn-lg">Launch Tool Now &rarr;</a>
     </div>
 
-    <article class="blog-article" style="max-width:920px; margin:0 auto;">
-      <div class="tool-workspace-badge">PDF Compression Architecture</div>
-      <h1>How to Compress PDF Files Without Losing Text Quality (2026 Engineering Guide)</h1>
-      
+    <article class="blog-article">
+      <div class="tool-workspace-badge">PDF Optimization Guide</div>
+      <h1>How to Compress PDF Files Without Losing Text & Image Quality (2026 Guide)</h1>
       <div class="blog-meta-bar">
         <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
         <span class="meta-dot"></span>
         <span>Lead Document Architect</span>
         <span class="meta-dot"></span>
-        <span>Updated September 2026</span>
+        <span>August 2026</span>
         <span class="meta-dot"></span>
-        <span>11 min read</span>
+        <span>7 min read</span>
       </div>
 
       <!-- Executive Summary Box -->
       <div class="exec-summary-box">
-        <h3>Key Takeaways</h3>
+        <h3>Executive Takeaways</h3>
         <ul>
-          <li><strong>Zero Network Leakage:</strong> Processing occurs in browser RAM sandbox via WebAssembly. No documents are uploaded to cloud servers.</li>
-          <li><strong>Vector Integrity:</strong> TrueType fonts, form fields, and vector line graphics are compressed losslessly with FlateDecode.</li>
-          <li><strong>Intelligent DCT Downsampling:</strong> Uncompressed 300+ DPI camera photographs are resampled to target web or print DPIs.</li>
-          <li><strong>De-duplication:</strong> Shared font dictionaries and redundant object streams are merged to eliminate bloat.</li>
+          <li><strong>Zero Network Transmission:</strong> Binary document operations execute 100% inside your local device browser RAM.</li>
+          <li><strong>Lossless Vector Precision:</strong> Retains native typography, character spacing, and table borders.</li>
+          <li><strong>Instant & Offline Ready:</strong> Works seamlessly on mobile or desktop without internet connectivity.</li>
         </ul>
       </div>
 
-      <!-- ANIMATED SVG: COMPRESSION PIPELINE -->
-      <div style="margin:36px 0; background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:24px; text-align:center;">
-        <h4 style="margin:0 0 16px; font-size:1.05rem; color:var(--text-primary);">Figure 1: Client-Side PDF Stream Compression & Defragmentation Engine</h4>
-        <svg viewBox="0 0 780 220" style="width:100%; max-width:740px; height:auto; display:block; margin:0 auto;" aria-label="PDF Compression Architecture Diagram">
-          <rect x="5" y="5" width="770" height="210" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="2" />
-          
-          <!-- Input Bloat PDF -->
-          <rect x="25" y="45" width="160" height="130" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="1.5" />
-          <text x="105" y="75" fill="#ef4444" font-family="system-ui" font-size="13" font-weight="700" text-anchor="middle">Input PDF (48 MB)</text>
-          <text x="105" y="100" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">300 DPI Raw Images</text>
-          <text x="105" y="120" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Duplicate Fonts</text>
-          <text x="105" y="140" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Uncompressed XRef</text>
-
-          <!-- Streaming Arrow -->
-          <path d="M 185 110 L 255 110" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4">
-            <animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite" />
-          </path>
-
-          <!-- Compression ALU Core -->
-          <rect x="260" y="35" width="260" height="150" rx="8" fill="#1e293b" stroke="#0284c7" stroke-width="2" />
-          <text x="390" y="65" fill="#38bdf8" font-family="system-ui" font-size="14" font-weight="800" text-anchor="middle">WASM COMPRESSION ALU</text>
-          <text x="390" y="90" fill="#bae6fd" font-family="monospace" font-size="11" text-anchor="middle">FlateDecode (LZ77 + Huffman)</text>
-          <text x="390" y="110" fill="#bae6fd" font-family="monospace" font-size="11" text-anchor="middle">DCT Subsampling (150 DPI)</text>
-          <text x="390" y="130" fill="#bae6fd" font-family="monospace" font-size="11" text-anchor="middle">Font Subset Deduplication</text>
-          <text x="390" y="155" fill="#4ade80" font-family="system-ui" font-size="10" font-weight="700" text-anchor="middle">100% PRIVATE DEVICE RAM</text>
-
-          <!-- Output Arrow -->
-          <path d="M 520 110 L 590 110" stroke="#10b981" stroke-width="3" stroke-dasharray="6,4">
-            <animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite" />
-          </path>
-
-          <!-- Output Optimized PDF -->
-          <rect x="595" y="45" width="160" height="130" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
-          <text x="675" y="75" fill="#10b981" font-family="system-ui" font-size="13" font-weight="700" text-anchor="middle">Optimized PDF (5.8 MB)</text>
-          <text x="675" y="100" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">88% Space Saved</text>
-          <text x="675" y="120" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Crystal Vector Fonts</text>
-          <text x="675" y="140" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Fast Web View Linearized</text>
-        </svg>
+      <!-- 3D Architecture Visual Illustration -->
+      <div class="blog-visual-card">
+        <img src="../assets/images/security-3d.jpg" alt="Air-Gapped Client-Side Compression & Security Architecture">
+        <div class="blog-visual-caption">Air-Gapped Isolation: In-Browser XRef Table Defragmentation and Flate Stream Compression</div>
       </div>
 
-      <section>
-        <h2>1. Why PDF Documents Bloat to Enormous Sizes</h2>
-        <p>Portable Document Format (PDF) files are container architectures combining typography glyphs, vector geometries, raster bitmaps, and metadata catalogs. When documents are exported from Microsoft Word, Adobe InDesign, or phone scanner apps, they frequently suffer from <strong>structural inefficiency</strong>:</p>
-        
-        <div class="tech-card">
-          <h3>The 4 Primary Sources of PDF Bloat</h3>
-          <ol style="margin-left:20px; line-height:1.7;">
-            <li><strong>Uncompressed Raster Bitmaps:</strong> Phone cameras take 12 to 48-megapixel photos at 300+ DPI. When saved as raw uncompressed JPEG or TIFF streams, a single scan page consumes 8 to 15 megabytes.</li>
-            <li><strong>Full Font Embedding:</strong> When a document uses a font like Helvetica or Times New Roman, standard PDF exporters frequently embed the entire 256-character Unicode font file rather than subsetting only the 30 glyphs actually used.</li>
-            <li><strong>Redundant XObject Dictionaries:</strong> Repeated letterheads, company logos, and background stamps are often cloned on every single page rather than referenced via a shared indirect object pointer.</li>
-            <li><strong>Legacy Uncompressed Cross-Reference (XRef) Tables:</strong> Older PDF 1.4 architectures store object lookup tables in ASCII plain text rather than modern compressed binary streams introduced in PDF 1.5.</li>
-          </ol>
+      <!-- Step-by-Step Interactive Tutorial Flow -->
+      <div class="tutorial-flow-box">
+        <div class="tutorial-flow-header">
+          <h3 class="tutorial-flow-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
+            <span>Step-by-Step PDF Compression Tutorial</span>
+          </h3>
+          <span style="font-size:0.75rem; color:var(--primary); font-weight:700;">Up to 85% Reduction</span>
         </div>
-      </section>
-
-      <!-- INTERACTIVE SAVINGS ESTIMATOR -->
-      <div class="slider-box">
-        <h3 style="margin:0 0 8px; color:var(--text-primary);">Interactive PDF Compression Calculator</h3>
-        <p style="font-size:0.92rem; color:var(--text-secondary); margin-bottom:20px;">Estimate your file reduction based on input document size and target compression level.</p>
-        
-        <div style="max-width:400px; margin:0 auto; text-align:left;">
-          <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:6px;">Original File Size: <span id="file-size-val">25 MB</span></label>
-          <input type="range" id="file-slider" min="5" max="100" value="25" style="width:100%; margin-bottom:18px;" oninput="updateEstimate()">
-
-          <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:6px;">Target Profile:</label>
-          <select id="profile-select" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface); color:var(--text-primary); margin-bottom:18px;" onchange="updateEstimate()">
-            <option value="0.85">Recommended (Web & Email — 150 DPI, ~85% reduction)</option>
-            <option value="0.65">Moderate (Print Quality — 220 DPI, ~65% reduction)</option>
-            <option value="0.92">Extreme (Archival / Mobile — 96 DPI, ~92% reduction)</option>
-          </select>
-        </div>
-
-        <div id="estimate-result" style="margin-top:16px; padding:12px; background:var(--bg-surface); border:1px solid var(--line); border-radius:6px; font-family:monospace; font-size:1.05rem; font-weight:bold; color:#10b981;">
-          Estimated Output Size: ~3.75 MB (Saved 85.0%)
+        <div class="tutorial-steps-grid">
+          <div class="tutorial-step-card">
+            <div class="tutorial-step-num">1</div>
+            <h4>Import Heavy Document</h4>
+            <p>Select or drag any oversized PDF into the workspace. The file loads directly into memory with zero network delay.</p>
+          </div>
+          <div class="tutorial-step-card">
+            <div class="tutorial-step-num">2</div>
+            <h4>Select Compression Level</h4>
+            <p>Choose between Extreme (maximum shrinkage for email attachments), Recommended (optimal balance), or Low (lossless vector preservation).</p>
+          </div>
+          <div class="tutorial-step-card">
+            <div class="tutorial-step-num">3</div>
+            <h4>Save Optimized PDF</h4>
+            <p>Click 'Compress PDF'. Our FlateDecode stream compressor subsets embedded fonts and removes dead dictionaries in seconds.</p>
+          </div>
         </div>
       </div>
 
-      <section style="margin-top:40px;">
-        <h2>2. Compression Profiles Compared</h2>
-        <table class="comp-table">
-          <thead>
-            <tr>
-              <th>Profile</th>
-              <th>Target Resolution</th>
-              <th>Average Reduction</th>
-              <th>Ideal Use Case</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Extreme Compression</strong></td>
-              <td>96 DPI (JPEG 60%)</td>
-              <td>85% – 93%</td>
-              <td>Email attachments, mobile data, government portals with 2MB limits.</td>
-            </tr>
-            <tr>
-              <td><strong>Recommended (Standard)</strong></td>
-              <td>150 DPI (JPEG 78%)</td>
-              <td>70% – 85%</td>
-              <td>General office distribution, web publishing, contract archival.</td>
-            </tr>
-            <tr>
-              <td><strong>Lossless / Minimal</strong></td>
-              <td>Preserve DPI (Flate Only)</td>
-              <td>15% – 35%</td>
-              <td>Architectural blueprints, legal affidavits, fine-art digital prints.</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      <h2>1. Understanding What Makes PDF Files Bulky</h2>
+      <p>PDF documents often carry hidden bloat: uncompressed embedded fonts, duplicate metadata objects, high-resolution thumbnail caches, and unoptimized raster images. In high-volume corporate environments, uploading these massive files to external cloud servers creates network latency and exposes private proprietary data to third-party interception.</p><p>LocalDoc bypasses network bottlenecks entirely by restructuring the internal Cross-Reference Table (XRef) and compressing raw vector streams directly inside your browser memory sandbox.</p>
 
-      <!-- FREQUENTLY ASKED QUESTIONS -->
-      <section style="margin-top:48px;">
-        <h2>Frequently Asked Questions: PDF Compression</h2>
-        <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
-          <div style="border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-surface);">
-            <h4 style="margin:0 0 8px; color:var(--text-primary); cursor:pointer;" onclick="toggleFaq(this)">Does PDF compression make text blurry? ▾</h4>
-            <div style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-              No. Vector typography, TrueType font outlines, and mathematical tables are compressed losslessly using FlateDecode. Characters remain perfectly crisp at 800% zoom.
-            </div>
-          </div>
+      <h2>2. Stream Defragmentation & Font Subsetting in RAM</h2>
+      <p>Our client-side compression algorithm examines every indirect object in the PDF stream. It removes orphaned dictionaries, subsets embedded fonts so only used glyphs remain, and re-encodes content streams using standardized FlateDecode compression. This results in significant size reduction without introducing visual artifacts or font substitutions.</p>
 
-          <div style="border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-surface);">
-            <h4 style="margin:0 0 8px; color:var(--text-primary); cursor:pointer;" onclick="toggleFaq(this)">Are my compressed PDF files uploaded to your servers? ▾</h4>
-            <div style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-              Never. LocalDoc runs its compression engine 100% inside your browser's private WebAssembly memory sandbox. You can verify this by opening DevTools Network tab—zero network calls are executed.
-            </div>
+      <h2>3. Technical Comparison Matrix</h2>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Raw PDF</th>
+            <th>LocalDoc Compressed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Average File Size</strong></td><td>14.2 MB</td><td><strong>2.1 MB (85% reduction)</strong></td></tr>
+          <tr><td><strong>Font Embedding</strong></td><td>Full Font Families</td><td><strong>SubsetFont Subset</strong></td></tr>
+          <tr><td><strong>Image Stream</strong></td><td>Raw RGB / Uncompressed</td><td><strong>Optimized Flate Streams</strong></td></tr>
+          <tr><td><strong>Processing Location</strong></td><td>Remote Server Cluster</td><td><strong>100% Local Device RAM</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h2>4. Pro Tips for Maximum Quality</h2>
+      <ol>
+        <li>Remove full font embeds: Subset fonts to only include characters actually present in the document.</li>
+          <li>Downsample 600 DPI scans to 150-200 DPI for web and email attachments without losing legibility.</li>
+          <li>Clear unreferenced annotations and old revision history before final client distribution.</li>
+      </ol>
+
+      <h2>5. Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+                <div class="faq-item">
+          <button class="faq-question" type="button">Will compressing a PDF make text blurry?</button>
+          <div class="faq-answer">
+            <p>No. Vector text remains mathematically defined and infinitely sharp. Only image streams are downsampled if requested.</p>
           </div>
         </div>
-      </section>
-
-      <!-- COMMUNITY REVIEWS & FEEDBACK -->
-      <section style="margin-top:48px; border-top:1px solid var(--line); padding-top:32px;">
-        <h2>User Reviews & Feedback</h2>
-        <div style="margin:24px 0;" id="reviews-container">
-          <div class="review-item">
-            <div class="stars">★★★★★</div>
-            <p style="margin:0 0 4px; font-weight:600; color:var(--text-primary);">Marcus Vance <span style="font-weight:400; color:var(--text-secondary); font-size:0.85rem;">— Legal Compliance Officer</span></p>
-            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Our legal team is prohibited from uploading court discovery documents to external cloud converters. LocalDoc's local RAM compression reduced our 140MB case bundle to 18MB instantly and completely offline.</p>
-            <div style="margin-top:8px; font-size:0.85rem; color:var(--primary); cursor:pointer;" onclick="upvoteReview(this)">👍 Helpful (42)</div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">Can I compress PDFs with interactive form fields?</button>
+          <div class="faq-answer">
+            <p>Yes. LocalDoc preserves interactive AcroForms, signatures, and form input fields.</p>
           </div>
         </div>
-
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:8px; padding:20px; margin-top:24px;">
-          <h4 style="margin:0 0 12px; color:var(--text-primary);">Leave a Review or Tip</h4>
-          <input type="text" id="comment-author" placeholder="Your Name" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface-2); color:var(--text-primary); margin-bottom:12px;">
-          <textarea id="comment-text" rows="3" placeholder="Share your experience or file size savings..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface-2); color:var(--text-primary); margin-bottom:12px;"></textarea>
-          <button class="btn btn-primary" onclick="submitComment()">Post Review &rarr;</button>
-        </div>
-      </section>
-
-      <!-- RECIPROCAL CROSS-LINKS -->
-      <div style="margin-top:48px; padding:24px; background:var(--bg-surface-2); border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 12px; color:var(--text-primary);">Related Technical Guides & Tools:</h4>
-        <ul style="margin:0; padding-left:20px; line-height:1.8; color:var(--primary);">
-          <li><a href="../pages/compress-pdf.html">Launch Compress PDF Tool (Zero-Upload)</a></li>
-          <li><a href="merge-pdf-guide.html">How to Merge PDF Files Seamlessly in Browser RAM</a></li>
-          <li><a href="../faq.html">LocalDoc Master FAQ & Security Knowledge Hub</a></li>
-          <li><a href="how-zero-upload-pdf-tools-work.html">Deep Dive: How Zero-Upload Client-Side PDF Tools Work</a></li>
-        </ul>
       </div>
     </article>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <h3>LocalDoc</h3>
-          <p>Zero-upload client-side document processing platform. 100% device RAM execution.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Popular Tools</h4>
-          <ul class="footer-links">
-            <li><a href="../pages/compress-pdf.html" class="footer-link">Compress PDF</a></li>
-            <li><a href="../pages/merge-pdf.html" class="footer-link">Merge PDF</a></li>
-            <li><a href="../pages/scientific-calculator.html" class="footer-link">Scientific Calculator</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 LocalDoc.org. All rights reserved.</p>
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
       </div>
     </div>
   </footer>
 
-  <script>
-    function updateEstimate() {
-      const size = parseFloat(document.getElementById('file-slider').value);
-      const ratio = parseFloat(document.getElementById('profile-select').value);
-      document.getElementById('file-size-val').textContent = `${size} MB`;
-      const finalSize = (size * (1 - ratio)).toFixed(2);
-      document.getElementById('estimate-result').textContent = `Estimated Output Size: ~${finalSize} MB (Saved ${(ratio * 100).toFixed(1)}%)`;
-    }
-
-    function toggleFaq(header) {
-      const content = header.nextElementSibling;
-      if (content.style.display === 'none') {
-        content.style.display = 'block';
-        header.innerHTML = header.innerHTML.replace('▸', '▾');
-      } else {
-        content.style.display = 'none';
-        header.innerHTML = header.innerHTML.replace('▾', '▸');
-      }
-    }
-
-    function upvoteReview(el) {
-      const match = el.innerText.match(/\d+/);
-      if (match) {
-        el.innerText = `👍 Helpful (${parseInt(match[0], 10) + 1})`;
-        el.style.color = '#10b981';
-      }
-    }
-
-    function submitComment() {
-      const author = document.getElementById('comment-author').value.trim() || 'Anonymous User';
-      const text = document.getElementById('comment-text').value.trim();
-      if (!text) { alert('Please enter a review.'); return; }
-
-      const container = document.getElementById('reviews-container');
-      const div = document.createElement('div');
-      div.className = 'review-item';
-      div.innerHTML = `
-        <div class="stars">★★★★★</div>
-        <p style="margin:0 0 4px; font-weight:600; color:var(--text-primary);">${author} <span style="font-weight:400; color:var(--text-secondary); font-size:0.85rem;">— Just now</span></p>
-        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">${text}</p>
-        <div style="margin-top:8px; font-size:0.85rem; color:var(--primary); cursor:pointer;" onclick="upvoteReview(this)">👍 Helpful (1)</div>
-      `;
-      container.prepend(div);
-      document.getElementById('comment-text').value = '';
-      alert('Review posted successfully!');
-    }
-  </script>
+  <script src="../js/core/i18n.js"></script>
+  <script src="../js/core/ui-utils.js"></script>
 </body>
 </html>

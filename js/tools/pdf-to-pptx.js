@@ -198,24 +198,7 @@
     }
 
     currentFile = file;
-    let arrayBuffer;
-    if (window.UIUtils && window.UIUtils.readFileAsArrayBuffer) {
-      arrayBuffer = await window.UIUtils.readFileAsArrayBuffer(file);
-    } else if (file.arrayBuffer) {
-      try {
-        arrayBuffer = await file.arrayBuffer();
-      } catch (e) {
-        console.warn("file.arrayBuffer failed, fallback to FileReader", e);
-      }
-    }
-    if (!arrayBuffer) {
-      arrayBuffer = await new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = () => rej(new Error("Failed to read PDF file"));
-        r.readAsArrayBuffer(file);
-      });
-    }
+    const arrayBuffer = await file.arrayBuffer();
 
     try {
       pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -444,15 +427,10 @@
 
   function downloadPresentation() {
     if (!convertedBlob) return;
-    const baseName = currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') : 'presentation';
-    const filename = `${baseName}.pptx`;
-    if (window.UIUtils && window.UIUtils.downloadBlob) {
-      window.UIUtils.downloadBlob(convertedBlob, filename);
-      return;
-    }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(convertedBlob);
-    a.download = filename;
+    const baseName = currentFile ? currentFile.name.replace(/\.[^/.]+$/, '') : 'presentation';
+    a.download = `${baseName}.pptx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

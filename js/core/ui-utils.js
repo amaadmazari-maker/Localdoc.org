@@ -43,23 +43,8 @@ const UIUtils = {
     });
   },
 
-  // Instant Client-Side Download (Web & Android Native Bridge)
+  // Instant Client-Side Download
   downloadBlob(blob, filename) {
-    if (!blob) return;
-    // Android Native Shell Bridge support
-    if (window.AndroidBlobBridge && window.AndroidBlobBridge.processBlobData) {
-      try {
-        const reader = new FileReader();
-        reader.onloadend = function () {
-          window.AndroidBlobBridge.processBlobData(reader.result, blob.type || 'application/octet-stream', filename);
-        };
-        reader.readAsDataURL(blob);
-        return;
-      } catch (err) {
-        console.warn('AndroidBlobBridge download error, falling back to browser download:', err);
-      }
-    }
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

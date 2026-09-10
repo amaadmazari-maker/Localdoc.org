@@ -104,56 +104,36 @@
     }
   }
 
-  function dataURLtoBlob(dataurl) {
-    try {
-      const arr = dataurl.split(',');
-      const mimeMatch = arr[0].match(/:(.*?);/);
-      const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], { type: mime });
-    } catch (e) {
-      console.warn("dataURLtoBlob failed", e);
-      return null;
-    }
-  }
-
-  // Check if a document was passed via sessionStorage (from CamScanner, Vault, etc.)
+  // Check if a document was passed via sessionStorage (from CamScanner or Document Vault)
   function checkIncomingDocument() {
     try {
-      // 1. Check localdoc_view_document or localdoc_view_doc
-      const rawStored = sessionStorage.getItem('localdoc_view_document') || sessionStorage.getItem('localdoc_view_doc');
-      if (rawStored) {
-        sessionStorage.removeItem('localdoc_view_document');
-        sessionStorage.removeItem('localdoc_view_doc');
-        const docData = JSON.parse(rawStored);
-        if (docData && docData.dataUrl) {
-          const fileName = docData.filename || docData.name || docData.title || 'Document.pdf';
-          const fileType = docData.type || (fileName.endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream');
-          const blob = dataURLtoBlob(docData.dataUrl);
-          if (blob) {
-            const file = new File([blob], fileName, { type: fileType });
-            handleFile(file);
-            return;
-          }
-        }
-      }
-
-      // 2. Check direct file from CamScanner
+      // 1. Check direct file from CamScanner
       const csDataUrl = sessionStorage.getItem('localdoc_reader_file');
       const csName = sessionStorage.getItem('localdoc_reader_name') || 'Scanned_Document.jpg';
       if (csDataUrl) {
         sessionStorage.removeItem('localdoc_reader_file');
         sessionStorage.removeItem('localdoc_reader_name');
-        const blob = dataURLtoBlob(csDataUrl);
-        if (blob) {
-          const file = new File([blob], csName, { type: blob.type || 'image/jpeg' });
-          handleFile(file);
-          return;
+        fetch(csDataUrl)
+          .then(res => res.blob())
+          .then(blob => {
+            const file = new File([blob], csName, { type: blob.type || 'image/jpeg' });
+            handleFile(file);
+          });
+        return;
+      }
+
+      // 2. Check stored doc from Document Vault
+      const stored = sessionStorage.getItem('localdoc_view_doc');
+      if (stored) {
+        sessionStorage.removeItem('localdoc_view_doc');
+        const docData = JSON.parse(stored);
+        if (docData && docData.dataUrl && docData.name) {
+          fetch(docData.dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+              const file = new File([blob], docData.name, { type: docData.type || blob.type });
+              handleFile(file);
+            });
         }
       }
     } catch (err) {
@@ -198,33 +178,10 @@
     }
   }
 
-  // Safe ArrayBuffer loader supporting Android WebViews and FileReader fallback
-  async function safeReadArrayBuffer(file) {
-    if (window.UIUtils && window.UIUtils.readFileAsArrayBuffer) {
-      return await window.UIUtils.readFileAsArrayBuffer(file);
-    }
-    if (file.arrayBuffer) {
-      try {
-        return await file.arrayBuffer();
-      } catch (e) {
-        console.warn('file.arrayBuffer failed, falling back to FileReader', e);
-      }
-    }
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Failed to read document file'));
-      reader.readAsArrayBuffer(file);
-    });
-  }
-
   // ==================== PDF ENGINE ====================
   async function loadPdf(file) {
     try {
-      const arrayBuffer = await safeReadArrayBuffer(file);
-      if (!window.pdfjsLib) {
-        throw new Error('PDF.js viewer engine is not loaded');
-      }
+      const arrayBuffer = await file.arrayBuffer();
       pdfDoc = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       pdfTotalPages = pdfDoc.numPages;
       pdfCurrentPage = 1;
@@ -233,13 +190,7 @@
       pageInput.max = pdfTotalPages;
       renderPdfPage(pdfCurrentPage);
     } catch (err) {
-      console.error('PDF load error:', err);
-      contentContainer.innerHTML = `<div class="reader-error" style="text-align:center; padding:40px 20px; color:#EF4444;">
-        <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
-        <h3 style="font-weight:700; margin-bottom:8px; color:var(--text-primary);">Unable to render PDF document</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem; max-width:400px; margin:0 auto 16px;">${err.message || 'The PDF file may be corrupted, password-protected, or in an unsupported format.'}</p>
-        <button class="reader-tool-btn" onclick="document.getElementById('reader-file-input').click()" style="margin:0 auto;">Choose Another Document</button>
-      </div>`;
+      contentContainer.innerHTML = `<div class="reader-error">Failed to render PDF: ${err.message}</div>`;
     }
   }
 
@@ -280,7 +231,7 @@
   // ==================== WORD (.DOCX) ENGINE ====================
   async function loadWordDocx(file) {
     try {
-      const arrayBuffer = await safeReadArrayBuffer(file);
+      const arrayBuffer = await file.arrayBuffer();
       if (!window.mammoth) {
         throw new Error('Mammoth Word parser not loaded');
       }
@@ -295,19 +246,14 @@
       contentContainer.innerHTML = '';
       contentContainer.appendChild(pageWrapper);
     } catch (err) {
-      contentContainer.innerHTML = `<div class="reader-error" style="text-align:center; padding:40px 20px; color:#EF4444;">
-        <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
-        <h3 style="font-weight:700; margin-bottom:8px; color:var(--text-primary);">Failed to parse Word document</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem; max-width:400px; margin:0 auto 16px;">${err.message || 'The Word file could not be parsed.'}</p>
-        <button class="reader-tool-btn" onclick="document.getElementById('reader-file-input').click()" style="margin:0 auto;">Choose Another Document</button>
-      </div>`;
+      contentContainer.innerHTML = `<div class="reader-error">Failed to parse Word document: ${err.message}</div>`;
     }
   }
 
   // ==================== EXCEL (.XLSX) ENGINE ====================
   async function loadExcel(file) {
     try {
-      const arrayBuffer = await safeReadArrayBuffer(file);
+      const arrayBuffer = await file.arrayBuffer();
       if (!window.XLSX) {
         throw new Error('SheetJS Excel engine not loaded');
       }
@@ -435,10 +381,6 @@
 
   function downloadCurrentFile() {
     if (!currentFile) return;
-    if (window.UIUtils && window.UIUtils.downloadBlob) {
-      window.UIUtils.downloadBlob(currentFile, currentFile.name);
-      return;
-    }
     const url = URL.createObjectURL(currentFile);
     const a = document.createElement('a');
     a.href = url;
