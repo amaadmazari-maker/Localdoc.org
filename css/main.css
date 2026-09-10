@@ -3,7 +3,7 @@
  * Light-first clean aesthetic, crisp typography, compact dropzones, full camera scanner HUD
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Offline-First Air-Gapped Typography: Zero external CDN dependencies */
 
 :root {
   /* Brand Accent Colors */
@@ -1767,9 +1767,23 @@ a:hover {
 /* Pillar 3 & 4: Tools Grid & Luxury Tool Cards */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
   margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .tool-card {
@@ -1777,7 +1791,8 @@ a:hover {
   background: var(--bg-surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  padding: 14px 14px 12px;
+  padding: 18px 16px;
+  box-sizing: border-box;
   text-decoration: none;
   color: var(--text-primary);
   display: flex;
@@ -1785,7 +1800,7 @@ a:hover {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  min-height: 130px;
+  min-height: 180px;
 }
 
 .tool-card::before {
@@ -1811,14 +1826,15 @@ a:hover {
 }
 
 .tool-card-icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .tool-card-icon-wrap.cat-convert {
@@ -1885,13 +1901,13 @@ a:hover {
 }
 
 .tool-card-icon {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tool-card:hover .tool-card-icon {
-  transform: scale(1.12);
+  transform: scale(1.08);
 }
 
 .tool-card-badge {
@@ -1916,7 +1932,7 @@ a:hover {
 }
 
 .tool-card h3 {
-  font-size: 1.08rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -1929,7 +1945,38 @@ a:hover {
   color: var(--text-secondary);
   line-height: 1.5;
   margin-top: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
+
+/* Accessibility Focus States */
+:focus-visible {
+  outline: 2px solid var(--primary, #0284C7);
+  outline-offset: 2px;
+}
+
+/* Standardized Error Banner */
+.error-banner {
+  background: rgba(225, 29, 72, 0.08);
+  border: 1.5px solid #E11D48;
+  border-radius: var(--radius-sm, 10px);
+  padding: 12px 16px;
+  color: #BE123C;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-theme="dark"] .error-banner {
+  background: rgba(225, 29, 72, 0.15);
+  color: #FDA4AF;
+}
+
 
 /* Pillar 5: Competitor Comparison Table */
 .comparison-table-wrap {

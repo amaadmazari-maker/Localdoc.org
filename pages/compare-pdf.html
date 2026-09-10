@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Compare PDFs — Visual Diff & Side-by-Side Comparison | LocalDoc</title>
+  <meta name="description" content="Compare two PDF documents side-by-side with pixel-level visual difference highlighting. Discover added, removed, or modified content in browser RAM. 100% private zero-upload.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <!-- Local PDF Engines -->
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf.worker.min.js"></script>
+
+  <style>
+    .compare-setup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .compare-box {
+      background: var(--bg-surface, #FFFFFF);
+      border: 2px dashed var(--line, #E2E8F0);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: border-color 0.2s ease;
+    }
+    .compare-box.has-file {
+      border-style: solid;
+      border-color: var(--primary, #0284C7);
+      background: rgba(2, 132, 199, 0.03);
+    }
+    .view-mode-tabs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .view-tab-btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1.5px solid var(--line, #E2E8F0);
+      background: var(--bg-surface, #FFFFFF);
+      color: var(--text-secondary, #64748B);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .view-tab-btn.active {
+      background: var(--primary, #0284C7);
+      color: #FFFFFF;
+      border-color: var(--primary, #0284C7);
+    }
+    .compare-display-area {
+      background: var(--bg-surface, #FFFFFF);
+      border: 1px solid var(--line, #E2E8F0);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .dual-canvas-wrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .canvas-panel {
+      text-align: center;
+    }
+    .canvas-panel canvas {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--line, #E2E8F0);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .diff-legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy Architecture</a></li>
+        <li><a href="../about.html" class="nav-link">About</a></li>
+        <li><a href="../contact.html" class="nav-link">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="../index.html#category-filter-bar">Organize & View</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Compare PDFs</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+          <span>100% Client-Side RAM Processing</span>
+        </div>
+        <h1>Compare Two PDF Documents</h1>
+        <p class="tool-desc">Upload two PDF files to visually inspect revisions side-by-side or highlight pixel-level differences. Discover altered text, moved clauses, and modified values with zero cloud uploads.</p>
+      </div>
+
+      <!-- Upload Dual Setup -->
+      <div class="compare-setup-grid" id="setup-section">
+        <!-- Doc A -->
+        <div class="compare-box" id="box-a">
+          <img src="../assets/icons/compare-pdf.svg" width="48" height="48" alt="PDF A">
+          <h3 style="margin:10px 0 4px; font-size:1rem; color:var(--text-primary);">Document A (Original)</h3>
+          <p id="label-a" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Select original version</p>
+          <button class="btn btn-primary" id="btn-file-a">Select Document A</button>
+          <input type="file" id="input-file-a" accept="application/pdf,.pdf" style="display:none;">
+        </div>
+
+        <!-- Doc B -->
+        <div class="compare-box" id="box-b">
+          <img src="../assets/icons/compare-pdf.svg" width="48" height="48" alt="PDF B">
+          <h3 style="margin:10px 0 4px; font-size:1rem; color:var(--text-primary);">Document B (Modified)</h3>
+          <p id="label-b" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Select modified revision</p>
+          <button class="btn btn-primary" id="btn-file-b">Select Document B</button>
+          <input type="file" id="input-file-b" accept="application/pdf,.pdf" style="display:none;">
+        </div>
+      </div>
+
+      <!-- Comparison Studio -->
+      <div id="compare-studio" style="display:none; margin-top:24px;">
+        <!-- View Mode Tabs -->
+        <div class="view-mode-tabs">
+          <button class="view-tab-btn active" data-mode="diff">🔍 Visual Diff Overlay</button>
+          <button class="view-tab-btn" data-mode="side">↔️ Side-by-Side View</button>
+        </div>
+
+        <!-- Legend for Diff Mode -->
+        <div class="diff-legend" id="diff-legend">
+          <span class="legend-chip">
+            <span class="legend-dot" style="background:#E11D48;"></span>
+            <span style="color:#E11D48;">Removed in Doc B</span>
+          </span>
+          <span class="legend-chip">
+            <span class="legend-dot" style="background:#059669;"></span>
+            <span style="color:#059669;">Added in Doc B</span>
+          </span>
+          <span class="legend-chip">
+            <span class="legend-dot" style="background:#94A3B8;"></span>
+            <span style="color:#64748B;">Identical Content</span>
+          </span>
+        </div>
+
+        <div class="compare-display-area">
+          <!-- Page Nav -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button class="btn btn-outline" id="prev-page-btn" style="padding:4px 12px; font-size:0.85rem;">◀ Previous</button>
+              <span id="page-indicator" style="font-weight:700; font-size:0.9rem; color:var(--text-primary);">Page 1 / 1</span>
+              <button class="btn btn-outline" id="next-page-btn" style="padding:4px 12px; font-size:0.85rem;">Next ▶</button>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-primary" id="download-diff-btn" style="padding:6px 14px; font-size:0.85rem;">Download Diff Snapshot</button>
+              <button class="btn btn-outline" id="reset-compare-btn" style="padding:6px 14px; font-size:0.85rem;">New Comparison</button>
+            </div>
+          </div>
+
+          <!-- Diff Overlay View Container -->
+          <div id="diff-view-wrap" style="text-align:center;">
+            <canvas id="diff-canvas"></canvas>
+          </div>
+
+          <!-- Side-by-Side Container -->
+          <div id="side-view-wrap" class="dual-canvas-wrap" style="display:none;">
+            <div class="canvas-panel">
+              <h4 style="margin:0 0 8px; font-size:0.9rem; color:var(--text-primary);">Document A (Original)</h4>
+              <canvas id="canvas-a"></canvas>
+            </div>
+            <div class="canvas-panel">
+              <h4 style="margin:0 0 8px; font-size:0.9rem; color:var(--text-primary);">Document B (Modified)</h4>
+              <canvas id="canvas-b"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="28" height="28"></div>
+          <span>LocalDoc</span>
+        </div>
+        <p class="footer-tagline">100% Client-Side Private Document & Image Studio.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy Policy</a></li>
+        <li><a href="../terms.html">Terms of Service</a></li>
+        <li><a href="../about.html">About LocalDoc</a></li>
+        <li><a href="../contact.html">Contact & Support</a></li>
+      </ul>
+      <div class="footer-copy">
+        &copy; 2026 LocalDoc.org. All rights reserved. Zero cloud uploads.
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/compare-pdf.js"></script>
+</body>
+</html>

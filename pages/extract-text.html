@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extract Text from PDF & Scans Online — 100% Free & Private | LocalDoc</title>
+  <meta name="description" content="Extract clean plain text from any PDF document or scanned image in your browser RAM. 100% private, zero uploads.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf.worker.min.js"></script>
+</head>
+<body class="has-bottom-nav">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="34" height="34">
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="../index.html" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem; border-radius:12px;">← All Tools</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px; padding-bottom:60px; max-width:860px;">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Extract Text</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge" style="background:rgba(5,150,105,0.1); color:#059669; border-color:rgba(5,150,105,0.3);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% In-Browser RAM • Zero Upload</span>
+        </div>
+        <h1 style="margin:10px 0 6px;">Extract Text from PDF Online</h1>
+        <p class="tool-desc" style="color:var(--text-muted); font-size:0.95rem; margin-top:0;">
+          Extract plain text from any PDF document into an editable, copyable format or download as a .TXT file.
+        </p>
+      </div>
+
+      <div class="error-banner" id="error-banner" style="display:none; margin-bottom:16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="error-text">An error occurred while extracting text.</span>
+      </div>
+
+      <div class="drop-zone" id="drop-zone" style="border: 2px dashed #059669; background: rgba(5, 150, 105, 0.02); padding: 40px 20px; border-radius: 20px; text-align: center; cursor: pointer;">
+        <div class="drop-zone-icon" style="margin-bottom: 12px;">
+          <img src="../assets/icons/extract-text.svg" alt="Extract Text Icon" width="56" height="56">
+        </div>
+        <div class="drop-zone-text">
+          <h3 style="margin:0 0 6px; font-size:1.15rem; font-weight:800;">Choose PDF Document</h3>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px;">Click to select or drag and drop your PDF here (Ctrl+O)</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="browse-btn" style="background:#059669; border-color:#047857; font-weight:700; border-radius:12px; padding:10px 24px;">Select PDF File</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+      </div>
+
+      <!-- Result Stage -->
+      <div id="result-stage" style="display:none; margin-top:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+          <h3 style="margin:0; font-size:1rem; font-weight:800;" id="extracted-meta">Extracted Text</h3>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-outline" id="btn-copy" style="padding:6px 12px; font-size:0.82rem;">📋 Copy Text</button>
+            <button type="button" class="btn btn-primary" id="btn-download-txt" style="padding:6px 14px; font-size:0.82rem; background:#059669; border-color:#047857;">⬇ Download .TXT</button>
+            <button type="button" class="btn btn-outline" id="btn-reset" style="padding:6px 12px; font-size:0.82rem;">Reset</button>
+          </div>
+        </div>
+        <textarea id="text-output" rows="18" style="width:100%; box-sizing:border-box; padding:16px; border-radius:14px; border:1px solid var(--line); font-family:var(--font-mono, monospace); font-size:0.88rem; line-height:1.6; background:var(--bg-surface); color:var(--text-primary); resize:vertical; outline:none;"></textarea>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
+    }
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const browseBtn = document.getElementById('browse-btn');
+    const resultStage = document.getElementById('result-stage');
+    const textOutput = document.getElementById('text-output');
+    const extractedMeta = document.getElementById('extracted-meta');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnDownloadTxt = document.getElementById('btn-download-txt');
+    const btnReset = document.getElementById('btn-reset');
+    const errorBanner = document.getElementById('error-banner');
+    const errorText = document.getElementById('error-text');
+
+    let currentFileName = 'document.txt';
+
+    function showError(msg) {
+      if (errorBanner && errorText) {
+        errorText.textContent = msg;
+        errorBanner.style.display = 'flex';
+      }
+    }
+
+    function clearError() {
+      if (errorBanner) errorBanner.style.display = 'none';
+    }
+
+    browseBtn.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target !== browseBtn) fileInput.click();
+    });
+
+    ['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, e => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#047857';
+    }));
+
+    ['dragleave', 'drop'].forEach(n => dropZone.addEventListener(n, e => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#059669';
+    }));
+
+    dropZone.addEventListener('drop', e => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processPdf(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', e => {
+      if (e.target.files && e.target.files[0]) {
+        processPdf(e.target.files[0]);
+      }
+    });
+
+    async function processPdf(file) {
+      clearError();
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showError('Please select a valid PDF document.');
+        return;
+      }
+
+      currentFileName = file.name.replace(/\.[^/.]+$/, '') + '.txt';
+
+      try {
+        const buffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        const totalPages = pdf.numPages;
+
+        let fullText = '';
+        for (let p = 1; p <= totalPages; p++) {
+          const page = await pdf.getPage(p);
+          const content = await page.getTextContent();
+          const strings = content.items.map(item => item.str);
+          fullText += `--- Page ${p} ---\n` + strings.join(' ') + '\n\n';
+        }
+
+        textOutput.value = fullText.trim();
+        extractedMeta.textContent = `Extracted Text (${totalPages} Pages • ${fullText.length} characters)`;
+        dropZone.style.display = 'none';
+        resultStage.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        showError('Failed to extract text: ' + (err.message || 'File may be corrupt or encrypted.'));
+      }
+    }
+
+    btnCopy.addEventListener('click', () => {
+      textOutput.select();
+      navigator.clipboard.writeText(textOutput.value).then(() => {
+        btnCopy.textContent = '✓ Copied!';
+        setTimeout(() => btnCopy.textContent = '📋 Copy Text', 2000);
+      });
+    });
+
+    btnDownloadTxt.addEventListener('click', () => {
+      const blob = new Blob([textOutput.value], { type: 'text/plain;charset=utf-8' });
+      UIUtils.downloadBlob(blob, currentFileName);
+    });
+
+    btnReset.addEventListener('click', () => {
+      fileInput.value = '';
+      textOutput.value = '';
+      resultStage.style.display = 'none';
+      dropZone.style.display = 'block';
+      clearError();
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') {
+        e.preventDefault();
+        fileInput.click();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (resultStage.style.display !== 'none') {
+          btnDownloadTxt.click();
+        }
+      } else if (e.key === 'Escape') {
+        if (resultStage.style.display !== 'none') btnReset.click();
+      }
+    });
+  </script>
+</body>
+</html>

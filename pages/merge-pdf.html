@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -104,6 +104,12 @@
         <p class="tool-desc">Combine multiple PDF documents, receipts, and reports into a single file with custom ordering and zero server uploads.</p>
       </div>
 
+      <!-- Standard Error Banner -->
+      <div class="error-banner" id="error-banner" style="display:none; margin-bottom:16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="error-text">An error occurred while merging documents.</span>
+      </div>
+
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
@@ -111,7 +117,7 @@
         </div>
         <div class="drop-zone-text">
           <h3>Drop multiple PDF documents here</h3>
-          <p>Or click to browse from your device. 100% in-browser private execution.</p>
+          <p>Or click to browse from your device. 100% in-browser private execution (Ctrl+O).</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Files</button>
         <input type="file" id="file-input" accept="application/pdf" multiple style="display:none;">
@@ -132,7 +138,7 @@
       <!-- Action Bar -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Merge All PDFs</span> &rarr;
+          <span>Combine & Download</span> &rarr;
         </button>
       </div>
 
@@ -323,9 +329,26 @@
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
+    function showError(msg) {
+      const eb = document.getElementById("error-banner");
+      const et = document.getElementById("error-text");
+      if (eb && et) {
+        et.textContent = msg;
+        eb.style.display = "flex";
+      } else {
+        UIUtils.showToast(msg, "error");
+      }
+    }
+
+    function clearError() {
+      const eb = document.getElementById("error-banner");
+      if (eb) eb.style.display = "none";
+    }
+
     processBtn.addEventListener("click", async function() {
+      clearError();
       if (queueFiles.length < 2) {
-        UIUtils.showToast("Please add at least 2 PDF documents to merge.", "error");
+        showError("Please select at least 2 PDF documents to combine.");
         return;
       }
 
@@ -338,10 +361,15 @@
         UIUtils.setWorkflowStep(3, 100, "Merge complete!");
         resultCard.style.display = "flex";
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.mergedSize)} • Combined ${resultData.fileCount} Documents (${resultData.totalPages} Total Pages)`;
-        UIUtils.showToast("PDF files merged successfully!", "success");
+        
+        // Auto-download result as specified by "Combine & Download" action
+        if (resultData && resultData.pdfBlob) {
+          UIUtils.downloadBlob(resultData.pdfBlob, "localdoc-merged-document.pdf");
+        }
+        UIUtils.showToast("PDF files merged and downloaded successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        showError("Failed to merge PDF files: " + (err.message || "Please verify the files are valid and not password-protected."));
       } finally {
         processBtn.disabled = false;
       }
@@ -350,6 +378,25 @@
     downloadBtn.addEventListener("click", function() {
       if (resultData && resultData.pdfBlob) {
         UIUtils.downloadBlob(resultData.pdfBlob, "localdoc-merged-document.pdf");
+      }
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        fileInput.click();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        if (queueFiles.length >= 2 && !processBtn.disabled) {
+          processBtn.click();
+        } else if (resultData && resultData.pdfBlob) {
+          downloadBtn.click();
+        }
+      } else if (e.key === "Escape") {
+        if (queueFiles.length > 0) {
+          clearAllBtn.click();
+        }
       }
     });
   </script>

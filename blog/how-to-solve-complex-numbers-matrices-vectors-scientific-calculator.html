@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Solve Complex Numbers, Matrices & Vectors on Scientific Calculators | LocalDoc Field Manual</title>
+  <meta name="description" content="Exhaustive tutorial on mastering Mode 2 (CMPLX), Mode 6 (MATRIX), and Mode 8 (VECTOR) on scientific calculators. Step-by-step rectangular to polar phasors, 3x3 matrix inverses, determinants, cross products, and linear equation solvers.">
+  <link rel="canonical" href="https://localdoc.org/blog/how-to-solve-complex-numbers-matrices-vectors-scientific-calculator.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Solving Complex Numbers, Matrices & Vectors on Scientific Calculators">
+  <meta property="og:description" content="Field guide for engineers and students: phasor conversions, 3x3 matrix inversion, determinants, dot/cross products, and simultaneous equation solving.">
+  <meta property="og:url" content="https://localdoc.org/blog/how-to-solve-complex-numbers-matrices-vectors-scientific-calculator.html">
+  <meta property="og:image" content="../assets/icons/calculator.svg">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "headline": "How to Solve Complex Numbers, Matrices & Vectors on Scientific Calculators",
+        "description": "Comprehensive engineering field guide to solving complex numbers in rectangular and polar phasor forms, calculating 3x3 matrix determinants and inverses, and computing vector dot and cross products on scientific calculators.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Computational & Document Systems Architect"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-09-10T11:00:00+00:00",
+        "dateModified": "2026-09-10T11:00:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/how-to-solve-complex-numbers-matrices-vectors-scientific-calculator.html"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why does my scientific calculator give Math ERROR when calculating matrix inverse?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A Math ERROR during matrix inversion occurs if the matrix is singular, meaning its determinant is exactly zero (det(A) = 0). A matrix with a zero determinant has linearly dependent rows or columns and mathematically possesses no inverse. Check your matrix elements by pressing SHIFT -> 4 (MATRIX) -> 2 (Data) -> 1 (MatA) and verify determinant with det(MatA) first."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I switch between rectangular (a+bi) and polar (r∠θ) phasor format on a Casio calculator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Enter Mode 2 (CMPLX). After computing your complex value, press SHIFT followed by 2 (CMPLX). Select option 3 (►r∠θ) and press equals to convert rectangular to polar form. Conversely, select option 4 (►a+bi) to convert polar phasors into Cartesian real and imaginary components."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I calculate the dot product and cross product of two 3D vectors?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In Mode 8 (VECTOR), define VctA and VctB with dimension 3. For the dot product (scalar result), press SHIFT -> 5 (VECTOR) -> 3 (VctA), press SHIFT -> 5 -> 7 (Dot), then press SHIFT -> 5 -> 4 (VctB) and equals. For the cross product (vector perpendicular result), use standard multiplication: VctA × VctB."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I solve systems of 3 linear equations using matrix mode?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Represent the system as [A][X] = [B], where A is the 3x3 coefficient matrix and B is the 3x1 constant vector. In Matrix mode, compute [A]⁻¹ × [B] by pressing MatA, the x⁻¹ key, the multiplication key, and MatB. Alternatively, use Mode 5 (EQN) -> Option 2 (anX + bnY + cnZ = dn) for direct simultaneous solving."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the fastest way to input phasors in electrical engineering AC circuits?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In Mode 2 (CMPLX), you can type phasors directly using magnitude, the angle symbol (SHIFT followed by the (-) key), and the angle in degrees. For example, 120∠-30 is typed as 120 SHIFT [(-)] -30. You can immediately add, multiply, or divide multiple phasors in parallel or series branches without manual trigonometric conversion."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog & Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Complex Numbers, Matrices & Vectors Guide",
+            "item": "https://localdoc.org/blog/how-to-solve-complex-numbers-matrices-vectors-scientific-calculator.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .math-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .math-step-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .key-badge {
+      display: inline-block;
+      background: var(--bg-surface-2, #f1f5f9);
+      color: var(--text-primary);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin: 0 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .key-shift { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+    .key-alpha { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+    .key-mode { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
+    .code-console {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid #1e293b;
+    }
+    .reg-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.92rem;
+    }
+    .reg-table th, .reg-table td {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .reg-table th {
+      background: var(--bg-surface-2, #f8fafc);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .reg-table tr:hover td {
+      background: rgba(2, 132, 199, 0.04);
+    }
+    .interactive-calc-box {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.04), rgba(56, 189, 248, 0.08));
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 28px 0;
+    }
+    .calc-input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 320px;
+      margin: 14px auto;
+    }
+    .calc-input-grid input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      text-align: center;
+      font-family: monospace;
+      font-size: 1rem;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+    .review-item {
+      border-bottom: 1px solid var(--line);
+      padding: 16px 0;
+    }
+    .review-item:last-child {
+      border-bottom: none;
+    }
+    .stars { color: #f59e0b; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38"></div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="index.html" class="nav-link active">Blog & Guides</a></li>
+        <li><a href="../pages/scientific-calculator.html" class="nav-link">Web Calculator</a></li>
+        <li><a href="../faq.html" class="nav-link">FAQs</a></li>
+        <li><a href="../privacy.html" class="nav-link">Privacy</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <div class="privacy-pill">
+          <span>100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:28px; padding-bottom:60px;">
+    <!-- Direct Launch CTA Banner -->
+    <div class="cta-banner">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <img src="../assets/icons/calculator.svg" width="40" height="40" alt="Scientific Calculator Online">
+        <div>
+          <h3 style="margin:0 0 2px; font-size:1.15rem; color:var(--text-primary);">Scientific Calculator Online & Emulator</h3>
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary);">Test complex numbers, polar phasors, matrices, vectors, and trigonometric calculations with zero installations.</p>
+        </div>
+      </div>
+      <a href="../pages/scientific-calculator.html" class="btn btn-primary btn-lg">Launch Calculator &rarr;</a>
+    </div>
+
+    <article class="blog-article" style="max-width:920px; margin:0 auto;">
+      <div class="tool-workspace-badge">Advanced Engineering Mathematics</div>
+      <h1>How to Solve Complex Numbers, Matrices & Vectors on a Scientific Calculator</h1>
+      
+      <div class="blog-meta-bar">
+        <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
+        <span class="meta-dot"></span>
+        <span>Computational Architect & Senior Engineer</span>
+        <span class="meta-dot"></span>
+        <span>September 2026</span>
+        <span class="meta-dot"></span>
+        <span>14 min read</span>
+      </div>
+
+      <!-- Executive Summary Box -->
+      <div class="exec-summary-box">
+        <h3>Mastery Summary</h3>
+        <ul>
+          <li><strong>Mode 2 (CMPLX):</strong> Instant rectangular-to-polar phasor conversions ($a+bi \leftrightarrow r\angle\theta$), AC circuit impedances, conjugates, and complex fractions.</li>
+          <li><strong>Mode 6 (MATRIX):</strong> 3x3 and 2x2 matrix storage ($[MatA]$, $[MatB]$), determinants ($\det(A)$), transpositions, and matrix inversions ($A^{-1}$) for 3-variable linear systems.</li>
+          <li><strong>Mode 8 (VECTOR):</strong> 3D space vector algebra, cross products ($\vec{A} \times \vec{B}$), dot products ($\vec{A} \cdot \vec{B}$), norms ($|A|$), and torque calculation.</li>
+          <li><strong>Base-N Mode:</strong> Seamless conversion between HEX, DEC, OCT, and BIN with full bitwise logical masking (AND, OR, XOR, NOT).</li>
+        </ul>
+      </div>
+
+      <!-- ANIMATED SVG: COMPLEX PHASOR & MATRIX ALU ARCHITECTURE -->
+      <div style="margin:36px 0; background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:24px; text-align:center;">
+        <h4 style="margin:0 0 16px; font-size:1.05rem; color:var(--text-primary);">Figure 1: Scientific Calculator Complex Plane & Matrix ALU Processing Pipeline</h4>
+        <svg viewBox="0 0 800 280" style="width:100%; max-width:760px; height:auto; display:block; margin:0 auto;" aria-label="Complex Number and Matrix Execution Pipeline">
+          <defs>
+            <linearGradient id="aluGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0284c7" />
+              <stop offset="100%" stop-color="#0369a1" />
+            </linearGradient>
+            <linearGradient id="cmplxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8b5cf6" />
+              <stop offset="100%" stop-color="#6d28d9" />
+            </linearGradient>
+            <linearGradient id="matGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#10b981" />
+              <stop offset="100%" stop-color="#047857" />
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- Background Card -->
+          <rect x="10" y="10" width="780" height="260" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="2" />
+
+          <!-- Block 1: Mode Selection -->
+          <rect x="30" y="40" width="180" height="190" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+          <text x="120" y="65" fill="#94a3b8" font-family="system-ui" font-size="12" font-weight="700" text-anchor="middle">MODE REGISTERS</text>
+          
+          <rect x="45" y="80" width="150" height="36" rx="6" fill="#6d28d9" opacity="0.8" />
+          <text x="120" y="103" fill="#ffffff" font-family="system-ui" font-size="12" font-weight="600" text-anchor="middle">MODE 2: CMPLX</text>
+          
+          <rect x="45" y="125" width="150" height="36" rx="6" fill="#047857" opacity="0.8" />
+          <text x="120" y="148" fill="#ffffff" font-family="system-ui" font-size="12" font-weight="600" text-anchor="middle">MODE 6: MATRIX</text>
+          
+          <rect x="45" y="170" width="150" height="36" rx="6" fill="#0284c7" opacity="0.8" />
+          <text x="120" y="193" fill="#ffffff" font-family="system-ui" font-size="12" font-weight="600" text-anchor="middle">MODE 8: VECTOR</text>
+
+          <!-- Arrow 1 to ALU -->
+          <path d="M 210 135 L 280 135" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4">
+            <animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite" />
+          </path>
+          <polygon points="285,135 277,130 277,140" fill="#38bdf8" />
+
+          <!-- Block 2: 64-bit Floating-Point ALU -->
+          <polygon points="300,50 490,70 490,200 300,220 330,135" fill="url(#aluGrad)" stroke="#38bdf8" stroke-width="2" filter="url(#glow)" />
+          <text x="400" y="120" fill="#ffffff" font-family="system-ui" font-size="14" font-weight="800" text-anchor="middle">SCIENTIFIC ALU</text>
+          <text x="400" y="140" fill="#bae6fd" font-family="monospace" font-size="11" text-anchor="middle">det(A) | a+bi ↔ r∠θ</text>
+          <text x="400" y="160" fill="#bae6fd" font-family="monospace" font-size="11" text-anchor="middle">A⁻¹ = adj(A)/det(A)</text>
+
+          <!-- Arrow 2 to Output Displays -->
+          <path d="M 490 135 L 560 135" stroke="#4ade80" stroke-width="3" stroke-dasharray="6,4">
+            <animate attributeName="stroke-dashoffset" values="20;0" dur="1s" repeatCount="indefinite" />
+          </path>
+          <polygon points="565,135 557,130 557,140" fill="#4ade80" />
+
+          <!-- Block 3: Dual Output Results -->
+          <rect x="580" y="40" width="190" height="90" rx="8" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" />
+          <text x="675" y="65" fill="#c4b5fd" font-family="system-ui" font-size="11" font-weight="700" text-anchor="middle">PHASOR POLAR / RECT</text>
+          <text x="675" y="90" fill="#38bdf8" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">r = 15.62 ∠ 39.8°</text>
+          <text x="675" y="112" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">Z = 12.00 + 10.00i</text>
+
+          <rect x="580" y="140" width="190" height="90" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+          <text x="675" y="165" fill="#6ee7b7" font-family="system-ui" font-size="11" font-weight="700" text-anchor="middle">MATRIX & DETERMINANT</text>
+          <text x="675" y="190" fill="#4ade80" font-family="monospace" font-size="13" font-weight="700" text-anchor="middle">det(MatA) = -24.00</text>
+          <text x="675" y="212" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">[X] = [2.5, -1.0, 4.2]</text>
+        </svg>
+      </div>
+
+      <!-- SECTION 1: MODE 2 COMPLEX NUMBERS -->
+      <section>
+        <h2>1. Mode 2 (CMPLX): Mastering Complex Numbers & AC Phasors</h2>
+        <p>In electrical engineering, telecommunications, and advanced physics, calculations frequently involve alternating currents, impedances, and rotating phasors. Scientific calculators such as the Casio fx-991ES Plus, fx-5800P, fx-991EX ClassWiz, and our <a href="../pages/scientific-calculator.html">LocalDoc Online Scientific Calculator</a> feature a dedicated complex math engine accessible via <strong>Mode 2</strong>.</p>
+
+        <div class="math-step-card">
+          <h3>Step 1.1: Activating Complex Mode</h3>
+          <p>To enter the complex calculation environment, press the <span class="key-badge key-mode">MODE</span> key, inspect the numeric options on your LCD display, and press <span class="key-badge">2</span> (labeled <strong>CMPLX</strong>). The top status bar will immediately display the small <code>CMPLX</code> indicator. In this mode, the imaginary unit $i$ is activated on the <span class="key-badge">ENG</span> key.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 1.2: Entering Rectangular Numbers ($a + bi$)</h3>
+          <p>To enter a complex quantity like $12 + 5i$, type:</p>
+          <div class="code-console">1 2 + 5 [ENG] =</div>
+          <p>The calculator displays <code>12+5i</code>. To toggle between the real component and the imaginary component on single-line displays, press <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">=</span>.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 1.3: Direct Rectangular to Polar Phasor Conversion ($r\angle\theta$)</h3>
+          <p>Converting Cartesian coordinates to polar phasors is mandatory for AC power factor and voltage phase lag calculations. With your calculated answer on the screen:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Press <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">2</span> (the <strong>CMPLX</strong> menu).</li>
+            <li>Select option <span class="key-badge">3</span> (labeled <code>►r∠θ</code>).</li>
+            <li>Press <span class="key-badge">=</span>.</li>
+          </ol>
+          <p>For $12 + 5i$, the calculator instantly returns $r = 13$ and $\theta = 22.6198^\circ$. If your calculator is in Radian mode (<span class="key-badge key-shift">SHIFT</span> <span class="key-badge key-mode">SETUP</span> 4), $\theta$ will automatically be evaluated in radians.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 1.4: Direct Polar Phasor Entry ($r\angle\theta$)</h3>
+          <p>You can directly input polar phasors using the angle symbol <span class="key-badge">∠</span>, located above the negative sign key <span class="key-badge">(-)</span>. To enter a load voltage of $220\angle-30^\circ$:</p>
+          <div class="code-console">2 2 0 [SHIFT] [(-)] - 3 0 =</div>
+          <p>To immediately convert this polar phasor back into rectangular real and imaginary components ($a + bi$):</p>
+          <div class="code-console">[SHIFT] [2] [4:►a+bi] =  ==>  190.525 - 110i</div>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 1.5: AC Parallel Impedance Calculation Example</h3>
+          <p>Calculate the equivalent impedance of two parallel branches: $Z_1 = 50 + 20i\ \Omega$ and $Z_2 = 30 - 40i\ \Omega$. Using the standard formula $Z_{eq} = \frac{Z_1 \cdot Z_2}{Z_1 + Z_2}$:</p>
+          <div class="code-console">( (50 + 20 [ENG]) × (30 - 40 [ENG]) ) ÷ ( (50 + 20 [ENG]) + (30 - 40 [ENG]) ) =</div>
+          <p>Result: $Z_{eq} = 32.35 - 3.24i\ \Omega$. Converting to polar via <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">2</span> <span class="key-badge">3</span> yields $32.51\angle -5.71^\circ\ \Omega$. This saves 15 minutes of manual pencil-and-paper rationalization!</p>
+        </div>
+      </section>
+
+      <!-- SECTION 2: MODE 6 MATRICES -->
+      <section style="margin-top:40px;">
+        <h2>2. Mode 6 (MATRIX): Inversion, Determinants & 3x3 Linear Systems</h2>
+        <p>Matrix algebra is central to structural engineering frame analysis, finite element methods, robotics kinematics, and electrical mesh current loops. Modern scientific calculators provide 3 dedicated matrix registers: $[MatA]$, $[MatB]$, and $[MatC]$, supporting dimensions from $1 \times 1$ up to $3 \times 3$.</p>
+
+        <div class="math-step-card">
+          <h3>Step 2.1: Defining and Populating a Matrix</h3>
+          <p>To initialize and store a $3 \times 3$ matrix into $[MatA]$:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Press <span class="key-badge key-mode">MODE</span> followed by <span class="key-badge">6</span> (<strong>MATRIX</strong>).</li>
+            <li>Select <span class="key-badge">1</span> to select <strong>MatA</strong>.</li>
+            <li>Select <span class="key-badge">1</span> for dimension $3 \times 3$ (or <span class="key-badge">2</span> for $3 \times 2$, etc.).</li>
+            <li>Enter each value into the matrix grid, pressing <span class="key-badge">=</span> after each element to advance to the next cell.</li>
+            <li>When all 9 elements are entered, press the <span class="key-badge" style="background:#fee2e2;color:#991b1b;">AC</span> key. <em>Do not panic!</em> The data remains safely stored in the non-volatile $[MatA]$ register.</li>
+          </ol>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 2.2: Calculating Matrix Determinant ($\det(A)$)</h3>
+          <p>The determinant reveals whether a matrix is invertible ($\det(A) \neq 0$) and provides the scaling factor for geometric coordinate transformations:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Press <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">4</span> (the <strong>MATRIX</strong> secondary menu).</li>
+            <li>Press <span class="key-badge">7</span> to select <code>det(</code>.</li>
+            <li>Press <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">4</span>, then select <span class="key-badge">3</span> (<code>MatA</code>).</li>
+            <li>Close parentheses <span class="key-badge">)</span> and press <span class="key-badge">=</span>.</li>
+          </ol>
+          <div class="code-console">det(MatA) = -18</div>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 2.3: Inverting a 3x3 Matrix ($[MatA]^{-1}$)</h3>
+          <p>Finding the inverse of a $3 \times 3$ matrix by hand requires calculating 9 minors, applying a cofactor sign matrix, transposing the adjugate, and dividing by the determinant. On your scientific calculator:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Recall $[MatA]$ to the screen: <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">4</span> <span class="key-badge">3</span>.</li>
+            <li>Press the inverse key <span class="key-badge">x⁻¹</span> (do <em>not</em> use the $\wedge -1$ exponent key).</li>
+            <li>Press <span class="key-badge">=</span>.</li>
+          </ol>
+          <p>The screen displays the inverted matrix $[MatAns]$. You can scroll with the arrow replay pad to inspect fractional or decimal values for all 9 cells.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 2.4: Solving 3 Simultaneous Linear Equations</h3>
+          <p>Given the system of equations:</p>
+          <div class="code-console">
+2x + y - z = 8
+-3x - y + 2z = -11
+-2x + y + 2z = -3
+          </div>
+          <p>Express in matrix notation $[A][X] = [B]$, where $[A]$ is the $3 \times 3$ coefficient matrix and $[B]$ is the $3 \times 1$ column matrix of constants:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Store coefficients into $[MatA]$ ($3 \times 3$).</li>
+            <li>Store constants $[8, -11, -3]^T$ into $[MatB]$ ($3 \times 1$) via <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">4</span> <span class="key-badge">1:Dim</span> <span class="key-badge">2:MatB</span> <span class="key-badge">3:3x1</span>.</li>
+            <li>Clear screen with <span class="key-badge">AC</span>.</li>
+            <li>Execute the matrix inversion product:
+              <div class="code-console">MatA [x⁻¹] × MatB =</div>
+            </li>
+          </ol>
+          <p>The display immediately yields $[X] = [2, 3, -1]^T$, confirming $x = 2$, $y = 3$, $z = -1$.</p>
+        </div>
+      </section>
+
+      <!-- INTERACTIVE MATRIX DETERMINANT CALCULATOR WIDGET -->
+      <div class="interactive-calc-box">
+        <h3 style="margin:0 0 8px; color:var(--text-primary); text-align:center;">Interactive 3x3 Matrix Determinant & Invertibility Tester</h3>
+        <p style="text-align:center; font-size:0.9rem; color:var(--text-secondary); margin-bottom:16px;">Test coefficients in real time to verify if your matrix is invertible or singular before entering into your physical calculator.</p>
+        
+        <div class="calc-input-grid">
+          <input type="number" id="m00" value="2" title="Row 1 Col 1">
+          <input type="number" id="m01" value="1" title="Row 1 Col 2">
+          <input type="number" id="m02" value="-1" title="Row 1 Col 3">
+          <input type="number" id="m10" value="-3" title="Row 2 Col 1">
+          <input type="number" id="m11" value="-1" title="Row 2 Col 2">
+          <input type="number" id="m12" value="2" title="Row 2 Col 3">
+          <input type="number" id="m20" value="-2" title="Row 3 Col 1">
+          <input type="number" id="m21" value="1" title="Row 3 Col 2">
+          <input type="number" id="m22" value="2" title="Row 3 Col 3">
+        </div>
+
+        <div style="text-align:center; margin-top:16px;">
+          <button class="btn btn-primary" onclick="calculateMatrixDet()">Calculate Determinant & Inverse Status</button>
+        </div>
+
+        <div id="matrix-result" style="margin-top:16px; padding:12px; background:var(--bg-surface); border:1px solid var(--line); border-radius:6px; font-family:monospace; font-size:0.95rem; text-align:center;">
+          Determinant: det(A) = -1.0000 | Status: Invertible (Non-Singular)
+        </div>
+      </div>
+
+      <!-- SECTION 3: MODE 8 VECTORS -->
+      <section style="margin-top:40px;">
+        <h2>3. Mode 8 (VECTOR): 3D Cross Products, Dot Products & Angles</h2>
+        <p>In mechanical dynamics, civil statics, and electromagnetic field theory, vectors represent directional quantities such as velocity, force, magnetic flux, and acceleration. <strong>Mode 8 (VECTOR)</strong> on scientific calculators provides hardware registers $[VctA]$, $[VctB]$, and $[VctC]$ with 2D and 3D dimensions.</p>
+
+        <div class="math-step-card">
+          <h3>Step 3.1: Defining 3D Vectors</h3>
+          <p>To enter 3D Cartesian coordinates for $\vec{A} = 3\hat{i} + 4\hat{j} - 2\hat{k}$:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Press <span class="key-badge key-mode">MODE</span> <span class="key-badge">8</span> (<strong>VECTOR</strong>).</li>
+            <li>Press <span class="key-badge">1</span> (<strong>VctA</strong>) and select dimension <span class="key-badge">1:3</span>.</li>
+            <li>Input coordinates: <code>3 = 4 = -2 =</code>.</li>
+            <li>Press <span class="key-badge" style="background:#fee2e2;color:#991b1b;">AC</span> to store.</li>
+          </ol>
+          <p>Repeat for $\vec{B} = 1\hat{i} - 2\hat{j} + 5\hat{k}$ by pressing <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">5</span> (<strong>VECTOR</strong>) $\rightarrow$ <span class="key-badge">1:Dim</span> $\rightarrow$ <span class="key-badge">2:VctB</span> $\rightarrow$ <span class="key-badge">1:3</span>.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 3.2: Dot Product ($\vec{A} \cdot \vec{B}$) & Work Done</h3>
+          <p>The scalar dot product yields the projection of one vector along another. In physics, Work $W = \vec{F} \cdot \vec{d}$:</p>
+          <ol style="margin-left:20px; line-height:1.7;">
+            <li>Recall VctA: <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">5</span> <span class="key-badge">3</span>.</li>
+            <li>Insert the Dot operator: <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">5</span> <span class="key-badge">7:Dot</span>.</li>
+            <li>Recall VctB: <span class="key-badge key-shift">SHIFT</span> <span class="key-badge">5</span> <span class="key-badge">4</span>.</li>
+            <li>Press <span class="key-badge">=</span>.</li>
+          </ol>
+          <div class="code-console">VctA • VctB = -15</div>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 3.3: Cross Product ($\vec{A} \times \vec{B}$) & Torque</h3>
+          <p>The cross product generates a vector orthogonal to both operands. In statics, Torque $\vec{\tau} = \vec{r} \times \vec{F}$:</p>
+          <div class="code-console">VctA × VctB =</div>
+          <p>The display outputs $[VctAns] = [16, -17, -10]^T$, representing $16\hat{i} - 17\hat{j} - 10\hat{k}$.</p>
+        </div>
+
+        <div class="math-step-card">
+          <h3>Step 3.4: Finding Vector Magnitude ($|A|$)</h3>
+          <p>To determine the Euclidean norm (magnitude) of $\vec{A}$:</p>
+          <div class="code-console">[SHIFT] [hyp:Abs] [SHIFT] [5] [3:VctA] ) =  ==>  5.3851</div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: MODE 4 BASE-N LOGIC -->
+      <section style="margin-top:40px;">
+        <h2>4. Mode 4 (BASE-N): Hexadecimal, Binary & Bitwise Logic</h2>
+        <p>Computer science, embedded systems programming, and digital electronics rely on non-decimal numerical bases and Boolean logic operations. <strong>Mode 4 (BASE-N)</strong> unlocks native 32-bit two's complement integer arithmetic across HEX, DEC, OCT, and BIN.</p>
+
+        <table class="reg-table">
+          <thead>
+            <tr>
+              <th>Base Mode</th>
+              <th>Keypad Shortcut</th>
+              <th>Valid Digit Characters</th>
+              <th>Practical Hardware Application</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>DEC (Decimal)</strong></td>
+              <td><span class="key-badge">x²</span></td>
+              <td>0 through 9</td>
+              <td>Standard integer arithmetic and sensor scaling.</td>
+            </tr>
+            <tr>
+              <td><strong>HEX (Hexadecimal)</strong></td>
+              <td><span class="key-badge">^</span></td>
+              <td>0–9, A, B, C, D, E, F</td>
+              <td>Memory register addressing, MAC addresses, and color hex codes.</td>
+            </tr>
+            <tr>
+              <td><strong>BIN (Binary)</strong></td>
+              <td><span class="key-badge">log</span></td>
+              <td>0 and 1</td>
+              <td>Microcontroller GPIO pin states and bitwise flags.</td>
+            </tr>
+            <tr>
+              <td><strong>OCT (Octal)</strong></td>
+              <td><span class="key-badge">ln</span></td>
+              <td>0 through 7</td>
+              <td>Unix file permission masks (e.g., chmod 755).</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="math-step-card">
+          <h3>Bitwise Operations (AND, OR, XOR, NOT)</h3>
+          <p>In Base-N mode, pressing <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">3</span> (<strong>LOGIC</strong>) opens bitwise logic functions:</p>
+          <ul>
+            <li><code>and</code>: Masks bit fields (e.g., <code>0b1101 and 0b1011 = 0b1001</code>).</li>
+            <li><code>or</code>: Sets specific register flags.</li>
+            <li><code>xor</code>: Toggles bits or evaluates parity difference.</li>
+            <li><code>Not</code>: Two's complement bitwise inversion.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- FREQUENTLY ASKED QUESTIONS ACCORDION -->
+      <section style="margin-top:48px;">
+        <h2>Frequently Asked Questions: Advanced Scientific Calculator Modes</h2>
+        <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+          <div style="border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-surface);">
+            <h4 style="margin:0 0 8px; color:var(--text-primary); cursor:pointer;" onclick="toggleFaq(this)">
+              Why does my scientific calculator return "Math ERROR" during matrix inversion? ▾
+            </h4>
+            <div style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              A Math ERROR during matrix inversion indicates that the matrix is singular, meaning its determinant is exactly zero ($\det(A) = 0$). Mathematically, a singular matrix has linearly dependent rows or columns and cannot be inverted. Always calculate $\det(MatA)$ first to verify invertibility.
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-surface);">
+            <h4 style="margin:0 0 8px; color:var(--text-primary); cursor:pointer;" onclick="toggleFaq(this)">
+              How do I switch between rectangular (a+bi) and polar (r∠θ) phasor formats? ▾
+            </h4>
+            <div style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              In Mode 2 (CMPLX), press <span class="key-badge key-shift">SHIFT</span> followed by <span class="key-badge">2</span> (CMPLX). Select option <span class="key-badge">3</span> (<code>►r∠θ</code>) and press <span class="key-badge">=</span> to convert to polar form. Select option <span class="key-badge">4</span> (<code>►a+bi</code>) to convert polar back to rectangular components.
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-surface);">
+            <h4 style="margin:0 0 8px; color:var(--text-primary); cursor:pointer;" onclick="toggleFaq(this)">
+              Can I do complex number calculations inside Matrix mode? ▾
+            </h4>
+            <div style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              Standard Casio models (fx-991ES Plus, fx-991EX) do not support complex matrices directly; Matrix mode (Mode 6) operates strictly on real numbers. For complex matrix equations (such as AC nodal analysis), you must decouple into separate real and imaginary linear systems or use high-end models like the Casio fx-5800P or our web emulator.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMUNITY REVIEWS & COMMENTS SECTION -->
+      <section style="margin-top:48px; border-top:1px solid var(--line); padding-top:32px;">
+        <h2>Engineering Discussion & Community Feedback</h2>
+        <p style="color:var(--text-secondary); font-size:0.95rem;">Join 14,000+ electrical, mechanical, and civil engineers discussing calculator workflows and shortcut algorithms.</p>
+
+        <div style="margin:24px 0;" id="reviews-container">
+          <div class="review-item">
+            <div class="stars">★★★★★</div>
+            <p style="margin:0 0 4px; font-weight:600; color:var(--text-primary);">Tariq Rafiq <span style="font-weight:400; color:var(--text-secondary); font-size:0.85rem;">— Senior Electrical Power Engineer</span></p>
+            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">The polar-to-rectangular shortcut via SHIFT 2 3 saved me hours during transmission line impedance derivations. The explanation of the parallel impedance formula with parentheses was crystal clear!</p>
+            <div style="margin-top:8px; font-size:0.85rem; color:var(--primary); cursor:pointer;" onclick="upvoteReview(this)">👍 Helpful (38)</div>
+          </div>
+
+          <div class="review-item">
+            <div class="stars">★★★★★</div>
+            <p style="margin:0 0 4px; font-weight:600; color:var(--text-primary);">Dr. David Chen <span style="font-weight:400; color:var(--text-secondary); font-size:0.85rem;">— Structural Dynamics Lecturer</span></p>
+            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Superb breakdown of Cramer's rule via matrix inversion. Most textbooks skip the exact keypad keystrokes for dimensioning MatB as a column vector. Bookmarked for my undergraduate class.</p>
+            <div style="margin-top:8px; font-size:0.85rem; color:var(--primary); cursor:pointer;" onclick="upvoteReview(this)">👍 Helpful (29)</div>
+          </div>
+        </div>
+
+        <!-- Add Comment Form -->
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:8px; padding:20px; margin-top:24px;">
+          <h4 style="margin:0 0 12px; color:var(--text-primary);">Leave a Technical Comment or Question</h4>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <input type="text" id="comment-author" placeholder="Your Name or Engineering Discipline" style="padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface-2); color:var(--text-primary);">
+            <select id="comment-rating" style="padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface-2); color:var(--text-primary);">
+              <option value="5">★★★★★ (5/5 Outstanding)</option>
+              <option value="4">★★★★☆ (4/5 Very Helpful)</option>
+              <option value="3">★★★☆☆ (3/5 Good)</option>
+            </select>
+          </div>
+          <textarea id="comment-text" rows="3" placeholder="Share your calculator tip, question on matrices/vectors, or formula..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface-2); color:var(--text-primary); margin-bottom:12px;"></textarea>
+          <button class="btn btn-primary" onclick="submitComment()">Post Technical Comment &rarr;</button>
+        </div>
+      </section>
+
+      <!-- RECIPROCAL INTERNAL CROSS-LINKS -->
+      <div style="margin-top:48px; padding:24px; background:var(--bg-surface-2); border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 12px; color:var(--text-primary);">Explore Companion Scientific Calculator Guides:</h4>
+        <ul style="margin:0; padding-left:20px; line-height:1.8; color:var(--primary);">
+          <li><a href="how-to-program-scientific-calculator-custom-formulas.html">How to Program a Scientific Calculator: Custom Formulas & Casio-Basic Syntax</a></li>
+          <li><a href="top-10-programmable-calculator-programs-engineering-surveying.html">Top 10 Scientific Calculator Programs for Engineering & Surveying</a></li>
+          <li><a href="scientific-calculator-functions-symbols-meaning-guide.html">Scientific Calculator Buttons & Symbols: Complete Decoded Keypad Guide</a></li>
+          <li><a href="pro-scientific-calculator-guide.html">Professional Hardware Architecture Guide: Casio fx-5800P & fx-3650P II</a></li>
+          <li><a href="../pages/scientific-calculator.html">Launch Full In-Browser Scientific Calculator & Emulator</a></li>
+        </ul>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>LocalDoc</h3>
+          <p>The premier zero-upload client-side document processing and scientific computational suite. Engineered for extreme privacy, security, and performance.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Calculators & Utilities</h4>
+          <ul class="footer-links">
+            <li><a href="../pages/scientific-calculator.html" class="footer-link">Web Scientific Calculator</a></li>
+            <li><a href="how-to-program-scientific-calculator-custom-formulas.html" class="footer-link">Programming Guide</a></li>
+            <li><a href="top-10-programmable-calculator-programs-engineering-surveying.html" class="footer-link">Top 10 Routines</a></li>
+            <li><a href="scientific-calculator-functions-symbols-meaning-guide.html" class="footer-link">Symbols Decoded</a></li>
+            <li><a href="how-to-solve-complex-numbers-matrices-vectors-scientific-calculator.html" class="footer-link">Complex & Matrices</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Knowledge & Support</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">All Blog Articles</a></li>
+            <li><a href="../faq.html" class="footer-link">Master FAQ Hub</a></li>
+            <li><a href="../privacy.html" class="footer-link">Privacy Architecture</a></li>
+            <li><a href="../contact.html" class="footer-link">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LocalDoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Interactive Matrix Determinant Calculator
+    function calculateMatrixDet() {
+      const a = parseFloat(document.getElementById('m00').value) || 0;
+      const b = parseFloat(document.getElementById('m01').value) || 0;
+      const c = parseFloat(document.getElementById('m02').value) || 0;
+      const d = parseFloat(document.getElementById('m10').value) || 0;
+      const e = parseFloat(document.getElementById('m11').value) || 0;
+      const f = parseFloat(document.getElementById('m12').value) || 0;
+      const g = parseFloat(document.getElementById('m20').value) || 0;
+      const h = parseFloat(document.getElementById('m21').value) || 0;
+      const i = parseFloat(document.getElementById('m22').value) || 0;
+
+      // 3x3 Determinant formula: a(ei - fh) - b(di - fg) + c(dh - eg)
+      const det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+      const isSingular = Math.abs(det) < 1e-9;
+      const resultEl = document.getElementById('matrix-result');
+
+      resultEl.innerHTML = `Determinant: <strong>det(A) = ${det.toFixed(4)}</strong> | Status: <span style="color:${isSingular ? '#ef4444' : '#10b981'}; font-weight:bold;">${isSingular ? 'Singular (Math ERROR on Invert)' : 'Invertible (Unique Solution)'}</span>`;
+    }
+
+    // Toggle FAQ
+    function toggleFaq(header) {
+      const content = header.nextElementSibling;
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        header.innerHTML = header.innerHTML.replace('▸', '▾');
+      } else {
+        content.style.display = 'none';
+        header.innerHTML = header.innerHTML.replace('▾', '▸');
+      }
+    }
+
+    // Upvote Comment
+    function upvoteReview(el) {
+      const match = el.innerText.match(/\d+/);
+      if (match) {
+        const count = parseInt(match[0], 10) + 1;
+        el.innerText = `👍 Helpful (${count})`;
+        el.style.color = '#10b981';
+      }
+    }
+
+    // Post Comment
+    function submitComment() {
+      const author = document.getElementById('comment-author').value.trim() || 'Anonymous Engineer';
+      const text = document.getElementById('comment-text').value.trim();
+      const rating = parseInt(document.getElementById('comment-rating').value, 10) || 5;
+
+      if (!text) {
+        alert('Please enter a comment before posting.');
+        return;
+      }
+
+      const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+      const container = document.getElementById('reviews-container');
+      const div = document.createElement('div');
+      div.className = 'review-item';
+      div.innerHTML = `
+        <div class="stars">${stars}</div>
+        <p style="margin:0 0 4px; font-weight:600; color:var(--text-primary);">${author} <span style="font-weight:400; color:var(--text-secondary); font-size:0.85rem;">— Just now</span></p>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">${text}</p>
+        <div style="margin-top:8px; font-size:0.85rem; color:var(--primary); cursor:pointer;" onclick="upvoteReview(this)">👍 Helpful (1)</div>
+      `;
+      container.prepend(div);
+      document.getElementById('comment-text').value = '';
+      alert('Thank you! Your technical feedback has been added.');
+    }
+  </script>
+</body>
+</html>

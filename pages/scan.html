@@ -815,7 +815,7 @@
         </div>
         <span style="font-size:0.92rem; font-weight:800;">Import Photos / Files</span>
       </div>
-      <input type="file" id="home-import-files" accept="image/*" multiple style="display:none;" onchange="handleHomeFileImport(event)">
+      <input type="file" id="home-import-files" accept="image/*,application/pdf,.pdf" multiple style="display:none;" onchange="handleHomeFileImport(event)">
     </div>
 
     <!-- Recents Section Header -->
@@ -970,7 +970,7 @@
         <button type="button" class="cs-cam-hud-btn" onclick="document.getElementById('cam-gallery-file-input').click()" title="Import from Photos">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
-        <input type="file" id="cam-gallery-file-input" accept="image/*" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
+        <input type="file" id="cam-gallery-file-input" accept="image/*,application/pdf,.pdf" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
 
         <!-- Large Double Ring Shutter -->
         <button type="button" class="cs-cam-shutter-btn" onclick="executeShutterSnap()" aria-label="Capture Scan">
@@ -1169,6 +1169,8 @@
   <!-- Scripts -->
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf.worker.min.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/tools/scan.js"></script>
 
@@ -1311,14 +1313,8 @@
         blob = await res.blob();
       }
       if (blob) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = (doc.title || doc.name || "LocalDoc_Scan") + ".pdf";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const filename = (doc.title || doc.name || "LocalDoc_Scan") + ".pdf";
+        UIUtils.downloadBlob(blob, filename);
       }
     }
 
@@ -1340,36 +1336,97 @@
       }
     }
 
-    // Quick Home Import Photos
+    // Helper: Deconstruct an existing PDF into individual page scan slides
+    async function deconstructPdfToPages(fileOrBlob) {
+      if (!window.pdfjsLib) {
+        throw new Error("PDF processing engine not available.");
+      }
+      const arrayBuffer = await UIUtils.readFileAsArrayBuffer(fileOrBlob);
+      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const extractedPages = [];
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.75 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.90);
+        const img = await UIUtils.loadImage(dataUrl);
+        const corners = DocumentScanner.getDefaultCorners();
+
+        extractedPages.push({
+          id: 'p_' + Date.now() + '_' + i + '_' + Math.random().toString(36).substr(2, 5),
+          rawImg: img,
+          corners: corners,
+          filter: 'original',
+          rotation: 0,
+          processedDataUrl: dataUrl
+        });
+      }
+      return extractedPages;
+    }
+
+    // Quick Home Import Photos & Existing PDFs
     async function handleHomeFileImport(e) {
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
-      UIUtils.showToast(`Importing ${files.length} document image(s)...`, "info");
+      UIUtils.showToast(`Loading document file(s)...`, "info");
       docPages = [];
       docId = 'scan_' + Date.now();
-      docTitle = 'CamScanner_' + new Date().toISOString().slice(0,10);
+
+      const firstFile = files[0];
+      if (firstFile && firstFile.name) {
+        docTitle = firstFile.name.replace(/\.[^/.]+$/, "");
+      } else {
+        docTitle = 'CamScanner_' + new Date().toISOString().slice(0, 10);
+      }
 
       for (const file of files) {
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
-        const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+        const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (isPdf) {
+          try {
+            UIUtils.showToast(`Unpacking PDF pages...`, "info");
+            const pdfPages = await deconstructPdfToPages(file);
+            docPages.push(...pdfPages);
+          } catch (err) {
+            console.error("PDF unpack error:", err);
+            UIUtils.showToast("Failed to unpack PDF: " + err.message, "error");
+          }
+        } else {
+          try {
+            const dataUrl = await UIUtils.readFileAsDataURL(file);
+            const img = await UIUtils.loadImage(dataUrl);
+            const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+            const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
 
-        docPages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: img,
-          corners: corners,
-          filter: 'magic-color',
-          rotation: 0,
-          processedDataUrl: processed
-        });
+            docPages.push({
+              id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+              rawImg: img,
+              corners: corners,
+              filter: 'magic-color',
+              rotation: 0,
+              processedDataUrl: processed
+            });
+          } catch (err) {
+            console.error("Image load error:", err);
+          }
+        }
       }
 
       document.getElementById("home-import-files").value = "";
-      currentViewingPageIndex = 0;
-      await autoSaveDocumentToDB();
-      openDocumentWorkspaceView();
+      if (docPages.length > 0) {
+        currentViewingPageIndex = 0;
+        await autoSaveDocumentToDB();
+        openDocumentWorkspaceView();
+        UIUtils.showToast(`✓ Document loaded (${docPages.length} pages). Tap '📷' below to add more scans!`, "success");
+      } else {
+        UIUtils.showToast("No valid pages could be loaded.", "error");
+      }
     }
 
     // =========================================================================
@@ -1468,38 +1525,54 @@
       }
     }
 
-    // Camera HUD Gallery Upload
+    // Camera HUD Gallery Upload (Images & PDFs)
     async function handleCamGalleryUpload(e) {
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
       for (const file of files) {
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
-        const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+        const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (isPdf) {
+          try {
+            UIUtils.showToast(`Importing PDF pages into scan stack...`, "info");
+            const pdfPages = await deconstructPdfToPages(file);
+            docPages.push(...pdfPages);
+          } catch (err) {
+            console.error("PDF import error:", err);
+            UIUtils.showToast("Failed to unpack PDF: " + err.message, "error");
+          }
+        } else {
+          try {
+            const dataUrl = await UIUtils.readFileAsDataURL(file);
+            const img = await UIUtils.loadImage(dataUrl);
+            const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
 
-        if (files.length === 1 && camMode === 'single') {
-          stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
-          stagingIsEditingIndex = -1;
-          openCropScreen();
-          document.getElementById("cam-gallery-file-input").value = "";
-          return;
+            if (files.length === 1 && camMode === 'single') {
+              stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
+              stagingIsEditingIndex = -1;
+              openCropScreen();
+              document.getElementById("cam-gallery-file-input").value = "";
+              return;
+            }
+
+            const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+            docPages.push({
+              id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+              rawImg: img,
+              corners: corners,
+              filter: 'magic-color',
+              rotation: 0,
+              processedDataUrl: processed
+            });
+          } catch (err) {
+            console.error("Image import error:", err);
+          }
         }
-
-        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
-        docPages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: img,
-          corners: corners,
-          filter: 'magic-color',
-          rotation: 0,
-          processedDataUrl: processed
-        });
       }
 
       document.getElementById("cam-gallery-file-input").value = "";
       updateCamStackBadge();
-      UIUtils.showToast(`✓ Added ${files.length} page(s)!`, "success");
+      UIUtils.showToast(`✓ Document now has ${docPages.length} total page(s)!`, "success");
     }
 
     // =========================================================================
@@ -1964,14 +2037,8 @@
 
       try {
         const blob = await DocumentScanner.exportToPDF(docPages);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = docTitle + ".pdf";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const filename = (docTitle || "LocalDoc_Scan") + ".pdf";
+        UIUtils.downloadBlob(blob, filename);
         UIUtils.showToast("✓ PDF Downloaded successfully!", "success");
       } catch (e) {
         alert("Export error: " + e.message);

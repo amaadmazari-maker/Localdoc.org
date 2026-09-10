@@ -345,11 +345,17 @@
 
   function downloadResizedPhoto() {
     if (!outputBlob) return;
-    const a = document.createElement('a');
-    a.href = outputDataUrl;
     const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
     const ext = outputFormat === 'image/png' ? 'png' : 'jpg';
-    a.download = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
+    const filename = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
+
+    if (window.UIUtils && window.UIUtils.downloadBlob) {
+      window.UIUtils.downloadBlob(outputBlob, filename);
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = outputDataUrl;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

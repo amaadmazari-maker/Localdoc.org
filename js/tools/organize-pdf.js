@@ -100,7 +100,24 @@
 
     for (const file of pdfFiles) {
       const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      const arrayBuffer = await file.arrayBuffer();
+      let arrayBuffer;
+      if (window.UIUtils && window.UIUtils.readFileAsArrayBuffer) {
+        arrayBuffer = await window.UIUtils.readFileAsArrayBuffer(file);
+      } else if (file.arrayBuffer) {
+        try {
+          arrayBuffer = await file.arrayBuffer();
+        } catch (e) {
+          console.warn("file.arrayBuffer fallback", e);
+        }
+      }
+      if (!arrayBuffer) {
+        arrayBuffer = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.onerror = () => rej(new Error("Failed to read file"));
+          r.readAsArrayBuffer(file);
+        });
+      }
 
       try {
         const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
@@ -295,16 +312,21 @@
 
       const pdfBytes = await mergedPdf.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
       const baseName = sourceFiles.length > 0 ? sourceFiles[0].name.replace(/\.[^/.]+$/, '') : 'organized';
-      a.download = `${baseName}_organized.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const filename = `${baseName}_organized.pdf`;
+
+      if (window.UIUtils && window.UIUtils.downloadBlob) {
+        window.UIUtils.downloadBlob(blob, filename);
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
     } catch (err) {
       console.error('Export Error:', err);
       alert('Failed to generate organized PDF. Please check console.');

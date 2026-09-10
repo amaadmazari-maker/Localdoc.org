@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool Under Development — 100% Offline Client-Side | LocalDoc</title>
+  <meta name="description" content="This tool is currently being built for pure in-browser client-side RAM processing to maintain zero server uploads.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+  <style>
+    .coming-soon-card {
+      max-width: 620px;
+      margin: 60px auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg, 18px);
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .coming-soon-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: rgba(2, 132, 199, 0.1);
+      border: 1.5px solid rgba(2, 132, 199, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .coming-soon-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: #FFFBEB;
+      color: #D97706;
+      border: 1px solid #FDE68A;
+      margin-bottom: 16px;
+    }
+    [data-theme="dark"] .coming-soon-badge {
+      background: rgba(217, 119, 6, 0.15);
+      border-color: rgba(217, 119, 6, 0.35);
+      color: #FCD34D;
+    }
+  </style>
+</head>
+<body class="has-bottom-nav">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="34" height="34">
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="../index.html" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem; border-radius:12px;">← All Tools</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Tool in Development" role="img">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+
+      <div class="coming-soon-badge">Under Active Development</div>
+      <h1 id="tool-title" style="margin: 0 0 12px; font-size: 1.6rem; font-weight: 800; color: var(--text-primary);">Tool Under Development</h1>
+      <p id="tool-description" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">
+        We are building a pure in-browser client-side implementation of this tool so your files never leave your device. All document processing runs locally in device RAM with zero cloud uploads.
+      </p>
+
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="../index.html" class="btn btn-primary btn-lg" style="border-radius: 12px; text-decoration: none;">
+          <span>Explore Available Tools</span> &rarr;
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const toolMeta = {
+      'unlock-pdf': {
+        title: 'Unlock PDF',
+        desc: 'Client-side PDF decryption is currently being architected to securely remove document passwords in browser memory without sending files to external servers.'
+      },
+      'protect-pdf': {
+        title: 'Protect PDF',
+        desc: 'Client-side PDF password encryption is currently being engineered to standard RC4/AES PDF security specifications within in-browser Web Workers.'
+      },
+      'metadata-editor': {
+        title: 'Metadata Editor',
+        desc: 'In-browser PDF metadata viewer and editor for document title, author, subject, and keywords is currently under active development.'
+      },
+      'dxf-viewer': {
+        title: 'DXF Viewer',
+        desc: 'Client-side AutoCAD DXF CAD drawing renderer using WebGL and Canvas is currently being developed.'
+      },
+      'word-to-image': {
+        title: 'Word to Image',
+        desc: 'Client-side DOCX page rasterizer to high-definition PNG/JPG images is currently in development.'
+      },
+      'compare-pdf': {
+        title: 'Compare PDFs',
+        desc: 'Visual document difference and visual diff comparison engine running in browser RAM is currently being built.'
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const toolKey = params.get('tool');
+    if (toolKey && toolMeta[toolKey]) {
+      document.getElementById('tool-title').textContent = toolMeta[toolKey].title;
+      document.getElementById('tool-description').textContent = toolMeta[toolKey].desc;
+      document.title = `${toolMeta[toolKey].title} (Coming Soon) — LocalDoc`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Delete PDF Pages — 100% Free & Private Offline Tool | LocalDoc</title>
+  <meta name="description" content="Delete selected pages from PDF files instantly in your browser RAM. 100% private, zero uploads, visual thumbnail page selection, and fast export.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <!-- Local PDF Libraries for 100% Offline Air-Gapped Execution -->
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf.worker.min.js"></script>
+
+  <style>
+    .delete-thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    @media (min-width: 640px) {
+      .delete-thumb-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 18px;
+      }
+    }
+
+    .page-thumb-card {
+      position: relative;
+      background: var(--bg-card, #FFFFFF);
+      border: 2px solid var(--line, #E2E8F0);
+      border-radius: 14px;
+      padding: 10px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .page-thumb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-color: var(--accent-blue, #0284C7);
+    }
+    .page-thumb-card:active {
+      transform: scale(0.97);
+    }
+
+    .page-thumb-card.marked-delete {
+      border-color: #E11D48 !important;
+      background: rgba(225, 29, 72, 0.05) !important;
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.25) !important;
+    }
+
+    .thumb-canvas-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 150px;
+    }
+    .thumb-canvas-wrap canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    /* Red overlay when marked for deletion */
+    .delete-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(225, 29, 72, 0.72);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      font-weight: 800;
+      gap: 6px;
+      border-radius: 6px;
+      animation: fadeIn 0.15s ease;
+    }
+    .page-thumb-card.marked-delete .delete-overlay {
+      display: flex;
+    }
+    .delete-overlay-icon {
+      font-size: 1.8rem;
+    }
+    .delete-overlay-text {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #9F1239;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .page-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid var(--line, #E2E8F0);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted, #64748B);
+    }
+    .page-thumb-card.marked-delete .page-card-footer {
+      color: #E11D48;
+    }
+
+    .delete-status-pill {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #64748B;
+    }
+    .page-thumb-card.marked-delete .delete-status-pill {
+      background: #FFE4E6;
+      color: #BE123C;
+      font-weight: 800;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Sticky Bottom Action Bar on Mobile */
+    .delete-action-bar {
+      position: sticky;
+      bottom: 16px;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 12px 18px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+      color: #F8FAFC;
+    }
+    [data-theme="light"] .delete-action-bar {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: #E2E8F0;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.18);
+      color: #0F172A;
+    }
+
+    .btn-delete-exec {
+      background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(225, 29, 72, 0.35);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn-delete-exec:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-delete-exec:not(:disabled):active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body class="has-bottom-nav">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/favicon.svg" alt="LocalDoc Logo" width="34" height="34">
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="../index.html" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem; border-radius:12px;">← All Tools</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px; padding-bottom:60px; max-width:960px;">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Delete PDF Pages</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge" style="background:rgba(225,29,72,0.1); color:#E11D48; border-color:rgba(225,29,72,0.3);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% In-Browser RAM • Zero Upload</span>
+        </div>
+        <h1 style="margin:10px 0 6px;">Delete PDF Pages Online</h1>
+        <p class="tool-desc" style="color:var(--text-muted); font-size:0.95rem; margin-top:0;">
+          Select or click unwanted pages to delete them permanently from your PDF document. Fast, private, and 100% offline.
+        </p>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone" style="border: 2px dashed var(--accent-rose, #E11D48); background: rgba(225, 29, 72, 0.02); padding: 40px 20px; border-radius: 20px; text-align: center; cursor: pointer;">
+        <div class="drop-zone-icon" style="margin-bottom: 12px;">
+          <img src="../assets/icons/delete-pdf-pages.svg" alt="Delete PDF Pages Icon" width="56" height="56">
+        </div>
+        <div class="drop-zone-text">
+          <h3 style="margin:0 0 6px; font-size:1.15rem; font-weight:800;">Choose PDF Document</h3>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px;">Click to select or drag and drop your PDF here</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="browse-btn" style="background:#E11D48; border-color:#BE123C; font-weight:700; border-radius:12px; padding:10px 24px;">Select PDF File</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+      </div>
+
+      <!-- File Active Info Bar -->
+      <div id="file-info-bar" style="display:none; margin-top:18px; background:var(--bg-card, #FFF); padding:14px 18px; border-radius:16px; border:1px solid var(--line, #E2E8F0); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="../assets/icons/delete-pdf-pages.svg" width="36" height="36" alt="PDF">
+          <div>
+            <h4 id="file-name-display" style="margin:0; font-size:0.95rem; font-weight:800; word-break:break-all;">document.pdf</h4>
+            <span id="file-meta-display" style="font-size:0.8rem; color:var(--text-muted);">0 KB • 0 Pages</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-outline" id="btn-change-file" style="padding:5px 12px; font-size:0.8rem; border-radius:10px;">Change File</button>
+        </div>
+      </div>
+
+      <!-- Interactive Controls Toolbar -->
+      <div id="delete-controls-bar" style="display:none; margin-top:16px; background:var(--bg-card, #FFF); padding:12px 16px; border-radius:16px; border:1px solid var(--line, #E2E8F0); display:none; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+        
+        <!-- Range input selector -->
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="font-size:0.85rem; font-weight:700;">Delete Pages:</span>
+          <input type="text" id="page-range-input" class="control-input" placeholder="e.g. 1, 3, 5-8" style="padding:6px 12px; border-radius:10px; border:1.5px solid var(--line, #E2E8F0); font-size:0.85rem; width:150px; outline:none;" title="Type page numbers or ranges to mark for deletion">
+        </div>
+
+        <!-- Quick selection helper chips -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline" id="btn-sel-all" style="padding:4px 10px; font-size:0.75rem; border-radius:8px;">Select All</button>
+          <button type="button" class="btn btn-outline" id="btn-sel-none" style="padding:4px 10px; font-size:0.75rem; border-radius:8px;">Clear All</button>
+          <button type="button" class="btn btn-outline" id="btn-sel-odd" style="padding:4px 10px; font-size:0.75rem; border-radius:8px;">Odd Pages</button>
+          <button type="button" class="btn btn-outline" id="btn-sel-even" style="padding:4px 10px; font-size:0.75rem; border-radius:8px;">Even Pages</button>
+          <button type="button" class="btn btn-outline" id="btn-sel-invert" style="padding:4px 10px; font-size:0.75rem; border-radius:8px;">Invert</button>
+        </div>
+      </div>
+
+      <!-- Thumbnail Grid Area -->
+      <div id="pages-container" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:4px;">
+          <h3 style="font-size:1rem; font-weight:800; margin:0;">
+            Click pages to mark for deletion
+          </h3>
+          <span style="font-size:0.82rem; color:var(--text-muted);" id="render-progress-text">Rendering thumbnails...</span>
+        </div>
+
+        <div class="delete-thumb-grid" id="thumb-grid"></div>
+      </div>
+
+      <!-- Action Floating Bar -->
+      <div class="delete-action-bar" id="action-bar" style="display:none;">
+        <div>
+          <div style="font-size:0.95rem; font-weight:800;" id="action-summary-title">0 pages marked for deletion</div>
+          <div style="font-size:0.78rem; opacity:0.8;" id="action-summary-desc">Click any page above to mark it for removal</div>
+        </div>
+        <button type="button" class="btn-delete-exec" id="btn-execute-delete" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <span id="btn-delete-label">Delete Pages & Download PDF</span>
+        </button>
+      </div>
+
+      <!-- Success Notification Card -->
+      <div id="success-card" style="display:none; margin-top:24px; background:rgba(16,185,129,0.08); border:1.5px solid #10B981; border-radius:18px; padding:20px; text-align:center;">
+        <div style="font-size:2.2rem; margin-bottom:8px;">🎉</div>
+        <h3 style="margin:0 0 6px; font-weight:800; color:#047857;">Pages Successfully Deleted!</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin:0 0 18px;" id="success-desc">Your cleaned PDF document has been downloaded.</p>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary" id="btn-download-again" style="background:#059669; border-color:#047857; border-radius:12px; font-weight:700;">Download Again</button>
+          <button type="button" class="btn btn-outline" id="btn-start-new" style="border-radius:12px;">Delete More from Another PDF</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // Initialize PDF.js Worker using local asset
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
+    }
+
+    let originalFile = null;
+    let originalArrayBuffer = null;
+    let pdfDocument = null;
+    let totalPages = 0;
+    let markedPages = new Set(); // 1-indexed page numbers
+    let lastGeneratedBlob = null;
+    let lastGeneratedFilename = '';
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const browseBtn = document.getElementById('browse-btn');
+    const fileInfoBar = document.getElementById('file-info-bar');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const fileMetaDisplay = document.getElementById('file-meta-display');
+    const btnChangeFile = document.getElementById('btn-change-file');
+    const deleteControlsBar = document.getElementById('delete-controls-bar');
+    const pageRangeInput = document.getElementById('page-range-input');
+    const pagesContainer = document.getElementById('pages-container');
+    const thumbGrid = document.getElementById('thumb-grid');
+    const renderProgressText = document.getElementById('render-progress-text');
+    const actionBar = document.getElementById('action-bar');
+    const actionSummaryTitle = document.getElementById('action-summary-title');
+    const actionSummaryDesc = document.getElementById('action-summary-desc');
+    const btnExecuteDelete = document.getElementById('btn-execute-delete');
+    const btnDeleteLabel = document.getElementById('btn-delete-label');
+    const successCard = document.getElementById('success-card');
+    const successDesc = document.getElementById('success-desc');
+    const btnDownloadAgain = document.getElementById('btn-download-again');
+    const btnStartNew = document.getElementById('btn-start-new');
+
+    // Drag & Drop Handling
+    browseBtn.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target !== browseBtn) fileInput.click();
+    });
+
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#BE123C';
+        dropZone.style.background = 'rgba(225, 29, 72, 0.08)';
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = 'var(--accent-rose, #E11D48)';
+        dropZone.style.background = 'rgba(225, 29, 72, 0.02)';
+      });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0 && files[0].type === 'application/pdf') {
+        handleFileSelect(files[0]);
+      } else {
+        alert('Please select a valid PDF file.');
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    btnChangeFile.addEventListener('click', () => {
+      fileInput.value = '';
+      fileInput.click();
+    });
+
+    btnStartNew.addEventListener('click', resetAll);
+
+    function resetAll() {
+      originalFile = null;
+      originalArrayBuffer = null;
+      pdfDocument = null;
+      totalPages = 0;
+      markedPages.clear();
+      lastGeneratedBlob = null;
+      lastGeneratedFilename = '';
+      fileInput.value = '';
+
+      dropZone.style.display = 'block';
+      fileInfoBar.style.display = 'none';
+      deleteControlsBar.style.display = 'none';
+      pagesContainer.style.display = 'none';
+      actionBar.style.display = 'none';
+      successCard.style.display = 'none';
+      thumbGrid.innerHTML = '';
+      pageRangeInput.value = '';
+    }
+
+    async function handleFileSelect(file) {
+      if (!file || file.type !== 'application/pdf') {
+        alert('Please upload a PDF document.');
+        return;
+      }
+      originalFile = file;
+      markedPages.clear();
+      pageRangeInput.value = '';
+      successCard.style.display = 'none';
+
+      dropZone.style.display = 'none';
+      fileInfoBar.style.display = 'flex';
+      deleteControlsBar.style.display = 'flex';
+      pagesContainer.style.display = 'block';
+      actionBar.style.display = 'flex';
+
+      fileNameDisplay.textContent = file.name;
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+      fileMetaDisplay.textContent = `${sizeMb} MB • Reading document...`;
+
+      try {
+        originalArrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ data: originalArrayBuffer });
+        pdfDocument = await loadingTask.promise;
+        totalPages = pdfDocument.numPages;
+
+        fileMetaDisplay.textContent = `${sizeMb} MB • ${totalPages} Page${totalPages > 1 ? 's' : ''}`;
+        renderThumbnails();
+        updateUIState();
+      } catch (err) {
+        console.error('PDF load error:', err);
+        alert('Failed to load PDF file. The document may be corrupted or password-protected.');
+        resetAll();
+      }
+    }
+
+    async function renderThumbnails() {
+      thumbGrid.innerHTML = '';
+      renderProgressText.style.display = 'inline';
+
+      for (let i = 1; i <= totalPages; i++) {
+        renderProgressText.textContent = `Rendering thumbnail ${i} of ${totalPages}...`;
+        const card = createPageCard(i);
+        thumbGrid.appendChild(card);
+
+        try {
+          const page = await pdfDocument.getPage(i);
+          const viewport = page.getViewport({ scale: 0.35 });
+          const canvas = card.querySelector('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        } catch (e) {
+          console.warn('Page render error for page', i, e);
+        }
+      }
+
+      renderProgressText.style.display = 'none';
+    }
+
+    function createPageCard(pageNum) {
+      const card = document.createElement('div');
+      card.className = 'page-thumb-card';
+      card.setAttribute('data-page', pageNum);
+
+      card.innerHTML = `
+        <div class="thumb-canvas-wrap">
+          <canvas></canvas>
+          <div class="delete-overlay">
+            <div class="delete-overlay-icon">🗑️</div>
+            <div class="delete-overlay-text">WILL DELETE</div>
+          </div>
+        </div>
+        <div class="page-card-footer">
+          <span>Page ${pageNum}</span>
+          <span class="delete-status-pill">Keep</span>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        toggleMarkPage(pageNum);
+      });
+
+      return card;
+    }
+
+    function toggleMarkPage(pageNum) {
+      if (markedPages.has(pageNum)) {
+        markedPages.delete(pageNum);
+      } else {
+        markedPages.add(pageNum);
+      }
+      syncRangeInputFromSet();
+      updateUIState();
+    }
+
+    function updateUIState() {
+      // Update each thumbnail visual
+      const cards = thumbGrid.querySelectorAll('.page-thumb-card');
+      cards.forEach(card => {
+        const p = parseInt(card.getAttribute('data-page'), 10);
+        const pill = card.querySelector('.delete-status-pill');
+        if (markedPages.has(p)) {
+          card.classList.add('marked-delete');
+          if (pill) pill.textContent = 'DELETE';
+        } else {
+          card.classList.remove('marked-delete');
+          if (pill) pill.textContent = 'Keep';
+        }
+      });
+
+      const count = markedPages.size;
+      const remaining = totalPages - count;
+
+      if (count === 0) {
+        actionSummaryTitle.textContent = 'No pages marked for deletion';
+        actionSummaryDesc.textContent = 'Click on any page above to mark it for removal';
+        btnExecuteDelete.disabled = true;
+        btnDeleteLabel.textContent = 'Delete Pages & Download PDF';
+      } else if (remaining === 0) {
+        actionSummaryTitle.textContent = `All ${totalPages} pages marked for deletion!`;
+        actionSummaryDesc.textContent = 'Cannot delete all pages. At least 1 page must remain.';
+        btnExecuteDelete.disabled = true;
+        btnDeleteLabel.textContent = 'Cannot Delete All Pages';
+      } else {
+        actionSummaryTitle.textContent = `${count} page${count > 1 ? 's' : ''} marked for deletion`;
+        actionSummaryDesc.textContent = `${remaining} page${remaining > 1 ? 's' : ''} will remain in your cleaned PDF`;
+        btnExecuteDelete.disabled = false;
+        btnDeleteLabel.textContent = `Delete ${count} Page${count > 1 ? 's' : ''} & Save PDF`;
+      }
+    }
+
+    // Helper Selection Buttons
+    document.getElementById('btn-sel-all')?.addEventListener('click', () => {
+      for (let i = 1; i <= totalPages; i++) markedPages.add(i);
+      syncRangeInputFromSet();
+      updateUIState();
+    });
+
+    document.getElementById('btn-sel-none')?.addEventListener('click', () => {
+      markedPages.clear();
+      syncRangeInputFromSet();
+      updateUIState();
+    });
+
+    document.getElementById('btn-sel-odd')?.addEventListener('click', () => {
+      markedPages.clear();
+      for (let i = 1; i <= totalPages; i += 2) markedPages.add(i);
+      syncRangeInputFromSet();
+      updateUIState();
+    });
+
+    document.getElementById('btn-sel-even')?.addEventListener('click', () => {
+      markedPages.clear();
+      for (let i = 2; i <= totalPages; i += 2) markedPages.add(i);
+      syncRangeInputFromSet();
+      updateUIState();
+    });
+
+    document.getElementById('btn-sel-invert')?.addEventListener('click', () => {
+      const newSet = new Set();
+      for (let i = 1; i <= totalPages; i++) {
+        if (!markedPages.has(i)) newSet.add(i);
+      }
+      markedPages = newSet;
+      syncRangeInputFromSet();
+      updateUIState();
+    });
+
+    // Parse text range input (e.g. "1, 3, 5-8")
+    pageRangeInput.addEventListener('input', () => {
+      const text = pageRangeInput.value.trim();
+      markedPages.clear();
+      if (text) {
+        const parts = text.split(',');
+        parts.forEach(part => {
+          const clean = part.trim();
+          if (clean.includes('-')) {
+            const [startStr, endStr] = clean.split('-');
+            const s = parseInt(startStr, 10);
+            const e = parseInt(endStr, 10);
+            if (!isNaN(s) && !isNaN(e)) {
+              const min = Math.max(1, Math.min(s, e));
+              const max = Math.min(totalPages, Math.max(s, e));
+              for (let i = min; i <= max; i++) markedPages.add(i);
+            }
+          } else {
+            const num = parseInt(clean, 10);
+            if (!isNaN(num) && num >= 1 && num <= totalPages) {
+              markedPages.add(num);
+            }
+          }
+        });
+      }
+      updateUIState();
+    });
+
+    function syncRangeInputFromSet() {
+      if (markedPages.size === 0) {
+        pageRangeInput.value = '';
+        return;
+      }
+      const sorted = Array.from(markedPages).sort((a, b) => a - b);
+      // Group contiguous ranges
+      const ranges = [];
+      let start = sorted[0];
+      let prev = sorted[0];
+
+      for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i] === prev + 1) {
+          prev = sorted[i];
+        } else {
+          ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+          start = sorted[i];
+          prev = sorted[i];
+        }
+      }
+      ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+      pageRangeInput.value = ranges.join(', ');
+    }
+
+    // Execute Page Deletion via PDF-Lib in RAM
+    btnExecuteDelete.addEventListener('click', async () => {
+      if (markedPages.size === 0 || markedPages.size >= totalPages) return;
+
+      btnExecuteDelete.disabled = true;
+      btnDeleteLabel.textContent = 'Processing in RAM...';
+
+      try {
+        const { PDFDocument } = PDFLib;
+        const pdfDoc = await PDFDocument.load(originalArrayBuffer);
+
+        // Zero-based page indices sorted descending so removal does not shift prior indices
+        const pagesToRemove = Array.from(markedPages)
+          .map(p => p - 1)
+          .sort((a, b) => b - a);
+
+        for (const pageIdx of pagesToRemove) {
+          pdfDoc.removePage(pageIdx);
+        }
+
+        const pdfBytes = await pdfDoc.save();
+        lastGeneratedBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+        const baseName = (originalFile.name || 'document.pdf').replace(/\.pdf$/i, '');
+        lastGeneratedFilename = `${baseName}_deleted_pages.pdf`;
+
+        triggerFileDownload(lastGeneratedBlob, lastGeneratedFilename);
+
+        successDesc.textContent = `Deleted ${markedPages.size} page(s). New file "${lastGeneratedFilename}" has ${totalPages - markedPages.size} page(s).`;
+        successCard.style.display = 'block';
+        actionBar.style.display = 'none';
+        deleteControlsBar.style.display = 'none';
+        pagesContainer.style.display = 'none';
+        window.scrollTo({ top: successCard.offsetTop - 40, behavior: 'smooth' });
+
+      } catch (err) {
+        console.error('Delete execution error:', err);
+        alert('Failed to process and delete pages: ' + err.message);
+        updateUIState();
+      }
+    });
+
+    btnDownloadAgain.addEventListener('click', () => {
+      if (lastGeneratedBlob && lastGeneratedFilename) {
+        triggerFileDownload(lastGeneratedBlob, lastGeneratedFilename);
+      }
+    });
+
+    function triggerFileDownload(blob, filename) {
+      // Check if inside Android Native Shell Bridge
+      if (window.AndroidBlobBridge && window.AndroidBlobBridge.processBlobData) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          window.AndroidBlobBridge.processBlobData(reader.result, 'application/pdf', filename);
+        };
+        reader.readAsDataURL(blob);
+        return;
+      }
+
+      // Standard Browser Download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

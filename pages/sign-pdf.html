@@ -1,22 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-TKJ5FEYGWJ');
-  </script>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=edit-pdf.html">
-  <title>Redirecting to Digital PDF Signer & Editor...</title>
-  <script>
-    window.location.replace("edit-pdf.html");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sign PDF Online — Draw & Place Digital Signatures | LocalDoc</title>
+  <meta name="description" content="Sign PDF documents directly in your browser. Draw electronic signatures on canvas and place them on your contract or form. 100% private, zero uploads.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/rtl.css">
+
+  <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf-lib.min.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
+  <script src="../js/lib/pdf.worker.min.js"></script>
+
+  <style>
+    .sig-canvas-pad {
+      border: 2px dashed #0284C7;
+      border-radius: 12px;
+      background: #FFFFFF;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    .sig-preview-stage {
+      position: relative;
+      display: inline-block;
+      margin: 20px auto;
+      box-shadow: var(--shadow-lg);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sig-stamp-movable {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      border: 2px dashed #0284C7;
+      background: rgba(2, 132, 199, 0.08);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+  </style>
 </head>
-<body>
-  <p>Redirecting to <a href="edit-pdf.html">Digital PDF Signer & Editor</a>...</p>
+<body class="has-bottom-nav">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="34" height="34">
+        </div>
+        <span>LocalDoc</span>
+        <span class="brand-badge">Zero-Upload</span>
+      </a>
+
+      <div class="header-actions">
+        <a href="../index.html" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem; border-radius:12px;">← All Tools</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px; padding-bottom:60px; max-width:960px;">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Sign PDF</span>
+    </nav>
+
+    <section class="tool-workspace">
+      <div class="tool-workspace-header">
+        <div class="tool-workspace-badge" style="background:rgba(2,132,199,0.1); color:#0284C7; border-color:rgba(2,132,199,0.3);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>100% In-Browser RAM • Zero Upload</span>
+        </div>
+        <h1 style="margin:10px 0 6px;">Sign PDF Documents Online</h1>
+        <p class="tool-desc" style="color:var(--text-muted); font-size:0.95rem; margin-top:0;">
+          Draw your electronic signature and place it securely on your contracts, receipts, or forms.
+        </p>
+      </div>
+
+      <div class="error-banner" id="error-banner" style="display:none; margin-bottom:16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="error-text">An error occurred.</span>
+      </div>
+
+      <!-- Dropzone -->
+      <div class="drop-zone" id="drop-zone" style="border: 2px dashed #0284C7; background: rgba(2, 132, 199, 0.02); padding: 40px 20px; border-radius: 20px; text-align: center; cursor: pointer;">
+        <div class="drop-zone-icon" style="margin-bottom: 12px;">
+          <img src="../assets/icons/edit-pdf.svg" alt="Sign PDF Icon" width="56" height="56">
+        </div>
+        <div class="drop-zone-text">
+          <h3 style="margin:0 0 6px; font-size:1.15rem; font-weight:800;">Choose PDF to Sign</h3>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin:0 0 16px;">Click to select or drag and drop your PDF here (Ctrl+O)</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="browse-btn" style="background:#0284C7; font-weight:700; border-radius:12px; padding:10px 24px;">Select PDF File</button>
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+      </div>
+
+      <!-- Workspace Stage -->
+      <div id="sign-workspace" style="display:none; margin-top:20px;">
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:1rem; font-weight:800;">1. Draw Signature</h3>
+            <button type="button" class="btn btn-outline" id="btn-clear-sig" style="padding:4px 10px; font-size:0.8rem;">Clear Pad</button>
+          </div>
+          <canvas id="sig-pad" class="sig-canvas-pad" width="400" height="140"></canvas>
+          <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">Use finger, stylus, or mouse to sign above.</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <h3 style="margin:0; font-size:1rem; font-weight:800;">2. Position Signature on Document</h3>
+          <button type="button" class="btn btn-primary" id="btn-apply-sign" style="background:#0284C7; font-weight:700; padding:8px 20px;">Save & Download Signed PDF</button>
+        </div>
+
+        <div style="text-align:center; overflow:auto; max-height:600px; background:#E2E8F0; padding:20px; border-radius:14px;">
+          <div id="stage-wrap" class="sig-preview-stage">
+            <canvas id="doc-canvas"></canvas>
+            <div id="sig-stamp" class="sig-stamp-movable" style="display:none; width:160px; height:56px;">
+              <img id="stamp-img" style="width:100%; height:100%; object-fit:contain;" alt="Signature Stamp">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
+    }
+
+    let originalBuffer = null;
+    let originalFile = null;
+    let pdfDocJs = null;
+    let sigDrawn = false;
+    let stampX = 50;
+    let stampY = 50;
+    let stampW = 160;
+    let stampH = 56;
+    let docViewport = null;
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const browseBtn = document.getElementById('browse-btn');
+    const signWorkspace = document.getElementById('sign-workspace');
+    const sigPad = document.getElementById('sig-pad');
+    const sigCtx = sigPad.getContext('2d');
+    const docCanvas = document.getElementById('doc-canvas');
+    const docCtx = docCanvas.getContext('2d');
+    const sigStamp = document.getElementById('sig-stamp');
+    const stampImg = document.getElementById('stamp-img');
+    const btnClearSig = document.getElementById('btn-clear-sig');
+    const btnApplySign = document.getElementById('btn-apply-sign');
+    const errorBanner = document.getElementById('error-banner');
+    const errorText = document.getElementById('error-text');
+
+    function showError(msg) {
+      if (errorBanner && errorText) {
+        errorText.textContent = msg;
+        errorBanner.style.display = 'flex';
+      }
+    }
+
+    function clearError() {
+      if (errorBanner) errorBanner.style.display = 'none';
+    }
+
+    // Sig Pad Drawing
+    let drawing = false;
+    sigCtx.lineWidth = 2.5;
+    sigCtx.lineCap = 'round';
+    sigCtx.strokeStyle = '#0F172A';
+
+    function getPadPos(e) {
+      const rect = sigPad.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    ['mousedown', 'touchstart'].forEach(n => sigPad.addEventListener(n, e => {
+      e.preventDefault();
+      drawing = true;
+      const pos = getPadPos(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(pos.x, pos.y);
+    }));
+
+    ['mousemove', 'touchmove'].forEach(n => sigPad.addEventListener(n, e => {
+      if (!drawing) return;
+      e.preventDefault();
+      const pos = getPadPos(e);
+      sigCtx.lineTo(pos.x, pos.y);
+      sigCtx.stroke();
+      sigDrawn = true;
+      updateStamp();
+    }));
+
+    ['mouseup', 'touchend', 'mouseleave'].forEach(n => sigPad.addEventListener(n, () => {
+      drawing = false;
+    }));
+
+    btnClearSig.addEventListener('click', () => {
+      sigCtx.clearRect(0, 0, sigPad.width, sigPad.height);
+      sigDrawn = false;
+      sigStamp.style.display = 'none';
+    });
+
+    function updateStamp() {
+      if (!sigDrawn) return;
+      const dataUrl = sigPad.toDataURL('image/png');
+      stampImg.src = dataUrl;
+      sigStamp.style.display = 'block';
+    }
+
+    // Drag stamp on doc canvas
+    let draggingStamp = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    sigStamp.addEventListener('mousedown', e => {
+      draggingStamp = true;
+      dragOffsetX = e.clientX - sigStamp.offsetLeft;
+      dragOffsetY = e.clientY - sigStamp.offsetTop;
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!draggingStamp) return;
+      const stageWrap = document.getElementById('stage-wrap');
+      const rect = stageWrap.getBoundingClientRect();
+      let newX = e.clientX - rect.left - (dragOffsetX - sigStamp.offsetLeft);
+      let newY = e.clientY - rect.top - (dragOffsetY - sigStamp.offsetTop);
+      newX = Math.max(0, Math.min(docCanvas.width - stampW, newX));
+      newY = Math.max(0, Math.min(docCanvas.height - stampH, newY));
+      sigStamp.style.left = newX + 'px';
+      sigStamp.style.top = newY + 'px';
+      stampX = newX;
+      stampY = newY;
+    });
+
+    window.addEventListener('mouseup', () => {
+      draggingStamp = false;
+    });
+
+    // File selection
+    browseBtn.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', e => { if (e.target !== browseBtn) fileInput.click(); });
+
+    ['dragenter', 'dragover'].forEach(n => dropZone.addEventListener(n, e => { e.preventDefault(); dropZone.style.borderColor = '#0369A1'; }));
+    ['dragleave', 'drop'].forEach(n => dropZone.addEventListener(n, e => { e.preventDefault(); dropZone.style.borderColor = '#0284C7'; }));
+
+    dropZone.addEventListener('drop', e => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) loadDoc(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', e => {
+      if (e.target.files && e.target.files[0]) loadDoc(e.target.files[0]);
+    });
+
+    async function loadDoc(file) {
+      clearError();
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showError('Please select a valid PDF file.');
+        return;
+      }
+      originalFile = file;
+
+      try {
+        originalBuffer = await file.arrayBuffer();
+        pdfDocJs = await pdfjsLib.getDocument({ data: originalBuffer }).promise;
+        const page1 = await pdfDocJs.getPage(1);
+        docViewport = page1.getViewport({ scale: 1.0 });
+
+        docCanvas.width = docViewport.width;
+        docCanvas.height = docViewport.height;
+        await page1.render({ canvasContext: docCtx, viewport: docViewport }).promise;
+
+        dropZone.style.display = 'none';
+        signWorkspace.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        showError('Could not load PDF: ' + (err.message || 'Corrupt or protected file.'));
+      }
+    }
+
+    btnApplySign.addEventListener('click', async () => {
+      if (!sigDrawn) {
+        showError('Please draw your signature in box 1 first.');
+        return;
+      }
+
+      clearError();
+      btnApplySign.disabled = true;
+      btnApplySign.textContent = 'Embedding Signature...';
+
+      try {
+        const { PDFDocument } = PDFLib;
+        const pdfDoc = await PDFDocument.load(originalBuffer);
+        const sigPngBytes = await fetch(sigPad.toDataURL('image/png')).then(r => r.arrayBuffer());
+        const sigImage = await pdfDoc.embedPng(sigPngBytes);
+
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+        const { width: pW, height: pH } = firstPage.getSize();
+
+        // Map canvas coordinates to PDF coordinates (PDF origin is bottom-left)
+        const scaleX = pW / docCanvas.width;
+        const scaleY = pH / docCanvas.height;
+
+        const pdfX = stampX * scaleX;
+        const pdfY = pH - ((stampY + stampH) * scaleY);
+        const pdfW = stampW * scaleX;
+        const pdfH = stampH * scaleY;
+
+        firstPage.drawImage(sigImage, {
+          x: pdfX,
+          y: pdfY,
+          width: pdfW,
+          height: pdfH
+        });
+
+        const modifiedBytes = await pdfDoc.save();
+        const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+        const outName = (originalFile.name || 'document.pdf').replace(/\.pdf$/i, '') + '_signed.pdf';
+
+        UIUtils.downloadBlob(blob, outName);
+
+        btnApplySign.textContent = '✓ Downloaded!';
+        setTimeout(() => {
+          btnApplySign.disabled = false;
+          btnApplySign.textContent = 'Save & Download Signed PDF';
+        }, 2500);
+      } catch (err) {
+        console.error(err);
+        showError('Failed to embed signature: ' + (err.message || 'Unknown error.'));
+        btnApplySign.disabled = false;
+        btnApplySign.textContent = 'Save & Download Signed PDF';
+      }
+    });
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') {
+        e.preventDefault();
+        fileInput.click();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (signWorkspace.style.display !== 'none' && !btnApplySign.disabled) {
+          btnApplySign.click();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
