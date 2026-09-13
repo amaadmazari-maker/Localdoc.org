@@ -373,6 +373,126 @@ const UIUtils = {
   }
 };
 
+// In-Memory Client-Side ZIP Archive Generator (Zero Network / 100% RAM)
+class LocalZip {
+  constructor() {
+    this.files = [];
+  }
+  addFile(filename, content) {
+    let bytes;
+    if (typeof content === 'string') {
+      bytes = new TextEncoder().encode(content);
+    } else if (content instanceof Uint8Array) {
+      bytes = content;
+    } else if (content instanceof ArrayBuffer) {
+      bytes = new Uint8Array(content);
+    } else if (content && content.buffer instanceof ArrayBuffer) {
+      bytes = new Uint8Array(content.buffer, content.byteOffset, content.byteLength);
+    } else {
+      bytes = new Uint8Array(0);
+    }
+    this.files.push({ name: filename, data: bytes });
+  }
+  async addBlob(filename, blob) {
+    const buffer = await blob.arrayBuffer();
+    this.addFile(filename, buffer);
+  }
+  generateBlob(mimeType = 'application/zip') {
+    const parts = [];
+    const cdEntries = [];
+    let offset = 0;
+
+    for (const file of this.files) {
+      const nameBytes = new TextEncoder().encode(file.name);
+      const dataBytes = file.data;
+      const crc = this.crc32(dataBytes);
+      const size = dataBytes.length;
+
+      const localHeader = new Uint8Array(30 + nameBytes.length);
+      const v = new DataView(localHeader.buffer);
+      v.setUint32(0, 0x04034b50, true);
+      v.setUint16(4, 20, true);
+      v.setUint16(6, 0, true);
+      v.setUint16(8, 0, true);
+      v.setUint16(10, 0, true);
+      v.setUint16(12, 0, true);
+      v.setUint32(14, crc, true);
+      v.setUint32(18, size, true);
+      v.setUint32(22, size, true);
+      v.setUint16(26, nameBytes.length, true);
+      v.setUint16(28, 0, true);
+      localHeader.set(nameBytes, 30);
+
+      parts.push(localHeader);
+      parts.push(dataBytes);
+
+      const cdHeader = new Uint8Array(46 + nameBytes.length);
+      const cdv = new DataView(cdHeader.buffer);
+      cdv.setUint32(0, 0x02014b50, true);
+      cdv.setUint16(4, 20, true);
+      cdv.setUint16(6, 20, true);
+      cdv.setUint16(8, 0, true);
+      cdv.setUint16(10, 0, true);
+      cdv.setUint16(12, 0, true);
+      cdv.setUint16(14, 0, true);
+      cdv.setUint32(16, crc, true);
+      cdv.setUint32(20, size, true);
+      cdv.setUint32(24, size, true);
+      cdv.setUint16(28, nameBytes.length, true);
+      cdv.setUint16(30, 0, true);
+      cdv.setUint16(32, 0, true);
+      cdv.setUint16(34, 0, true);
+      cdv.setUint16(36, 0, true);
+      cdv.setUint32(38, 0, true);
+      cdv.setUint32(42, offset, true);
+      cdHeader.set(nameBytes, 46);
+
+      cdEntries.push(cdHeader);
+      offset += localHeader.length + dataBytes.length;
+    }
+
+    const cdOffset = offset;
+    let cdSize = 0;
+    for (const cd of cdEntries) {
+      parts.push(cd);
+      cdSize += cd.length;
+    }
+
+    const eocd = new Uint8Array(22);
+    const eocdv = new DataView(eocd.buffer);
+    eocdv.setUint32(0, 0x06054b50, true);
+    eocdv.setUint16(4, 0, true);
+    eocdv.setUint16(6, 0, true);
+    eocdv.setUint16(8, this.files.length, true);
+    eocdv.setUint16(10, this.files.length, true);
+    eocdv.setUint32(12, cdSize, true);
+    eocdv.setUint32(16, cdOffset, true);
+    eocdv.setUint16(20, 0, true);
+
+    parts.push(eocd);
+    return new Blob(parts, { type: mimeType });
+  }
+  crc32(bytes) {
+    if (!LocalZip.CRC_TABLE) {
+      LocalZip.CRC_TABLE = new Uint32Array(256);
+      for (let i = 0; i < 256; i++) {
+        let c = i;
+        for (let k = 0; k < 8; k++) {
+          c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+        }
+        LocalZip.CRC_TABLE[i] = c >>> 0;
+      }
+    }
+    let crc = -1;
+    for (let i = 0; i < bytes.length; i++) {
+      crc = (crc >>> 8) ^ LocalZip.CRC_TABLE[(crc ^ bytes[i]) & 0xff];
+    }
+    return (crc ^ (-1)) >>> 0;
+  }
+}
+UIUtils.Zip = LocalZip;
+window.MiniZip = LocalZip;
+
 // Auto Init
 document.addEventListener('DOMContentLoaded', () => {
   UIUtils.initTheme();

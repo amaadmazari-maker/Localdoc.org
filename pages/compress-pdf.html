@@ -176,14 +176,14 @@
           <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF Files Online Icon" width="48" height="48">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your PDF document here</h3>
-          <p>Or click to browse from your device. 100% in-browser private execution.</p>
+          <h3>Drop your PDF document(s) here</h3>
+          <p>Or click to browse from your device. Single file or multi-file batch queue. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn">Select PDF Document</button>
-        <input type="file" id="file-input" accept="application/pdf" style="display:none;">
+        <button class="btn btn-primary btn-lg" id="browse-btn" type="button">Select PDF Document(s)</button>
+        <input type="file" id="file-input" accept="application/pdf" multiple style="display:none;">
       </div>
 
-      <!-- File Queue Item -->
+      <!-- File Queue Item & Batch List -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div style="display:flex; align-items:center; gap:12px;">
@@ -193,8 +193,9 @@
               <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove All</button>
         </div>
+        <div id="batch-file-list" style="display:none; margin-top:12px; border-top:1px solid var(--line); padding-top:12px; max-height:220px; overflow-y:auto;"></div>
       </div>
 
       <!-- Compression Quality Tiers Grid -->
@@ -279,12 +280,21 @@
             <h3 id="result-title">Compression Complete!</h3>
             <p id="result-meta">Ready for instant download. 100% private in-browser compression.</p>
           </div>
-          <div class="result-actions">
+          <div class="result-actions" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
             <button class="btn btn-primary btn-lg" id="download-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Download Compressed PDF</span>
+              <span id="download-btn-text">Download Compressed PDF</span>
+            </button>
+            <button class="btn btn-outline btn-lg" id="reset-btn" type="button" style="padding:10px 18px;">
+              Compress More Files
             </button>
           </div>
+        </div>
+
+        <!-- Multi-file individual downloads container -->
+        <div id="batch-results-list" style="display:none; margin-top:16px; background:var(--bg-body); border-radius:var(--radius-sm); border:1px solid var(--line); padding:16px;">
+          <h4 style="font-size:0.92rem; font-weight:700; color:var(--text-primary); margin-bottom:12px;">Individual Compressed Documents:</h4>
+          <div id="batch-results-items" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
       </div>
     </section>
@@ -489,22 +499,29 @@
   <script src="../js/tools/organize.js"></script>
 
   <script>
-    let selectedFile = null;
+    let selectedFiles = [];
     let selectedTier = 'recommended';
-    let resultBlob = null;
-    let resultFilename = 'localdoc-compressed.pdf';
+    let processedResults = []; // [{ file, blob, originalSize, compressedSize, savedPercentage, filename }]
+    let singleResultBlob = null;
+    let singleResultFilename = 'localdoc-compressed.pdf';
+    let zipResultBlob = null;
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const batchFileList = document.getElementById("batch-file-list");
     const tiersContainer = document.getElementById("tiers-container");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
+    const downloadBtnText = document.getElementById("download-btn-text");
+    const resetBtn = document.getElementById("reset-btn");
+    const batchResultsList = document.getElementById("batch-results-list");
+    const batchResultsItems = document.getElementById("batch-results-items");
 
     window.selectTier = function(tier) {
       selectedTier = tier;
@@ -513,21 +530,55 @@
       });
     };
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
-        selectedFile = files[0];
-        queueName.textContent = selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
-        fileQueue.style.display = "block";
-        tiersContainer.style.display = "block";
-        actionBar.style.display = "flex";
-        resultCard.style.display = "none";
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      selectedFiles = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      if (selectedFiles.length === 0) {
+        UIUtils.showToast("Please select valid PDF document(s).", "warning");
+        return;
       }
-    });
+
+      processedResults = [];
+      singleResultBlob = null;
+      zipResultBlob = null;
+      resultCard.style.display = "none";
+      batchResultsList.style.display = "none";
+
+      const totalSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+
+      if (selectedFiles.length === 1) {
+        queueName.textContent = selectedFiles[0].name;
+        queueSize.textContent = UIUtils.formatBytes(selectedFiles[0].size);
+        batchFileList.style.display = "none";
+        processBtn.querySelector("span").textContent = "Compress PDF Now";
+      } else {
+        queueName.textContent = `Batch Queue (${selectedFiles.length} PDF documents)`;
+        queueSize.textContent = `Total: ${UIUtils.formatBytes(totalSize)}`;
+        batchFileList.innerHTML = selectedFiles.map((f, idx) => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.85rem; border-bottom:1px dashed var(--line);">
+            <div style="display:flex; align-items:center; gap:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">
+              <span style="color:var(--text-tertiary); font-weight:700;">${idx + 1}.</span>
+              <span style="color:var(--text-primary);">${f.name}</span>
+            </div>
+            <span id="queue-item-status-${idx}" style="color:var(--text-muted); font-size:0.8rem;">${UIUtils.formatBytes(f.size)}</span>
+          </div>
+        `).join("");
+        batchFileList.style.display = "block";
+        processBtn.querySelector("span").textContent = `Compress All ${selectedFiles.length} PDFs Now`;
+      }
+
+      fileQueue.style.display = "block";
+      tiersContainer.style.display = "block";
+      actionBar.style.display = "flex";
+    }
+
+    UIUtils.setupDropZone(dropZone, fileInput, handleFiles);
 
     clearBtn.addEventListener("click", () => {
-      selectedFile = null;
-      resultBlob = null;
+      selectedFiles = [];
+      processedResults = [];
+      singleResultBlob = null;
+      zipResultBlob = null;
       fileQueue.style.display = "none";
       tiersContainer.style.display = "none";
       actionBar.style.display = "none";
@@ -535,32 +586,98 @@
       document.getElementById("workflow-progress").style.display = "none";
     });
 
-    function progressCb(pct, status) {
-      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
-      UIUtils.setWorkflowStep(step, pct, status);
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        clearBtn.click();
+      });
     }
 
     processBtn.addEventListener("click", async function() {
-      if (!selectedFile) return;
+      if (!selectedFiles || selectedFiles.length === 0) return;
 
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local compression worker...");
+        UIUtils.setWorkflowStep(1, 10, "Initializing local compression engine in RAM...");
 
-        const res = await PDFOrganize.compressPDF(selectedFile, selectedTier, progressCb);
-        resultBlob = res.pdfBlob;
+        let totalOriginal = 0;
+        let totalCompressed = 0;
+        processedResults = [];
 
-        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-        resultFilename = `${baseName}-compressed-${selectedTier}.pdf`;
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const currentFile = selectedFiles[i];
+          const fileStatusEl = document.getElementById(`queue-item-status-${i}`);
+          if (fileStatusEl) {
+            fileStatusEl.innerHTML = `<span style="color:var(--primary); font-weight:700;">Compressing...</span>`;
+          }
 
-        // Update telemetry HUD
-        document.getElementById("stat-orig-size").textContent = UIUtils.formatBytes(res.originalSize);
-        document.getElementById("stat-comp-size").textContent = UIUtils.formatBytes(res.compressedSize);
-        document.getElementById("stat-savings").textContent = `-${res.savedPercentage}%`;
+          const basePercent = Math.round((i / selectedFiles.length) * 80) + 10;
+          UIUtils.setWorkflowStep(2, basePercent, `Optimizing (${i + 1}/${selectedFiles.length}): ${currentFile.name}...`);
 
-        UIUtils.setWorkflowStep(3, 100, "Compression complete!");
+          const res = await PDFOrganize.compressPDF(currentFile, selectedTier, (filePct) => {
+            const overallPct = Math.round(basePercent + (filePct * 0.8 / selectedFiles.length));
+            UIUtils.setWorkflowStep(2, overallPct, `Optimizing (${i + 1}/${selectedFiles.length}): ${Math.round(filePct)}%`);
+          });
+
+          const baseName = currentFile.name.replace(/\.[^/.]+$/, "");
+          const outFilename = `${baseName}-compressed-${selectedTier}.pdf`;
+
+          processedResults.push({
+            file: currentFile,
+            blob: res.pdfBlob,
+            originalSize: res.originalSize,
+            compressedSize: res.compressedSize,
+            savedPercentage: res.savedPercentage,
+            filename: outFilename
+          });
+
+          totalOriginal += res.originalSize;
+          totalCompressed += res.compressedSize;
+
+          if (fileStatusEl) {
+            fileStatusEl.innerHTML = `<span style="color:var(--success); font-weight:700;">-${res.savedPercentage}% (${UIUtils.formatBytes(res.compressedSize)})</span>`;
+          }
+        }
+
+        const totalSavedPct = totalOriginal > 0 ? Math.max(0, Math.round(((totalOriginal - totalCompressed) / totalOriginal) * 100)) : 0;
+
+        document.getElementById("stat-orig-size").textContent = UIUtils.formatBytes(totalOriginal);
+        document.getElementById("stat-comp-size").textContent = UIUtils.formatBytes(totalCompressed);
+        document.getElementById("stat-savings").textContent = `-${totalSavedPct}%`;
+
+        if (processedResults.length === 1) {
+          singleResultBlob = processedResults[0].blob;
+          singleResultFilename = processedResults[0].filename;
+          downloadBtnText.textContent = "Download Compressed PDF";
+          batchResultsList.style.display = "none";
+        } else {
+          // Multi-file batch ZIP preparation
+          const zip = new UIUtils.Zip();
+          for (const item of processedResults) {
+            await zip.addBlob(item.filename, item.blob);
+          }
+          zipResultBlob = zip.generateBlob();
+          downloadBtnText.textContent = `Download All (${processedResults.length} PDFs) as ZIP`;
+
+          batchResultsItems.innerHTML = processedResults.map((item, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-surface); border-radius:4px; border:1px solid var(--line);">
+              <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65%;">
+                <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;">${item.filename}</div>
+                <div style="color:var(--text-muted); font-size:0.78rem;">
+                  ${UIUtils.formatBytes(item.originalSize)} &rarr; ${UIUtils.formatBytes(item.compressedSize)} 
+                  <strong style="color:var(--success);">(-${item.savedPercentage}%)</strong>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult(${idx})" style="padding:4px 10px; font-size:0.8rem;">
+                ⬇ Download
+              </button>
+            </div>
+          `).join("");
+          batchResultsList.style.display = "block";
+        }
+
+        UIUtils.setWorkflowStep(3, 100, "All documents compressed successfully in RAM!");
         resultCard.style.display = "block";
-        UIUtils.showToast(`Saved ${res.savedPercentage}% file size!`, "success");
+        UIUtils.showToast(`Batch compression complete! Saved ${totalSavedPct}% overall`, "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast(err.message || "Compression failed", "error");
@@ -569,9 +686,17 @@
       }
     });
 
+    window.downloadIndividualResult = function(index) {
+      if (processedResults[index]) {
+        UIUtils.downloadBlob(processedResults[index].blob, processedResults[index].filename);
+      }
+    };
+
     downloadBtn.addEventListener("click", function() {
-      if (resultBlob) {
-        UIUtils.downloadBlob(resultBlob, resultFilename);
+      if (processedResults.length === 1 && singleResultBlob) {
+        UIUtils.downloadBlob(singleResultBlob, singleResultFilename);
+      } else if (zipResultBlob) {
+        UIUtils.downloadBlob(zipResultBlob, `localdoc-compressed-batch-${selectedTier}.zip`);
       }
     });
   </script>

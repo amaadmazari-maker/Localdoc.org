@@ -749,10 +749,45 @@ class DocumentScanner {
       }
 
       case 'clean-bw': {
-        // High-contrast clean black and white binarization
+        // Otsu's Global Adaptive Binarization (Optimal separation of ink from shadowy backgrounds)
+        const hist = new Uint32Array(256);
+        let total = 0;
+        let sumTotal = 0;
+
+        for (let i = 0; i < len; i += 4) {
+          const lum = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) | 0;
+          hist[lum]++;
+          total++;
+          sumTotal += lum;
+        }
+
+        let sumB = 0;
+        let wB = 0;
+        let maxVariance = 0;
+        let threshold = 135;
+
+        for (let t = 0; t < 256; t++) {
+          wB += hist[t];
+          if (wB === 0) continue;
+          const wF = total - wB;
+          if (wF === 0) break;
+
+          sumB += t * hist[t];
+          const mB = sumB / wB;
+          const mF = (sumTotal - sumB) / wF;
+          const betweenVariance = wB * wF * (mB - mF) * (mB - mF);
+
+          if (betweenVariance > maxVariance) {
+            maxVariance = betweenVariance;
+            threshold = t;
+          }
+        }
+
+        // Clamp threshold to avoid pure black or pure white blown-outs
+        const finalThreshold = Math.max(65, Math.min(195, threshold));
         for (let i = 0; i < len; i += 4) {
           const lum = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-          const val = lum > 140 ? 255 : 0;
+          const val = lum >= finalThreshold ? 255 : 0;
           data[i] = val;
           data[i + 1] = val;
           data[i + 2] = val;

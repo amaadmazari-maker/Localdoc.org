@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -41,6 +41,159 @@
     "description": "Zero-upload client-side PDF signature and annotation studio."
   }
   </script>
+  <style>
+    .edit-studio-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .edit-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pdf-preview-pane {
+      background: #0B1120;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 480px;
+    }
+    .pdf-nav-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: #1E293B;
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      color: #F8FAFC;
+    }
+    .pdf-viewport-scroller {
+      width: 100%;
+      max-height: 640px;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      background: #060A12;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .pdf-page-container {
+      position: relative;
+      display: inline-block;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      border-radius: 4px;
+      user-select: none;
+      background: #FFF;
+    }
+    #pdf-render-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .pdf-overlay-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+      overflow: hidden;
+    }
+    .visual-anno-box {
+      position: absolute;
+      border: 2px dashed #0284C7;
+      background: rgba(2, 132, 199, 0.08);
+      border-radius: 4px;
+      cursor: move;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      touch-action: none;
+      user-select: none;
+    }
+    .visual-anno-box:hover, .visual-anno-box.active {
+      border-color: #38BDF8;
+      background: rgba(56, 189, 248, 0.16);
+      box-shadow: 0 0 10px rgba(56,189,248,0.4);
+    }
+    .visual-anno-box .del-anno-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #EF4444;
+      color: #FFF;
+      border: none;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      z-index: 10;
+    }
+    .visual-anno-sig img {
+      max-width: 100%;
+      max-height: 100%;
+      pointer-events: none;
+    }
+    .visual-anno-text input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #0F172A;
+      font-weight: 700;
+      font-size: 13px;
+      width: 100%;
+      text-align: left;
+      padding: 2px 4px;
+    }
+    .visual-anno-date {
+      font-family: monospace;
+      font-size: 11px;
+      background: rgba(241, 245, 249, 0.95);
+      padding: 3px 6px;
+      border-radius: 3px;
+      color: #1E293B;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .sig-canvas-wrap {
+      border: 2px dashed var(--line);
+      border-radius: var(--radius-sm);
+      background: #FFF;
+      margin-bottom: 12px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+    .sig-canvas {
+      width: 100%;
+      max-width: 450px;
+      height: 160px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    .sig-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -131,78 +284,126 @@
         </div>
       </div>
 
-      <!-- Signature Studio & Annotation Grid -->
+      <!-- Interactive Visual PDF Editor & Sign Studio -->
       <div id="edit-studio-wrap" style="display:none; margin-top:24px;">
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; align-items:start;">
-          <!-- Signature Drawing Pad -->
-          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">Draw Your Signature</h4>
-              <button type="button" class="btn btn-outline" id="clear-sig-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);">Clear Pad</button>
-            </div>
-
-            <div class="sig-canvas-wrap">
-              <canvas id="sig-canvas" class="sig-canvas" width="450" height="180"></canvas>
-            </div>
-
-            <div class="sig-toolbar">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span class="control-label" style="font-size:0.78rem;">Ink:</span>
-                <button type="button" class="color-dot active" data-color="#000000" style="width:20px; height:20px; border-radius:50%; background:#000000; border:2px solid var(--primary); cursor:pointer;"></button>
-                <button type="button" class="color-dot" data-color="#0284C7" style="width:20px; height:20px; border-radius:50%; background:#0284C7; border:2px solid transparent; cursor:pointer;"></button>
-                <button type="button" class="color-dot" data-color="#0F172A" style="width:20px; height:20px; border-radius:50%; background:#0F172A; border:2px solid transparent; cursor:pointer;"></button>
+        <div class="edit-studio-grid">
+          
+          <!-- Left Control Panel -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <!-- Signature Drawing Pad -->
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">1. Draw Signature</h4>
+                <button type="button" class="btn btn-outline" id="clear-sig-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);">Clear</button>
               </div>
 
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span class="control-label" style="font-size:0.78rem;">Pen:</span>
-                <select class="control-select" id="pen-width-select" style="padding:3px 8px; font-size:0.78rem;">
-                  <option value="1.5">Fine (1.5px)</option>
-                  <option value="2.5" selected>Medium (2.5px)</option>
-                  <option value="4">Bold (4px)</option>
-                </select>
+              <div class="sig-canvas-wrap">
+                <canvas id="sig-canvas" class="sig-canvas" width="450" height="160"></canvas>
+              </div>
+
+              <div class="sig-toolbar">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="control-label" style="font-size:0.78rem;">Ink:</span>
+                  <button type="button" class="color-dot active" data-color="#000000" style="width:20px; height:20px; border-radius:50%; background:#000000; border:2px solid var(--primary); cursor:pointer;"></button>
+                  <button type="button" class="color-dot" data-color="#0284C7" style="width:20px; height:20px; border-radius:50%; background:#0284C7; border:2px solid transparent; cursor:pointer;"></button>
+                  <button type="button" class="color-dot" data-color="#0F172A" style="width:20px; height:20px; border-radius:50%; background:#0F172A; border:2px solid transparent; cursor:pointer;"></button>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="control-label" style="font-size:0.78rem;">Pen:</span>
+                  <select class="control-select" id="pen-width-select" style="padding:3px 8px; font-size:0.78rem;">
+                    <option value="1.5">Fine (1.5px)</option>
+                    <option value="2.5" selected>Medium (2.5px)</option>
+                    <option value="4">Bold (4px)</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary" id="btn-place-sig" style="width:100%; margin-top:14px; font-size:0.85rem;">
+                + Place Signature on Page
+              </button>
+            </div>
+
+            <!-- Annotation Stamp Tools -->
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
+              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:14px;">2. Add Annotations</h4>
+              
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <button type="button" class="btn btn-outline" id="btn-add-text" style="width:100%; justify-content:flex-start; gap:8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                  <span>+ Add Text Box</span>
+                </button>
+                
+                <button type="button" class="btn btn-outline" id="btn-add-date" style="width:100%; justify-content:flex-start; gap:8px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>+ Add Date Seal (<span id="cur-date-display">2026-09-01</span>)</span>
+                </button>
+
+                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="width:100%; color:var(--danger); border-color:var(--danger); font-size:0.8rem; margin-top:6px;">
+                  Clear Page Annotations
+                </button>
+              </div>
+            </div>
+
+            <!-- Fallback Anchor Settings (Optional) -->
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px;">
+              <details>
+                <summary style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">
+                  Auto-Anchor Settings (Quick Stamp)
+                </summary>
+                <div style="margin-top:12px;">
+                  <div style="margin-bottom:10px;">
+                    <label class="control-label" style="display:block; margin-bottom:4px; font-size:0.75rem;">Preset Location:</label>
+                    <select class="control-select" id="sig-pos-select" style="width:100%; font-size:0.8rem;">
+                      <option value="bottom-right" selected>Bottom Right</option>
+                      <option value="bottom-left">Bottom Left</option>
+                      <option value="bottom-center">Bottom Center</option>
+                      <option value="top-right">Top Right</option>
+                    </select>
+                  </div>
+                  <div style="margin-bottom:10px;">
+                    <label class="control-label" style="display:block; margin-bottom:4px; font-size:0.75rem;">Target Pages:</label>
+                    <select class="control-select" id="sig-target-pages" style="width:100%; font-size:0.8rem;">
+                      <option value="last" selected>Last Page Only</option>
+                      <option value="first">First Page Only</option>
+                      <option value="all">Every Page</option>
+                    </select>
+                  </div>
+                  <label style="display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--text-secondary);">
+                    <input type="checkbox" id="add-date-chk">
+                    <span>Include automatic date label</span>
+                  </label>
+                  <input type="text" class="control-input" id="anno-text" placeholder="Optional text annotation" style="width:100%; margin-top:8px; font-size:0.8rem;">
+                </div>
+              </details>
+            </div>
+
+          </div>
+
+          <!-- Right Visual Document Viewport -->
+          <div class="pdf-preview-pane">
+            <div class="pdf-nav-bar">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn btn-outline" id="btn-pdf-prev" style="padding:4px 10px; font-size:0.8rem;">◀ Prev</button>
+                <span style="font-size:0.85rem; font-weight:700;">Page <span id="pdf-current-page">1</span> of <span id="pdf-total-pages">1</span></span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-next" style="padding:4px 10px; font-size:0.8rem;">Next ▶</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.78rem; color:#94A3B8;">💡 Drag items directly on page</span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:2px 8px; font-size:0.8rem;">−</button>
+                <span id="pdf-zoom-level" style="font-size:0.8rem; font-weight:700;">100%</span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-in" style="padding:2px 8px; font-size:0.8rem;">+</button>
+              </div>
+            </div>
+
+            <div class="pdf-viewport-scroller">
+              <div class="pdf-page-container" id="pdf-page-container">
+                <canvas id="pdf-render-canvas"></canvas>
+                <div class="pdf-overlay-layer" id="pdf-overlay-layer"></div>
               </div>
             </div>
           </div>
 
-          <!-- Stamping & Placement Options -->
-          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
-            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Signature & Placement Options</h4>
-
-            <!-- Position Target -->
-            <div style="margin-bottom:14px;">
-              <label class="control-label" style="display:block; margin-bottom:4px;">Signature Location:</label>
-              <select class="control-select" id="sig-pos-select" style="width:100%;">
-                <option value="bottom-right" selected>Bottom Right (Standard Signature line)</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="bottom-center">Bottom Center</option>
-                <option value="top-right">Top Right</option>
-              </select>
-            </div>
-
-            <!-- Page Target -->
-            <div style="margin-bottom:14px;">
-              <label class="control-label" style="display:block; margin-bottom:4px;">Target Pages:</label>
-              <select class="control-select" id="sig-target-pages" style="width:100%;">
-                <option value="last" selected>Last Page Only (Agreements/Contracts)</option>
-                <option value="first">First Page Only</option>
-                <option value="all">Every Page (Initials/Seal)</option>
-              </select>
-            </div>
-
-            <!-- Certified Date Stamp -->
-            <div style="margin-bottom:14px;">
-              <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-primary); cursor:pointer;">
-                <input type="checkbox" id="add-date-chk" checked>
-                <span>Include Date Stamp (<span id="cur-date-display">2026-09-01</span>)</span>
-              </label>
-            </div>
-
-            <!-- Custom Annotation Text -->
-            <div>
-              <label class="control-label" style="display:block; margin-bottom:4px;">Optional Annotation Text:</label>
-              <input type="text" class="control-input" id="anno-text" placeholder="e.g. Approved by Director" style="width:100%;">
-            </div>
-          </div>
         </div>
       </div>
 
@@ -306,17 +507,30 @@
 
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/lib/pdf.min.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/tools/edit.js"></script>
 
   <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
+    }
+
     let selectedFile = null;
+    let selectedFileBuffer = null;
     let resultBlob = null;
     let resultFilename = 'localdoc-signed.pdf';
     let isDrawing = false;
     let inkColor = '#000000';
     let penWidth = 2.5;
     let hasSignatureDrawn = false;
+
+    // Visual PDF Viewer State
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentScale = 1.15;
+    const pageAnnotations = {}; // { [pageNum]: [ { id, type, x, y, width, height, ... } ] }
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
@@ -338,11 +552,27 @@
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
 
+    // Visual PDF Elements
+    const renderCanvas = document.getElementById("pdf-render-canvas");
+    const overlayLayer = document.getElementById("pdf-overlay-layer");
+    const pageContainer = document.getElementById("pdf-page-container");
+    const curPageSpan = document.getElementById("pdf-current-page");
+    const totalPagesSpan = document.getElementById("pdf-total-pages");
+    const zoomLevelSpan = document.getElementById("pdf-zoom-level");
+    const btnPrev = document.getElementById("btn-pdf-prev");
+    const btnNext = document.getElementById("btn-pdf-next");
+    const btnZoomIn = document.getElementById("btn-pdf-zoom-in");
+    const btnZoomOut = document.getElementById("btn-pdf-zoom-out");
+    const btnPlaceSig = document.getElementById("btn-place-sig");
+    const btnAddText = document.getElementById("btn-add-text");
+    const btnAddDate = document.getElementById("btn-add-date");
+    const btnClearPageAnnos = document.getElementById("btn-clear-page-annos");
+
     // Set today's date
     const todayStr = new Date().toISOString().split('T')[0];
-    curDateDisplay.textContent = todayStr;
+    if (curDateDisplay) curDateDisplay.textContent = todayStr;
 
-    // Canvas drawing setup
+    // Canvas drawing setup for Signature Pad
     const ctx = sigCanvas.getContext('2d');
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -404,7 +634,7 @@
       hasSignatureDrawn = false;
     });
 
-    // Ink color buttons
+    // Ink color selection
     document.querySelectorAll('.color-dot').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.color-dot').forEach(b => {
@@ -421,7 +651,257 @@
       penWidth = parseFloat(penWidthSelect.value) || 2.5;
     });
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
+    // =========================================================================
+    // PDF Rendering Engine (PDF.js)
+    // =========================================================================
+    async function loadAndRenderPdf(buffer) {
+      try {
+        const loadingTask = pdfjsLib.getDocument({ data: buffer });
+        pdfDoc = await loadingTask.promise;
+        totalPages = pdfDoc.numPages;
+        currentPage = 1;
+        totalPagesSpan.textContent = totalPages;
+        await renderVisualPage(currentPage);
+      } catch (err) {
+        console.error("PDF preview error:", err);
+        UIUtils.showToast("Could not preview PDF pages visually, but document is ready for processing", "info");
+      }
+    }
+
+    async function renderVisualPage(pageNumber) {
+      if (!pdfDoc) return;
+      curPageSpan.textContent = pageNumber;
+      btnPrev.disabled = pageNumber <= 1;
+      btnNext.disabled = pageNumber >= totalPages;
+
+      const page = await pdfDoc.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: currentScale });
+
+      renderCanvas.width = viewport.width;
+      renderCanvas.height = viewport.height;
+      pageContainer.style.width = viewport.width + 'px';
+      pageContainer.style.height = viewport.height + 'px';
+
+      const renderCtx = renderCanvas.getContext('2d');
+      await page.render({ canvasContext: renderCtx, viewport: viewport }).promise;
+
+      renderOverlayAnnotations(pageNumber);
+    }
+
+    // =========================================================================
+    // Interactive Draggable Overlay Manager
+    // =========================================================================
+    function renderOverlayAnnotations(pageNumber) {
+      overlayLayer.innerHTML = '';
+      const list = pageAnnotations[pageNumber] || [];
+
+      list.forEach(anno => {
+        const el = createAnnotationElement(anno, pageNumber);
+        overlayLayer.appendChild(el);
+      });
+    }
+
+    function createAnnotationElement(anno, pageNumber) {
+      const box = document.createElement('div');
+      box.className = 'visual-anno-box';
+      box.id = `anno-${anno.id}`;
+      box.style.left = anno.x + 'px';
+      box.style.top = anno.y + 'px';
+      box.style.width = anno.width + 'px';
+      box.style.height = anno.height + 'px';
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = 'del-anno-btn';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Remove';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeAnnotation(pageNumber, anno.id);
+      });
+      box.appendChild(delBtn);
+
+      if (anno.type === 'signature') {
+        const img = document.createElement('img');
+        img.src = anno.dataUrl;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        box.appendChild(img);
+      } else if (anno.type === 'text') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = anno.text || 'Annotation Text';
+        input.addEventListener('input', (e) => {
+          anno.text = e.target.value;
+        });
+        box.appendChild(input);
+      } else if (anno.type === 'date') {
+        const span = document.createElement('span');
+        span.className = 'visual-anno-date';
+        span.textContent = `📅 Signed: ${anno.text}`;
+        box.appendChild(span);
+      }
+
+      // Dragging with Pointer Events
+      makeDraggable(box, anno);
+
+      return box;
+    }
+
+    function makeDraggable(element, anno) {
+      let isDragging = false;
+      let startX, startY, initialX, initialY;
+
+      element.addEventListener('pointerdown', (e) => {
+        if (e.target.classList.contains('del-anno-btn') || e.target.tagName === 'INPUT') return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialX = anno.x;
+        initialY = anno.y;
+        element.classList.add('active');
+        element.setPointerCapture(e.pointerId);
+      });
+
+      element.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        const containerW = overlayLayer.offsetWidth;
+        const containerH = overlayLayer.offsetHeight;
+
+        let newX = Math.max(0, Math.min(containerW - anno.width, initialX + dx));
+        let newY = Math.max(0, Math.min(containerH - anno.height, initialY + dy));
+
+        anno.x = newX;
+        anno.y = newY;
+        element.style.left = newX + 'px';
+        element.style.top = newY + 'px';
+      });
+
+      element.addEventListener('pointerup', (e) => {
+        if (isDragging) {
+          isDragging = false;
+          element.classList.remove('active');
+          try { element.releasePointerCapture(e.pointerId); } catch(ex){}
+        }
+      });
+    }
+
+    function removeAnnotation(pageNumber, id) {
+      if (!pageAnnotations[pageNumber]) return;
+      pageAnnotations[pageNumber] = pageAnnotations[pageNumber].filter(a => a.id !== id);
+      const el = document.getElementById(`anno-${id}`);
+      if (el) el.remove();
+    }
+
+    // Place Signature Button
+    btnPlaceSig.addEventListener('click', () => {
+      if (!hasSignatureDrawn) {
+        UIUtils.showToast("Please draw a signature on the pad above first!", "info");
+        return;
+      }
+      const dataUrl = sigCanvas.toDataURL('image/png');
+      const anno = {
+        id: 'sig-' + Date.now(),
+        type: 'signature',
+        x: Math.max(20, overlayLayer.offsetWidth - 180),
+        y: Math.max(20, overlayLayer.offsetHeight - 90),
+        width: 150,
+        height: 60,
+        dataUrl: dataUrl
+      };
+
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      pageAnnotations[currentPage].push(anno);
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Signature placed on page! Drag it to your desired position.", "success");
+    });
+
+    // Add Text Box Button
+    btnAddText.addEventListener('click', () => {
+      const anno = {
+        id: 'txt-' + Date.now(),
+        type: 'text',
+        x: 40,
+        y: 40,
+        width: 180,
+        height: 38,
+        text: 'Approved & Verified',
+        color: '#0F172A',
+        fontSize: 12
+      };
+
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      pageAnnotations[currentPage].push(anno);
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Text box added to page! Click to edit text and drag to position.", "success");
+    });
+
+    // Add Date Seal Button
+    btnAddDate.addEventListener('click', () => {
+      const anno = {
+        id: 'date-' + Date.now(),
+        type: 'date',
+        x: 40,
+        y: Math.max(20, overlayLayer.offsetHeight - 60),
+        width: 150,
+        height: 30,
+        text: todayStr,
+        fontSize: 10
+      };
+
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      pageAnnotations[currentPage].push(anno);
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Date seal added! Drag to desired placement.", "success");
+    });
+
+    // Clear Page Annotations
+    btnClearPageAnnos.addEventListener('click', () => {
+      pageAnnotations[currentPage] = [];
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Cleared annotations on page " + currentPage, "info");
+    });
+
+    // Page Navigation
+    btnPrev.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderVisualPage(currentPage);
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderVisualPage(currentPage);
+      }
+    });
+
+    // Zoom Controls
+    btnZoomIn.addEventListener('click', () => {
+      if (currentScale < 2.0) {
+        currentScale += 0.15;
+        zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
+        renderVisualPage(currentPage);
+      }
+    });
+
+    btnZoomOut.addEventListener('click', () => {
+      if (currentScale > 0.6) {
+        currentScale -= 0.15;
+        zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
+        renderVisualPage(currentPage);
+      }
+    });
+
+    // =========================================================================
+    // File Upload & Workflow Logic
+    // =========================================================================
+    UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
       if (files.length > 0) {
         selectedFile = files[0];
         queueName.textContent = selectedFile.name;
@@ -430,12 +910,17 @@
         studioWrap.style.display = "block";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+
+        selectedFileBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+        await loadAndRenderPdf(selectedFileBuffer);
       }
     });
 
     clearBtn.addEventListener("click", () => {
       selectedFile = null;
+      selectedFileBuffer = null;
       resultBlob = null;
+      pdfDoc = null;
       fileQueue.style.display = "none";
       studioWrap.style.display = "none";
       actionBar.style.display = "none";
@@ -449,11 +934,52 @@
     }
 
     processBtn.addEventListener("click", async function() {
-      if (!selectedFile) return;
+      if (!selectedFile || !selectedFileBuffer) return;
 
       try {
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing local signature worker...");
+
+        // Collect all visual annotations across pages
+        const visualAnnotationsToBurn = [];
+        const overlayW = overlayLayer.offsetWidth;
+        const overlayH = overlayLayer.offsetHeight;
+
+        // Use PDF-Lib to obtain native unscaled page sizes
+        const tempPdfDoc = await PDFLib.PDFDocument.load(selectedFileBuffer, { ignoreEncryption: true });
+        const pdfPages = tempPdfDoc.getPages();
+
+        Object.entries(pageAnnotations).forEach(([pNum, annos]) => {
+          const pIndex = parseInt(pNum) - 1;
+          const targetPage = pdfPages[pIndex] || pdfPages[0];
+          const { width: pWidth, height: pHeight } = targetPage.getSize();
+
+          annos.forEach(a => {
+            // Coordinate mapping: transform HTML canvas overlay coordinates into PDF bottom-left points
+            const normX = a.x / overlayW;
+            const normY = a.y / overlayH;
+            const normW = a.width / overlayW;
+            const normH = a.height / overlayH;
+
+            const pdfX = normX * pWidth;
+            const pdfW = normW * pWidth;
+            const pdfH = normH * pHeight;
+            const pdfY = (1 - normY - normH) * pHeight;
+
+            visualAnnotationsToBurn.push({
+              pageIndex: pIndex,
+              type: a.type,
+              x: pdfX,
+              y: pdfY,
+              width: pdfW,
+              height: pdfH,
+              dataUrl: a.dataUrl,
+              text: a.text,
+              color: a.color || '#000000',
+              fontSize: a.fontSize || 12
+            });
+          });
+        });
 
         let signatureDataUrl = null;
         if (hasSignatureDrawn) {
@@ -461,6 +987,7 @@
         }
 
         const options = {
+          annotations: visualAnnotationsToBurn,
           signatureDataUrl: signatureDataUrl,
           position: sigPosSelect.value,
           targetPages: sigTargetPages.value,
@@ -469,7 +996,7 @@
           annotationText: annoTextInput.value ? annoTextInput.value.trim() : ''
         };
 
-        const res = await PDFEdit.processBatchEdit(selectedFile, options, progressCb);
+        const res = await PDFEdit.processBatchEdit(selectedFileBuffer, options, progressCb);
         resultBlob = res.pdfBlob;
 
         const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
@@ -478,7 +1005,7 @@
         UIUtils.setWorkflowStep(3, 100, "Signing complete!");
         resultCard.style.display = "flex";
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • Embedded signature and annotations into ${res.stampedPagesCount} Page(s)`;
-        UIUtils.showToast("Signature applied successfully!", "success");
+        UIUtils.showToast("Signed PDF successfully generated in RAM!", "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast(err.message || "Signing failed", "error");

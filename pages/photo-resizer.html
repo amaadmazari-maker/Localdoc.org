@@ -313,16 +313,16 @@
     <!-- Empty Upload State -->
     <div id="resizer-empty-state">
       <div class="resizer-empty-box" id="resizer-drop-zone">
-        <input type="file" id="resizer-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+        <input type="file" id="resizer-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
         <div style="font-size: 3rem; margin-bottom: 12px;">🖼️</div>
         <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-          Choose a photo or drag & drop here
+          Choose photos or drag & drop here
         </h3>
         <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
-          Supports JPG, PNG, and WebP photos. Instant local processing with zero server uploads.
+          Supports JPG, PNG, and WebP photos. Single image or multi-photo batch queue. Instant local processing in RAM.
         </p>
         <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
-          Select Photo from Device
+          Select Photo(s) from Device
         </button>
       </div>
     </div>
@@ -333,6 +333,15 @@
         
         <!-- Left: Previews -->
         <div>
+          <!-- Batch Queue Information (Shown when >1 photos) -->
+          <div id="resizer-batch-panel" class="preview-card" style="display:none; padding:14px; margin-bottom:16px;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h4 id="resizer-batch-title" style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin:0;">Batch Queue (0 Photos)</h4>
+              <span class="kb-badge">Batch Mode</span>
+            </div>
+            <div id="resizer-batch-thumbnails" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;"></div>
+          </div>
+
           <!-- Output Final Result Card -->
           <div class="preview-card" style="border-color: var(--primary); margin-bottom: 16px;">
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -348,13 +357,16 @@
             <button id="resizer-download-btn" class="btn btn-primary" style="width: 100%; margin-top: 14px; padding: 12px; font-weight: 700; font-size: 1rem;">
               ⬇ Download Resized Photo
             </button>
+            <button id="resizer-batch-download-btn" class="btn btn-outline" style="display:none; width: 100%; margin-top: 8px; padding: 8px; font-weight: 600; font-size: 0.88rem;">
+              ⬇ Download Active Photo Only
+            </button>
           </div>
 
           <!-- Original Source Info -->
           <div class="preview-card" style="padding: 14px;">
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-tertiary);">Original Source</span>
-              <button onclick="document.getElementById('resizer-file-input').click()" style="background:none; border:none; color:var(--primary); font-size:0.82rem; font-weight:600; cursor:pointer;">Change Photo</button>
+              <button onclick="document.getElementById('resizer-file-input').click()" style="background:none; border:none; color:var(--primary); font-size:0.82rem; font-weight:600; cursor:pointer;">Change / Add Photos</button>
             </div>
             <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
               <img id="resizer-orig-preview" src="" alt="Original preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line);">
@@ -698,6 +710,7 @@
     </div>
   </footer>
 
+  <script src="../js/core/ui-utils.js"></script>
   <script src="../js/tools/photo-resizer.js"></script>
 </body>
 </html>

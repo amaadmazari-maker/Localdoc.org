@@ -224,6 +224,11 @@
           <span class="control-label">Recognition Language:</span>
           <select class="control-select" id="ocr-lang-select">
             <option value="eng" selected>English (Latin)</option>
+            <option value="spa">Spanish (Español)</option>
+            <option value="fra">French (Français)</option>
+            <option value="deu">German (Deutsch)</option>
+            <option value="ita">Italian (Italiano)</option>
+            <option value="por">Portuguese (Português)</option>
           </select>
         </div>
       </div>
@@ -271,6 +276,12 @@
             <div style="display:flex; gap:8px;">
               <button class="btn btn-outline" id="copy-btn" style="padding:4px 10px; font-size:0.78rem;">📋 Copy to Clipboard</button>
             </div>
+          </div>
+          <!-- Quick Search & Replace Bar -->
+          <div style="background:var(--bg-body); border-bottom:1px solid var(--line); padding:8px 16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <input type="text" class="control-input" id="ocr-find-input" placeholder="Find text..." style="width:140px; padding:4px 8px; font-size:0.8rem;">
+            <input type="text" class="control-input" id="ocr-replace-input" placeholder="Replace with..." style="width:140px; padding:4px 8px; font-size:0.8rem;">
+            <button type="button" class="btn btn-outline" id="ocr-replace-btn" style="padding:4px 10px; font-size:0.78rem;">Replace All</button>
           </div>
           <textarea id="result-text-area" style="width:100%; height:260px; padding:16px 20px; border:none; outline:none; font-family:var(--font-mono); font-size:0.88rem; line-height:1.6; color:var(--text-primary); background:#FFFFFF; resize:vertical;"></textarea>
         </div>
@@ -508,7 +519,7 @@
   <script src="../js/core/ui-utils.js"></script>
   <script src="../js/lib/tesseract.min.js"></script>
   <script src="../js/lib/docx.min.js"></script>
-  <script src="../js/tools/id-photo.js"></script>
+  <script src="../js/tools/ocr.js"></script>
 
   <script>
     let queueFiles = [];
@@ -529,6 +540,11 @@
     const copyBtn = document.getElementById("copy-btn");
     const downloadTxtBtn = document.getElementById("download-txt-btn");
     const downloadDocxBtn = document.getElementById("download-docx-btn");
+    const filterSelect = document.getElementById("ocr-filter-select");
+    const langSelect = document.getElementById("ocr-lang-select");
+    const findInput = document.getElementById("ocr-find-input");
+    const replaceInput = document.getElementById("ocr-replace-input");
+    const replaceBtn = document.getElementById("ocr-replace-btn");
 
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
@@ -566,9 +582,12 @@
         UIUtils.setWorkflowStep(0, 10, "Initializing neural OCR worker in local memory...");
         let combinedText = '';
 
+        const filterVal = filterSelect ? filterSelect.value : 'adaptive-bw';
+        const langVal = langSelect ? langSelect.value : 'eng';
+
         for (let i = 0; i < queueFiles.length; i++) {
           const file = queueFiles[i];
-          const text = await OCRUtils.imageToText(file, progressCb);
+          const text = await OCRUtils.imageToText(file, progressCb, { filter: filterVal, lang: langVal });
           if (queueFiles.length > 1) {
             combinedText += `--- IMAGE ${i + 1}: ${file.name} ---\n` + text + "\n\n";
           } else {
@@ -578,10 +597,7 @@
 
         transcribedText = combinedText.trim();
         resultTextArea.value = transcribedText;
-
-        const words = transcribedText.split(/\s+/).filter(Boolean).length;
-        const chars = transcribedText.length;
-        resultStats.textContent = `${words} words • ${chars} characters`;
+        updateStats();
 
         UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
         resultCard.style.display = "block";
@@ -592,6 +608,28 @@
       } finally {
         processBtn.disabled = false;
       }
+    });
+
+    function updateStats() {
+      const val = resultTextArea.value.trim();
+      const words = val ? val.split(/\s+/).filter(Boolean).length : 0;
+      const chars = val.length;
+      resultStats.textContent = `${words} words • ${chars} characters`;
+    }
+    resultTextArea.addEventListener("input", updateStats);
+
+    replaceBtn?.addEventListener("click", () => {
+      const findVal = findInput.value;
+      const repVal = replaceInput.value;
+      if (!findVal) {
+        UIUtils.showToast("Enter text to find", "info");
+        return;
+      }
+      const current = resultTextArea.value;
+      const updated = current.split(findVal).join(repVal);
+      resultTextArea.value = updated;
+      updateStats();
+      UIUtils.showToast("Replaced occurrences of '" + findVal + "'", "success");
     });
 
     copyBtn.addEventListener("click", () => {
