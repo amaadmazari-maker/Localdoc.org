@@ -785,30 +785,64 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      background: #090D16;
+      padding: 24px 16px 40px;
+    }
+    .cs-grid-inner-container {
+      width: 100%;
+      max-width: 1100px;
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      background: #020617;
     }
     .cs-grid-banner {
-      background: #0F172A;
+      background: #111C2E;
       border-bottom: 1px solid #1E293B;
-      padding: 10px 16px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      flex-wrap: wrap;
     }
     .cs-pages-grid {
-      flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      padding: 20px;
-      overflow-y: auto;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 24px;
       align-content: start;
     }
+    @media (max-width: 1100px) {
+      .cs-pages-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 20px;
+      }
+    }
+    @media (max-width: 768px) {
+      .cs-doc-grid-stage {
+        padding: 12px 8px 30px;
+      }
+      .cs-pages-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 14px;
+      }
+    }
+    @media (max-width: 480px) {
+      .cs-pages-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 12px;
+      }
+    }
     .cs-page-tile {
-      background: #0F172A;
+      background: #111827;
       border: 1.5px solid #1E293B;
       border-radius: 14px;
       padding: 12px;
@@ -823,7 +857,7 @@
     .cs-page-tile:hover {
       border-color: #38BDF8;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
     .cs-page-tile.dragging {
       opacity: 0.45;
@@ -842,7 +876,7 @@
       justify-content: space-between;
     }
     .cs-page-badge {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 800;
       background: #1E293B;
       color: #38BDF8;
@@ -856,38 +890,40 @@
       cursor: grab;
       letter-spacing: 2px;
     }
-    .cs-page-tile-thumb {
+    .cs-tile-preview, .cs-page-tile-thumb {
       width: 100%;
-      aspect-ratio: 1 / 1.414;
-      background: #000000;
+      aspect-ratio: 1 / 1.35;
+      background: #020617;
       border-radius: 8px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      position: relative;
       border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
     }
-    .cs-page-tile-thumb img {
+    .cs-tile-preview img, .cs-page-tile-thumb img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      background: #000;
     }
-    .cs-page-tile-actions {
+    .cs-tile-actions, .cs-page-tile-actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 6px;
       margin-top: 2px;
     }
-    .cs-page-action-btn {
+    .cs-tile-btn, .cs-page-action-btn {
+      flex: 1;
       background: #1E293B;
       border: 1px solid #334155;
-      color: #94A3B8;
-      font-size: 0.74rem;
+      color: #CBD5E1;
+      font-size: 0.76rem;
       font-weight: 700;
-      padding: 5px 8px;
+      padding: 6px 4px;
       border-radius: 6px;
       cursor: pointer;
       display: flex;
@@ -895,32 +931,37 @@
       justify-content: center;
       transition: all 0.12s;
     }
-    .cs-page-action-btn:hover {
+    .cs-tile-btn:hover, .cs-page-action-btn:hover {
       background: #334155;
       color: #FFFFFF;
       border-color: #475569;
     }
-    .cs-page-action-btn.danger:hover {
+    .cs-tile-btn.danger:hover, .cs-page-action-btn.danger:hover {
       background: #EF4444;
       color: #FFFFFF;
       border-color: #DC2626;
     }
-    .cs-page-tile-add {
+    .cs-page-add-tile {
       border: 2px dashed #334155;
       border-radius: 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 240px;
-      gap: 12px;
+      aspect-ratio: 1 / 1.35;
+      gap: 10px;
       background: rgba(30, 41, 59, 0.2);
       cursor: pointer;
       transition: all 0.15s;
+      color: #94A3B8;
+      padding: 16px;
+      text-align: center;
     }
-    .cs-page-tile-add:hover {
-      border-color: var(--cs-teal);
-      background: rgba(13, 148, 136, 0.08);
+    .cs-page-add-tile:hover {
+      border-color: var(--cs-teal-light);
+      background: rgba(13, 148, 136, 0.12);
+      color: #FFFFFF;
+      transform: translateY(-2px);
     }
 
     /* Single Page Inspector Stage */
@@ -929,7 +970,57 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: #020617;
+      background: #090D16;
+    }
+    .cs-single-topbar {
+      height: 50px;
+      background: #111C2E;
+      border-bottom: 1px solid #1E293B;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .cs-single-bottom-bar {
+      min-height: 76px;
+      background: #0F172A;
+      border-top: 1px solid #1E293B;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .cs-single-tool-btn {
+      background: #1E293B;
+      border: 1.5px solid #334155;
+      color: #FFFFFF;
+      font-size: 0.92rem;
+      font-weight: 800;
+      padding: 11px 22px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+    .cs-single-tool-btn:hover {
+      border-color: #38BDF8;
+      background: #334155;
+      transform: translateY(-2px);
+    }
+    .cs-single-tool-btn.primary {
+      background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+      border-color: #14B8A6;
+    }
+    .cs-single-tool-btn.primary:hover {
+      background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
     }
 
     /* Multi-Channel Share Modal */
@@ -1451,70 +1542,66 @@
       </div>
     </div>
 
-    <!-- 1. Grid Mode Stage (Multi-Page Drag & Drop Reorder Studio) -->
+    <!-- 1. Grid Mode Stage (Centered 4-Column Card Container like merge-pdf.html) -->
     <div class="cs-doc-grid-stage" id="cs-doc-grid-stage">
-      <div class="cs-grid-banner">
-        <div style="font-size:0.86rem; color:#CBD5E1; display:flex; align-items:center; gap:8px;">
-          <span>💡</span>
-          <span><strong>Drag &amp; drop</strong> tiles to reorder pages (drag page 3 to 4, page 2 to 6). Click any page to inspect.</span>
+      <div class="cs-grid-inner-container">
+        <div class="cs-grid-banner">
+          <div style="font-size:0.88rem; color:#CBD5E1; display:flex; align-items:center; gap:8px;">
+            <span>💡</span>
+            <span><strong>Drag &amp; drop</strong> tiles to reorder pages (drag page 3 to 4, page 2 to 6). Click any page to edit.</span>
+          </div>
+          <div id="grid-page-counter-summary" style="font-size:0.82rem; font-weight:700; color:#38BDF8;">
+            <!-- Dynamic page counter -->
+          </div>
         </div>
-        <button type="button" class="btn btn-outline btn-sm" onclick="openAddPageChoiceModal()" style="color:#FFF; border-color:#334155; font-size:0.82rem; font-weight:700;">
-          ➕ Add Page
-        </button>
-      </div>
-      <div class="cs-pages-grid" id="cs-pages-grid">
-        <!-- Dynamically rendered page tiles with drag handles, rotate, crop, filter, delete -->
+        <div class="cs-pages-grid" id="cs-pages-grid">
+          <!-- Dynamically rendered 4-column page tiles + empty slot Add Page tile -->
+        </div>
       </div>
     </div>
 
-    <!-- 2. Single Page Stage (Full Height Page Inspector with Bottom Carousel) -->
+    <!-- 2. Single Page Stage (Distraction-Free 3-Action Studio: Crop, Filter, Rotate) -->
     <div class="cs-doc-single-stage" id="cs-doc-single-stage" style="display:none;">
+      <!-- Single Page Sub-header (Back to Grid, Page Navigator, Delete) -->
+      <div class="cs-single-topbar">
+        <button type="button" class="btn btn-outline btn-sm" onclick="setWorkspaceViewMode('grid')" style="color:#FFF; border-color:#334155; display:inline-flex; align-items:center; gap:6px; font-size:0.8rem;">
+          <span>←</span> <span>Back to Grid</span>
+        </button>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="cs-thumb-arrow-btn" onclick="goToPrevSinglePage()" title="Previous Page" style="width:30px; height:30px; font-size:0.9rem;">◀</button>
+          <span id="single-page-num-badge" style="font-size:0.85rem; font-weight:800; color:#F8FAFC;">Page 1 of 1</span>
+          <button type="button" class="cs-thumb-arrow-btn" onclick="goToNextSinglePage()" title="Next Page" style="width:30px; height:30px; font-size:0.9rem;">▶</button>
+        </div>
+
+        <button type="button" class="btn btn-outline btn-sm" onclick="deleteActiveDocPage()" style="color:#EF4444; border-color:rgba(239, 68, 68, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+          <span>🗑️</span> <span>Delete</span>
+        </button>
+      </div>
+
       <!-- Active Document Stage (Full Height Page View) -->
       <div class="cs-doc-page-stage" id="doc-page-viewport">
         <img id="doc-active-page-img" src="" alt="Active Document Page">
       </div>
 
-      <!-- Document Workspace Page Carousel & Re-order Strip -->
-      <div class="cs-doc-carousel-bar" id="doc-pages-carousel">
-        <!-- Dynamically populated with page cards, reorder arrows, and insert buttons -->
-      </div>
-
-      <!-- Bottom Action Bar (Add Page, Edit, Rotate, Filter, Download PDF, Delete) -->
-      <div class="cs-doc-bottom-bar">
-        <!-- ➕ Add Page Button -->
-        <button type="button" class="cs-doc-action-btn" onclick="openAddPageChoiceModal()">
-          <div class="cs-doc-add-btn">➕</div>
-          <span data-i18n="scan_add_page">Add Page</span>
+      <!-- Exactly 3 Core Tools Bar (Crop, Filter, Rotate) as Requested in Review Video -->
+      <div class="cs-single-bottom-bar">
+        <!-- 1. Crop & Edges (Interactive 4 Corners with Loupe) -->
+        <button type="button" class="cs-single-tool-btn primary" onclick="reCropActivePage()" title="Adjust 4 corners and perspective">
+          <span style="font-size:1.25rem;">✂️</span>
+          <span>Crop &amp; Edges</span>
         </button>
 
-        <!-- ✂️ Edit / Re-Crop -->
-        <button type="button" class="cs-doc-action-btn" onclick="reCropActivePage()">
-          <span style="font-size:1.2rem;">✂️</span>
-          <span data-i18n="scan_edit_page">Edit</span>
+        <!-- 2. Filter (Cycle Magic Color / B&W / Grayscale / Original) -->
+        <button type="button" class="cs-single-tool-btn" onclick="cycleActiveDocPageFilter()" title="Switch color enhancement filter">
+          <span style="font-size:1.25rem;">🎨</span>
+          <span id="single-active-filter-text">Filter (Magic Color)</span>
         </button>
 
-        <!-- 🔄 Rotate -->
-        <button type="button" class="cs-doc-action-btn" onclick="rotateActiveDocPage()">
-          <span style="font-size:1.2rem;">🔄</span>
-          <span data-i18n="scan_rotate_page">Rotate</span>
-        </button>
-
-        <!-- 🎨 Filter -->
-        <button type="button" class="cs-doc-action-btn" onclick="cycleActiveDocPageFilter()">
-          <span style="font-size:1.2rem;">🎨</span>
-          <span>Filter</span>
-        </button>
-
-        <!-- 📥 Download PDF (Single Click) -->
-        <button type="button" class="cs-doc-action-btn" onclick="exportDocPDF()" style="color:#14B8A6; font-weight:800;">
-          <span style="font-size:1.2rem;">📥</span>
-          <span data-i18n="scan_export_pdf">PDF</span>
-        </button>
-
-        <!-- 🗑️ Delete Page -->
-        <button type="button" class="cs-doc-action-btn" onclick="deleteActiveDocPage()" style="color:#EF4444;">
-          <span style="font-size:1.2rem;">🗑️</span>
-          <span data-i18n="scan_delete_page">Delete</span>
+        <!-- 3. Rotate 90° -->
+        <button type="button" class="cs-single-tool-btn" onclick="rotateActiveDocPage()" title="Rotate 90 degrees clockwise">
+          <span style="font-size:1.25rem;">🔄</span>
+          <span>Rotate 90°</span>
         </button>
       </div>
     </div>
@@ -2543,41 +2630,45 @@
 
       document.getElementById("doc-view-title-text").textContent = docTitle;
       document.getElementById("doc-view-page-badge").textContent = `${docPages.length} Pages`;
+      const counterSummary = document.getElementById("grid-page-counter-summary");
+      if (counterSummary) {
+        counterSummary.textContent = `${docPages.length} ${docPages.length === 1 ? 'Page' : 'Pages'}`;
+      }
 
       if (docPages.length === 0) {
-        grid.innerHTML = '<div style="color:#94A3B8; padding:30px; text-align:center;">No pages in document.</div>';
+        grid.innerHTML = '<div style="color:#94A3B8; padding:30px; text-align:center; grid-column: 1 / -1;">No pages in document. Tap "+ Add Page" below to add scans.</div>';
         return;
       }
 
       let html = '';
       docPages.forEach((p, idx) => {
         const isActive = idx === currentViewingPageIndex ? 'active' : '';
-        const filterName = p.filter || 'magic-color';
+        const filterName = filterLabels[p.filter || 'magic-color'] || 'Magic Color';
         html += `
           <div class="cs-page-tile ${isActive}" draggable="true" data-index="${idx}" id="cs-tile-${idx}">
-            <div class="cs-tile-badge">
-              <span>Page ${idx + 1}</span>
-              <span style="font-size:0.7rem; opacity:0.8; text-transform:capitalize;">${filterName}</span>
+            <div class="cs-page-tile-header">
+              <span class="cs-page-badge">Page ${idx + 1}</span>
+              <span class="cs-page-drag-handle" title="Drag to reorder">⠿⠿</span>
             </div>
-            <div class="cs-tile-preview" onclick="selectAndInspectPage(${idx})" title="Click to inspect page full screen">
+            <div class="cs-tile-preview" onclick="selectAndInspectPage(${idx})" title="Click to edit (Crop, Filter, Rotate)">
               <img src="${p.processedDataUrl}" alt="Page ${idx + 1}">
             </div>
             <div class="cs-tile-actions">
               <button type="button" class="cs-tile-btn" onclick="rotateDocPageAt(${idx})" title="Rotate 90°">🔄</button>
-              <button type="button" class="cs-tile-btn" onclick="cycleDocPageFilterAt(${idx})" title="Cycle Filter">🎨</button>
-              <button type="button" class="cs-tile-btn" onclick="reCropPageAt(${idx})" title="Crop & Adjust Edges">✂️</button>
-              <button type="button" class="cs-tile-btn" onclick="deleteDocPageAt(${idx})" title="Delete Page" style="color:#EF4444;">🗑️</button>
+              <button type="button" class="cs-tile-btn" onclick="cycleDocPageFilterAt(${idx})" title="Cycle Filter (${filterName})">🎨</button>
+              <button type="button" class="cs-tile-btn" onclick="reCropPageAt(${idx})" title="Crop &amp; Perspective">✂️</button>
+              <button type="button" class="cs-tile-btn danger" onclick="deleteDocPageAt(${idx})" title="Delete Page" style="color:#EF4444;">🗑️</button>
             </div>
           </div>
         `;
       });
 
-      // Add Page Tile at end
+      // Add Page Tile as the intuitive next empty slot in grid
       html += `
         <div class="cs-page-add-tile" onclick="openAddPageChoiceModal()" title="Add more pages (Camera or Gallery)">
-          <div style="font-size:2.2rem; margin-bottom:6px;">➕</div>
-          <div style="font-weight:700; font-size:0.92rem;">Add Pages</div>
-          <div style="font-size:0.75rem; color:#94A3B8; margin-top:3px;">Camera or Gallery</div>
+          <div style="font-size:2.4rem; margin-bottom:4px;">➕</div>
+          <div style="font-weight:800; font-size:1rem; color:#F8FAFC;">Add Page</div>
+          <div style="font-size:0.8rem; color:#94A3B8; margin-top:3px;">Camera or Gallery</div>
         </div>
       `;
 
@@ -2642,9 +2733,26 @@
       setWorkspaceViewMode('single');
     }
 
+    const availableFilters = ['magic-color', 'bw', 'grayscale', 'original'];
+    const filterLabels = {
+      'magic-color': 'Magic Color',
+      'bw': 'B&W Clean',
+      'grayscale': 'Grayscale',
+      'original': 'Original Color'
+    };
+
     async function rotateDocPageAt(idx) {
       const page = docPages[idx];
       if (!page) return;
+
+      if (!page.rawImg || !page.rawImg.width) {
+        showProcessing("Loading image...");
+        try {
+          page.rawImg = await UIUtils.loadImage(page.rawDataUrl || page.processedDataUrl);
+        } catch (e) { console.error(e); }
+        hideProcessing();
+      }
+
       page.rotation = ((page.rotation || 0) + 90) % 360;
       
       showProcessing("Rotating page...");
@@ -2667,17 +2775,17 @@
       UIUtils.showToast(`Page ${idx + 1} rotated (${page.rotation}°)`, "info");
     }
 
-    const availableFilters = ['magic-color', 'bw', 'grayscale', 'original'];
-    const filterLabels = {
-      'magic-color': 'Magic Color',
-      'bw': 'B&W Clean',
-      'grayscale': 'Grayscale',
-      'original': 'Original Color'
-    };
-
     async function cycleDocPageFilterAt(idx) {
       const page = docPages[idx];
       if (!page) return;
+
+      if (!page.rawImg || !page.rawImg.width) {
+        showProcessing("Loading image...");
+        try {
+          page.rawImg = await UIUtils.loadImage(page.rawDataUrl || page.processedDataUrl);
+        } catch (e) { console.error(e); }
+        hideProcessing();
+      }
 
       const currentFilter = page.filter || 'magic-color';
       const nextIndex = (availableFilters.indexOf(currentFilter) + 1) % availableFilters.length;
@@ -2703,12 +2811,25 @@
       UIUtils.showToast(`Filter: ${filterLabels[page.filter]}`, "info");
     }
 
-    function reCropPageAt(idx) {
+    async function reCropPageAt(idx) {
       const page = docPages[idx];
       if (!page) return;
+
+      let rawImg = page.rawImg;
+      if (!rawImg || !rawImg.width) {
+        showProcessing("Loading page image for crop...");
+        try {
+          rawImg = await UIUtils.loadImage(page.rawDataUrl || page.processedDataUrl);
+          page.rawImg = rawImg;
+        } catch (e) {
+          console.error("Could not load image for crop", e);
+        }
+        hideProcessing();
+      }
+
       stagingPage = {
-        rawImg: page.rawImg,
-        corners: page.corners,
+        rawImg: rawImg,
+        corners: page.corners || DocumentScanner.getDefaultCorners(),
         rotation: page.rotation || 0,
         filter: page.filter || 'magic-color'
       };
@@ -2733,7 +2854,7 @@
       }
     }
 
-    // --- Single View: Full Height Page Inspector ---
+    // --- Single View: Full Height Page Inspector & 3 Core Tools ---
     function renderDocPageViewer() {
       if (currentViewingPageIndex < 0 || currentViewingPageIndex >= docPages.length) {
         currentViewingPageIndex = 0;
@@ -2742,64 +2863,33 @@
       const page = docPages[currentViewingPageIndex];
       if (page) {
         docPageImg.src = page.processedDataUrl;
+        const filterTextEl = document.getElementById("single-active-filter-text");
+        if (filterTextEl) {
+          filterTextEl.textContent = `Filter (${filterLabels[page.filter || 'magic-color'] || 'Magic Color'})`;
+        }
       }
 
       document.getElementById("doc-view-title-text").textContent = docTitle;
       document.getElementById("doc-view-page-badge").textContent = `${currentViewingPageIndex + 1}/${docPages.length}`;
 
-      renderPageCarousel();
+      const singlePageBadge = document.getElementById("single-page-num-badge");
+      if (singlePageBadge) {
+        singlePageBadge.textContent = `Page ${currentViewingPageIndex + 1} of ${docPages.length}`;
+      }
     }
 
-    function renderPageCarousel() {
-      const carousel = document.getElementById("doc-pages-carousel");
-      if (!carousel) return;
-
-      let html = `
-        <button type="button" class="cs-doc-insert-btn" onclick="promptInsertPage(0)" title="Insert page at start">
-          <span style="font-size:1.1rem;">➕</span>
-          <span>Add First</span>
-        </button>
-      `;
-
-      docPages.forEach((p, idx) => {
-        const isActive = idx === currentViewingPageIndex ? 'active' : '';
-        const canMoveLeft = idx > 0;
-        const canMoveRight = idx < docPages.length - 1;
-
-        html += `
-          <div class="cs-doc-thumb-box ${isActive}" onclick="selectViewingPage(${idx})" title="Page ${idx + 1}">
-            <img src="${p.processedDataUrl}" alt="P${idx + 1}">
-            <span class="cs-doc-thumb-num">${idx + 1}</span>
-            <div class="cs-doc-thumb-reorder">
-              ${canMoveLeft ? `<button type="button" class="cs-thumb-arrow-btn" onclick="event.stopPropagation(); movePageLeft(${idx})" title="Shift Left">◀</button>` : ''}
-              ${canMoveRight ? `<button type="button" class="cs-thumb-arrow-btn" onclick="event.stopPropagation(); movePageRight(${idx})" title="Shift Right">▶</button>` : ''}
-            </div>
-          </div>
-          <button type="button" class="cs-doc-insert-btn" onclick="promptInsertPage(${idx + 1})" title="Insert page here">
-            <span style="font-size:1.1rem;">➕</span>
-            <span>Insert</span>
-          </button>
-        `;
-      });
-
-      carousel.innerHTML = html;
-    }
-
-    function selectViewingPage(idx) {
-      if (idx >= 0 && idx < docPages.length) {
-        currentViewingPageIndex = idx;
+    function goToPrevSinglePage() {
+      if (currentViewingPageIndex > 0) {
+        currentViewingPageIndex--;
         renderDocPageViewer();
       }
     }
 
-    async function movePageLeft(idx) {
-      if (idx <= 0) return;
-      await reorderDocPages(idx, idx - 1);
-    }
-
-    async function movePageRight(idx) {
-      if (idx >= docPages.length - 1) return;
-      await reorderDocPages(idx, idx + 1);
+    function goToNextSinglePage() {
+      if (currentViewingPageIndex < docPages.length - 1) {
+        currentViewingPageIndex++;
+        renderDocPageViewer();
+      }
     }
 
     function reCropActivePage() {
