@@ -55,6 +55,20 @@ const UIUtils = {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 1000);
+
+    if (window.LocalDocUnifiedFilesDB && blob) {
+      try {
+        UIUtils.readFileAsDataURL(blob).then(dataUrl => {
+          window.LocalDocUnifiedFilesDB.recordDocument({
+            title: filename,
+            type: filename.toLowerCase().endsWith('.pdf') ? 'pdf' : (filename.match(/\.(png|jpe?g|webp|gif|svg)$/i) ? 'image' : 'document'),
+            mimeType: blob.type || (filename.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream'),
+            size: UIUtils.formatBytes(blob.size),
+            dataUrl: dataUrl
+          });
+        }).catch(err => console.warn('Record file error:', err));
+      } catch(e) {}
+    }
   },
 
   // 3-Step Interactive Workflow Indicator

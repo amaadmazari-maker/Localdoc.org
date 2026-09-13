@@ -134,7 +134,41 @@
               const file = new File([blob], docData.name, { type: docData.type || blob.type });
               handleFile(file);
             });
+          return;
         }
+      }
+
+      // 3. Check localdoc_view_document (Unified Files DB & CamScanner)
+      const docView = sessionStorage.getItem('localdoc_view_document');
+      if (docView) {
+        sessionStorage.removeItem('localdoc_view_document');
+        const d = JSON.parse(docView);
+        if (d && d.dataUrl) {
+          fetch(d.dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+              const file = new File([blob], d.filename || 'Document.pdf', { type: d.type || blob.type || 'application/pdf' });
+              handleFile(file);
+            });
+          return;
+        }
+      }
+
+      // 4. Check query param docId or DB key
+      const urlParams = new URLSearchParams(window.location.search);
+      const docId = urlParams.get('docId') || sessionStorage.getItem('localdoc_view_db_key');
+      if (docId && window.LocalDocUnifiedFilesDB) {
+        sessionStorage.removeItem('localdoc_view_db_key');
+        window.LocalDocUnifiedFilesDB.get(docId).then(doc => {
+          if (doc && doc.dataUrl) {
+            fetch(doc.dataUrl)
+              .then(res => res.blob())
+              .then(blob => {
+                const file = new File([blob], doc.title || 'Document.pdf', { type: doc.mimeType || 'application/pdf' });
+                handleFile(file);
+              });
+          }
+        });
       }
     } catch (err) {
       console.warn('No incoming session document found', err);

@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CamScanner Studio Online — Free Fullscreen A4 Document Scanner & PDF Studio | LocalDoc</title>
-  <meta name="description" content="Free CamScanner online alternative. Fullscreen hardware camera scanner with live paper edge detection, auto-crop perspective warp, Magic Pro whitening, and instant multi-page PDF compilation. 100% private in-browser RAM execution.">
+  <title>PDF Camera Studio Online — Free Fullscreen A4 Document Scanner & PDF Studio | LocalDoc</title>
+  <meta name="description" content="Free PDF Camera online document scanner. Fullscreen hardware camera scanner with live paper edge detection, auto-crop perspective warp, Magic Pro whitening, and instant multi-page PDF compilation. 100% private in-browser RAM execution.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0D9488">
@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="CamScanner Studio Online — 100% Zero-Upload Fullscreen Document Scanner | LocalDoc">
+  <meta property="og:title" content="PDF Camera Studio Online — 100% Zero-Upload Fullscreen Document Scanner | LocalDoc">
   <meta property="og:description" content="Scan paperwork, receipts, contracts, and study notes with 4-corner auto edge detection, shadow removal, and instant in-browser PDF reader viewing. 100% private in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/scan.html">
   <meta property="og:image" content="../assets/icons/scan.svg">
@@ -49,9 +49,9 @@
     /* Top Action Strip (CamScanner Primary Scan & Import) */
     .cs-quick-tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
     }
     .cs-quick-tool-card {
       background: var(--bg-surface);
@@ -203,13 +203,13 @@
       flex-shrink: 0;
     }
 
-    /* Floating Camera FAB */
+    /* Floating Camera FAB (Positioned comfortably above bottom nav bar) */
     .cs-floating-camera-btn {
       position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: 66px;
-      height: 66px;
+      bottom: 85px;
+      right: 20px;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
       background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
       color: #FFFFFF;
@@ -219,7 +219,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 900;
+      z-index: 995;
       transition: all 0.15s ease;
     }
     .cs-floating-camera-btn:hover {
@@ -769,12 +769,12 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="../index.html" class="nav-link">All Tools</a></li>
+        <li><a href="../index.html" class="nav-link" data-i18n="nav_all_tools">All Tools</a></li>
         <li><a href="create-pdf.html" class="nav-link">Create PDF</a></li>
-        <li><a href="scan.html" class="nav-link active">CamScanner</a></li>
+        <li><a href="scan.html" class="nav-link active" data-i18n="tab_scanner">PDF Camera</a></li>
         <li><a href="id-photo.html" class="nav-link">ID & Passport Photo</a></li>
-        <li><a href="document-reader.html" class="nav-link">Document Reader</a></li>
-        <li><a href="../blog/index.html" class="nav-link">Blog & Guides</a></li>
+        <li><a href="document-reader.html" class="nav-link" data-i18n="tool_reader_title">Document Reader</a></li>
+        <li><a href="../blog/index.html" class="nav-link" data-i18n="nav_blog">Blog & Guides</a></li>
       </ul>
 
       <div class="header-actions">
@@ -782,7 +782,7 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
         </button>
         <div class="privacy-pill">
-          <span>100% Local RAM</span>
+          <span data-i18n="offline_badge">100% Local RAM</span>
         </div>
         <div class="lang-select-wrap">
           <select class="lang-select" aria-label="Select Language"></select>
@@ -794,37 +794,37 @@
   <main class="cs-container">
     <!-- Breadcrumbs -->
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-      <a href="../index.html">Home</a>
+      <a href="../index.html" data-i18n="nav_all_tools">Home</a>
       <span class="breadcrumb-sep">/</span>
-      <a href="../index.html#category-filter-bar">Scanner & OCR</a>
+      <a href="../index.html#category-filter-bar" data-i18n="cat_scanner">Scanner &amp; OCR</a>
       <span class="breadcrumb-sep">/</span>
-      <span>CamScanner Studio Online</span>
+      <span data-i18n="scan_title">PDF Camera Studio Online</span>
     </nav>
 
-    <!-- Primary Scanner Actions (Smart Camera & Import) -->
+    <!-- Primary Scanner Actions: 2 Clean Cards (Camera Scan & Import Photos/Files) -->
     <div class="cs-quick-tools-grid">
       <div class="cs-quick-tool-card" onclick="openFullscreenCamera()" style="padding: 16px 14px; border: 1.5px solid var(--cs-teal); background: rgba(13, 148, 136, 0.06);">
         <div class="cs-tool-icon-circle" style="background:var(--cs-teal); color:#FFF; width:46px; height:46px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </div>
-        <span style="font-size:0.92rem; font-weight:800;">Smart Camera Scan</span>
+        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_smart">Camera Scan</span>
       </div>
-      <div class="cs-quick-tool-card" onclick="document.getElementById('home-import-files').click()" style="padding: 16px 14px;">
+      <div class="cs-quick-tool-card" onclick="triggerGalleryImport()" style="padding: 16px 14px; border: 1px solid var(--line);">
         <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6; width:46px; height:46px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </div>
-        <span style="font-size:0.92rem; font-weight:800;">Import Photos / Files</span>
+        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_gallery">Import Photos &amp; Files</span>
       </div>
-      <input type="file" id="home-import-files" accept="image/*" multiple style="display:none;" onchange="handleHomeFileImport(event)">
+      <input type="file" id="home-import-files" accept="image/*,application/pdf" multiple style="display:none;" onchange="handleHomeFileImport(event)">
     </div>
 
     <!-- Recents Section Header -->
     <div class="cs-section-header">
       <div class="cs-section-title">
-        <span>Recents</span>
+        <span data-i18n="scan_recents_title">Scanned Documents</span>
         <span class="cs-badge-count" id="recents-badge-counter">0</span>
       </div>
-      <button type="button" class="btn btn-primary btn-sm" onclick="openFullscreenCamera()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
+      <button type="button" class="btn btn-primary btn-sm" onclick="openFullscreenCamera()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);" data-i18n="scan_new_btn">
         📷 New Scan
       </button>
     </div>
@@ -832,10 +832,10 @@
     <!-- Search Bar -->
     <div class="cs-search-bar">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="recents-search-box" placeholder="Search scanned documents..." oninput="filterRecentsList()">
+      <input type="text" id="recents-search-box" placeholder="Search scanned documents..." data-i18n-placeholder="scan_search_placeholder" oninput="filterRecentsList()">
     </div>
 
-    <!-- Recent Documents List -->
+    <!-- Recent Documents List (CamScanner v7 Compact Format) -->
     <div class="recent-scans-list" id="recents-list-container">
       <!-- Dynamically rendered documents from IndexedDB -->
     </div>
@@ -843,20 +843,20 @@
     <!-- Empty State -->
     <div id="recents-empty-state" style="display:none; text-align:center; padding:48px 16px; background:var(--bg-surface); border:1.5px dashed var(--line); border-radius:16px;">
       <div style="font-size:3rem; margin-bottom:12px;">📁</div>
-      <h3 style="font-size:1.2rem; font-weight:800; margin:0 0 6px; color:var(--text-primary);">No Scanned Documents</h3>
-      <p style="font-size:0.88rem; color:var(--text-secondary); max-width:380px; margin:0 auto 20px;">
+      <h3 style="font-size:1.2rem; font-weight:800; margin:0 0 6px; color:var(--text-primary);" data-i18n="scan_no_docs_title">No Scanned Documents</h3>
+      <p style="font-size:0.88rem; color:var(--text-secondary); max-width:380px; margin:0 auto 20px;" data-i18n="scan_no_docs_desc">
         Tap the camera button below or import images to scan your documents. Everything is saved privately in client-side IndexedDB.
       </p>
-      <button type="button" class="btn btn-primary" onclick="openFullscreenCamera()" style="background:var(--cs-teal); border-color:var(--cs-teal);">
+      <button type="button" class="btn btn-primary" onclick="openFullscreenCamera()" style="background:var(--cs-teal); border-color:var(--cs-teal);" data-i18n="scan_start_btn">
         📷 Start Scanning
       </button>
     </div>
 
     <!-- SEO, Tutorial Guide & Blog Backlinks Section -->
     <section style="margin-top:54px; padding-top:36px; border-top:1px solid var(--line);">
-      <h2 style="font-size:1.45rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">The Complete Client-Side CamScanner Alternative</h2>
+      <h2 style="font-size:1.45rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">The Complete Client-Side PDF Camera Alternative</h2>
       <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:24px; font-size:0.95rem;">
-        LocalDoc CamScanner Studio provides the exact fluid workflow of native mobile document scanners: automatic 4-corner paper edge detection, homography perspective rectification, and signature Magic Pro shadow-removal filters. All processing runs 100% locally in your device RAM via WebAssembly and Canvas — ensuring total privacy for sensitive legal contracts, bank statements, and tax receipts.
+        LocalDoc PDF Camera Studio provides the exact fluid workflow of native mobile document scanners: automatic 4-corner paper edge detection, homography perspective rectification, and signature Magic Pro shadow-removal filters. All processing runs 100% locally in your device RAM via WebAssembly and Canvas — ensuring total privacy for sensitive legal contracts, bank statements, and tax receipts.
       </p>
 
       <!-- 3 Key Advantages Grid -->
@@ -924,6 +924,14 @@
     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
   </button>
 
+  <!-- Instant Processing Spinner Modal (CamScanner v7 Style) -->
+  <div id="cs-processing-modal" class="cs-processing-modal" style="display:none;">
+    <div class="cs-processing-card">
+      <div class="cs-spinner-ring"></div>
+      <div id="cs-processing-label" class="cs-processing-text">Processing...</div>
+    </div>
+  </div>
+
   <!-- =========================================================================
        1. TRUE FULLSCREEN CAMERA VIEWFINDER OVERLAY (CAMSCANNER STYLE)
        ========================================================================= -->
@@ -967,7 +975,7 @@
       <!-- Shutter Bar -->
       <div class="cs-cam-shutter-row">
         <!-- Gallery Import Button -->
-        <button type="button" class="cs-cam-hud-btn" onclick="document.getElementById('cam-gallery-file-input').click()" title="Import from Photos">
+        <button type="button" class="cs-cam-hud-btn" onclick="triggerGalleryImport()" title="Import from Photos/Gallery">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
         <input type="file" id="cam-gallery-file-input" accept="image/*" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
@@ -975,6 +983,11 @@
         <!-- Large Double Ring Shutter -->
         <button type="button" class="cs-cam-shutter-btn" onclick="executeShutterSnap()" aria-label="Capture Scan">
           <div class="cs-cam-shutter-inner"></div>
+        </button>
+
+        <!-- Native Hardware Camera Shot Button -->
+        <button type="button" class="cs-cam-hud-btn" onclick="triggerNativeCameraDirect()" title="Native Camera HD Shot">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </button>
 
         <!-- Stack Count Badge -->
@@ -995,8 +1008,8 @@
       <button type="button" class="cs-cam-hud-btn" onclick="exitCropBackToCamera()" title="Back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       </button>
-      <span style="font-weight:800; font-size:1rem;">Crop</span>
-      <button type="button" class="btn btn-primary btn-sm" onclick="advanceCropToFilter()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
+      <span style="font-weight:800; font-size:1rem;" data-i18n="scan_crop_title">Crop &amp; Perspective</span>
+      <button type="button" class="btn btn-primary btn-sm" onclick="advanceCropToFilter()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);" data-i18n="scan_next_btn">
         Next &rarr;
       </button>
     </div>
@@ -1022,7 +1035,7 @@
       </button>
       <button type="button" class="cs-crop-tool-btn" onclick="advanceCropToFilter()" style="color:var(--cs-teal-light);">
         <span>→</span>
-        <span>Next</span>
+        <span data-i18n="scan_next_btn">Next</span>
       </button>
     </div>
   </div>
@@ -1035,7 +1048,7 @@
       <button type="button" class="cs-cam-hud-btn" onclick="backFromFilterToCrop()" title="Back to Crop">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       </button>
-      <span style="font-weight:800; font-size:0.95rem;" id="filter-stage-title">Enhance</span>
+      <span style="font-weight:800; font-size:0.95rem;" id="filter-stage-title" data-i18n="scan_enhance_title">Enhance Filter</span>
       <button type="button" class="cs-compare-btn" id="btn-hold-compare" onmousedown="startCompareRaw()" onmouseup="endCompareRaw()" ontouchstart="startCompareRaw()" ontouchend="endCompareRaw()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20v-20z"></path></svg>
         <span>Hold to Compare</span>
@@ -1073,15 +1086,15 @@
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <button type="button" class="cs-crop-tool-btn" onclick="rotateFilterCanvas(90)">
           <span>🔄</span>
-          <span>Rotate</span>
+          <span data-i18n="scan_rotate_page">Rotate</span>
         </button>
 
         <div style="display:flex; gap:10px;">
           <button type="button" class="btn btn-outline btn-sm" id="btn-batch-snap-next" onclick="finishAndSnapNextBatch()" style="display:none; color:#FFF; border-color:#334155;">
             ➕ Snap Next
           </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="commitFilteredPageToDocument()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);">
-            ✓ Done
+          <button type="button" class="btn btn-primary btn-sm" onclick="commitFilteredPageToDocument()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);" data-i18n="scan_done_btn">
+            ✓ Done &amp; Open
           </button>
         </div>
       </div>
@@ -1100,16 +1113,16 @@
 
       <!-- Editable Title (v4 in Video) -->
       <div class="cs-doc-title-box" onclick="openRenameDialog()">
-        <span class="cs-doc-title-text" id="doc-view-title-text">LocalDoc_Scan</span>
+        <span class="cs-doc-title-text" id="doc-view-title-text">PDFCamera_Scan</span>
         <span style="font-size:0.85rem; color:#94A3B8;">✏️</span>
         <span class="cs-doc-page-counter" id="doc-view-page-badge">1/1</span>
       </div>
 
       <div style="display:flex; gap:8px;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="exportDocPDF()" style="color:#FFF; border-color:#334155;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="exportDocPDF()" style="color:#FFF; border-color:#334155;" data-i18n="scan_export_pdf">
           📥 PDF
         </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="openDocInLocalReader()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="openDocInLocalReader()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800;" data-i18n="scan_reader_btn">
           📖 Reader
         </button>
       </div>
@@ -1120,36 +1133,41 @@
       <img id="doc-active-page-img" src="" alt="Active Document Page">
     </div>
 
+    <!-- Document Workspace Page Carousel & Re-order Strip -->
+    <div class="cs-doc-carousel-bar" id="doc-pages-carousel">
+      <!-- Dynamically populated with page cards, reorder arrows, and insert buttons -->
+    </div>
+
     <!-- Bottom Action Bar (Add Page, Edit, Share, Delete) -->
     <div class="cs-doc-bottom-bar">
       <!-- ➕ Add Page Button -->
-      <button type="button" class="cs-doc-action-btn" onclick="openFullscreenCamera()">
+      <button type="button" class="cs-doc-action-btn" onclick="promptInsertPage(docPages.length)">
         <div class="cs-doc-add-btn">➕</div>
-        <span>Add Page</span>
+        <span data-i18n="scan_add_page">Add Page</span>
       </button>
 
       <!-- ✂️ Edit / Re-Crop -->
       <button type="button" class="cs-doc-action-btn" onclick="reCropActivePage()">
         <span style="font-size:1.2rem;">✂️</span>
-        <span>Edit</span>
+        <span data-i18n="scan_edit_page">Edit</span>
       </button>
 
       <!-- 🔄 Rotate -->
       <button type="button" class="cs-doc-action-btn" onclick="rotateActiveDocPage()">
         <span style="font-size:1.2rem;">🔄</span>
-        <span>Rotate</span>
+        <span data-i18n="scan_rotate_page">Rotate</span>
       </button>
 
       <!-- 📥 Download PDF -->
       <button type="button" class="cs-doc-action-btn" onclick="exportDocPDF()">
         <span style="font-size:1.2rem;">📥</span>
-        <span>PDF</span>
+        <span data-i18n="scan_export_pdf">PDF</span>
       </button>
 
       <!-- 🗑️ Delete Page -->
       <button type="button" class="cs-doc-action-btn" onclick="deleteActiveDocPage()" style="color:#EF4444;">
         <span style="font-size:1.2rem;">🗑️</span>
-        <span>Delete</span>
+        <span data-i18n="scan_delete_page">Delete</span>
       </button>
     </div>
   </div>
@@ -1169,6 +1187,8 @@
   <!-- Scripts -->
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
+  <script src="../js/core/unified-files-db.js"></script>
+  <script src="../js/core/app-native-nav.js"></script>
   <script src="../js/lib/pdf-lib.min.js"></script>
   <script src="../js/tools/scan.js"></script>
 
@@ -1183,9 +1203,10 @@
 
     // Active Document Stack
     let docId = null;
-    let docTitle = 'CamScanner_' + new Date().toISOString().slice(0,10);
+    let docTitle = 'PDFCamera_' + new Date().toISOString().slice(0,10);
     let docPages = []; // [{ id, rawImg, corners, filter, rotation, processedDataUrl }]
     let currentViewingPageIndex = 0;
+    let targetInsertIndex = -1;
 
     // Intermediate Staging Page for Crop & Filter
     let stagingPage = null;
@@ -1206,6 +1227,10 @@
     // =========================================================================
     window.addEventListener("DOMContentLoaded", async () => {
       await loadRecentsLibrary();
+    });
+
+    window.addEventListener("localdoc-lang-changed", () => {
+      loadRecentsLibrary();
     });
 
     async function loadRecentsLibrary() {
@@ -1235,24 +1260,25 @@
         const thumb = doc.thumbnail || (doc.pages && doc.pages[0] ? doc.pages[0].processedDataUrl : "../assets/icons/scan.svg");
 
         return `
-          <div class="recent-doc-row" id="doc-row-${doc.id}">
-            <img class="recent-doc-thumb" src="${thumb}" alt="${title}" onclick="loadExistingDoc('${doc.id}')" style="cursor:pointer;">
-            <div class="recent-doc-info" onclick="loadExistingDoc('${doc.id}')" style="cursor:pointer;">
+          <div class="recent-doc-row" id="doc-row-${doc.id}" onclick="loadExistingDoc('${doc.id}')" title="${title}">
+            <div class="recent-doc-thumb-wrap">
+              <img class="recent-doc-thumb-img" src="${thumb}" alt="${title}" loading="lazy">
+            </div>
+            <div class="recent-doc-info">
               <div class="recent-doc-title">${title}</div>
               <div class="recent-doc-meta">
-                <span>📄 ${pageCount} Page(s)</span>
-                <span>•</span>
-                <span>${dateStr}</span>
+                <span>📅 ${dateStr}</span>
+                <span class="recent-page-badge">📄 ${pageCount}</span>
               </div>
             </div>
-            <div class="recent-doc-actions">
-              <button type="button" class="btn btn-outline btn-sm" onclick="downloadPdfDirect('${doc.id}')" style="padding:5px 10px; font-size:0.75rem;">
-                📥 PDF
-              </button>
-              <button type="button" class="btn btn-primary btn-sm" onclick="openReaderDirect('${doc.id}')" style="padding:5px 10px; font-size:0.75rem; background:var(--cs-teal); border-color:var(--cs-teal);">
+            <div class="recent-doc-actions" onclick="event.stopPropagation()">
+              <button type="button" class="recent-row-btn" onclick="openReaderDirect('${doc.id}')" title="Open in Local Reader">
                 📖 Open
               </button>
-              <button type="button" onclick="deleteDocItem('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.9rem; padding:6px;" title="Delete">
+              <button type="button" class="recent-row-btn" onclick="downloadPdfDirect('${doc.id}')" title="Download PDF">
+                📥 PDF
+              </button>
+              <button type="button" class="recent-row-btn danger" onclick="deleteDocItem('${doc.id}')" title="Delete Document">
                 🗑️
               </button>
             </div>
@@ -1273,7 +1299,7 @@
       if (!doc || !doc.pages) return;
 
       docId = doc.id;
-      docTitle = doc.title || doc.name || "CamScanner_Doc";
+      docTitle = doc.title || doc.name || "PDFCamera_Doc";
       docPages = [];
 
       for (const p of doc.pages) {
@@ -1348,7 +1374,7 @@
       UIUtils.showToast(`Importing ${files.length} document image(s)...`, "info");
       docPages = [];
       docId = 'scan_' + Date.now();
-      docTitle = 'CamScanner_' + new Date().toISOString().slice(0,10);
+      docTitle = 'PDFCamera_' + new Date().toISOString().slice(0,10);
 
       for (const file of files) {
         const dataUrl = await UIUtils.readFileAsDataURL(file);
@@ -1435,22 +1461,35 @@
       }
     }
 
-    // Shutter Snap Capture
-    async function executeShutterSnap() {
+    // Trigger Gallery / Files import with native or web picker
+    function triggerGalleryImport() {
+      if (window.AndroidNative && window.AndroidNative.launchNativeGallery) {
+        window.AndroidNative.launchNativeGallery();
+      } else {
+        const input = document.getElementById('cam-gallery-file-input') || document.getElementById('home-import-files');
+        if (input) input.click();
+      }
+    }
+
+    // Trigger direct hardware camera snapshot
+    function triggerNativeCameraDirect() {
+      if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
+        window.AndroidNative.launchNativeCamera();
+      } else {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment';
+        input.onchange = (e) => handleHomeFileImport(e);
+        input.click();
+      }
+    }
+
+    // Native Bridge Callback: Direct Photo Captured from Hardware Camera
+    window.onNativePhotoCaptured = async function(dataUrl) {
       try {
-        if (!videoEl || !videoEl.videoWidth) {
-          await scanner.startCamera(cameraFacing);
-          return;
-        }
-
-        // Shutter flash
-        videoEl.style.opacity = '0.15';
-        setTimeout(() => videoEl.style.opacity = '1', 100);
-
-        const rawDataUrl = await scanner.captureHighResFrame();
-        const rawImg = await UIUtils.loadImage(rawDataUrl);
-
-        // Auto edge detection
+        UIUtils.showToast("Photo captured. Adjusting edges...", "info");
+        const rawImg = await UIUtils.loadImage(dataUrl);
         const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
 
         stagingPage = {
@@ -1461,10 +1500,128 @@
         };
         stagingIsEditingIndex = -1;
 
+        fullscreenCam.style.display = "none";
+        scanner.stopCamera();
         openCropScreen();
       } catch (err) {
+        console.error("Native photo capture error:", err);
+        UIUtils.showToast("Error reading captured photo: " + err.message, "error");
+      }
+    };
+
+    // Native Bridge Callback: Gallery Images Picked
+    window.onNativeGalleryPicked = async function(dataUrls) {
+      if (!dataUrls || dataUrls.length === 0) return;
+      UIUtils.showToast(`Importing ${dataUrls.length} image(s)...`, "info");
+      
+      for (const dataUrl of dataUrls) {
+        try {
+          const rawImg = await UIUtils.loadImage(dataUrl);
+          const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+
+          if (dataUrls.length === 1 && camMode === 'single') {
+            stagingPage = { rawImg: rawImg, corners: corners, rotation: 0, filter: 'magic-color' };
+            stagingIsEditingIndex = -1;
+            fullscreenCam.style.display = "none";
+            scanner.stopCamera();
+            openCropScreen();
+            return;
+          }
+
+          const processed = DocumentScanner.processImage(rawImg, 'magic-color', 0, corners);
+          docPages.push({
+            id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            rawImg: rawImg,
+            corners: corners,
+            filter: 'magic-color',
+            rotation: 0,
+            processedDataUrl: processed
+          });
+        } catch (e) {
+          console.warn("Error processing picked image:", e);
+        }
+      }
+
+      updateCamStackBadge();
+      if (fullscreenCam.style.display === "flex") {
+        UIUtils.showToast(`${dataUrls.length} page(s) added to batch!`, "success");
+      } else {
+        await autoSaveDocumentToDB();
+        openDocumentWorkspaceView();
+      }
+    };
+
+    // Instant Processing Modal Controllers (CamScanner v7 Design)
+    function showProcessing(msg = "Processing...") {
+      const modal = document.getElementById("cs-processing-modal");
+      const label = document.getElementById("cs-processing-label");
+      if (label) label.textContent = msg;
+      if (modal) modal.style.display = "flex";
+    }
+
+    function hideProcessing() {
+      const modal = document.getElementById("cs-processing-modal");
+      if (modal) modal.style.display = "none";
+    }
+
+    // Shutter Snap Capture with Immediate Visual Feedback
+    async function executeShutterSnap() {
+      try {
+        if (!videoEl || !videoEl.videoWidth) {
+          if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
+            window.AndroidNative.launchNativeCamera();
+            return;
+          }
+          await scanner.startCamera(cameraFacing);
+          return;
+        }
+
+        // 1. Instant Shutter Feedback: Haptic + Audio + Screen Flash
+        ScanFeedback.playShutter();
+        videoEl.style.opacity = '0.2';
+        setTimeout(() => videoEl.style.opacity = '1', 120);
+
+        // 2. Immediately show CamScanner-style "Processing..." spinner modal (< 20ms)
+        showProcessing("Processing...");
+
+        // Yield execution to browser event loop so modal renders immediately
+        await new Promise(r => setTimeout(r, 20));
+
+        let rawDataUrl;
+        try {
+          rawDataUrl = await scanner.captureHighResFrame();
+        } catch (captureErr) {
+          hideProcessing();
+          if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
+            window.AndroidNative.launchNativeCamera();
+            return;
+          }
+          throw captureErr;
+        }
+
+        const rawImg = await UIUtils.loadImage(rawDataUrl);
+
+        // Auto edge detection with normalized aspect ratio
+        const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+
+        stagingPage = {
+          rawImg: rawImg,
+          corners: corners,
+          rotation: 0,
+          filter: 'magic-color'
+        };
+        stagingIsEditingIndex = -1;
+
+        hideProcessing();
+        openCropScreen();
+      } catch (err) {
+        hideProcessing();
         console.error(err);
-        UIUtils.showToast("Capture failed: " + err.message, "error");
+        if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
+          window.AndroidNative.launchNativeCamera();
+        } else {
+          UIUtils.showToast("Capture note: " + err.message, "warning");
+        }
       }
     }
 
@@ -1719,10 +1876,13 @@
       drawCropCanvas();
     }
 
-    function advanceCropToFilter() {
+    async function advanceCropToFilter() {
+      showProcessing("Enhancing...");
+      await new Promise(r => setTimeout(r, 20));
       stagingPage.corners = JSON.parse(JSON.stringify(cropCorners));
       cropScreen.style.display = "none";
       openFilterScreen();
+      hideProcessing();
     }
 
     // =========================================================================
@@ -1808,34 +1968,49 @@
       img.src = currentEnhancedData;
     }
 
+    function promptInsertPage(atIdx) {
+      targetInsertIndex = (typeof atIdx === 'number') ? atIdx : docPages.length;
+      openFullscreenCamera();
+    }
+
     async function commitFilteredPageToDocument() {
+      showProcessing("Saving...");
+      await new Promise(r => setTimeout(r, 20));
+
+      const newPageObj = {
+        id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        rawImg: stagingPage.rawImg,
+        corners: stagingPage.corners,
+        filter: stagingPage.filter,
+        rotation: stagingPage.rotation,
+        processedDataUrl: currentEnhancedData
+      };
+
       if (stagingIsEditingIndex >= 0) {
         docPages[stagingIsEditingIndex].corners = stagingPage.corners;
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
         docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
         docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
+        currentViewingPageIndex = stagingIsEditingIndex;
+        stagingIsEditingIndex = -1;
+      } else if (targetInsertIndex >= 0 && targetInsertIndex <= docPages.length) {
+        DocumentScanner.insertPage(docPages, targetInsertIndex, newPageObj);
+        currentViewingPageIndex = targetInsertIndex;
+        targetInsertIndex = -1;
       } else {
-        docPages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: stagingPage.rawImg,
-          corners: stagingPage.corners,
-          filter: stagingPage.filter,
-          rotation: stagingPage.rotation,
-          processedDataUrl: currentEnhancedData
-        });
+        docPages.push(newPageObj);
+        currentViewingPageIndex = docPages.length - 1;
       }
 
       filterScreen.style.display = "none";
       await autoSaveDocumentToDB();
 
-      if (camMode === 'batch' && stagingIsEditingIndex === -1) {
-        updateCamStackBadge();
-        UIUtils.showToast(`✓ Page #${docPages.length} saved! Snap next.`, "success");
-      } else {
-        closeFullscreenCamera();
-        currentViewingPageIndex = docPages.length - 1;
-        openDocumentWorkspaceView();
-      }
+      // Direct auto-open into Document Workspace - never require clicking an extra review button!
+      scanner.stopCamera();
+      fullscreenCam.style.display = "none";
+      openDocumentWorkspaceView();
+      hideProcessing();
+      UIUtils.showToast("✓ Page saved! Document updated.", "success");
     }
 
     function finishAndSnapNextBatch() {
@@ -1844,7 +2019,7 @@
     }
 
     // =========================================================================
-    // 4. DOCUMENT WORKSPACE VIEW (MULTI-PAGE VIEWER & ACTIONS)
+    // 4. DOCUMENT WORKSPACE VIEW (MULTI-PAGE VIEWER & CAROUSEL ORGANIZER)
     // =========================================================================
     const docWorkspace = document.getElementById("cs-document-workspace");
     const docPageImg = document.getElementById("doc-active-page-img");
@@ -1867,10 +2042,74 @@
       }
 
       const page = docPages[currentViewingPageIndex];
-      docPageImg.src = page.processedDataUrl;
+      if (page) {
+        docPageImg.src = page.processedDataUrl;
+      }
 
       document.getElementById("doc-view-title-text").textContent = docTitle;
       document.getElementById("doc-view-page-badge").textContent = `${currentViewingPageIndex + 1}/${docPages.length}`;
+
+      renderPageCarousel();
+    }
+
+    function renderPageCarousel() {
+      const carousel = document.getElementById("doc-pages-carousel");
+      if (!carousel) return;
+
+      let html = `
+        <button type="button" class="cs-doc-insert-btn" onclick="promptInsertPage(0)" title="Insert page at start">
+          <span style="font-size:1.1rem;">➕</span>
+          <span>Add First</span>
+        </button>
+      `;
+
+      docPages.forEach((p, idx) => {
+        const isActive = idx === currentViewingPageIndex ? 'active' : '';
+        const canMoveLeft = idx > 0;
+        const canMoveRight = idx < docPages.length - 1;
+
+        html += `
+          <div class="cs-doc-thumb-box ${isActive}" onclick="selectViewingPage(${idx})" title="Page ${idx + 1}">
+            <img src="${p.processedDataUrl}" alt="P${idx + 1}">
+            <span class="cs-doc-thumb-num">${idx + 1}</span>
+            <div class="cs-doc-thumb-reorder">
+              ${canMoveLeft ? `<button type="button" class="cs-thumb-arrow-btn" onclick="event.stopPropagation(); movePageLeft(${idx})" title="Shift Left">◀</button>` : ''}
+              ${canMoveRight ? `<button type="button" class="cs-thumb-arrow-btn" onclick="event.stopPropagation(); movePageRight(${idx})" title="Shift Right">▶</button>` : ''}
+            </div>
+          </div>
+          <button type="button" class="cs-doc-insert-btn" onclick="promptInsertPage(${idx + 1})" title="Insert page here">
+            <span style="font-size:1.1rem;">➕</span>
+            <span>Insert</span>
+          </button>
+        `;
+      });
+
+      carousel.innerHTML = html;
+    }
+
+    function selectViewingPage(idx) {
+      if (idx >= 0 && idx < docPages.length) {
+        currentViewingPageIndex = idx;
+        renderDocPageViewer();
+      }
+    }
+
+    async function movePageLeft(idx) {
+      if (idx <= 0) return;
+      DocumentScanner.movePage(docPages, idx, idx - 1);
+      currentViewingPageIndex = idx - 1;
+      renderDocPageViewer();
+      await autoSaveDocumentToDB();
+      UIUtils.showToast(`Page shifted to #${idx}`, "info");
+    }
+
+    async function movePageRight(idx) {
+      if (idx >= docPages.length - 1) return;
+      DocumentScanner.movePage(docPages, idx, idx + 1);
+      currentViewingPageIndex = idx + 1;
+      renderDocPageViewer();
+      await autoSaveDocumentToDB();
+      UIUtils.showToast(`Page shifted to #${idx + 2}`, "info");
     }
 
     function reCropActivePage() {
@@ -1899,15 +2138,16 @@
       autoSaveDocumentToDB();
     }
 
-    function deleteActiveDocPage() {
+    async function deleteActiveDocPage() {
       if (confirm(`Delete Page ${currentViewingPageIndex + 1}?`)) {
-        docPages.splice(currentViewingPageIndex, 1);
+        DocumentScanner.removePage(docPages, currentViewingPageIndex);
         if (docPages.length === 0) {
           closeDocumentWorkspace();
         } else {
-          currentViewingPageIndex = Math.max(0, currentViewingPageIndex - 1);
+          currentViewingPageIndex = Math.max(0, Math.min(currentViewingPageIndex, docPages.length - 1));
           renderDocPageViewer();
-          autoSaveDocumentToDB();
+          await autoSaveDocumentToDB();
+          UIUtils.showToast("Page removed.", "info");
         }
       }
     }
@@ -1973,6 +2213,21 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         UIUtils.showToast("✓ PDF Downloaded successfully!", "success");
+
+        if (window.LocalDocUnifiedFilesDB) {
+          try {
+            const dataUrl = await UIUtils.readFileAsDataURL(blob);
+            await LocalDocUnifiedFilesDB.recordDocument({
+              title: docTitle + ".pdf",
+              type: 'pdf',
+              mimeType: 'application/pdf',
+              size: UIUtils.formatBytes(blob.size),
+              dataUrl: dataUrl,
+              thumbnail: docPages[0] ? (docPages[0].processedDataUrl || docPages[0].rawImg) : null,
+              pageCount: docPages.length
+            });
+          } catch(err) { console.warn('Could not save to unified db', err); }
+        }
       } catch (e) {
         alert("Export error: " + e.message);
       }

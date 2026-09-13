@@ -18,7 +18,17 @@ const I18N = {
   ],
 
   async init() {
-    this.currentLang = localStorage.getItem('localdoc_lang') || 'en';
+    let saved = localStorage.getItem('localdoc_lang');
+    if (!saved && window.AndroidNative && window.AndroidNative.getSystemLanguage) {
+      try {
+        const sysLang = window.AndroidNative.getSystemLanguage().toLowerCase();
+        const matched = this.availableLanguages.find(l => l.code === sysLang || sysLang.startsWith(l.code));
+        if (matched) {
+          saved = matched.code;
+        }
+      } catch (e) {}
+    }
+    this.currentLang = saved || 'en';
     await this.loadTranslations(this.currentLang);
     this.applyTranslations();
     this.setupSelector();
@@ -42,6 +52,8 @@ const I18N = {
     const isRtl = (lang === 'ur' || lang === 'ar');
     document.documentElement.lang = lang;
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    const selects = document.querySelectorAll('.lang-select');
+    selects.forEach(select => { select.value = lang; });
     this.loadTranslations(lang).then(() => {
       this.applyTranslations();
     });
@@ -51,6 +63,13 @@ const I18N = {
     const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
     document.documentElement.lang = this.currentLang;
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    if (document.body) {
+      if (isRtl) {
+        document.body.classList.add('is-rtl');
+      } else {
+        document.body.classList.remove('is-rtl');
+      }
+    }
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -62,6 +81,22 @@ const I18N = {
         }
       }
     });
+
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (this.translations[key]) {
+        el.setAttribute('title', this.translations[key]);
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (this.translations[key]) {
+        el.setAttribute('placeholder', this.translations[key]);
+      }
+    });
+
+    window.dispatchEvent(new CustomEvent('localdoc-lang-changed', { detail: { lang: this.currentLang, isRtl } }));
   },
 
   setupSelector() {

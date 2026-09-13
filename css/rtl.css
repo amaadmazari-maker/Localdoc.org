@@ -1,12 +1,33 @@
 /**
  * localdoc.org — Bidirectional RTL Engine (css/rtl.css)
- * Supports Urdu (ur) and Arabic (ar) layouts
+ * Supports Urdu (ur) and Arabic (ar) layouts with complete bidirectional isolation
  */
 
-[dir="rtl"] {
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap');
+
+[dir="rtl"], body.is-rtl {
   direction: rtl;
   text-align: right;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Noto Nastaliq Urdu', sans-serif;
+  font-family: 'Noto Sans Arabic', 'Noto Nastaliq Urdu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
+  line-height: 1.7;
+}
+
+/* Bidirectional Text Isolation: Prevent Latin words, numbers & product names from scrambling in RTL */
+[dir="rtl"] bdi,
+[dir="rtl"] .ltr-text,
+[dir="rtl"] .brand,
+[dir="rtl"] .brand-title,
+[dir="rtl"] .brand-badge,
+[dir="rtl"] .hero-brand-name,
+[dir="rtl"] code,
+[dir="rtl"] kbd,
+[dir="rtl"] .kbd-shortcut,
+[dir="rtl"] input[type="number"],
+[dir="rtl"] .cs-doc-page-counter,
+[dir="rtl"] .recent-doc-badge-pill {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline-block;
 }
 
 [dir="rtl"] .brand {
@@ -33,6 +54,46 @@
 [dir="rtl"] .breadcrumb-sep {
   transform: scaleX(-1);
   display: inline-block;
+}
+
+[dir="rtl"] .cs-search-bar svg {
+  left: auto;
+  right: 14px;
+}
+
+[dir="rtl"] .cs-search-bar input {
+  padding-left: 16px;
+  padding-right: 42px;
+  text-align: right;
+}
+
+[dir="rtl"] .recent-scans-grid {
+  direction: rtl;
+}
+
+[dir="rtl"] .recent-doc-card {
+  text-align: right;
+}
+
+[dir="rtl"] .recent-doc-badge-pill {
+  right: auto;
+  left: 8px;
+}
+
+[dir="rtl"] .cs-doc-view-topbar {
+  direction: rtl;
+}
+
+[dir="rtl"] .cs-doc-bottom-bar {
+  direction: rtl;
+}
+
+[dir="rtl"] .cs-doc-carousel-bar {
+  direction: rtl;
+}
+
+[dir="rtl"] .app-bottom-nav-inner {
+  direction: rtl;
 }
 
 [dir="rtl"] .exec-summary-box {
