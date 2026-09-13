@@ -754,6 +754,308 @@
       margin: 16px 0 20px;
       outline: none;
     }
+
+    /* =========================================================================
+       Multi-Page Grid Studio & Reorder Styling
+       ========================================================================= */
+    .cs-view-switcher {
+      display: inline-flex;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .cs-view-switch-btn {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cs-view-switch-btn.active {
+      background: var(--cs-teal);
+      color: #FFFFFF;
+    }
+    .cs-doc-grid-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #020617;
+    }
+    .cs-grid-banner {
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .cs-pages-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 20px;
+      overflow-y: auto;
+      align-content: start;
+    }
+    .cs-page-tile {
+      background: #0F172A;
+      border: 1.5px solid #1E293B;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: grab;
+      position: relative;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+    .cs-page-tile:hover {
+      border-color: #38BDF8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .cs-page-tile.dragging {
+      opacity: 0.45;
+      transform: scale(0.96);
+      border-color: #0D9488;
+      cursor: grabbing;
+    }
+    .cs-page-tile.drag-over {
+      border-color: #38BDF8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+      transform: scale(1.02);
+    }
+    .cs-page-tile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cs-page-badge {
+      font-size: 0.76rem;
+      font-weight: 800;
+      background: #1E293B;
+      color: #38BDF8;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+    .cs-page-drag-handle {
+      font-size: 0.85rem;
+      color: #64748B;
+      cursor: grab;
+      letter-spacing: 2px;
+    }
+    .cs-page-tile-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1.414;
+      background: #000000;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .cs-page-tile-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .cs-page-tile-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .cs-page-action-btn {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #94A3B8;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+    .cs-page-action-btn:hover {
+      background: #334155;
+      color: #FFFFFF;
+      border-color: #475569;
+    }
+    .cs-page-action-btn.danger:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+      border-color: #DC2626;
+    }
+    .cs-page-tile-add {
+      border: 2px dashed #334155;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+      gap: 12px;
+      background: rgba(30, 41, 59, 0.2);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cs-page-tile-add:hover {
+      border-color: var(--cs-teal);
+      background: rgba(13, 148, 136, 0.08);
+    }
+
+    /* Single Page Inspector Stage */
+    .cs-doc-single-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #020617;
+    }
+
+    /* Multi-Channel Share Modal */
+    .cs-share-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 21000;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cs-share-card {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      color: #FFFFFF;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .cs-share-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cs-share-primary-download {
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.2), rgba(14, 165, 233, 0.2));
+      border: 1.5px solid var(--cs-teal);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cs-share-primary-download:hover {
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.35), rgba(14, 165, 233, 0.35));
+      transform: translateY(-1px);
+    }
+    .cs-share-channels-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .cs-share-channel-btn {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #CBD5E1;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cs-share-channel-btn:hover {
+      background: #334155;
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+    .cs-channel-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    /* Add Page Choice Modal */
+    .cs-add-choice-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20500;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cs-add-choice-card {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 360px;
+      padding: 22px;
+      color: #FFF;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cs-choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #1E293B;
+      color: #FFFFFF;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.15s;
+    }
+    .cs-choice-btn:hover {
+      background: #334155;
+      border-color: var(--cs-teal);
+    }
   </style>
 </head>
 <body>
@@ -807,13 +1109,13 @@
         <div class="cs-tool-icon-circle" style="background:var(--cs-teal); color:#FFF; width:46px; height:46px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </div>
-        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_smart">Camera Scan</span>
+        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_smart">Scan (Camera)</span>
       </div>
       <div class="cs-quick-tool-card" onclick="triggerGalleryImport()" style="padding: 16px 14px; border: 1px solid var(--line);">
         <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6; width:46px; height:46px;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </div>
-        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_gallery">Import Photos &amp; Files</span>
+        <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_gallery">Gallery &amp; Files</span>
       </div>
       <input type="file" id="home-import-files" accept="image/*,application/pdf" multiple style="display:none;" onchange="handleHomeFileImport(event)">
     </div>
@@ -1102,72 +1404,211 @@
   </div>
 
   <!-- =========================================================================
-       4. DOCUMENT WORKSPACE & PAGE VIEWER (AS SEEN IN V4.MP4 01:16)
+       4. DOCUMENT WORKSPACE & MULTI-PAGE STUDIO (GRID & SINGLE MODES)
        ========================================================================= -->
   <div id="cs-document-workspace">
     <!-- Top Bar -->
     <div class="cs-doc-view-topbar">
-      <button type="button" class="cs-cam-hud-btn" onclick="closeDocumentWorkspace()" title="Back to Recents">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-      </button>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button type="button" class="cs-cam-hud-btn" onclick="closeDocumentWorkspace()" title="Back to Scanned Documents">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
 
-      <!-- Editable Title (v4 in Video) -->
-      <div class="cs-doc-title-box" onclick="openRenameDialog()">
-        <span class="cs-doc-title-text" id="doc-view-title-text">PDFCamera_Scan</span>
-        <span style="font-size:0.85rem; color:#94A3B8;">✏️</span>
-        <span class="cs-doc-page-counter" id="doc-view-page-badge">1/1</span>
+        <!-- Editable Title (v4 in Video) -->
+        <div class="cs-doc-title-box" onclick="openRenameDialog()" title="Click to rename document">
+          <span class="cs-doc-title-text" id="doc-view-title-text">PDFCamera_Scan</span>
+          <span style="font-size:0.85rem; color:#94A3B8;">✏️</span>
+          <span class="cs-doc-page-counter" id="doc-view-page-badge">1/1</span>
+        </div>
       </div>
 
-      <div style="display:flex; gap:8px;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="exportDocPDF()" style="color:#FFF; border-color:#334155;" data-i18n="scan_export_pdf">
-          📥 PDF
+      <!-- Topbar Action Controls: View Switcher, 1-Click Download, Share, Reader -->
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <!-- Grid vs Single View Toggle -->
+        <div class="cs-view-switcher">
+          <button type="button" id="btn-view-grid" class="cs-view-switch-btn active" onclick="setWorkspaceViewMode('grid')" title="Multi-Page Grid & Reorder View">
+            🗂️ Grid
+          </button>
+          <button type="button" id="btn-view-single" class="cs-view-switch-btn" onclick="setWorkspaceViewMode('single')" title="Single Page Inspector">
+            📄 Page
+          </button>
+        </div>
+
+        <!-- Single-Click Direct Download to Device / PC -->
+        <button type="button" class="btn btn-primary btn-sm" onclick="exportDocPDF()" title="Download PDF to device/PC in single click" style="background:#0D9488; border-color:#0D9488; font-weight:800; display:inline-flex; align-items:center; gap:6px; padding:6px 12px;">
+          <span>📥</span> <span>Download PDF</span>
         </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="openDocInLocalReader()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800;" data-i18n="scan_reader_btn">
+
+        <!-- Multi-Channel Share Button -->
+        <button type="button" class="btn btn-outline btn-sm" onclick="openShareModal()" title="Share via WhatsApp, Facebook, Email, Bluetooth" style="color:#FFF; border-color:#334155; display:inline-flex; align-items:center; gap:5px; padding:6px 12px;">
+          <span>🔗</span> <span>Share</span>
+        </button>
+
+        <!-- Open in Reader -->
+        <button type="button" class="btn btn-outline btn-sm" onclick="openDocInLocalReader()" title="Open in Built-in Offline Reader" style="color:#FFF; border-color:#334155; padding:6px 12px;" data-i18n="scan_reader_btn">
           📖 Reader
         </button>
       </div>
     </div>
 
-    <!-- Active Document Stage (Full Height Page View) -->
-    <div class="cs-doc-page-stage" id="doc-page-viewport">
-      <img id="doc-active-page-img" src="" alt="Active Document Page">
+    <!-- 1. Grid Mode Stage (Multi-Page Drag & Drop Reorder Studio) -->
+    <div class="cs-doc-grid-stage" id="cs-doc-grid-stage">
+      <div class="cs-grid-banner">
+        <div style="font-size:0.86rem; color:#CBD5E1; display:flex; align-items:center; gap:8px;">
+          <span>💡</span>
+          <span><strong>Drag &amp; drop</strong> tiles to reorder pages (drag page 3 to 4, page 2 to 6). Click any page to inspect.</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="openAddPageChoiceModal()" style="color:#FFF; border-color:#334155; font-size:0.82rem; font-weight:700;">
+          ➕ Add Page
+        </button>
+      </div>
+      <div class="cs-pages-grid" id="cs-pages-grid">
+        <!-- Dynamically rendered page tiles with drag handles, rotate, crop, filter, delete -->
+      </div>
     </div>
 
-    <!-- Document Workspace Page Carousel & Re-order Strip -->
-    <div class="cs-doc-carousel-bar" id="doc-pages-carousel">
-      <!-- Dynamically populated with page cards, reorder arrows, and insert buttons -->
+    <!-- 2. Single Page Stage (Full Height Page Inspector with Bottom Carousel) -->
+    <div class="cs-doc-single-stage" id="cs-doc-single-stage" style="display:none;">
+      <!-- Active Document Stage (Full Height Page View) -->
+      <div class="cs-doc-page-stage" id="doc-page-viewport">
+        <img id="doc-active-page-img" src="" alt="Active Document Page">
+      </div>
+
+      <!-- Document Workspace Page Carousel & Re-order Strip -->
+      <div class="cs-doc-carousel-bar" id="doc-pages-carousel">
+        <!-- Dynamically populated with page cards, reorder arrows, and insert buttons -->
+      </div>
+
+      <!-- Bottom Action Bar (Add Page, Edit, Rotate, Filter, Download PDF, Delete) -->
+      <div class="cs-doc-bottom-bar">
+        <!-- ➕ Add Page Button -->
+        <button type="button" class="cs-doc-action-btn" onclick="openAddPageChoiceModal()">
+          <div class="cs-doc-add-btn">➕</div>
+          <span data-i18n="scan_add_page">Add Page</span>
+        </button>
+
+        <!-- ✂️ Edit / Re-Crop -->
+        <button type="button" class="cs-doc-action-btn" onclick="reCropActivePage()">
+          <span style="font-size:1.2rem;">✂️</span>
+          <span data-i18n="scan_edit_page">Edit</span>
+        </button>
+
+        <!-- 🔄 Rotate -->
+        <button type="button" class="cs-doc-action-btn" onclick="rotateActiveDocPage()">
+          <span style="font-size:1.2rem;">🔄</span>
+          <span data-i18n="scan_rotate_page">Rotate</span>
+        </button>
+
+        <!-- 🎨 Filter -->
+        <button type="button" class="cs-doc-action-btn" onclick="cycleActiveDocPageFilter()">
+          <span style="font-size:1.2rem;">🎨</span>
+          <span>Filter</span>
+        </button>
+
+        <!-- 📥 Download PDF (Single Click) -->
+        <button type="button" class="cs-doc-action-btn" onclick="exportDocPDF()" style="color:#14B8A6; font-weight:800;">
+          <span style="font-size:1.2rem;">📥</span>
+          <span data-i18n="scan_export_pdf">PDF</span>
+        </button>
+
+        <!-- 🗑️ Delete Page -->
+        <button type="button" class="cs-doc-action-btn" onclick="deleteActiveDocPage()" style="color:#EF4444;">
+          <span style="font-size:1.2rem;">🗑️</span>
+          <span data-i18n="scan_delete_page">Delete</span>
+        </button>
+      </div>
     </div>
+  </div>
 
-    <!-- Bottom Action Bar (Add Page, Edit, Share, Delete) -->
-    <div class="cs-doc-bottom-bar">
-      <!-- ➕ Add Page Button -->
-      <button type="button" class="cs-doc-action-btn" onclick="promptInsertPage(docPages.length)">
-        <div class="cs-doc-add-btn">➕</div>
-        <span data-i18n="scan_add_page">Add Page</span>
+  <!-- Multi-Channel Share Modal -->
+  <div class="cs-share-modal" id="cs-share-modal">
+    <div class="cs-share-card">
+      <div class="cs-share-head">
+        <div>
+          <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#F8FAFC;">Share Document</h3>
+          <p id="cs-share-subtitle" style="margin:4px 0 0; font-size:0.82rem; color:#94A3B8;">Document.pdf</p>
+        </div>
+        <button type="button" class="cs-cam-hud-btn" onclick="closeShareModal()" title="Close" style="width:34px; height:34px;">✕</button>
+      </div>
+
+      <!-- Primary 1-Click Direct Download to Device/PC -->
+      <div class="cs-share-primary-download" onclick="exportDocPDF(); closeShareModal();" title="Download to this device in single click">
+        <div style="font-size:1.6rem;">📥</div>
+        <div style="flex:1;">
+          <div style="font-weight:800; color:#FFF; font-size:0.95rem;">Download to Device or PC</div>
+          <div style="font-size:0.78rem; color:#94A3B8;">Instant single-click download as clean A4 PDF file</div>
+        </div>
+        <span style="background:#0D9488; color:#FFF; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:6px;">1-Click</span>
+      </div>
+
+      <!-- Multi-Channel Sharing Grid -->
+      <div class="cs-share-channels-grid">
+        <!-- WhatsApp -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="shareViaWhatsApp()" title="Share via WhatsApp">
+          <div class="cs-channel-icon" style="background:#25D366; color:#FFF;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/></svg>
+          </div>
+          <span>WhatsApp</span>
+        </a>
+
+        <!-- Facebook -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="shareViaFacebook()" title="Share on Facebook">
+          <div class="cs-channel-icon" style="background:#1877F2; color:#FFF;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <span>Facebook</span>
+        </a>
+
+        <!-- Email -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="shareViaEmail()" title="Email Document">
+          <div class="cs-channel-icon" style="background:#EA4335; color:#FFF;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <span>Email</span>
+        </a>
+
+        <!-- Bluetooth / System Web Share -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="shareViaSystemWebShare()" title="System / Bluetooth Share">
+          <div class="cs-channel-icon" style="background:#0284C7; color:#FFF;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </div>
+          <span>Bluetooth / Share</span>
+        </a>
+
+        <!-- Local Reader -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="openDocInLocalReader()" title="Open in Offline Reader">
+          <div class="cs-channel-icon" style="background:#0D9488; color:#FFF;">
+            📖
+          </div>
+          <span>Offline Reader</span>
+        </a>
+
+        <!-- Copy Link -->
+        <a href="javascript:void(0)" class="cs-share-channel-btn" onclick="copyDocumentShareLink()" title="Copy Document Link">
+          <div class="cs-channel-icon" style="background:#475569; color:#FFF;">
+            📋
+          </div>
+          <span>Copy Link</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Page Source Choice Modal -->
+  <div class="cs-add-choice-modal" id="cs-add-choice-modal">
+    <div class="cs-add-choice-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0; font-size:1.1rem; font-weight:800; color:#FFF;">Add More Pages</h3>
+        <button type="button" class="cs-cam-hud-btn" onclick="closeAddPageChoiceModal()" style="width:32px; height:32px;">✕</button>
+      </div>
+      <p style="margin:0; font-size:0.84rem; color:#94A3B8;">Select how you want to add additional pages to this document:</p>
+      <button type="button" class="cs-choice-btn" onclick="chooseAddPageSource('camera')">
+        <span style="font-size:1.4rem;">📷</span>
+        <span>Scan with Camera</span>
       </button>
-
-      <!-- ✂️ Edit / Re-Crop -->
-      <button type="button" class="cs-doc-action-btn" onclick="reCropActivePage()">
-        <span style="font-size:1.2rem;">✂️</span>
-        <span data-i18n="scan_edit_page">Edit</span>
-      </button>
-
-      <!-- 🔄 Rotate -->
-      <button type="button" class="cs-doc-action-btn" onclick="rotateActiveDocPage()">
-        <span style="font-size:1.2rem;">🔄</span>
-        <span data-i18n="scan_rotate_page">Rotate</span>
-      </button>
-
-      <!-- 📥 Download PDF -->
-      <button type="button" class="cs-doc-action-btn" onclick="exportDocPDF()">
-        <span style="font-size:1.2rem;">📥</span>
-        <span data-i18n="scan_export_pdf">PDF</span>
-      </button>
-
-      <!-- 🗑️ Delete Page -->
-      <button type="button" class="cs-doc-action-btn" onclick="deleteActiveDocPage()" style="color:#EF4444;">
-        <span style="font-size:1.2rem;">🗑️</span>
-        <span data-i18n="scan_delete_page">Delete</span>
+      <button type="button" class="cs-choice-btn" onclick="chooseAddPageSource('gallery')">
+        <span style="font-size:1.4rem;">📁</span>
+        <span>Import from Gallery &amp; Files</span>
       </button>
     </div>
   </div>
@@ -1364,36 +1805,88 @@
       }
     }
 
-    // Quick Home Import Photos
+    // Quick Home Import Photos & Multi-File Batch Handler
     async function handleHomeFileImport(e) {
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
-      UIUtils.showToast(`Importing ${files.length} document image(s)...`, "info");
-      docPages = [];
-      docId = 'scan_' + Date.now();
-      docTitle = 'PDFCamera_' + new Date().toISOString().slice(0,10);
+      showProcessing(`Importing ${files.length} document file(s)...`);
+      await new Promise(r => setTimeout(r, 25)); // Allow spinner to render
 
-      for (const file of files) {
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
-        const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+      try {
+        if (docPages.length === 0) {
+          docId = 'scan_' + Date.now();
+          docTitle = 'PDFCamera_' + new Date().toISOString().slice(0,10);
+        }
 
-        docPages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: img,
-          corners: corners,
-          filter: 'magic-color',
-          rotation: 0,
-          processedDataUrl: processed
-        });
+        let importedCount = 0;
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          showProcessing(`Enhancing page ${i + 1} of ${files.length}...`);
+          await new Promise(r => setTimeout(r, 15));
+
+          try {
+            const dataUrl = await UIUtils.readFileAsDataURL(file);
+            const img = await UIUtils.loadImage(dataUrl);
+
+            let corners = null;
+            try {
+              corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+            } catch (edgeErr) {
+              corners = DocumentScanner.getDefaultCorners();
+            }
+
+            let processed = null;
+            try {
+              processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+            } catch (procErr) {
+              processed = dataUrl;
+            }
+
+            docPages.push({
+              id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+              rawImg: img,
+              rawDataUrl: dataUrl,
+              corners: corners,
+              filter: 'magic-color',
+              rotation: 0,
+              processedDataUrl: processed
+            });
+            importedCount++;
+          } catch (fileErr) {
+            console.error('Failed to import file:', file.name, fileErr);
+          }
+        }
+
+        if (document.getElementById("home-import-files")) {
+          document.getElementById("home-import-files").value = "";
+        }
+        if (document.getElementById("cam-gallery-file-input")) {
+          document.getElementById("cam-gallery-file-input").value = "";
+        }
+
+        if (importedCount > 0) {
+          currentViewingPageIndex = 0;
+          workspaceViewMode = 'grid'; // Immediately show multi-page studio grid!
+          await autoSaveDocumentToDB();
+
+          // Close camera if open
+          if (fullscreenCam) {
+            fullscreenCam.style.display = "none";
+            scanner.stopCamera();
+          }
+
+          openDocumentWorkspaceView();
+          UIUtils.showToast(`✓ Imported ${importedCount} document page(s)!`, "success");
+        } else {
+          UIUtils.showToast("Could not load selected images.", "warning");
+        }
+      } catch (err) {
+        console.error('Batch import failed:', err);
+        UIUtils.showToast("Import error: " + err.message, "danger");
+      } finally {
+        hideProcessing();
       }
-
-      document.getElementById("home-import-files").value = "";
-      currentViewingPageIndex = 0;
-      await autoSaveDocumentToDB();
-      openDocumentWorkspaceView();
     }
 
     // =========================================================================
@@ -1628,33 +2121,19 @@
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
 
-      for (const file of files) {
-        const dataUrl = await UIUtils.readFileAsDataURL(file);
+      if (files.length === 1 && camMode === 'single') {
+        const dataUrl = await UIUtils.readFileAsDataURL(files[0]);
         const img = await UIUtils.loadImage(dataUrl);
         const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-
-        if (files.length === 1 && camMode === 'single') {
-          stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
-          stagingIsEditingIndex = -1;
-          openCropScreen();
-          document.getElementById("cam-gallery-file-input").value = "";
-          return;
-        }
-
-        const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
-        docPages.push({
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-          rawImg: img,
-          corners: corners,
-          filter: 'magic-color',
-          rotation: 0,
-          processedDataUrl: processed
-        });
+        stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
+        stagingIsEditingIndex = -1;
+        openCropScreen();
+        document.getElementById("cam-gallery-file-input").value = "";
+        return;
       }
 
-      document.getElementById("cam-gallery-file-input").value = "";
-      updateCamStackBadge();
-      UIUtils.showToast(`✓ Added ${files.length} page(s)!`, "success");
+      // Batch import multiple photos: transition directly to document workspace
+      await handleHomeFileImport(e);
     }
 
     // =========================================================================
@@ -2017,16 +2496,39 @@
     }
 
     // =========================================================================
-    // 4. DOCUMENT WORKSPACE VIEW (MULTI-PAGE VIEWER & CAROUSEL ORGANIZER)
+    // 4. DOCUMENT WORKSPACE VIEW (MULTI-PAGE STUDIO: GRID & SINGLE MODES)
     // =========================================================================
     const docWorkspace = document.getElementById("cs-document-workspace");
     const docPageImg = document.getElementById("doc-active-page-img");
+    let workspaceViewMode = 'grid'; // 'grid' (multi-page studio) or 'single' (page inspector)
+
+    function setWorkspaceViewMode(mode) {
+      workspaceViewMode = mode;
+      const gridStage = document.getElementById("cs-doc-grid-stage");
+      const singleStage = document.getElementById("cs-doc-single-stage");
+      const btnGrid = document.getElementById("btn-view-grid");
+      const btnSingle = document.getElementById("btn-view-single");
+
+      if (mode === 'grid') {
+        if (gridStage) gridStage.style.display = "flex";
+        if (singleStage) singleStage.style.display = "none";
+        if (btnGrid) btnGrid.classList.add("active");
+        if (btnSingle) btnSingle.classList.remove("active");
+        renderWorkspacePages();
+      } else {
+        if (gridStage) gridStage.style.display = "none";
+        if (singleStage) singleStage.style.display = "flex";
+        if (btnGrid) btnGrid.classList.remove("active");
+        if (btnSingle) btnSingle.classList.add("active");
+        renderDocPageViewer();
+      }
+    }
 
     function openDocumentWorkspaceView() {
       if (docPages.length === 0) return;
 
       docWorkspace.style.display = "flex";
-      renderDocPageViewer();
+      setWorkspaceViewMode(workspaceViewMode || 'grid');
     }
 
     function closeDocumentWorkspace() {
@@ -2034,6 +2536,204 @@
       loadRecentsLibrary();
     }
 
+    // --- Grid View: Multi-Page Reorder & Management Studio ---
+    function renderWorkspacePages() {
+      const grid = document.getElementById("cs-pages-grid");
+      if (!grid) return;
+
+      document.getElementById("doc-view-title-text").textContent = docTitle;
+      document.getElementById("doc-view-page-badge").textContent = `${docPages.length} Pages`;
+
+      if (docPages.length === 0) {
+        grid.innerHTML = '<div style="color:#94A3B8; padding:30px; text-align:center;">No pages in document.</div>';
+        return;
+      }
+
+      let html = '';
+      docPages.forEach((p, idx) => {
+        const isActive = idx === currentViewingPageIndex ? 'active' : '';
+        const filterName = p.filter || 'magic-color';
+        html += `
+          <div class="cs-page-tile ${isActive}" draggable="true" data-index="${idx}" id="cs-tile-${idx}">
+            <div class="cs-tile-badge">
+              <span>Page ${idx + 1}</span>
+              <span style="font-size:0.7rem; opacity:0.8; text-transform:capitalize;">${filterName}</span>
+            </div>
+            <div class="cs-tile-preview" onclick="selectAndInspectPage(${idx})" title="Click to inspect page full screen">
+              <img src="${p.processedDataUrl}" alt="Page ${idx + 1}">
+            </div>
+            <div class="cs-tile-actions">
+              <button type="button" class="cs-tile-btn" onclick="rotateDocPageAt(${idx})" title="Rotate 90°">🔄</button>
+              <button type="button" class="cs-tile-btn" onclick="cycleDocPageFilterAt(${idx})" title="Cycle Filter">🎨</button>
+              <button type="button" class="cs-tile-btn" onclick="reCropPageAt(${idx})" title="Crop & Adjust Edges">✂️</button>
+              <button type="button" class="cs-tile-btn" onclick="deleteDocPageAt(${idx})" title="Delete Page" style="color:#EF4444;">🗑️</button>
+            </div>
+          </div>
+        `;
+      });
+
+      // Add Page Tile at end
+      html += `
+        <div class="cs-page-add-tile" onclick="openAddPageChoiceModal()" title="Add more pages (Camera or Gallery)">
+          <div style="font-size:2.2rem; margin-bottom:6px;">➕</div>
+          <div style="font-weight:700; font-size:0.92rem;">Add Pages</div>
+          <div style="font-size:0.75rem; color:#94A3B8; margin-top:3px;">Camera or Gallery</div>
+        </div>
+      `;
+
+      grid.innerHTML = html;
+      initGridDragAndDrop();
+    }
+
+    // HTML5 Drag and Drop Reordering
+    function initGridDragAndDrop() {
+      const tiles = document.querySelectorAll(".cs-page-tile");
+      let dragSrcIndex = null;
+
+      tiles.forEach(tile => {
+        tile.addEventListener("dragstart", (e) => {
+          dragSrcIndex = parseInt(tile.getAttribute("data-index"), 10);
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", dragSrcIndex);
+          tile.classList.add("dragging");
+        });
+
+        tile.addEventListener("dragend", () => {
+          tile.classList.remove("dragging");
+          document.querySelectorAll(".cs-page-tile").forEach(t => t.classList.remove("drag-over"));
+        });
+
+        tile.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          tile.classList.add("drag-over");
+        });
+
+        tile.addEventListener("dragleave", () => {
+          tile.classList.remove("drag-over");
+        });
+
+        tile.addEventListener("drop", async (e) => {
+          e.preventDefault();
+          tile.classList.remove("drag-over");
+          const targetIndex = parseInt(tile.getAttribute("data-index"), 10);
+          if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
+            await reorderDocPages(dragSrcIndex, targetIndex);
+          }
+        });
+      });
+    }
+
+    async function reorderDocPages(fromIdx, toIdx) {
+      if (fromIdx === toIdx || fromIdx < 0 || toIdx < 0 || fromIdx >= docPages.length || toIdx >= docPages.length) return;
+      
+      const movedItem = docPages.splice(fromIdx, 1)[0];
+      docPages.splice(toIdx, 0, movedItem);
+      currentViewingPageIndex = toIdx;
+
+      renderWorkspacePages();
+      renderDocPageViewer();
+      await autoSaveDocumentToDB();
+      UIUtils.showToast(`✓ Page moved from #${fromIdx + 1} to #${toIdx + 1}`, "success");
+    }
+
+    function selectAndInspectPage(idx) {
+      currentViewingPageIndex = idx;
+      setWorkspaceViewMode('single');
+    }
+
+    async function rotateDocPageAt(idx) {
+      const page = docPages[idx];
+      if (!page) return;
+      page.rotation = ((page.rotation || 0) + 90) % 360;
+      
+      showProcessing("Rotating page...");
+      await new Promise(r => setTimeout(r, 10));
+      
+      page.processedDataUrl = DocumentScanner.processImage(
+        page.rawImg,
+        page.filter || 'magic-color',
+        page.rotation,
+        page.corners
+      );
+      hideProcessing();
+
+      if (workspaceViewMode === 'grid') {
+        renderWorkspacePages();
+      } else {
+        renderDocPageViewer();
+      }
+      await autoSaveDocumentToDB();
+      UIUtils.showToast(`Page ${idx + 1} rotated (${page.rotation}°)`, "info");
+    }
+
+    const availableFilters = ['magic-color', 'bw', 'grayscale', 'original'];
+    const filterLabels = {
+      'magic-color': 'Magic Color',
+      'bw': 'B&W Clean',
+      'grayscale': 'Grayscale',
+      'original': 'Original Color'
+    };
+
+    async function cycleDocPageFilterAt(idx) {
+      const page = docPages[idx];
+      if (!page) return;
+
+      const currentFilter = page.filter || 'magic-color';
+      const nextIndex = (availableFilters.indexOf(currentFilter) + 1) % availableFilters.length;
+      page.filter = availableFilters[nextIndex];
+
+      showProcessing(`Applying ${filterLabels[page.filter]}...`);
+      await new Promise(r => setTimeout(r, 10));
+
+      page.processedDataUrl = DocumentScanner.processImage(
+        page.rawImg,
+        page.filter,
+        page.rotation || 0,
+        page.corners
+      );
+      hideProcessing();
+
+      if (workspaceViewMode === 'grid') {
+        renderWorkspacePages();
+      } else {
+        renderDocPageViewer();
+      }
+      await autoSaveDocumentToDB();
+      UIUtils.showToast(`Filter: ${filterLabels[page.filter]}`, "info");
+    }
+
+    function reCropPageAt(idx) {
+      const page = docPages[idx];
+      if (!page) return;
+      stagingPage = {
+        rawImg: page.rawImg,
+        corners: page.corners,
+        rotation: page.rotation || 0,
+        filter: page.filter || 'magic-color'
+      };
+      stagingIsEditingIndex = idx;
+      rawWarpedData = null;
+      openCropScreen();
+    }
+
+    async function deleteDocPageAt(idx) {
+      if (confirm(`Delete Page ${idx + 1}?`)) {
+        DocumentScanner.removePage(docPages, idx);
+        if (docPages.length === 0) {
+          closeDocumentWorkspace();
+          UIUtils.showToast("All pages deleted.", "info");
+        } else {
+          currentViewingPageIndex = Math.max(0, Math.min(idx, docPages.length - 1));
+          renderWorkspacePages();
+          renderDocPageViewer();
+          await autoSaveDocumentToDB();
+          UIUtils.showToast("Page removed.", "info");
+        }
+      }
+    }
+
+    // --- Single View: Full Height Page Inspector ---
     function renderDocPageViewer() {
       if (currentViewingPageIndex < 0 || currentViewingPageIndex >= docPages.length) {
         currentViewingPageIndex = 0;
@@ -2094,59 +2794,132 @@
 
     async function movePageLeft(idx) {
       if (idx <= 0) return;
-      DocumentScanner.movePage(docPages, idx, idx - 1);
-      currentViewingPageIndex = idx - 1;
-      renderDocPageViewer();
-      await autoSaveDocumentToDB();
-      UIUtils.showToast(`Page shifted to #${idx}`, "info");
+      await reorderDocPages(idx, idx - 1);
     }
 
     async function movePageRight(idx) {
       if (idx >= docPages.length - 1) return;
-      DocumentScanner.movePage(docPages, idx, idx + 1);
-      currentViewingPageIndex = idx + 1;
-      renderDocPageViewer();
-      await autoSaveDocumentToDB();
-      UIUtils.showToast(`Page shifted to #${idx + 2}`, "info");
+      await reorderDocPages(idx, idx + 1);
     }
 
     function reCropActivePage() {
-      const page = docPages[currentViewingPageIndex];
-      stagingPage = {
-        rawImg: page.rawImg,
-        corners: page.corners,
-        rotation: page.rotation,
-        filter: page.filter
-      };
-      stagingIsEditingIndex = currentViewingPageIndex;
-      rawWarpedData = null;
-      openCropScreen();
+      reCropPageAt(currentViewingPageIndex);
     }
 
     function rotateActiveDocPage() {
-      const page = docPages[currentViewingPageIndex];
-      page.rotation = (page.rotation + 90) % 360;
-      page.processedDataUrl = DocumentScanner.processImage(
-        page.rawImg,
-        page.filter || 'magic-color',
-        page.rotation,
-        page.corners
-      );
-      renderDocPageViewer();
-      autoSaveDocumentToDB();
+      rotateDocPageAt(currentViewingPageIndex);
     }
 
-    async function deleteActiveDocPage() {
-      if (confirm(`Delete Page ${currentViewingPageIndex + 1}?`)) {
-        DocumentScanner.removePage(docPages, currentViewingPageIndex);
-        if (docPages.length === 0) {
-          closeDocumentWorkspace();
+    function cycleActiveDocPageFilter() {
+      cycleDocPageFilterAt(currentViewingPageIndex);
+    }
+
+    function deleteActiveDocPage() {
+      deleteDocPageAt(currentViewingPageIndex);
+    }
+
+    // --- Add Page Source Modal Handlers ---
+    function openAddPageChoiceModal() {
+      document.getElementById("cs-add-choice-modal").style.display = "flex";
+    }
+
+    function closeAddPageChoiceModal() {
+      document.getElementById("cs-add-choice-modal").style.display = "none";
+    }
+
+    function chooseAddPageSource(source) {
+      closeAddPageChoiceModal();
+      if (source === 'camera') {
+        openFullscreenCamera();
+      } else if (source === 'gallery') {
+        if (window.AndroidNative && window.AndroidNative.launchNativeGallery) {
+          window.AndroidNative.launchNativeGallery();
         } else {
-          currentViewingPageIndex = Math.max(0, Math.min(currentViewingPageIndex, docPages.length - 1));
-          renderDocPageViewer();
-          await autoSaveDocumentToDB();
-          UIUtils.showToast("Page removed.", "info");
+          const input = document.getElementById("home-import-files") || document.getElementById("cam-gallery-file-input");
+          if (input) input.click();
         }
+      }
+    }
+
+    function promptInsertPage(idx) {
+      targetInsertIndex = idx;
+      openAddPageChoiceModal();
+    }
+
+    // --- Multi-Channel Share Modal Handlers ---
+    function openShareModal() {
+      document.getElementById("cs-share-subtitle").textContent = `${docTitle}.pdf (${docPages.length} pages)`;
+      document.getElementById("cs-share-modal").style.display = "flex";
+    }
+
+    function closeShareModal() {
+      document.getElementById("cs-share-modal").style.display = "none";
+    }
+
+    function shareViaWhatsApp() {
+      const text = encodeURIComponent(`Check out this scanned PDF document: "${docTitle}" created with Localdoc PDF Camera Studio:\n${window.location.origin}/pages/scan.html`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function shareViaFacebook() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    }
+
+    function shareViaEmail() {
+      const subject = encodeURIComponent(`Scanned Document: ${docTitle}.pdf`);
+      const body = encodeURIComponent(`Hello,\n\nI have scanned a ${docPages.length}-page document "${docTitle}.pdf" using Localdoc Studio.\n\nCreated safely 100% offline on-device.\n${window.location.origin}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    async function shareViaSystemWebShare() {
+      if (docPages.length === 0) return;
+      showProcessing("Preparing document for sharing...");
+      try {
+        const blob = await DocumentScanner.exportToPDF(docPages);
+        hideProcessing();
+        const file = new File([blob], docTitle + ".pdf", { type: "application/pdf" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: docTitle,
+            text: `Scanned document: ${docTitle}.pdf`
+          });
+        } else if (navigator.share) {
+          await navigator.share({
+            title: docTitle,
+            text: `Scanned PDF document: ${docTitle}.pdf`,
+            url: window.location.href
+          });
+        } else {
+          // Direct download fallback
+          await exportDocPDF();
+          UIUtils.showToast("Document downloaded for sharing!", "success");
+        }
+      } catch (err) {
+        hideProcessing();
+        if (err.name !== 'AbortError') {
+          console.warn("Share cancelled or not supported:", err);
+          await exportDocPDF();
+        }
+      }
+    }
+
+    function copyDocumentShareLink() {
+      const link = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => {
+          UIUtils.showToast("✓ Document link copied to clipboard!", "success");
+        });
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = link;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        UIUtils.showToast("✓ Link copied to clipboard!", "success");
       }
     }
 
@@ -2161,20 +2934,25 @@
         name: docTitle,
         pageCount: docPages.length,
         date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        thumbnail: docPages[0].processedDataUrl,
+        thumbnail: docPages[0] ? docPages[0].processedDataUrl : null,
         pages: docPages.map(p => ({
           id: p.id,
           corners: p.corners,
           filter: p.filter,
           rotation: p.rotation,
+          rawDataUrl: p.rawDataUrl || p.processedDataUrl,
           processedDataUrl: p.processedDataUrl
         }))
       };
 
-      await LocalDocScanDB.save(docRecord);
+      try {
+        await LocalDocScanDB.save(docRecord);
+      } catch (err) {
+        console.warn("Auto-save note:", err);
+      }
     }
 
-    // Document Rename Dialog (v4 Dialog from Video)
+    // Document Rename Dialog (CamScanner Style)
     function openRenameDialog() {
       document.getElementById("rename-doc-input").value = docTitle;
       document.getElementById("cs-rename-modal").style.display = "flex";
@@ -2195,28 +2973,40 @@
       closeRenameDialog();
     }
 
-    // Export PDF
+    // Export PDF (Single-Click Direct Download to Device or PC)
     async function exportDocPDF() {
-      if (docPages.length === 0) return;
-      UIUtils.showToast("Compiling PDF with PDF-Lib...", "info");
+      if (docPages.length === 0) {
+        UIUtils.showToast("No pages to download", "warning");
+        return;
+      }
+      showProcessing("Generating PDF for 1-Click Download...");
 
       try {
         const blob = await DocumentScanner.exportToPDF(docPages);
+        const fileName = (docTitle || "Localdoc_Scan") + ".pdf";
+
+        // Single-click trigger for both mobile device and desktop PC
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
+        a.style.display = 'none';
         a.href = url;
-        a.download = docTitle + ".pdf";
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        UIUtils.showToast("✓ PDF Downloaded successfully!", "success");
+        
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1000);
+
+        hideProcessing();
+        UIUtils.showToast(`✓ Download started: ${fileName}`, "success");
 
         if (window.LocalDocUnifiedFilesDB) {
           try {
             const dataUrl = await UIUtils.readFileAsDataURL(blob);
             await LocalDocUnifiedFilesDB.recordDocument({
-              title: docTitle + ".pdf",
+              title: fileName,
               type: 'pdf',
               mimeType: 'application/pdf',
               size: UIUtils.formatBytes(blob.size),
@@ -2227,6 +3017,8 @@
           } catch(err) { console.warn('Could not save to unified db', err); }
         }
       } catch (e) {
+        hideProcessing();
+        console.error("Export error:", e);
         alert("Export error: " + e.message);
       }
     }
@@ -2234,7 +3026,7 @@
     // Open in LocalDoc Document Reader
     async function openDocInLocalReader() {
       if (docPages.length === 0) return;
-      UIUtils.showToast("Preparing document for Reader...", "info");
+      showProcessing("Opening in Offline Reader...");
 
       try {
         const blob = await DocumentScanner.exportToPDF(docPages);
@@ -2246,8 +3038,10 @@
           type: 'application/pdf'
         }));
 
+        hideProcessing();
         window.location.href = "document-reader.html";
       } catch (e) {
+        hideProcessing();
         alert("Reader error: " + e.message);
       }
     }
