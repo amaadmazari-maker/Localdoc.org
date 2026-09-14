@@ -3,8 +3,6 @@
  * Light-first clean aesthetic, crisp typography, compact dropzones, full camera scanner HUD
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
 :root {
   /* Brand Accent Colors */
   --primary: #0284C7;
@@ -939,8 +937,46 @@ a:hover {
   padding-top: 16px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.8rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-social-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.social-link:hover {
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.social-link svg {
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
 }
 
 /* Toast */
@@ -3443,4 +3479,123 @@ a:hover {
 .troubleshooting-card p:last-child {
   margin-bottom: 0;
 }
+
+/* ==========================================================================
+   Cookie & Privacy Consent Banner (GDPR & Google AdSense Compliance)
+   ========================================================================== */
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  width: calc(100% - 32px);
+  max-width: 900px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16), 0 2px 8px rgba(2, 132, 199, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  z-index: 99999;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+[data-theme="dark"] .cookie-consent-banner {
+  background: rgba(19, 27, 46, 0.94);
+  border-color: var(--line);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(2, 132, 199, 0.3);
+}
+
+.cookie-consent-banner.cookie-banner-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.cookie-consent-banner.cookie-banner-hiding {
+  transform: translateX(-50%) translateY(120%);
+  opacity: 0;
+}
+
+.cookie-consent-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.cookie-consent-content {
+  flex: 1;
+}
+
+.cookie-consent-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.cookie-icon {
+  font-size: 1.15rem;
+}
+
+.cookie-consent-text {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cookie-link {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.cookie-link:hover {
+  color: var(--primary-hover);
+}
+
+.cookie-consent-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  font-size: 0.85rem;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .cookie-consent-banner {
+    bottom: 74px; /* clearance above mobile bottom nav */
+    width: calc(100% - 20px);
+    padding: 16px;
+  }
+  .cookie-consent-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .cookie-consent-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .cookie-btn {
+    flex: 1;
+    text-align: center;
+    padding: 9px 12px;
+  }
+}
+
 

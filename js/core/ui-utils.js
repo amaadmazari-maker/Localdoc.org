@@ -222,7 +222,7 @@ const UIUtils = {
         <div class="search-modal">
           <div class="search-modal-input-wrap">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="global-search-input" class="search-modal-input" placeholder="Search 20 tools & 25 guides... (ESC to exit)">
+            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 20 tools & 25 guides... (ESC to exit)" aria-label="Search all tools and guides">
             <span class="kbd-shortcut">ESC</span>
           </div>
           <ul id="global-search-results" class="search-results-list"></ul>
@@ -370,6 +370,68 @@ const UIUtils = {
         toggleBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
       }
     });
+  },
+
+  // GDPR Cookie Consent Banner
+  initCookieConsent() {
+    if (window.LocalDocConsent) {
+      window.LocalDocConsent.init();
+      return;
+    }
+    const STORAGE_KEY = 'localdoc_cookie_consent';
+    let consent = null;
+    try { consent = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+    if (consent) return;
+
+    setTimeout(() => {
+      if (document.getElementById('cookie-consent-banner')) return;
+      const banner = document.createElement('div');
+      banner.id = 'cookie-consent-banner';
+      banner.className = 'cookie-consent-banner';
+      banner.setAttribute('role', 'region');
+      banner.setAttribute('aria-label', 'Cookie and Privacy Consent');
+
+      const isSub = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
+      const privacyHref = isSub ? '../privacy.html' : 'privacy.html';
+
+      banner.innerHTML = `
+        <div class="cookie-consent-inner">
+          <div class="cookie-consent-content">
+            <div class="cookie-consent-header">
+              <span class="cookie-icon" aria-hidden="true">🍪</span>
+              <strong>Privacy & Cookie Preferences</strong>
+            </div>
+            <p class="cookie-consent-text">
+              LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and files are processed solely in your browser RAM and are never sent to any server. We use essential local storage for app settings and anonymous analytics to improve performance. Learn more in our <a href="${privacyHref}" class="cookie-link">Privacy Policy</a>.
+            </p>
+          </div>
+          <div class="cookie-consent-actions">
+            <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+              Essential Only
+            </button>
+            <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+              Accept All
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(banner);
+      requestAnimationFrame(() => banner.classList.add('cookie-banner-visible'));
+
+      const dismiss = (val) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, val);
+          localStorage.setItem(STORAGE_KEY + '_date', new Date().toISOString());
+        } catch (e) {}
+        banner.classList.remove('cookie-banner-visible');
+        banner.classList.add('cookie-banner-hiding');
+        setTimeout(() => banner.remove(), 350);
+      };
+
+      document.getElementById('cookie-btn-accept')?.addEventListener('click', () => dismiss('accepted'));
+      document.getElementById('cookie-btn-essential')?.addEventListener('click', () => dismiss('essential'));
+    }, 600);
   }
 };
 
@@ -499,4 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
   UIUtils.initQuickSearch();
   UIUtils.initReadingProgress();
   UIUtils.initMobileNav();
+  UIUtils.initCookieConsent();
 });
+
+

@@ -46,10 +46,21 @@ const I18N = {
     }
   },
 
+  ensureRtlFonts(isRtl) {
+    if (isRtl && !document.getElementById('rtl-font-stylesheet')) {
+      const link = document.createElement('link');
+      link.id = 'rtl-font-stylesheet';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap';
+      document.head.appendChild(link);
+    }
+  },
+
   setLanguage(lang) {
     this.currentLang = lang;
     localStorage.setItem('localdoc_lang', lang);
     const isRtl = (lang === 'ur' || lang === 'ar');
+    this.ensureRtlFonts(isRtl);
     document.documentElement.lang = lang;
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     const selects = document.querySelectorAll('.lang-select');
@@ -61,6 +72,7 @@ const I18N = {
 
   applyTranslations() {
     const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
+    this.ensureRtlFonts(isRtl);
     document.documentElement.lang = this.currentLang;
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     if (document.body) {
