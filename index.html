@@ -90,13 +90,13 @@
       </ul>
 
       <div class="header-actions">
-        <!-- Quick Search Trigger -->
+        <!-- Quick Search Form -->
         <form role="search" class="header-search-form" onsubmit="event.preventDefault(); document.getElementById('search-modal-backdrop')?.classList.add('open');">
-          <button type="button" class="search-trigger-btn" aria-label="Search tools and guides" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
+          <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span>Search</span>
+            <input type="search" id="header-search-input" class="header-search-input" placeholder="Search 25 tools &amp; guides..." aria-label="Search tools and guides" autocomplete="off" onfocus="document.getElementById('search-modal-backdrop')?.classList.add('open');">
             <span class="kbd-shortcut">⌘K</span>
-          </button>
+          </div>
         </form>
 
         <!-- Install for PC / Offline App Button -->
@@ -218,6 +218,12 @@
     <!-- Elevated Front-and-Center Tools Suite -->
     <section class="container" style="padding: 10px 20px 60px;">
       
+      <!-- Real-Time Interactive Tool & Guide Search -->
+      <div class="homepage-search-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="home-tool-search" class="homepage-search-input" placeholder="Search all 25 tools &amp; guides (e.g. PDF to Word, CamScanner, Passport Photo, Calculator)..." aria-label="Quick search tools and guides">
+      </div>
+
       <!-- Multi-Category Filter Bar (iLovePDF Style Rounded Pills) -->
       <div class="filter-tabs-bar" id="category-filter-bar">
         <button class="filter-tab-btn active" data-filter="all">
@@ -616,6 +622,7 @@
             <li><a href="terms.html" class="footer-link">Terms of Service</a></li>
             <li><a href="disclaimer.html" class="footer-link">Disclaimer</a></li>
             <li><a href="contact.html" class="footer-link">Contact Support</a></li>
+            <li><a href="sitemap.html" class="footer-link">HTML Sitemap</a></li>
             <li><a href="sitemap.xml" class="footer-link">XML Sitemap</a></li>
           </ul>
         </div>
@@ -801,6 +808,56 @@
       }
     });
 
+    // 4. Live Tool Search on Homepage
+    const toolSearchInput = document.getElementById('home-tool-search');
+    const toolCards = document.querySelectorAll('#tools-container .tool-card');
+    toolSearchInput?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      toolCards.forEach(card => {
+        const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+        const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
+        const toolKey = card.getAttribute('data-tool')?.toLowerCase() || '';
+        const cat = card.getAttribute('data-cat')?.toLowerCase() || '';
+        const matches = !q || title.includes(q) || desc.includes(q) || toolKey.includes(q) || cat.includes(q);
+        card.style.display = matches ? 'flex' : 'none';
+      });
+    });
+
   </script>
+
+  <!-- Global Search Modal (Directly Embedded for Instant Discovery) -->
+  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
+    <div class="search-modal">
+      <div class="search-modal-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 25 tools &amp; 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <ul id="global-search-results" class="search-results-list"></ul>
+    </div>
+  </div>
+
+  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
+  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
+    <div class="cookie-consent-inner">
+      <div class="cookie-consent-content">
+        <div class="cookie-consent-header">
+          <span class="cookie-icon" aria-hidden="true">🍪</span>
+          <strong>Privacy &amp; Cookie Preferences</strong>
+        </div>
+        <p class="cookie-consent-text">
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="privacy.html" class="cookie-link">Privacy Policy</a>.
+        </p>
+      </div>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+          Essential Only
+        </button>
+        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+          Accept All
+        </button>
+      </div>
+    </div>
+  </aside>
 </body>
 </html>

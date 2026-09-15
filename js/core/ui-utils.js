@@ -381,15 +381,26 @@ const UIUtils = {
     const STORAGE_KEY = 'localdoc_cookie_consent';
     let consent = null;
     try { consent = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    if (consent) return;
 
-    setTimeout(() => {
-      if (document.getElementById('cookie-consent-banner')) return;
-      const banner = document.createElement('div');
+    let banner = document.getElementById('cookie-consent-banner');
+
+    // If user already gave consent, remove/hide static banner immediately
+    if (consent) {
+      if (banner) {
+        banner.style.display = 'none';
+        banner.remove();
+      }
+      return;
+    }
+
+    // If not present in static HTML, create dynamically
+    if (!banner) {
+      banner = document.createElement('aside');
       banner.id = 'cookie-consent-banner';
       banner.className = 'cookie-consent-banner';
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Cookie and Privacy Consent');
+      banner.setAttribute('data-nosnippet', '');
 
       const isSub = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
       const privacyHref = isSub ? '../privacy.html' : 'privacy.html';
@@ -399,7 +410,7 @@ const UIUtils = {
           <div class="cookie-consent-content">
             <div class="cookie-consent-header">
               <span class="cookie-icon" aria-hidden="true">🍪</span>
-              <strong>Privacy & Cookie Preferences</strong>
+              <strong>Privacy &amp; Cookie Preferences</strong>
             </div>
             <p class="cookie-consent-text">
               LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and files are processed solely in your browser RAM and are never sent to any server. We use essential local storage for app settings and anonymous analytics to improve performance. Learn more in our <a href="${privacyHref}" class="cookie-link">Privacy Policy</a>.
@@ -415,23 +426,26 @@ const UIUtils = {
           </div>
         </div>
       `;
-
       document.body.appendChild(banner);
-      requestAnimationFrame(() => banner.classList.add('cookie-banner-visible'));
+    }
 
-      const dismiss = (val) => {
-        try {
-          localStorage.setItem(STORAGE_KEY, val);
-          localStorage.setItem(STORAGE_KEY + '_date', new Date().toISOString());
-        } catch (e) {}
-        banner.classList.remove('cookie-banner-visible');
-        banner.classList.add('cookie-banner-hiding');
-        setTimeout(() => banner.remove(), 350);
-      };
+    // Smooth entrance
+    requestAnimationFrame(() => {
+      banner.classList.add('cookie-banner-visible');
+    });
 
-      document.getElementById('cookie-btn-accept')?.addEventListener('click', () => dismiss('accepted'));
-      document.getElementById('cookie-btn-essential')?.addEventListener('click', () => dismiss('essential'));
-    }, 600);
+    const dismiss = (val) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, val);
+        localStorage.setItem(STORAGE_KEY + '_date', new Date().toISOString());
+      } catch (e) {}
+      banner.classList.remove('cookie-banner-visible');
+      banner.classList.add('cookie-banner-hiding');
+      setTimeout(() => banner.remove(), 350);
+    };
+
+    document.getElementById('cookie-btn-accept')?.addEventListener('click', () => dismiss('accepted'));
+    document.getElementById('cookie-btn-essential')?.addEventListener('click', () => dismiss('essential'));
   }
 };
 
