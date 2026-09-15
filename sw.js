@@ -2,15 +2,18 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v6-2026-pro';
+const CACHE_NAME = 'localdoc-v7-2026-pro';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/about.html',
   '/privacy.html',
   '/terms.html',
+  '/disclaimer.html',
   '/faq.html',
   '/contact.html',
+  '/sitemap.html',
+  '/404.html',
   '/css/main.css',
   '/css/rtl.css',
   '/css/blog.css',

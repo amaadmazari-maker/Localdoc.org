@@ -1174,6 +1174,13 @@
       </ul>
 
       <div class="header-actions">
+        <form role="search" onsubmit="event.preventDefault(); document.getElementById('search-modal-backdrop')?.classList.add('open');" style="margin:0; display:flex;">
+          <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="search" class="header-search-input" placeholder="Search tools &amp; guides..." aria-label="Search all tools and guides" autocomplete="off">
+            <span class="kbd-shortcut">âŒ˜K</span>
+          </div>
+        </form>
         <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="12" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
         </button>
@@ -3139,5 +3146,40 @@
       }
     }
   </script>
+
+  <!-- Global Search Modal -->
+  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
+    <div class="search-modal">
+      <div class="search-modal-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 29 tools &amp; 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <ul id="global-search-results" class="search-results-list"></ul>
+    </div>
+  </div>
+
+  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
+  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
+    <div class="cookie-consent-inner">
+      <div class="cookie-consent-content">
+        <div class="cookie-consent-header">
+          <span class="cookie-icon" aria-hidden="true">ðŸª</span>
+          <strong>Privacy &amp; Cookie Preferences</strong>
+        </div>
+        <p class="cookie-consent-text">
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link">Privacy Policy</a>.
+        </p>
+      </div>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+          Essential Only
+        </button>
+        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+          Accept All
+        </button>
+      </div>
+    </div>
+  </aside>
 </body>
 </html>
