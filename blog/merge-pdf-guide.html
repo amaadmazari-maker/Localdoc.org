@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -357,7 +357,48 @@
           <li><a href="../pages/protect-pdf.html">Secure &amp; Encrypt Merged PDFs Client-Side</a></li>
         </ul>
       </div>
-    </article>
+            <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Advanced PDF Merging: Catalog Trees, Outlines, and Stream Concatenation</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Merging multiple PDF files into a single unified binder requires more than simple byte appending. Each PDF contains an internal indirect object table (XRef table), document catalog dictionary (/Root), and page tree hierarchy (/Pages with /Kids arrays). When LocalDoc merges documents, it parses each source file's indirect objects, resolves object number collisions by re-indexing indirect references, and generates a clean, standardized root catalog.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Interactive Form Field (AcroForm) Name Collision Prevention</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                A common issue when merging government forms, tax schedules, or employment contracts is AcroForm field collision. If Document A and Document B both contain a text input named FullName, standard merging can cause the fields to synchronize or overwrite each other. LocalDoc's client-side merging engine flattens or namespaces interactive form dictionaries to preserve distinct signature blocks and entered values.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Bookmarks, Table of Contents, and Page Label Alignment</h3>
+            <p class="text-slate-300 leading-relaxed">
+                For financial disclosures, legal bundles, and technical manuals exceeding 100 pages, preserving hierarchical document outlines is critical. The browser-based engine re-maps outline destination pointers to their new zero-indexed page offsets, ensuring that clicking on appendix bookmarks navigates to the exact relocated target page.
+            </p>
+        </section>
+        <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Technical Architecture, Workflow Standards &amp; Troubleshooting Guide</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Executing merge pdf operations directly inside modern web browsers utilizes local hardware acceleration via typed array buffers, SIMD vector instructions, and isolated WebAssembly runtimes. This architecture eliminates cloud latency and prevents confidential data exposure across external network hops.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">1. Memory Management &amp; Large File Handling Protocol</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                When processing high-resolution documents or large multi-page bundles, LocalDoc streams data through chunked ArrayBuffer readers. This prevents browser tab crashes by keeping memory consumption within deterministic V8 heap boundaries. Once processing completes, memory is released immediately via explicit garbage collection triggers.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">2. Cross-Platform Font Rendering and Glyphs Integrity</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Whether running on Windows 11, macOS Sonoma, iOS Safari, or Android Chrome, the client-side engine parses underlying PDF font descriptor dictionaries (/FontDescriptor) and CIDFont subsets. Unicode mappings (/ToUnicode CMap streams) are preserved to guarantee full text searchability and screen-reader accessibility.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">3. Enterprise Compliance &amp; Zero-Retention Guarantee</h3>
+            <p class="text-slate-300 leading-relaxed">
+                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, HIPAA, and GDPR standards.
+            </p>
+        </section>
+        <section class="mt-8 p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <h3 class="text-xl font-bold text-white mb-3">Enterprise Binder Assembly &amp; Multi-Document Normalization</h3>
+            <p class="text-slate-300 mb-3 leading-relaxed">
+                When compiling court discovery exhibits, real estate closing binders, or architectural project submissions, source documents often arrive with mismatched page orientations (portrait mixed with landscape) and inconsistent page dimension bounding boxes (US Letter, Legal, and ISO A4).
+            </p>
+            <p class="text-slate-300 leading-relaxed">
+                LocalDoc automatically preserves each individual page's MediaBox, CropBox, and rotation matrix angles during the merging process. This ensures that landscape financial spreadsheets and architectural schematics retain their optimal viewing orientation without truncating margins or distorting vector line art.
+            </p>
+        </section>
+</article>
   </main>
 
   <footer class="site-footer">

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -322,7 +322,21 @@
           <li><a href="edit-pdf-text-guide.html">How to Edit PDF Text & Annotate Documents &rarr;</a></li>
         </ul>
       </div>
-    </article>
+            <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Deep Technical Guide: PDF Page Extraction &amp; Stream Pruning</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                When splitting a 500-page document or extracting an individual chapter, naive splitting tools copy the entire global resource dictionary (including unreferenced embedded fonts, color spaces, and shared image XObjects) into the extracted output file, resulting in an extracted 1-page PDF that is almost as large as the original 100MB document.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Isolated Resource Tree Garbage Collection</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                LocalDoc utilizes a deep traversal algorithm that inspects only the /Resources dictionary belonging to the selected page range. Any font subsets, embedded ICC profiles, or XObjects not referenced within the specific content stream (/Contents) of the target pages are omitted from the newly generated XRef table. This yields lightweight, independent PDF files tailored for email transmission.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Burst Extraction vs. Custom Range Partitioning</h3>
+            <p class="text-slate-300 leading-relaxed">
+                Whether executing a batch "burst" extraction (generating 50 separate single-page files) or creating segmented chapter ranges (e.g., Pages 1&ndash;12, 13&ndash;45, 46&ndash;110), LocalDoc processes each slice asynchronously in local web workers, ensuring the browser UI remains responsive with zero lag.
+            </p>
+        </section>
+</article>
   </main>
 
   <!-- Full Footer with Disclaimer Link -->
