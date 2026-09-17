@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Merge PDF Files Online (Reorder & Combine) — 100% Zero-Upload | LocalDoc</title>
-  <meta name="description" content="Combine multiple PDF documents, receipts, invoices, and portfolios into a single file. Reorder pages and documents in your browser RAM with zero cloud uploads.">
+  <title>Merge PDF Online (100% Private, Reorder & Combine Unlimited Files) | LocalDoc</title>
+  <meta name="description" content="Combine multiple PDF documents into a single file with custom page reordering. 100% in-browser WebAssembly processing. No file size caps, no sign-ups.">
   <link rel="canonical" href="https://localdoc.org/pages/merge-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -184,6 +184,13 @@
         </div>
         <h1>Merge PDF Files Online</h1>
         <p class="tool-desc">Combine multiple PDF documents, receipts, and reports into a single file with custom ordering and zero server uploads.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Select or drop multiple PDF documents, drag to arrange your preferred page sequence, and click Merge All PDFs:</strong> Select or drop multiple PDF documents, drag to arrange your preferred page sequence, and click Merge All PDFs. Stitches page trees in milliseconds inside client memory.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -389,6 +396,18 @@
         <p><strong>Merging 50+ High-Resolution Files:</strong> While modern desktop computers easily manage several hundred megabytes of RAM, mobile web browsers have stricter per-tab memory limits. If merging dozens of heavy files on a smartphone, merge in batches of 15 to 20 files, or combine on a desktop computer.</p>
         <p><strong>Interactive Form Fields (AcroForms):</strong> When combining multiple interactive fillable PDF forms with identical field names (e.g. "Full_Name"), form fields may share values. Flatten forms prior to combining if preserving disparate responses is required.</p>
       </div>
+    
+      <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+      <div class="companion-guide-banner">
+        <div class="companion-guide-content">
+          <div class="companion-guide-icon">ðŸ“–</div>
+          <div class="companion-guide-text">
+            <h4>In-Depth Technical Guide: How to Combine Multiple PDF Files Offline</h4>
+            <p>Learn about zero-upload binder compilation, bookmarks preservation, and client-side memory safety.</p>
+          </div>
+        </div>
+        <a href="../blog/merge-pdf-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+      </div>
     </article>
 
     <!-- Related Tools -->
@@ -490,7 +509,7 @@
         </div>
       </div>
     </div>
-  </footer>
+    </footer>
 
   <script src="../js/core/i18n.js"></script>
   <script src="../js/core/ui-utils.js"></script>
@@ -538,21 +557,21 @@
         const item = document.createElement("div");
         item.className = "reorder-item";
 
-        item.innerHTML = `
+        item.innerHTML = 
           <div class="reorder-item-left">
-            <span class="reorder-item-num">#${idx + 1}</span>
+            <span class="reorder-item-num">#</span>
             <img src="../assets/icons/merge-pdf.svg" width="24" height="24" alt="PDF">
             <div>
-              <h5 style="margin:0; font-size:0.88rem; color:var(--text-primary); font-weight:700;">${UIUtils.escapeHtml ? UIUtils.escapeHtml(file.name) : file.name}</h5>
-              <span style="font-size:0.75rem; color:var(--text-muted);">${UIUtils.formatBytes(file.size)}</span>
+              <h5 style="margin:0; font-size:0.88rem; color:var(--text-primary); font-weight:700;"></h5>
+              <span style="font-size:0.75rem; color:var(--text-muted);"></span>
             </div>
           </div>
           <div class="reorder-item-actions">
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>↑ Move Up</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, 1)" ${idx === queueFiles.length - 1 ? 'disabled' : ''}>↓ Move Down</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);" onclick="removeItem(${idx})">✕</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(, -1)" >â†‘ Move Up</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(, 1)" >â†“ Move Down</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);" onclick="removeItem()">âœ•</button>
           </div>
-        `;
+        ;
 
         reorderList.appendChild(item);
       });
@@ -602,7 +621,8 @@
 
         UIUtils.setWorkflowStep(3, 100, "Merge complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.mergedSize)} • Combined ${resultData.fileCount} Documents (${resultData.totalPages} Total Pages)`;
+        document.getElementById("result-meta").textContent = Size:  â€¢ Combined  Documents ( Total Pages);
+        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-merged-document.pdf");
         UIUtils.showToast("PDF files merged successfully!", "success");
       } catch (err) {
         console.error(err);
@@ -655,3 +675,5 @@
   </aside>
 </body>
 </html>
+
+

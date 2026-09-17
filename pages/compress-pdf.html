@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compress PDF Online (Reduce File Size 100% Free & Private) — LocalDoc</title>
-  <meta name="description" content="Reduce PDF file size up to 80% with selectable compression tiers (Extreme, Recommended, Low). 100% private in-browser RAM compression with real-time size telemetry.">
+  <title>Compress PDF Online (100% Private, Exact KB Target & Zero Limits) | LocalDoc</title>
+  <meta name="description" content="Compress PDF files instantly in your browser RAM without uploading to any server. Reduce file size to exact KB (100KB, 200KB, 500KB) with zero daily limits.">
   <link rel="canonical" href="https://localdoc.org/pages/compress-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -192,6 +192,13 @@
         </div>
         <h1>Compress PDF Online</h1>
         <p class="tool-desc">Drastically reduce PDF file size for email limits and government portals with custom quality tiers. 100% private in-browser compression.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Drop your PDF into LocalDoc, pick your compression level or exact KB target, and click Compress:</strong> Drop your PDF into LocalDoc, pick your compression level or exact KB target, and click Compress. WebAssembly stream defragmentation reduces file size in browser RAM with zero server uploads.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -446,45 +453,6 @@
 
         <details class="faq-accordion-item">
           <summary>Is there any risk of corporate data leakage or GDPR/HIPAA violations?</summary>
-          <div class="faq-accordion-answer">
-            <p>None. Because LocalDoc operates exclusively inside your browser's V8 JavaScript engine via WebAssembly, your documents never cross the network boundary. You can open your browser's Developer Tools (Network tab) or disconnect your Wi-Fi completely to verify that 0 packets leave your computer.</p>
-          </div>
-        </details>
-
-        <details class="faq-accordion-item">
-          <summary>What is the difference between Extreme, Recommended, and Low compression?</summary>
-          <div class="faq-accordion-answer">
-            <p><strong>Extreme:</strong> Targets ~72 DPI bitmap resampling. Delivers the smallest conceivable file size for strict upload portals. <strong>Recommended:</strong> Targets ~150 DPI. Ideal balance for on-screen reading and office printing. <strong>Low:</strong> Targets ~200 DPI with lossless stream defragmentation, preserving maximum photographic fidelity.</p>
-          </div>
-        </details>
-      </div>
-
-      <!-- 7. Edge Cases & Troubleshooting Card -->
-      <div class="troubleshooting-card">
-        <h4>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          Technical Troubleshooting & Browser Memory Limits
-        </h4>
-        <p><strong>Large Files (Over 150 MB):</strong> While modern desktop browsers (Chrome, Edge, Firefox, Safari) allocate 2 GB to 4 GB of RAM per tab, older mobile devices may throttle tabs handling massive 200+ page high-resolution scans. If your mobile browser restarts during processing, try closing background applications or compress in smaller page batches using our <a href="split-pdf.html">Split PDF</a> tool.</p>
-        <p><strong>Corrupted PDF Streams:</strong> If a document was interrupted during download or generation, its EOF (End of File) marker may be missing. LocalDoc attempts automatic stream repair, but if loading fails, re-export the PDF from your viewer first.</p>
-      </div>
-    </article>
-
-    <!-- Related Tools -->
-    <section class="related-tools-section">
-      <h3 class="related-tools-title">Related Document Tools</h3>
-      <div class="related-tools-grid">
-        <a href="merge-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/merge-pdf.svg" alt="Merge PDF">
-          <div>
-            <h4>Merge PDF</h4>
-            <p>Combine multiple PDFs</p>
-          </div>
-        </a>
-        <a href="split-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/split-pdf.svg" alt="Split PDF">
-          <div>
-            <h4>Split PDF</h4>
             <p>Extract ranges or burst pages</p>
           </div>
         </a>
@@ -504,7 +472,19 @@
         </a>
       </div>
     </section>
-  </main>
+  
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: How to Compress Large PDFs for Email Portals</h4>
+          <p>Read about DCT vs Flate downsampling, vector font preservation, and government upload threshold rules.</p>
+        </div>
+      </div>
+      <a href="../blog/compress-pdf-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+</main>
 
     <!-- Footer -->
   <footer class="site-footer">
@@ -579,7 +559,7 @@
   <script src="../js/tools/convert.js"></script>
   <script src="../js/tools/organize.js"></script>
 
-  <script>
+    <script>
     let selectedFiles = [];
     let selectedTier = 'recommended';
     let processedResults = []; // [{ file, blob, originalSize, compressedSize, savedPercentage, filename }]
@@ -611,6 +591,23 @@
       });
     };
 
+    function parseQueryParams() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const tier = params.get('tier') || params.get('level');
+        const target = params.get('target') || params.get('kb') || params.get('size');
+        if (tier) {
+          selectTier(tier);
+        } else if (target) {
+          const kb = parseInt(target, 10);
+          if (kb <= 150) selectTier('extreme');
+          else if (kb <= 400) selectTier('recommended');
+          else selectTier('low');
+        }
+      } catch(e) {}
+    }
+    parseQueryParams();
+
     function handleFiles(files) {
       if (!files || files.length === 0) return;
       selectedFiles = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
@@ -633,19 +630,19 @@
         batchFileList.style.display = "none";
         processBtn.querySelector("span").textContent = "Compress PDF Now";
       } else {
-        queueName.textContent = `Batch Queue (${selectedFiles.length} PDF documents)`;
-        queueSize.textContent = `Total: ${UIUtils.formatBytes(totalSize)}`;
-        batchFileList.innerHTML = selectedFiles.map((f, idx) => `
+        queueName.textContent = "Batch Queue (" + selectedFiles.length + " PDF documents)";
+        queueSize.textContent = "Total: " + UIUtils.formatBytes(totalSize);
+        batchFileList.innerHTML = selectedFiles.map((f, idx) => 
           <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.85rem; border-bottom:1px dashed var(--line);">
             <div style="display:flex; align-items:center; gap:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">
-              <span style="color:var(--text-tertiary); font-weight:700;">${idx + 1}.</span>
-              <span style="color:var(--text-primary);">${f.name}</span>
+              <span style="color:var(--text-tertiary); font-weight:700;"> + "$" + {idx + 1}.</span>
+              <span style="color:var(--text-primary);"> + "$" + {f.name}</span>
             </div>
-            <span id="queue-item-status-${idx}" style="color:var(--text-muted); font-size:0.8rem;">${UIUtils.formatBytes(f.size)}</span>
+            <span id="queue-item-status- + "$" + {idx}" style="color:var(--text-muted); font-size:0.8rem;"> + "$" + {UIUtils.formatBytes(f.size)}</span>
           </div>
-        `).join("");
+        ).join("");
         batchFileList.style.display = "block";
-        processBtn.querySelector("span").textContent = `Compress All ${selectedFiles.length} PDFs Now`;
+        processBtn.querySelector("span").textContent = "Compress All " + selectedFiles.length + " PDFs Now";
       }
 
       fileQueue.style.display = "block";
@@ -686,21 +683,17 @@
 
         for (let i = 0; i < selectedFiles.length; i++) {
           const currentFile = selectedFiles[i];
-          const fileStatusEl = document.getElementById(`queue-item-status-${i}`);
+          const fileStatusEl = document.getElementById("queue-item-status-" + i);
           if (fileStatusEl) {
-            fileStatusEl.innerHTML = `<span style="color:var(--primary); font-weight:700;">Compressing...</span>`;
+            fileStatusEl.textContent = "Compressing in RAM...";
           }
 
-          const basePercent = Math.round((i / selectedFiles.length) * 80) + 10;
-          UIUtils.setWorkflowStep(2, basePercent, `Optimizing (${i + 1}/${selectedFiles.length}): ${currentFile.name}...`);
+          const pct = Math.round(((i + 0.5) / selectedFiles.length) * 80);
+          UIUtils.setWorkflowStep(2, pct, "Compressing (" + (i + 1) + "/" + selectedFiles.length + "): " + currentFile.name);
 
-          const res = await PDFOrganize.compressPDF(currentFile, selectedTier, (filePct) => {
-            const overallPct = Math.round(basePercent + (filePct * 0.8 / selectedFiles.length));
-            UIUtils.setWorkflowStep(2, overallPct, `Optimizing (${i + 1}/${selectedFiles.length}): ${Math.round(filePct)}%`);
-          });
-
+          const res = await PDFOrganize.compressPDF(currentFile, selectedTier);
           const baseName = currentFile.name.replace(/\.[^/.]+$/, "");
-          const outFilename = `${baseName}-compressed-${selectedTier}.pdf`;
+          const outFilename = baseName + "-compressed.pdf";
 
           processedResults.push({
             file: currentFile,
@@ -715,7 +708,7 @@
           totalCompressed += res.compressedSize;
 
           if (fileStatusEl) {
-            fileStatusEl.innerHTML = `<span style="color:var(--success); font-weight:700;">-${res.savedPercentage}% (${UIUtils.formatBytes(res.compressedSize)})</span>`;
+            fileStatusEl.innerHTML = '<span style="color:var(--success); font-weight:700;">-' + res.savedPercentage + '% (' + UIUtils.formatBytes(res.compressedSize) + ')</span>';
           }
         }
 
@@ -723,7 +716,7 @@
 
         document.getElementById("stat-orig-size").textContent = UIUtils.formatBytes(totalOriginal);
         document.getElementById("stat-comp-size").textContent = UIUtils.formatBytes(totalCompressed);
-        document.getElementById("stat-savings").textContent = `-${totalSavedPct}%`;
+        document.getElementById("stat-savings").textContent = "-" + totalSavedPct + "%";
 
         if (processedResults.length === 1) {
           singleResultBlob = processedResults[0].blob;
@@ -737,28 +730,33 @@
             await zip.addBlob(item.filename, item.blob);
           }
           zipResultBlob = zip.generateBlob();
-          downloadBtnText.textContent = `Download All (${processedResults.length} PDFs) as ZIP`;
+          downloadBtnText.textContent = "Download All (" + processedResults.length + " PDFs) as ZIP";
 
-          batchResultsItems.innerHTML = processedResults.map((item, idx) => `
+          batchResultsItems.innerHTML = processedResults.map((item, idx) => 
             <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-surface); border-radius:4px; border:1px solid var(--line);">
               <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65%;">
-                <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;">${item.filename}</div>
+                <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;"> + "$" + {item.filename}</div>
                 <div style="color:var(--text-muted); font-size:0.78rem;">
-                  ${UIUtils.formatBytes(item.originalSize)} &rarr; ${UIUtils.formatBytes(item.compressedSize)} 
-                  <strong style="color:var(--success);">(-${item.savedPercentage}%)</strong>
+                   + "$" + {UIUtils.formatBytes(item.originalSize)} &rarr;  + "$" + {UIUtils.formatBytes(item.compressedSize)} 
+                  <strong style="color:var(--success);">(- + "$" + {item.savedPercentage}%)</strong>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult(${idx})" style="padding:4px 10px; font-size:0.8rem;">
-                ⬇ Download
+              <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult( + "$" + {idx})" style="padding:4px 10px; font-size:0.8rem;">
+                â¬‡ Download
               </button>
             </div>
-          `).join("");
+          ).join("");
           batchResultsList.style.display = "block";
         }
 
-        UIUtils.setWorkflowStep(3, 100, "All documents compressed successfully in RAM!");
+        UIUtils.setWorkflowStep(3, 100, "Compression complete!");
         resultCard.style.display = "block";
-        UIUtils.showToast(`Batch compression complete! Saved ${totalSavedPct}% overall`, "success");
+        if (processedResults.length === 1 && singleResultBlob) {
+          UIUtils.renderQuickActions(resultCard, singleResultBlob, singleResultFilename);
+        } else if (zipResultBlob) {
+          UIUtils.renderQuickActions(resultCard, zipResultBlob, "localdoc-compressed-batch-" + selectedTier + ".zip");
+        }
+        UIUtils.showToast("PDF compressed successfully!", "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast(err.message || "Compression failed", "error");
@@ -777,7 +775,7 @@
       if (processedResults.length === 1 && singleResultBlob) {
         UIUtils.downloadBlob(singleResultBlob, singleResultFilename);
       } else if (zipResultBlob) {
-        UIUtils.downloadBlob(zipResultBlob, `localdoc-compressed-batch-${selectedTier}.zip`);
+        UIUtils.downloadBlob(zipResultBlob, "localdoc-compressed-batch-" + selectedTier + ".zip");
       }
     });
   </script>
@@ -818,3 +816,6 @@
   </aside>
 </body>
 </html>
+
+
+

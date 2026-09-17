@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Page Numbers to PDF Online (Custom Positions & Formats) — LocalDoc</title>
-  <meta name="description" content="Add customizable page numbers and headers/footers to PDF documents. 6 position anchors, 5 format templates, cover page skip, and live A4 placement preview. 100% zero-upload.">
+  <title>Add Page Numbers to PDF Online (Custom Position, Format & Fonts) | LocalDoc</title>
+  <meta name="description" content="Number PDF pages with custom numbering styles (e.g. Page X of Y), customizable margins, and typography. 100% private in client RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/page-numbers.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -103,6 +103,13 @@
         </div>
         <h1>Add Page Numbers to PDF</h1>
         <p class="tool-desc">Stamp customizable page numbers, footers, and headers into PDF documents with live position preview and cover page skip options.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Upload your document, select numbering position, customize font size and starting page number, and download your numbered PDF:</strong> Upload your document, select numbering position, customize font size and starting page number, and download your numbered PDF.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -266,7 +273,19 @@
       </div>
 
       <!-- Related Tools -->
-      <section class="related-tools-section">
+      
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: Add Page Numbers & Bates Numbering</h4>
+          <p>Configure litigation Bates stamps, Page X of Y footers, and font offsets in client RAM.</p>
+        </div>
+      </div>
+      <a href="../blog/page-numbers-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
         <h3 class="related-tools-title">Related Document Tools</h3>
         <div class="related-tools-grid">
           <a href="watermark.html" class="related-tool-card">
@@ -608,6 +627,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Numbering complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-numbered.pdf");
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • Stamped ${res.numberedPagesCount} Pages (Format: "${options.format}")`;
         UIUtils.showToast("Page numbers added successfully!", "success");
       } catch (err) {
@@ -661,3 +681,5 @@
   </aside>
 </body>
 </html>
+
+

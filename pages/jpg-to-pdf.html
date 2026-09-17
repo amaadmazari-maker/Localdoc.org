@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JPG to PDF Converter Online (Reorder, Rotate & Margin Controls) — LocalDoc</title>
-  <meta name="description" content="Convert JPG photos, scanned receipts, and images into clean vector A4 PDF documents. Reorder pages, rotate images, and adjust margins in your browser RAM with zero uploads.">
+  <title>JPG to PDF Converter Online (Reorder & Custom Margins) | LocalDoc</title>
+  <meta name="description" content="Convert JPG photos, receipts, and scans into a multi-page PDF document. Custom margins, page orientation, and reordering. 100% private in RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/jpg-to-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -103,6 +103,13 @@
         </div>
         <h1>JPG to PDF Converter Online</h1>
         <p class="tool-desc">Combine JPG photos, documents, and mobile scans into a clean printable A4 PDF. Reorder pages, rotate individual photos, and configure margins in browser RAM.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Select multiple JPG photos, drag to arrange page order, pick margin and orientation settings, and generate a unified PDF document in fractions of a second:</strong> Select multiple JPG photos, drag to arrange page order, pick margin and orientation settings, and generate a unified PDF document in fractions of a second.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -205,7 +212,19 @@
     </div>
 
     <!-- Related Conversion Tools -->
-    <section class="related-tools-section">
+    
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: Combine Multiple JPG Photos into One PDF</h4>
+          <p>Package smartphone camera photos and receipts into standardized, printable A4 documents.</p>
+        </div>
+      </div>
+      <a href="../blog/jpg-to-pdf-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
       <h3 class="related-tools-title">Related Document Conversion Tools</h3>
       <div class="related-tools-grid">
         <a href="pdf-to-jpg.html" class="related-tool-card">
@@ -462,6 +481,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-converted.pdf");
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${uploadedImages.length} Image Page(s) • Portable Document Format (.pdf)`;
         UIUtils.showToast("JPG images converted to PDF document successfully!", "success");
       } catch (err) {
@@ -515,3 +535,5 @@
   </aside>
 </body>
 </html>
+
+

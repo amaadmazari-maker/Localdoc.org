@@ -97,10 +97,11 @@ const UIUtils = {
     if (statusEl && statusText) statusEl.textContent = statusText;
   },
 
-  // Drag & Drop Setup
+  // Drag & Drop Setup (With Fullscreen Window Drag Delight)
   setupDropZone(zoneEl, inputEl, onFilesSelected) {
     if (!zoneEl) return;
 
+    // 1. Local Dropzone Listeners
     ['dragenter', 'dragover'].forEach(name => {
       zoneEl.addEventListener(name, (e) => {
         e.preventDefault();
@@ -119,7 +120,10 @@ const UIUtils = {
 
     zoneEl.addEventListener('drop', (e) => {
       const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) onFilesSelected(files);
+      if (files.length > 0) {
+        UIUtils.triggerHaptic();
+        onFilesSelected(files);
+      }
     });
 
     zoneEl.addEventListener('click', (e) => {
@@ -131,10 +135,166 @@ const UIUtils = {
     if (inputEl) {
       inputEl.addEventListener('change', () => {
         const files = Array.from(inputEl.files);
-        if (files.length > 0) onFilesSelected(files);
+        if (files.length > 0) {
+          UIUtils.triggerHaptic();
+          onFilesSelected(files);
+        }
       });
     }
+
+    // 2. Window-Wide Drag & Drop Delight
+    this.initFullscreenDrop(onFilesSelected);
   },
+
+  // Initialize Global Fullscreen Drag Overlay
+  initFullscreenDrop(onFilesSelected) {
+    let overlay = document.getElementById('global-fullscreen-drop-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'global-fullscreen-drop-overlay';
+      overlay.className = 'fullscreen-drop-overlay';
+      overlay.innerHTML = `
+        <div class="fullscreen-drop-box">
+          <div class="fullscreen-drop-icon">⚡</div>
+          <h3 class="fullscreen-drop-title">Drop Your Document Anywhere</h3>
+          <p class="fullscreen-drop-sub">100% Private in Browser RAM • Zero Server Uploads</p>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    let dragCounter = 0;
+
+    window.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      dragCounter++;
+      if (e.dataTransfer && e.dataTransfer.types && e.dataTransfer.types.includes('Files')) {
+        overlay.classList.add('active');
+      }
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        overlay.classList.remove('active');
+      }
+    });
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      overlay.classList.remove('active');
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) {
+        UIUtils.triggerHaptic();
+        onFilesSelected(files);
+      }
+    });
+  },
+
+  // Subtle Haptic & Click Feedback
+  triggerHaptic(duration = 20) {
+    try {
+      if (navigator.vibrate) {
+        navigator.vibrate(duration);
+      }
+    } catch (e) {}
+  },
+
+  // Render 1-Click Quick Actions (Download, Open in Reader, Share, Copy)
+  renderQuickActions(container, fileBlob, fileName, options = {}) {
+    if (!container || !fileBlob) return;
+
+    let actionsWrap = container.querySelector('.result-quick-actions');
+    if (!actionsWrap) {
+      actionsWrap = document.createElement('div');
+      actionsWrap.className = 'result-quick-actions';
+      container.appendChild(actionsWrap);
+    }
+    actionsWrap.innerHTML = '';
+
+    // 1. Open in Reader Button (Zero-upload instant preview)
+    const isDoc = fileName.match(/\.(pdf|docx|xlsx|txt|png|jpe?g)$/i);
+    if (isDoc) {
+      const readerBtn = document.createElement('button');
+      readerBtn.type = 'button';
+      readerBtn.className = 'btn-quick-action';
+      readerBtn.innerHTML = `<span>👁️ Open in Reader</span>`;
+      readerBtn.addEventListener('click', async () => {
+        UIUtils.triggerHaptic();
+        const dataUrl = await UIUtils.readFileAsDataURL(fileBlob);
+        sessionStorage.setItem('localdoc_view_document', JSON.stringify({
+          dataUrl: dataUrl,
+          filename: fileName,
+          type: fileBlob.type || 'application/pdf'
+        }));
+        const readerUrl = window.location.pathname.includes('/pages/') ? 'document-reader.html' : 'pages/document-reader.html';
+        window.location.href = readerUrl;
+      });
+      actionsWrap.appendChild(readerBtn);
+    }
+
+    // 2. Copy Image to Clipboard (Instant Paste into Word, Docs, Photoshop)
+    const isImg = fileName.match(/\.(png|jpe?g|webp)$/i) || (fileBlob.type && fileBlob.type.startsWith('image/'));
+    if (isImg && navigator.clipboard && window.ClipboardItem) {
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'btn-quick-action';
+      copyBtn.innerHTML = `<span>📋 Copy Image</span>`;
+      copyBtn.addEventListener('click', async () => {
+        UIUtils.triggerHaptic();
+        try {
+          let pngBlob = fileBlob;
+          if (fileBlob.type !== 'image/png') {
+            const img = await UIUtils.loadImage(URL.createObjectURL(fileBlob));
+            const c = document.createElement('canvas');
+            c.width = img.naturalWidth || img.width;
+            c.height = img.naturalHeight || img.height;
+            const cx = c.getContext('2d');
+            cx.drawImage(img, 0, 0);
+            pngBlob = await new Promise(res => c.toBlob(res, 'image/png'));
+          }
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': pngBlob })
+          ]);
+          UIUtils.showToast('✓ Photo copied to clipboard! Paste anywhere (Ctrl+V).', 'success');
+        } catch (err) {
+          console.warn('Clipboard write failed:', err);
+          UIUtils.showToast('Unable to copy directly; please use Download button.', 'info');
+        }
+      });
+      actionsWrap.appendChild(copyBtn);
+    }
+
+    // 3. Native Share API (Mobile WhatsApp, AirDrop, Messages with 1 tap)
+    if (navigator.canShare && navigator.canShare({ files: [new File([fileBlob], fileName, { type: fileBlob.type })] })) {
+      const shareBtn = document.createElement('button');
+      shareBtn.type = 'button';
+      shareBtn.className = 'btn-quick-action';
+      shareBtn.innerHTML = `<span>📱 Share Document</span>`;
+      shareBtn.addEventListener('click', async () => {
+        UIUtils.triggerHaptic();
+        try {
+          const file = new File([fileBlob], fileName, { type: fileBlob.type });
+          await navigator.share({
+            title: fileName,
+            text: 'Processed securely with LocalDoc (localdoc.org)',
+            files: [file]
+          });
+        } catch (err) {
+          if (err.name !== 'AbortError') console.warn('Share error:', err);
+        }
+      });
+      actionsWrap.appendChild(shareBtn);
+    }
+  },
+
 
   // Toast Notification
   showToast(message, type = 'info') {
@@ -453,6 +613,13 @@ const UIUtils = {
 class LocalZip {
   constructor() {
     this.files = [];
+  }
+  static createZip(fileArray, mimeType = 'application/zip') {
+    const zip = new LocalZip();
+    for (const item of fileArray) {
+      zip.addFile(item.filename || item.name, item.bytes || item.data || item.content);
+    }
+    return zip.generateBlob(mimeType);
   }
   addFile(filename, content) {
     let bytes;

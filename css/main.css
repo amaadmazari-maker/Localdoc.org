@@ -1354,7 +1354,222 @@ a:hover {
   margin: 0;
 }
 
-/* Lightbox Modal */
+/* Companion Guide Banner for Tool Pages (SEO 2-Way Linking) */
+.companion-guide-banner {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.07) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin: 28px 0 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.companion-guide-banner:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
+}
+.companion-guide-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1 1 300px;
+}
+.companion-guide-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: rgba(2, 132, 199, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.companion-guide-text h4 {
+  margin: 0 0 3px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.companion-guide-text p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+.companion-guide-btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff !important;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.companion-guide-btn:hover {
+  background: var(--primary-hover, #0369a1);
+  transform: translateX(2px);
+  color: #fff !important;
+}
+
+/* Fullscreen Window Drag & Drop Overlay (Global Delight) */
+.fullscreen-drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 4px dashed rgba(2, 132, 199, 0.6);
+  margin: 16px;
+  border-radius: var(--radius-lg, 16px);
+}
+.fullscreen-drop-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.fullscreen-drop-box {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 36px 48px;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(2, 132, 199, 0.3);
+  transform: scale(0.95);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fullscreen-drop-overlay.active .fullscreen-drop-box {
+  transform: scale(1);
+}
+.fullscreen-drop-icon {
+  font-size: 3.5rem;
+  margin-bottom: 12px;
+  display: inline-block;
+  animation: floatBounce 1.5s ease-in-out infinite;
+}
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.fullscreen-drop-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+}
+.fullscreen-drop-sub {
+  font-size: 0.9rem;
+  color: #94A3B8;
+  margin: 0;
+}
+
+/* Before / After Comparison Slider */
+.before-after-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.before-after-img-after {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.before-after-img-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.before-after-img-before img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.before-after-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #FFFFFF;
+  cursor: ew-resize;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+.before-after-handle-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0284C7;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  font-size: 14px;
+}
+
+/* Quick Action Buttons on Result Cards */
+.result-quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  align-items: center;
+}
+.btn-quick-action {
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm, 8px);
+  border: 1px solid var(--line);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-quick-action:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+.btn-quick-action:active {
+  transform: scale(0.96);
+}
+
+
 .lightbox-modal {
   position: fixed;
   inset: 0;

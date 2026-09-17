@@ -58,6 +58,47 @@
 
   function init() {
     setupEventListeners();
+    parseQueryParams();
+  }
+
+  function parseQueryParams() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const preset = params.get('preset') || params.get('size') || params.get('dim');
+      const kb = params.get('kb') || params.get('target') || params.get('max');
+      const bg = params.get('bg') || params.get('background');
+      const unit = params.get('unit');
+
+      if (preset) {
+        const btn = document.querySelector(`[data-preset-dim="${preset}"]`);
+        if (btn) {
+          btn.click();
+        } else {
+          applyDimensionPreset(preset);
+        }
+      }
+      if (kb) {
+        const kbNum = parseInt(kb, 10);
+        if (kbNum > 0) {
+          targetMaxKB = kbNum;
+          if (targetKbInput) targetKbInput.value = kbNum;
+          if (targetKbSlider) targetKbSlider.value = kbNum;
+          const kbBtn = document.querySelector(`[data-preset-kb="${kbNum}"]`);
+          if (kbBtn) {
+            document.querySelectorAll('[data-preset-kb]').forEach(b => b.classList.remove('active'));
+            kbBtn.classList.add('active');
+          }
+        }
+      }
+      if (bg) {
+        const bgBtn = document.querySelector(`[data-bg-color="${bg}"]`);
+        if (bgBtn) bgBtn.click();
+      }
+      if (unit) {
+        const uBtn = document.querySelector(`[data-unit="${unit}"]`);
+        if (uBtn) uBtn.click();
+      }
+    } catch(e) {}
   }
 
   function setupEventListeners() {
@@ -439,6 +480,10 @@
       <strong>${targetWidth} × ${targetHeight} ${currentUnit}</strong> (${res.pxW} × ${res.pxH} px @ ${targetDPI} DPI)<br>
       <span style="color:${badgeColor}; font-weight:700;">File Size: ${finalSizeKB} KB</span> (Target: ≤ ${targetMaxKB} KB)
     `;
+
+    if (window.UIUtils && UIUtils.renderQuickActions && outputInfo.parentElement) {
+      UIUtils.renderQuickActions(outputInfo.parentElement, outputBlob, res.filename);
+    }
   }
 
   function downloadActivePhoto() {

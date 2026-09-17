@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF to Excel Converter Online — 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Extract tabular data, financial spreadsheets, invoices, and receipts from PDF directly into Microsoft Excel (.xlsx) and CSV files in your browser RAM with zero server uploads.">
+  <title>PDF to Excel Converter (XLSX) Online Free - Extract Tables in RAM | LocalDoc</title>
+  <meta name="description" content="Extract tabular data and spreadsheets from PDF statements into editable Microsoft Excel (.xlsx) files. 100% client-side, zero cloud uploads.">
   <link rel="canonical" href="https://localdoc.org/pages/pdf-to-excel.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -184,6 +184,13 @@
         </div>
         <h1>PDF to Excel Converter Online</h1>
         <p class="tool-desc">Extract tabular grids, financial statements, and receipts into Microsoft Excel (.xlsx) workbooks and CSV files with instant interactive preview.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Select your PDF bank statement or invoice:</strong> Select your PDF bank statement or invoice. LocalDoc detects grid bounding boxes and cell coordinates in RAM, outputting a formatted Microsoft Excel (.xlsx) workbook.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -390,6 +397,18 @@
         </h4>
         <p><strong>Spanned Headers (Colspan/Rowspan):</strong> In complex corporate balance sheets with nested category headers spanning across 3 columns, cells are mapped to the leftmost column index to maintain mathematical integrity across sub-rows.</p>
       </div>
+    
+      <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+      <div class="companion-guide-banner">
+        <div class="companion-guide-content">
+          <div class="companion-guide-icon">ðŸ“–</div>
+          <div class="companion-guide-text">
+            <h4>In-Depth Technical Guide: Extract Tables from PDF into Excel (.xlsx)</h4>
+            <p>Parse financial ledgers and bank statements into structured worksheets with zero cloud uploads.</p>
+          </div>
+        </div>
+        <a href="../blog/pdf-to-excel-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+      </div>
     </article>
 
     <!-- Related Conversion Tools -->
@@ -593,6 +612,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultData.xlsxBlob, (selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".xlsx");
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.xlsxBlob.size)} • ${resultData.totalSheets} Sheet(s) • Microsoft Excel (.xlsx)`;
 
         if (resultData.sheetsData && resultData.sheetsData.length > 0) {
@@ -660,3 +680,5 @@
   </aside>
 </body>
 </html>
+
+

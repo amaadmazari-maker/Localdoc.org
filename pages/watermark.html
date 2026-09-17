@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Watermark to PDF Online (Text & Image Stamps) — LocalDoc</title>
-  <meta name="description" content="Add secure text watermarks or image stamps (logos, signatures) to PDF documents. Customizable angles, opacity, presets (CONFIDENTIAL, DRAFT), and live A4 preview. 100% zero-upload.">
+  <title>Add Watermark to PDF Online (Confidential Text & Stamp Overlays) | LocalDoc</title>
+  <meta name="description" content="Protect confidential documents by stamping custom text watermarks (CONFIDENTIAL, DRAFT) or logo images with adjustable opacity and rotation.">
   <link rel="canonical" href="https://localdoc.org/pages/watermark.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -103,6 +103,13 @@
         </div>
         <h1>Add Watermark to PDF</h1>
         <p class="tool-desc">Stamp confidential badges, company logos, and security watermarks onto your documents with live angle and opacity control. Zero cloud uploads.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Drop your PDF, type your watermark text or choose an image stamp, adjust opacity and angle, and bake the watermark directly into the PDF content streams in RAM:</strong> Drop your PDF, type your watermark text or choose an image stamp, adjust opacity and angle, and bake the watermark directly into the PDF content streams in RAM.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -278,7 +285,19 @@
     </div>
 
     <!-- Related Tools -->
-    <section class="related-tools-section">
+    
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: Add Security Watermarks to Confidential PDFs</h4>
+          <p>Apply diagonal semi-transparent vector watermarks using ExtGState alpha blending.</p>
+        </div>
+      </div>
+      <a href="../blog/watermark-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
       <h3 class="related-tools-title">Related Document Tools</h3>
       <div class="related-tools-grid">
         <a href="page-numbers.html" class="related-tool-card">
@@ -489,6 +508,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Watermarking complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-watermarked.pdf");
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • Watermarked ${res.totalPages} Page(s) with "${options.text}"`;
         UIUtils.showToast("Watermark applied successfully!", "success");
       } catch (err) {
@@ -542,3 +562,5 @@
   </aside>
 </body>
 </html>
+
+

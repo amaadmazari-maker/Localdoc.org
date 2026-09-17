@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Excel to PDF Converter Online — 100% Zero-Upload Client-Side | LocalDoc</title>
-  <meta name="description" content="Convert Excel spreadsheets (.xlsx, .xls, .csv) to printable A4 PDF documents in your browser. Supports multi-sheet workbooks, landscape & portrait orientations with zero cloud uploads.">
+  <title>Excel to PDF Converter (XLSX to PDF) Online Free - Zero-Upload | LocalDoc</title>
+  <meta name="description" content="Convert Excel spreadsheets (.xlsx, .xls, .csv) into clean, printable PDF documents. 100% in-browser processing with zero server uploads.">
   <link rel="canonical" href="https://localdoc.org/pages/excel-to-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -103,6 +103,13 @@
         </div>
         <h1>Excel to PDF Converter Online</h1>
         <p class="tool-desc">Render spreadsheet tables, workbooks, and CSVs to clean, printable A4 PDF documents with custom orientation and gridlines in your device RAM.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Upload your spreadsheet:</strong> Upload your spreadsheet. LocalDoc computes row heights, column widths, and table formatting in memory, exporting a ready-to-print vector PDF.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -205,7 +212,19 @@
     </div>
 
     <!-- Related Conversion Tools -->
-    <section class="related-tools-section">
+    
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: Convert Excel Spreadsheets to Landscape PDF</h4>
+          <p>Format multi-column XLSX spreadsheets into audit-grade landscape PDF reports.</p>
+        </div>
+      </div>
+      <a href="../blog/excel-to-pdf-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
       <h3 class="related-tools-title">Related Document Conversion Tools</h3>
       <div class="related-tools-grid">
         <a href="pdf-to-excel.html" class="related-tool-card">
@@ -380,6 +399,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, (selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".pdf");
         const sheetCount = resultData.sheetsInfo ? resultData.sheetsInfo.length : 1;
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.pdfBlob.size)} • ${sheetCount} Sheet(s) • Portable Document Format (.pdf)`;
         UIUtils.showToast("Excel spreadsheet converted to PDF successfully!", "success");
@@ -435,3 +455,5 @@
   </aside>
 </body>
 </html>
+
+

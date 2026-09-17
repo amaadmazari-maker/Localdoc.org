@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image to Text OCR Studio (Neural Text Recognition) — 100% Zero-Upload | LocalDoc</title>
-  <meta name="description" content="Extract editable text from images, receipts, scanned forms, and documents using neural client-side OCR. Download as TXT or Word document with zero server uploads.">
+  <title>Image to Text OCR Studio (Extract Text from Photos & Scans) | LocalDoc</title>
+  <meta name="description" content="Extract editable text from images, receipts, and book scans using local Tesseract WebAssembly. Copy text, download TXT, or export to Word (.docx) in RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/image-to-text.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -205,6 +205,13 @@
         </div>
         <h1>Image to Text OCR Studio</h1>
         <p class="tool-desc">Extract text from document photos, book pages, receipts, and invoices with automatic contrast pre-processing. 100% private in browser RAM.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Drop any photo or scan containing text:</strong> Drop any photo or scan containing text. LocalDoc's neural OCR engine recognizes characters directly in your browser without uploading your sensitive documents to any cloud server.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -496,7 +503,19 @@
     </div>
 
     <!-- Related Tools -->
-    <section class="related-tools-section">
+    
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: Optical Character Recognition (OCR) in Browser RAM</h4>
+          <p>Extract selectable text from book scans and receipts using local Tesseract WebAssembly.</p>
+        </div>
+      </div>
+      <a href="../blog/image-to-text-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
       <h3 class="related-tools-title">Related Document Tools</h3>
       <div class="related-tools-grid">
         <a href="scan.html" class="related-tool-card">
@@ -682,6 +701,8 @@
 
         UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
         resultCard.style.display = "block";
+        const ocrBlob = new Blob([transcribedText], { type: 'text/plain;charset=utf-8' });
+        UIUtils.renderQuickActions(resultCard, ocrBlob, (queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-ocr") + ".txt");
         UIUtils.showToast("OCR transcription completed successfully!", "success");
       } catch (err) {
         console.error(err);
@@ -781,3 +802,5 @@
   </aside>
 </body>
 </html>
+
+

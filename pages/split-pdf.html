@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Split PDF Files Online (Range Extract & Burst ZIP) — LocalDoc</title>
-  <meta name="description" content="Split PDF documents by page ranges, extract specific pages, or burst every single page into separate files with a ZIP download. 100% zero-upload client-side processing.">
+  <title>Split PDF Online Free (Extract Pages & Burst to ZIP in RAM) | LocalDoc</title>
+  <meta name="description" content="Extract specific page ranges or burst all pages into individual PDFs as a ZIP archive. 100% client-side zero-upload execution. Fast, free, and secure.">
   <link rel="canonical" href="https://localdoc.org/pages/split-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -184,6 +184,13 @@
         </div>
         <h1>Split PDF Files Online</h1>
         <p class="tool-desc">Extract custom page ranges into a new document or burst every single page into individual PDF files bundled as a ZIP archive.</p>
+      </div>
+
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Upload your PDF, visually select individual page thumbnails or type page ranges, and download your extracted PDF or full page-by-page ZIP bundle instantly:</strong> Upload your PDF, visually select individual page thumbnails or type page ranges, and download your extracted PDF or full page-by-page ZIP bundle instantly.
+        </p>
       </div>
 
       <!-- Drop Zone -->
@@ -418,6 +425,18 @@
         </h4>
         <p><strong>Page Number Validation:</strong> Page numbers must be within the actual page count of the document. If your file has 20 pages and you enter "15-25", LocalDoc will automatically clamp the upper bound to page 20.</p>
         <p><strong>Bursting 100+ Page Documents on Mobile:</strong> Generating over 100 separate PDF files and compressing them into a ZIP archive creates substantial memory allocation. If using an older smartphone, extract chapters in batches of 20 to 30 pages to prevent tab memory refreshes.</p>
+      </div>
+    
+      <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+      <div class="companion-guide-banner">
+        <div class="companion-guide-content">
+          <div class="companion-guide-icon">ðŸ“–</div>
+          <div class="companion-guide-text">
+            <h4>In-Depth Technical Guide: How to Split PDF Pages & Extract Chapters</h4>
+            <p>Step-by-step tutorial on bursting regulatory filings and extracting ranges without quality loss.</p>
+          </div>
+        </div>
+        <a href="../blog/split-pdf-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
       </div>
     </article>
 
@@ -710,7 +729,7 @@
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
-    processBtn.addEventListener("click", async function() {
+        processBtn.addEventListener("click", async function() {
       if (!selectedFile) return;
 
       try {
@@ -722,7 +741,7 @@
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           downloadBtnText.textContent = "Download ZIP Archive (.zip)";
-          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.totalPages} Individual PDF Pages Bundled`;
+          document.getElementById("result-meta").textContent = Size:  â€¢  Individual PDF Pages Bundled;
         } else {
           const pagesList = Array.from(selectedPagesSet);
           if (pagesList.length === 0) {
@@ -732,13 +751,14 @@
           const res = await PDFOrganize.splitPDF(selectedFile, pagesList, progressCb);
           resultBlob = res.pdfBlob;
           const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-          resultFilename = `${baseName}-extracted-${res.extractedPagesCount}pages.pdf`;
+          resultFilename = ${baseName}-extracted-pages.pdf;
           downloadBtnText.textContent = "Download Extracted PDF";
-          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${res.extractedPagesCount} of ${res.totalPages} Page(s) Extracted`;
+          document.getElementById("result-meta").textContent = Size:  â€¢  of  Page(s) Extracted;
         }
 
         UIUtils.setWorkflowStep(3, 100, "Split completed successfully!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
         UIUtils.showToast("Operation completed successfully!", "success");
       } catch (err) {
         console.error(err);
@@ -791,3 +811,5 @@
   </aside>
 </body>
 </html>
+
+

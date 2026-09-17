@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v7-2026-pro';
+const CACHE_NAME = 'localdoc-v8-2026-ultimate';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -36,18 +36,38 @@ const ASSETS_TO_CACHE = [
   '/js/tools/pdf-to-pptx.js',
   '/js/tools/organize-pdf.js',
   '/js/tools/calculator.js',
-  '/pages/scan.html',
-  '/pages/document-reader.html',
+  '/pages/compress-pdf.html',
+  '/pages/merge-pdf.html',
+  '/pages/split-pdf.html',
+  '/pages/pdf-to-word.html',
+  '/pages/word-to-pdf.html',
+  '/pages/pdf-to-excel.html',
+  '/pages/excel-to-pdf.html',
+  '/pages/pdf-to-jpg.html',
+  '/pages/pdf-to-png.html',
+  '/pages/jpg-to-pdf.html',
+  '/pages/png-to-pdf.html',
   '/pages/photo-resizer.html',
+  '/pages/scan.html',
+  '/pages/id-photo.html',
+  '/pages/passport-photo-maker.html',
+  '/pages/visa-photo-maker.html',
+  '/pages/cnic-photo-maker.html',
+  '/pages/image-to-text.html',
+  '/pages/rotate-pdf.html',
+  '/pages/page-numbers.html',
+  '/pages/watermark.html',
+  '/pages/protect-pdf.html',
+  '/pages/sign-pdf.html',
+  '/pages/create-pdf.html',
+  '/pages/edit-pdf.html',
+  '/pages/document-reader.html',
+  '/pages/scientific-calculator.html',
   '/pages/pdf-to-powerpoint.html',
   '/pages/organize-pdf.html',
-  '/pages/scientific-calculator.html',
-  '/pages/id-photo.html',
-  '/assets/icons/document-reader.svg',
-  '/assets/icons/calculator.svg',
-  '/assets/icons/photo-resizer.svg',
-  '/assets/icons/pdf-to-powerpoint.svg',
-  '/assets/icons/organize-pdf.svg'
+  '/assets/icons/favicon.svg',
+  '/assets/icons/brand-logo.svg',
+  '/assets/icons/zero-upload-badge.svg'
 ];
 
 self.addEventListener('install', (event) => {

@@ -12,8 +12,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CNIC Photo Maker Online (NADRA 354x472 & 35x45mm) — 100% Zero-Upload | LocalDoc</title>
-  <meta name="description" content="Crop and format official Pakistan NADRA CNIC and NICOP biometric photos (354x472 px / 35x45mm) with printable 4x6 inch 8-photo sheet generator. 100% zero-upload in browser RAM.">
+  <title>CNIC Photo Maker Online (NADRA Pak-Identity 354x472 px Compliant) | LocalDoc</title>
+  <meta name="description" content="Make compliant Pakistan CNIC, NICOP, and Smart Card photos matching NADRA Pak-Identity specifications (354x472 px, 35x45mm, Light Blue/White).">
   <link rel="canonical" href="https://localdoc.org/pages/cnic-photo-maker.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -117,6 +117,13 @@
         <p class="tool-desc">Format portrait photos to exact NADRA Pak-Identity specifications (354x472 px / 35x45mm) with printable 4x6" 8-photo grid generator.</p>
       </div>
 
+      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Upload your portrait, select NADRA online or print standard, and LocalDoc crops your photo to exact 354x472 pixel dimensions with light blue or white background in RAM:</strong> Upload your portrait, select NADRA online or print standard, and LocalDoc crops your photo to exact 354x472 pixel dimensions with light blue or white background in RAM.
+        </p>
+      </div>
+
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
@@ -218,7 +225,19 @@
     </div>
 
     <!-- Related Tools -->
-    <section class="related-tools-section">
+    
+    <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
+    <div class="companion-guide-banner">
+      <div class="companion-guide-content">
+        <div class="companion-guide-icon">ðŸ“–</div>
+        <div class="companion-guide-text">
+          <h4>In-Depth Technical Guide: NADRA CNIC & Smart Card Photo Guidelines</h4>
+          <p>Official blue background specifications and dimensions for Pakistani national ID portals.</p>
+        </div>
+      </div>
+      <a href="../blog/cnic-photo-maker-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
+    </div>
+<section class="related-tools-section">
       <h3 class="related-tools-title">Related Biometric & Document Tools</h3>
       <div class="related-tools-grid">
         <a href="passport-photo-maker.html" class="related-tool-card">
@@ -384,6 +403,7 @@
         UIUtils.setWorkflowStep(3, 100, "Photo Generated Successfully!");
 
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultBlob, "cnic-photo.jpg");
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${isSheet ? '4x6" 300 DPI Printable Grid (8 Photos)' : 'Single NADRA Photo (354x472 px)'}`;
         UIUtils.showToast("CNIC photo ready!", "success");
       } catch (err) {
@@ -438,3 +458,5 @@
   </aside>
 </body>
 </html>
+
+

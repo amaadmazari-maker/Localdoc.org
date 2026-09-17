@@ -185,6 +185,75 @@ const IDPhoto = {
     ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
     ctx.restore();
 
+    // 2b. Intelligent Studio Background Replacement & Edge Feathering
+    if (bgColor && bgColor !== 'transparent') {
+      try {
+        const imgData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+        const data = imgData.data;
+        const total = targetWidth * targetHeight;
+
+        // Parse target background RGB
+        let targetR = 255, targetG = 255, targetB = 255;
+        if (bgColor.startsWith('#')) {
+          const hex = bgColor.slice(1);
+          if (hex.length === 6) {
+            targetR = parseInt(hex.slice(0, 2), 16);
+            targetG = parseInt(hex.slice(2, 4), 16);
+            targetB = parseInt(hex.slice(4, 6), 16);
+          }
+        }
+
+        // Sample ambient background colors from top corners
+        const cornerSamples = [
+          0, 4, 8, targetWidth * 4 - 4, targetWidth * 4 - 8,
+          targetWidth * 10 * 4, targetWidth * 10 * 4 + targetWidth * 4 - 4
+        ];
+        let bgSampleR = 0, bgSampleG = 0, bgSampleB = 0, sampleCount = 0;
+        cornerSamples.forEach(idx => {
+          if (idx >= 0 && idx < data.length - 4) {
+            bgSampleR += data[idx];
+            bgSampleG += data[idx + 1];
+            bgSampleB += data[idx + 2];
+            sampleCount++;
+          }
+        });
+        if (sampleCount > 0) {
+          bgSampleR /= sampleCount;
+          bgSampleG /= sampleCount;
+          bgSampleB /= sampleCount;
+        }
+
+        // Apply smooth studio background keying for outer perimeter background
+        for (let y = 0; y < targetHeight; y++) {
+          for (let x = 0; x < targetWidth; x++) {
+            // Focus on top, left, right perimeter background (above shoulders)
+            const isPerimeter = y < targetHeight * 0.45 || x < targetWidth * 0.2 || x > targetWidth * 0.8;
+            if (!isPerimeter) continue;
+
+            const idx = (y * targetWidth + x) * 4;
+            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+
+            // Distance from sampled background
+            const dist = Math.hypot(r - bgSampleR, g - bgSampleG, b - bgSampleB);
+            
+            // Check skin tone exclusion
+            const isSkin = (r > 95 && g > 40 && b > 20 && (r - g) > 15 && r > b && (Math.max(r,g,b) - Math.min(r,g,b) > 15));
+            const isDarkHair = (r < 55 && g < 55 && b < 55);
+
+            if (dist < 55 && !isSkin && !isDarkHair) {
+              const blend = Math.max(0, Math.min(1, (55 - dist) / 35));
+              data[idx] = Math.round(r * (1 - blend) + targetR * blend);
+              data[idx + 1] = Math.round(g * (1 - blend) + targetG * blend);
+              data[idx + 2] = Math.round(b * (1 - blend) + targetB * blend);
+            }
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+      } catch (err) {
+        console.warn('Background keying fallback:', err);
+      }
+    }
+
     // 3. Draw Suit Overlay if enabled
     if (suitKey && suitKey !== 'none' && this.SUIT_TEMPLATES[suitKey]) {
       const suitInfo = this.SUIT_TEMPLATES[suitKey];
