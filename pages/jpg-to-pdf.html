@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="JPG to PDF Converter Online â€” 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="JPG to PDF Converter Online &mdash; 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Combine JPG images into A4 PDF documents with reordering, rotation, and margin controls in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/jpg-to-pdf.html">
   <meta property="og:image" content="../assets/icons/jpg-to-pdf.svg">
@@ -394,10 +394,10 @@
         footer.innerHTML = `
           <span>#${idx + 1}</span>
           <div class="page-thumb-actions">
-            <button class="page-thumb-btn" onclick="moveImage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>â†</button>
-            <button class="page-thumb-btn" onclick="moveImage(${idx}, 1)" ${idx === uploadedImages.length - 1 ? 'disabled' : ''}>â†’</button>
-            <button class="page-thumb-btn" onclick="rotateImage(${idx})">â†»</button>
-            <button class="page-thumb-btn" onclick="removeImage(${idx})" style="color:var(--danger);">âœ•</button>
+            <button class="page-thumb-btn" onclick="moveImage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>&larr;</button>
+            <button class="page-thumb-btn" onclick="moveImage(${idx}, 1)" ${idx === uploadedImages.length - 1 ? 'disabled' : ''}>&rarr;</button>
+            <button class="page-thumb-btn" onclick="rotateImage(${idx})">&#8635;</button>
+            <button class="page-thumb-btn" onclick="removeImage(${idx})" style="color:var(--danger);">&#10005;</button>
           </div>`;
 
         card.appendChild(imgWrap);
@@ -482,7 +482,7 @@
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
         UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-converted.pdf");
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} â€¢ ${uploadedImages.length} Image Page(s) â€¢ Portable Document Format (.pdf)`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; ${uploadedImages.length} Image Page(s) &bull; Portable Document Format (.pdf)`;
         UIUtils.showToast("JPG images converted to PDF document successfully!", "success");
       } catch (err) {
         console.error(err);

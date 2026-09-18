@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Create PDF Online from Images & Scans â€” 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Create PDF Online from Images & Scans &mdash; 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Combine JPG, PNG, WEBP photos into clean A4 or Letter PDFs with reordering, rotation, and margin controls. 100% private in-browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/create-pdf.html">
   <meta property="og:image" content="../assets/icons/jpg-to-pdf.svg">
@@ -81,7 +81,7 @@
           {
             "@type": "HowToStep",
             "name": "Sequence, Rotate & Format",
-            "text": "Arrange page order with navigation arrows, correct orientation with 90Â° rotation, and set target paper size (A4 or US Letter)."
+            "text": "Arrange page order with navigation arrows, correct orientation with 90&deg; rotation, and set target paper size (A4 or US Letter)."
           },
           {
             "@type": "HowToStep",
@@ -114,7 +114,7 @@
             "name": "Can I change page order or fix rotated images before saving?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Each thumbnail features arrows to shift order, a 90Â° rotation button, and a delete button."
+              "text": "Yes. Each thumbnail features arrows to shift order, a 90&deg; rotation button, and a delete button."
             }
           },
           {
@@ -288,7 +288,7 @@
         </div>
         <div class="drop-zone-text">
           <h3>Drag & drop multiple images here, or browse files</h3>
-          <p>Supports JPG, PNG, WEBP, and BMP photos â€¢ Multiple selection enabled</p>
+          <p>Supports JPG, PNG, WEBP, and BMP photos &bull; Multiple selection enabled</p>
         </div>
         <button class="btn btn-primary" id="browse-btn" onclick="document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Browse Image Files</button>
         <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/bmp" multiple style="display:none;">
@@ -547,7 +547,7 @@
           <details class="faq-item">
             <summary class="faq-question">Are my personal photos or scanned documents saved anywhere online?</summary>
             <div class="faq-answer">
-              <p>Never. LocalDoc contains no backend servers or upload APIs. You can verify this by disconnecting your Wi-Fi or enabling Airplane Mode after loading the pageâ€”the tool will continue to work flawlessly 100% offline.</p>
+              <p>Never. LocalDoc contains no backend servers or upload APIs. You can verify this by disconnecting your Wi-Fi or enabling Airplane Mode after loading the page&mdash;the tool will continue to work flawlessly 100% offline.</p>
             </div>
           </details>
         </div>
@@ -744,10 +744,10 @@
           <div class="thumb-footer">
             <span style="font-weight:700;">#${idx + 1}</span>
             <div class="thumb-actions">
-              <button class="thumb-action-btn" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">â†</button>
-              <button class="thumb-action-btn" onclick="moveItem(${idx}, 1)" ${idx === imageList.length - 1 ? 'disabled' : ''} title="Move Right">â†’</button>
-              <button class="thumb-action-btn" onclick="rotateItem(${idx})" title="Rotate 90Â°">â†»</button>
-              <button class="thumb-action-btn" style="color:var(--danger);" onclick="deleteItem(${idx})" title="Remove">âœ•</button>
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">&larr;</button>
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, 1)" ${idx === imageList.length - 1 ? 'disabled' : ''} title="Move Right">&rarr;</button>
+              <button class="thumb-action-btn" onclick="rotateItem(${idx})" title="Rotate 90&deg;">&#8635;</button>
+              <button class="thumb-action-btn" style="color:var(--danger);" onclick="deleteItem(${idx})" title="Remove">&#10005;</button>
             </div>
           </div>
         `;
@@ -858,7 +858,7 @@
         compiledBlob = new Blob([pdfBytes], { type: 'application/pdf' });
         compiledFilename = `LocalDoc_Created_${new Date().toISOString().slice(0, 10)}.pdf`;
 
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledBlob.size)} â€¢ Compiled ${imageList.length} Pages into Vector PDF`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledBlob.size)} &bull; Compiled ${imageList.length} Pages into Vector PDF`;
         document.getElementById("download-btn-text").textContent = `Download ${compiledFilename}`;
 
         UIUtils.setWorkflowStep(3, 100, "PDF Ready!");

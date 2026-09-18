@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Edit & Sign PDF Online â€” 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Edit & Sign PDF Online &mdash; 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Sign PDFs, draw signatures, and add date stamps in browser RAM with zero server uploads.">
   <meta property="og:url" content="https://localdoc.org/pages/edit-pdf.html">
   <meta property="og:image" content="../assets/icons/edit-pdf.svg">
@@ -397,8 +397,8 @@
                 <button type="button" class="btn btn-outline" id="btn-pdf-next" style="padding:4px 10px; font-size:0.8rem;">Next â–¶</button>
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:0.78rem; color:#94A3B8;">ðŸ’¡ Drag items directly on page</span>
-                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:2px 8px; font-size:0.8rem;">âˆ’</button>
+                <span style="font-size:0.78rem; color:#94A3B8;">&#128161; Drag items directly on page</span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:2px 8px; font-size:0.8rem;">&minus;</button>
                 <span id="pdf-zoom-level" style="font-size:0.8rem; font-weight:700;">100%</span>
                 <button type="button" class="btn btn-outline" id="btn-pdf-zoom-in" style="padding:2px 8px; font-size:0.8rem;">+</button>
               </div>
@@ -790,7 +790,7 @@
       // Delete button
       const delBtn = document.createElement('button');
       delBtn.className = 'del-anno-btn';
-      delBtn.textContent = 'âœ•';
+      delBtn.textContent = '&#10005;';
       delBtn.title = 'Remove';
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -816,7 +816,7 @@
       } else if (anno.type === 'date') {
         const span = document.createElement('span');
         span.className = 'visual-anno-date';
-        span.textContent = `ðŸ“… Signed: ${anno.text}`;
+        span.textContent = `&#128197; Signed: ${anno.text}`;
         box.appendChild(span);
       }
 
@@ -1081,7 +1081,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Signing complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} â€¢ Embedded signature and annotations into ${res.stampedPagesCount} Page(s)`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; Embedded signature and annotations into ${res.stampedPagesCount} Page(s)`;
         UIUtils.showToast("Signed PDF successfully generated in RAM!", "success");
       } catch (err) {
         console.error(err);

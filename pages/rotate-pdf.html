@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Rotate PDF Pages Online â€” 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Rotate PDF Pages Online &mdash; 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Permanently rotate individual or all PDF pages in browser RAM. 100% private.">
   <meta property="og:url" content="https://localdoc.org/pages/rotate-pdf.html">
   <meta property="og:image" content="../assets/icons/rotate-pdf.svg">
@@ -143,9 +143,9 @@
       <div id="bulk-actions-bar" style="display:none; margin-top:24px; background:var(--bg-surface); padding:14px 20px; border:1px solid var(--line); border-radius:var(--radius-md); justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <span style="font-weight:700; font-size:0.88rem; color:var(--text-primary);">Bulk Rotate:</span>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-outline" onclick="rotateAll(90)" style="font-size:0.8rem; padding:5px 10px;">â†» Rotate All 90Â° CW</button>
-          <button class="btn btn-outline" onclick="rotateAll(-90)" style="font-size:0.8rem; padding:5px 10px;">â†º Rotate All 90Â° CCW</button>
-          <button class="btn btn-outline" onclick="rotateAll(180)" style="font-size:0.8rem; padding:5px 10px;">180Â° Flip All</button>
+          <button class="btn btn-outline" onclick="rotateAll(90)" style="font-size:0.8rem; padding:5px 10px;">&#8635; Rotate All 90&deg; CW</button>
+          <button class="btn btn-outline" onclick="rotateAll(-90)" style="font-size:0.8rem; padding:5px 10px;">&#8634; Rotate All 90&deg; CCW</button>
+          <button class="btn btn-outline" onclick="rotateAll(180)" style="font-size:0.8rem; padding:5px 10px;">180&deg; Flip All</button>
           <button class="btn btn-outline" onclick="rotateOdd(90)" style="font-size:0.8rem; padding:5px 10px;">Odd Pages</button>
           <button class="btn btn-outline" onclick="rotateEven(90)" style="font-size:0.8rem; padding:5px 10px;">Even Pages</button>
           <button class="btn btn-outline" onclick="resetAllRotations()" style="font-size:0.8rem; padding:5px 10px; color:var(--danger);">Reset All</button>
@@ -218,7 +218,7 @@
       <div class="companion-guide-content">
         <div class="companion-guide-icon">&#128214;</div>
         <div class="companion-guide-text">
-          <h4>In-Depth Technical Guide: Rotate PDF Pages Permanently (90Ã‚Â°/180Ã‚Â°)</h4>
+          <h4>In-Depth Technical Guide: Rotate PDF Pages Permanently (90Ã‚&deg;/180Ã‚&deg;)</h4>
           <p>Understand the /Rotate dictionary key mutation in browser RAM with instant export.</p>
         </div>
       </div>
@@ -390,10 +390,10 @@
               </div>
             </div>
             <div class="page-thumb-footer" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); border-top:1px solid var(--line);">
-              <span style="font-weight:700; font-size:0.85rem;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-weight:800; font-size:0.75rem;">(0Â°)</small></span>
+              <span style="font-weight:700; font-size:0.85rem;">Page ${pNum} <small id="angle-tag-${i}" style="color:var(--primary); font-weight:800; font-size:0.75rem;">(0&deg;)</small></span>
               <div class="page-thumb-actions" style="display:flex; gap:4px;">
-                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, 90)">â†» 90Â°</button>
-                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, -90)">â†º</button>
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, 90)">&#8635; 90&deg;</button>
+                <button type="button" class="page-thumb-btn" style="padding:3px 8px; font-size:0.78rem; font-weight:700;" onclick="rotateSinglePage(${i}, -90)">&#8634;</button>
               </div>
             </div>
           `;
@@ -429,7 +429,7 @@
       const preview = document.getElementById(`thumb-preview-${idx}`);
       const tag = document.getElementById(`angle-tag-${idx}`);
       if (preview) preview.style.transform = `rotate(${current}deg)`;
-      if (tag) tag.textContent = `(${current}Â°)`;
+      if (tag) tag.textContent = `(${current}&deg;)`;
     };
 
     window.rotateAll = function(deg) {
@@ -456,7 +456,7 @@
         const preview = document.getElementById(`thumb-preview-${i}`);
         const tag = document.getElementById(`angle-tag-${i}`);
         if (preview) preview.style.transform = `rotate(0deg)`;
-        if (tag) tag.textContent = `(0Â°)`;
+        if (tag) tag.textContent = `(0&deg;)`;
       }
     };
 
@@ -493,7 +493,7 @@
         UIUtils.setWorkflowStep(3, 100, "Rotation complete!");
         resultCard.style.display = "flex";
         UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-rotated.pdf");
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} â€¢ ${res.rotatedPagesCount} of ${res.totalPages} Page(s) Rotated Losslessly`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; ${res.rotatedPagesCount} of ${res.totalPages} Page(s) Rotated Losslessly`;
         UIUtils.showToast("Rotations applied successfully!", "success");
       } catch (err) {
         console.error(err);
