@@ -621,7 +621,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Merge complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = Size:  • Combined  Documents ( Total Pages);
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob ? resultBlob.size : (resultData && resultData.xlsxBlob ? resultData.xlsxBlob.size : 0))} â€¢ Processed Successfully`;
         UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-merged-document.pdf");
         UIUtils.showToast("PDF files merged successfully!", "success");
       } catch (err) {

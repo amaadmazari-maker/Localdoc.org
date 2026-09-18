@@ -101,6 +101,13 @@ const UIUtils = {
   setupDropZone(zoneEl, inputEl, onFilesSelected) {
     if (!zoneEl) return;
 
+    if (inputEl) {
+      inputEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        inputEl.value = '';
+      });
+    }
+
     // 1. Local Dropzone Listeners
     ['dragenter', 'dragover'].forEach(name => {
       zoneEl.addEventListener(name, (e) => {
@@ -119,6 +126,8 @@ const UIUtils = {
     });
 
     zoneEl.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) {
         UIUtils.triggerHaptic();
@@ -127,9 +136,20 @@ const UIUtils = {
     });
 
     zoneEl.addEventListener('click', (e) => {
-      if (e.target.tagName !== 'BUTTON' && inputEl) {
+      if (inputEl && e.target !== inputEl) {
         inputEl.click();
       }
+    });
+
+    const browseBtns = zoneEl.querySelectorAll('button, #browse-btn, .btn');
+    browseBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (inputEl) {
+          inputEl.click();
+        }
+      });
     });
 
     if (inputEl) {

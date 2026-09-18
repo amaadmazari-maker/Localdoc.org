@@ -103,6 +103,7 @@
 
   function setupEventListeners() {
     if (!dropZone || !fileInput) return;
+    fileInput.addEventListener('click', (e) => { e.stopPropagation(); fileInput.value = ''; });
 
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', (e) => {

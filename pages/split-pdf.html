@@ -741,7 +741,7 @@
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           downloadBtnText.textContent = "Download ZIP Archive (.zip)";
-          document.getElementById("result-meta").textContent = Size:  •  Individual PDF Pages Bundled;
+          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob ? resultBlob.size : (resultData && resultData.xlsxBlob ? resultData.xlsxBlob.size : 0))} â€¢ Processed Successfully`;
         } else {
           const pagesList = Array.from(selectedPagesSet);
           if (pagesList.length === 0) {
@@ -751,9 +751,9 @@
           const res = await PDFOrganize.splitPDF(selectedFile, pagesList, progressCb);
           resultBlob = res.pdfBlob;
           const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-          resultFilename = ${baseName}-extracted-pages.pdf;
+          resultFilename = `${baseName}-extracted-pages.pdf`;
           downloadBtnText.textContent = "Download Extracted PDF";
-          document.getElementById("result-meta").textContent = Size:  •  of  Page(s) Extracted;
+          document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob ? resultBlob.size : (resultData && resultData.xlsxBlob ? resultData.xlsxBlob.size : 0))} â€¢ Processed Successfully`;
         }
 
         UIUtils.setWorkflowStep(3, 100, "Split completed successfully!");
