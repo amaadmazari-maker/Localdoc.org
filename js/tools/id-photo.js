@@ -474,8 +474,8 @@ const IDPhoto = {
     backImageOrUrl,
     docTitle = 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET'
   }) {
-    const frontImg = typeof frontImageOrUrl === 'string' ? await UIUtils.loadImage(frontImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(frontImageOrUrl));
-    const backImg = typeof backImageOrUrl === 'string' ? await UIUtils.loadImage(backImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(backImageOrUrl));
+    const frontImg = typeof frontImageOrUrl === 'string' &ndash; await UIUtils.loadImage(frontImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(frontImageOrUrl));
+    const backImg = typeof backImageOrUrl === 'string' &ndash; await UIUtils.loadImage(backImageOrUrl) : await UIUtils.loadImage(await UIUtils.readFileAsDataURL(backImageOrUrl));
 
     const canvas = document.createElement('canvas');
     canvas.width = 2480;

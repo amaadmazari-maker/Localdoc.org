@@ -57,9 +57,9 @@
     const angleBtn = document.getElementById('calc-angle-toggle');
     if (angleBtn) {
       angleBtn.addEventListener('click', () => {
-        angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+        angleMode = angleMode === 'DEG' &ndash; 'RAD' : 'DEG';
         if (angleModeBadge) angleModeBadge.textContent = angleMode;
-        angleBtn.textContent = angleMode === 'DEG' ? 'RAD' : 'DEG';
+        angleBtn.textContent = angleMode === 'DEG' &ndash; 'RAD' : 'DEG';
       });
     }
 
@@ -68,8 +68,8 @@
       toggle2ndBtn.addEventListener('click', () => {
         is2ndActive = !is2ndActive;
         toggle2ndBtn.classList.toggle('active', is2ndActive);
-        document.querySelectorAll('.calc-primary-fn').forEach(el => el.style.display = is2ndActive ? 'none' : 'inline-block');
-        document.querySelectorAll('.calc-secondary-fn').forEach(el => el.style.display = is2ndActive ? 'inline-block' : 'none');
+        document.querySelectorAll('.calc-primary-fn').forEach(el => el.style.display = is2ndActive &ndash; 'none' : 'inline-block');
+        document.querySelectorAll('.calc-secondary-fn').forEach(el => el.style.display = is2ndActive &ndash; 'inline-block' : 'none');
       });
     }
 
@@ -101,7 +101,7 @@
           const parts = expression.split(/[\+\-\×\÷\^\(\)]/);
           const currentNum = parts[parts.length - 1];
           if (!currentNum.includes('.')) {
-            expression += (currentNum === '' ? '0.' : '.');
+            expression += (currentNum === '' &ndash; '0.' : '.');
           }
         }
         break;
@@ -237,13 +237,13 @@
 
   function updateMemoryBadge() {
     if (memoryBadge) {
-      memoryBadge.style.display = hasMemory ? 'inline-block' : 'none';
+      memoryBadge.style.display = hasMemory &ndash; 'inline-block' : 'none';
     }
   }
 
   function updateDisplay() {
     if (exprDisplay) {
-      exprDisplay.textContent = expression || (isResultDisplayed ? '' : '0');
+      exprDisplay.textContent = expression || (isResultDisplayed &ndash; '' : '0');
     }
     if (resultDisplay) {
       resultDisplay.textContent = lastResult;
@@ -276,8 +276,8 @@
     s = s.replace(/(\d+)!/g, 'fact($1)');
 
     // Handle trigonometric functions considering DEG/RAD
-    const trigAngleFactor = angleMode === 'DEG' ? '(Math.PI/180)*' : '';
-    const invTrigAngleFactor = angleMode === 'DEG' ? '*(180/Math.PI)' : '';
+    const trigAngleFactor = angleMode === 'DEG' &ndash; '(Math.PI/180)*' : '';
+    const invTrigAngleFactor = angleMode === 'DEG' &ndash; '*(180/Math.PI)' : '';
 
     s = s.replace(/sin\(/g, `Math.sin(${trigAngleFactor}`)
          .replace(/cos\(/g, `Math.cos(${trigAngleFactor}`)
@@ -438,7 +438,7 @@
         }
         if (a === 0) {
           if (b === 0) {
-            quadResult.innerHTML = c === 0 ? 'Infinite solutions (0 = 0).' : '<span style="color:var(--danger)">No solution.</span>';
+            quadResult.innerHTML = c === 0 &ndash; 'Infinite solutions (0 = 0).' : '<span style="color:var(--danger)">No solution.</span>';
           } else {
             const x = -c / b;
             quadResult.innerHTML = `<strong>Linear equation:</strong> x = ${formatDisplayNumber(x)}`;
@@ -483,7 +483,7 @@
 
     // Programmer Base Synchronizer (DEC, HEX, BIN, OCT)
     const updateBases = (val, source) => {
-      let num = parseInt(val, source === 'hex' ? 16 : source === 'bin' ? 2 : source === 'oct' ? 8 : 10);
+      let num = parseInt(val, source === 'hex' &ndash; 16 : source === 'bin' &ndash; 2 : source === 'oct' &ndash; 8 : 10);
       if (isNaN(num)) {
         if (source !== 'dec' && baseDec) baseDec.value = '';
         if (source !== 'hex' && baseHex) baseHex.value = '';

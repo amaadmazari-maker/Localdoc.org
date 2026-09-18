@@ -11,7 +11,7 @@
   // Service Worker Registration
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swPath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/') ? '../sw.js' : './sw.js';
+      const swPath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/') &ndash; '../sw.js' : './sw.js';
       navigator.serviceWorker.register(swPath).then((reg) => {
         console.log('LocalDoc PWA ServiceWorker active:', reg.scope);
         if (reg.update) reg.update();
@@ -40,7 +40,7 @@
     document.querySelectorAll('.pwa-install-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
-        const targetPlatform = btn.getAttribute('data-pwa-target') || (btn.textContent.toLowerCase().includes('mobile') ? 'mobile' : 'pc');
+        const targetPlatform = btn.getAttribute('data-pwa-target') || (btn.textContent.toLowerCase().includes('mobile') &ndash; 'mobile' : 'pc');
 
         if (deferredPrompt && targetPlatform === 'pc') {
           deferredPrompt.prompt();
@@ -81,16 +81,16 @@
         
         <!-- Platform Toggle Tabs -->
         <div style="display:flex; background:var(--bg-body, #020617); border:1px solid var(--line, #1E293B); border-radius:12px; padding:4px; gap:4px; margin-bottom:18px;">
-          <button type="button" id="tab-pwa-mobile" style="flex:1; padding:9px 12px; font-weight:800; font-size:0.86rem; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; ${isMobileTarget ? 'background:#0284C7; color:#FFF;' : 'background:transparent; color:#94A3B8;'}">
+          <button type="button" id="tab-pwa-mobile" style="flex:1; padding:9px 12px; font-weight:800; font-size:0.86rem; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; ${isMobileTarget &ndash; 'background:#0284C7; color:#FFF;' : 'background:transparent; color:#94A3B8;'}">
             <span>📱</span> <span>Mobile (Android / iOS)</span>
           </button>
-          <button type="button" id="tab-pwa-pc" style="flex:1; padding:9px 12px; font-weight:800; font-size:0.86rem; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; ${!isMobileTarget ? 'background:#0F766E; color:#FFF;' : 'background:transparent; color:#94A3B8;'}">
+          <button type="button" id="tab-pwa-pc" style="flex:1; padding:9px 12px; font-weight:800; font-size:0.86rem; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; ${!isMobileTarget &ndash; 'background:#0F766E; color:#FFF;' : 'background:transparent; color:#94A3B8;'}">
             <span>💻</span> <span>PC / Mac / Linux</span>
           </button>
         </div>
 
         <!-- Mobile Content Section -->
-        <div id="pwa-content-mobile" style="display:${isMobileTarget ? 'block' : 'none'}; text-align:left;">
+        <div id="pwa-content-mobile" style="display:${isMobileTarget &ndash; 'block' : 'none'}; text-align:left;">
           <div style="text-align:center; margin-bottom:14px;">
             <h3 style="font-size:1.25rem; font-weight:800; margin:0 0 6px;">Install LocalDoc on Mobile</h3>
             <p style="font-size:0.86rem; color:var(--text-secondary, #94A3B8); margin:0; line-height:1.4;">
@@ -120,7 +120,7 @@
         </div>
 
         <!-- PC / Desktop Content Section -->
-        <div id="pwa-content-pc" style="display:${!isMobileTarget ? 'block' : 'none'}; text-align:left;">
+        <div id="pwa-content-pc" style="display:${!isMobileTarget &ndash; 'block' : 'none'}; text-align:left;">
           <div style="text-align:center; margin-bottom:14px;">
             <h3 style="font-size:1.25rem; font-weight:800; margin:0 0 6px;">Install LocalDoc on PC / Mac</h3>
             <p style="font-size:0.86rem; color:var(--text-secondary, #94A3B8); margin:0; line-height:1.4;">
@@ -168,12 +168,12 @@
       }
     }
 
-    tabMobile?.addEventListener('click', () => switchModalTab(true));
-    tabPc?.addEventListener('click', () => switchModalTab(false));
+    tabMobile&ndash;.addEventListener('click', () => switchModalTab(true));
+    tabPc&ndash;.addEventListener('click', () => switchModalTab(false));
 
     modal.style.display = 'flex';
-    modal.querySelector('#close-pwa-modal')?.addEventListener('click', () => { modal.style.display = 'none'; });
-    modal.querySelector('#pwa-modal-x')?.addEventListener('click', () => { modal.style.display = 'none'; });
+    modal.querySelector('#close-pwa-modal')&ndash;.addEventListener('click', () => { modal.style.display = 'none'; });
+    modal.querySelector('#pwa-modal-x')&ndash;.addEventListener('click', () => { modal.style.display = 'none'; });
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.style.display = 'none';
     });
@@ -199,7 +199,7 @@
       `;
       document.body.appendChild(banner);
 
-      document.getElementById('ios-banner-close')?.addEventListener('click', () => {
+      document.getElementById('ios-banner-close')&ndash;.addEventListener('click', () => {
         banner.style.opacity = '0';
         banner.style.transform = 'translateY(20px)';
         setTimeout(() => banner.remove(), 300);

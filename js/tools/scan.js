@@ -148,10 +148,10 @@ class LocalDocScanDB {
         id: doc.id,
         name: doc.name || doc.title,
         title: doc.title || doc.name,
-        pageCount: doc.pageCount || (doc.pages ? doc.pages.length : 1),
+        pageCount: doc.pageCount || (doc.pages &ndash; doc.pages.length : 1),
         date: doc.date || new Date().toLocaleString(),
         updatedAt: doc.updatedAt,
-        thumbnail: doc.thumbnail || (doc.pages && doc.pages[0] ? doc.pages[0].processedDataUrl : ''),
+        thumbnail: doc.thumbnail || (doc.pages && doc.pages[0] &ndash; doc.pages[0].processedDataUrl : ''),
         dataUrl: doc.dataUrl || ''
       };
       list = [lite, ...list.filter(d => d.id !== doc.id)].slice(0, 15);
@@ -416,7 +416,7 @@ class DocumentScanner {
     // 3. Binary mask & Morphological bridging
     const binary = new Uint8Array(totalPixels);
     for (let i = 0; i < totalPixels; i++) {
-      binary[i] = gray[i] >= paperThreshold ? 1 : 0;
+      binary[i] = gray[i] >= paperThreshold &ndash; 1 : 0;
     }
 
     const closed = new Uint8Array(totalPixels);
@@ -655,8 +655,8 @@ class DocumentScanner {
     // Apply rotation if needed
     const isRotated90 = (rotation % 180 !== 0);
     const canvas = document.createElement('canvas');
-    canvas.width = isRotated90 ? sourceCanvas.height : sourceCanvas.width;
-    canvas.height = isRotated90 ? sourceCanvas.width : sourceCanvas.height;
+    canvas.width = isRotated90 &ndash; sourceCanvas.height : sourceCanvas.width;
+    canvas.height = isRotated90 &ndash; sourceCanvas.width : sourceCanvas.height;
     const ctx = canvas.getContext('2d', { alpha: false });
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
@@ -814,7 +814,7 @@ class DocumentScanner {
             const threshold = localMean * 0.85;
 
             const idx = (y * imgW + x) * 4;
-            const val = lum[y * imgW + x] >= threshold ? 255 : 0;
+            const val = lum[y * imgW + x] >= threshold &ndash; 255 : 0;
             data[idx] = val;
             data[idx + 1] = val;
             data[idx + 2] = val;

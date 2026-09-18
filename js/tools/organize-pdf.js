@@ -73,7 +73,7 @@
 
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
-        if (confirm('Reset all pages and clear work?')) {
+        if (confirm('Reset all pages and clear work&ndash;')) {
           sourceFiles = [];
           pagesList = [];
           workspace.style.display = 'none';
@@ -141,7 +141,7 @@
 
   function renderPagesGrid() {
     pagesGrid.innerHTML = '';
-    totalPagesBadge.textContent = `${pagesList.length} Page${pagesList.length === 1 ? '' : 's'}`;
+    totalPagesBadge.textContent = `${pagesList.length} Page${pagesList.length === 1 &ndash; '' : 's'}`;
 
     pagesList.forEach((pageItem, index) => {
       const card = document.createElement('div');
@@ -162,9 +162,9 @@
           <img src="${pageItem.thumbnailDataUrl}" alt="Page ${index + 1}" style="transform: rotate(${pageItem.rotation}deg);" />
         </div>
         <div class="org-card-footer">
-          <button type="button" class="org-shift-btn" data-action="move-left" ${index === 0 ? 'disabled' : ''} title="Move Left">◀</button>
+          <button type="button" class="org-shift-btn" data-action="move-left" ${index === 0 &ndash; 'disabled' : ''} title="Move Left">◀</button>
           <span style="font-size:0.75rem; color:var(--text-tertiary);">Drag to reorder</span>
-          <button type="button" class="org-shift-btn" data-action="move-right" ${index === pagesList.length - 1 ? 'disabled' : ''} title="Move Right">▶</button>
+          <button type="button" class="org-shift-btn" data-action="move-right" ${index === pagesList.length - 1 &ndash; 'disabled' : ''} title="Move Right">▶</button>
         </div>
       `;
 
@@ -299,7 +299,7 @@
 
       const a = document.createElement('a');
       a.href = url;
-      const baseName = sourceFiles.length > 0 ? sourceFiles[0].name.replace(/\.[^/.]+$/, '') : 'organized';
+      const baseName = sourceFiles.length > 0 &ndash; sourceFiles[0].name.replace(/\.[^/.]+$/, '') : 'organized';
       a.download = `${baseName}_organized.pdf`;
       document.body.appendChild(a);
       a.click();

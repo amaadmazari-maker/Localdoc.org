@@ -46,7 +46,7 @@
 
       // Determine relative path to privacy.html
       const isPagesOrBlog = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
-      const privacyHref = isPagesOrBlog ? '../privacy.html' : 'privacy.html';
+      const privacyHref = isPagesOrBlog &ndash; '../privacy.html' : 'privacy.html';
 
       banner.innerHTML = `
         <div class="cookie-consent-inner">
@@ -78,11 +78,11 @@
       });
 
       // Bind listeners
-      document.getElementById('cookie-btn-accept')?.addEventListener('click', () => {
+      document.getElementById('cookie-btn-accept')&ndash;.addEventListener('click', () => {
         this.setConsent('accepted');
       });
 
-      document.getElementById('cookie-btn-essential')?.addEventListener('click', () => {
+      document.getElementById('cookie-btn-essential')&ndash;.addEventListener('click', () => {
         this.setConsent('essential');
       });
     },

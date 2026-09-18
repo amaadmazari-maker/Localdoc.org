@@ -127,8 +127,9 @@ html {
   font-size: 15px;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  max-width: 100vw;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
 }
 
 body {
@@ -146,8 +147,21 @@ body {
   flex-direction: column;
   transition: background-color 0.25s ease, color 0.25s ease;
   overflow-x: hidden;
-  max-width: 100vw;
   width: 100%;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--primary);
+  z-index: 99999;
+  pointer-events: none;
+  transition: width 0.1s ease;
+  width: 0%;
 }
 
 [data-theme="dark"] body {
@@ -3437,8 +3451,12 @@ a:hover {
    ========================================================================== */
 @media (max-width: 768px) {
   html, body {
-    overscroll-behavior-y: contain !important;
-    overscroll-behavior: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y pan-x pinch-zoom !important;
+    height: auto !important;
+    min-height: 100% !important;
   }
   .hero-aurora-wrap {
     padding: 14px 12px 10px !important;
@@ -3477,8 +3495,17 @@ a:hover {
     gap: 8px !important;
   }
   .filter-tabs-bar {
-    padding: 4px 0 !important;
-    margin-bottom: 8px !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 6px 4px 10px !important;
+    margin-bottom: 12px !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+  }
+  .filter-tabs-bar::-webkit-scrollbar {
+    display: none !important;
   }
   .tools-grid {
     gap: 8px !important;
