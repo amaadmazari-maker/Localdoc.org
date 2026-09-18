@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v8-2026-ultimate';
+const CACHE_NAME = 'localdoc-v10-2026-mobile-scroll-fix';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
