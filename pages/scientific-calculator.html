@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -1225,15 +1225,15 @@
           <button type="button" class="fx-btn" data-key="dms">&deg; ' "</button>
         </div>
         <div class="fx-key-col">
-          <span class="fx-labels-top"><span class="fx-lbl-shift">sinâ»Â¹</span><span class="fx-lbl-alpha">D</span></span>
+          <span class="fx-labels-top"><span class="fx-lbl-shift">sin&#8315;¹</span><span class="fx-lbl-alpha">D</span></span>
           <button type="button" class="fx-btn" data-key="sin">sin</button>
         </div>
         <div class="fx-key-col">
-          <span class="fx-labels-top"><span class="fx-lbl-shift">cosâ»Â¹</span><span class="fx-lbl-alpha">E</span></span>
+          <span class="fx-labels-top"><span class="fx-lbl-shift">cos&#8315;¹</span><span class="fx-lbl-alpha">E</span></span>
           <button type="button" class="fx-btn" data-key="cos">cos</button>
         </div>
         <div class="fx-key-col">
-          <span class="fx-labels-top"><span class="fx-lbl-shift">tanâ»Â¹</span><span class="fx-lbl-alpha">F</span></span>
+          <span class="fx-labels-top"><span class="fx-lbl-shift">tan&#8315;¹</span><span class="fx-lbl-alpha">F</span></span>
           <button type="button" class="fx-btn" data-key="tan">tan</button>
         </div>
       </div>
@@ -1253,7 +1253,7 @@
           <button type="button" class="fx-btn" data-key="(">(</button>
         </div>
         <div class="fx-key-col">
-          <span class="fx-labels-top"><span class="fx-lbl-shift">xâ»Â¹</span><span class="fx-lbl-alpha">H</span></span>
+          <span class="fx-labels-top"><span class="fx-lbl-shift">x&#8315;¹</span><span class="fx-lbl-alpha">H</span></span>
           <button type="button" class="fx-btn" data-key=")">)</button>
         </div>
         <div class="fx-key-col">
@@ -1381,9 +1381,9 @@
           <span class="fx-solvers-badge">Casio fx-991EX / fx-5800P</span>
         </div>
         <div class="fx-solvers-tabs">
-          <button type="button" class="fx-tab-btn active" data-tab="matrix">ðŸ“ Matrix (2&times;2, 3&times;3)</button>
-          <button type="button" class="fx-tab-btn" data-tab="complex">ðŸŒ€ Complex (a+bi &#8660; r&ang;Î¸)</button>
-          <button type="button" class="fx-tab-btn" data-tab="poly">ðŸ”¢ Polynomial &amp; Roots</button>
+          <button type="button" class="fx-tab-btn active" data-tab="matrix">&#129518; Matrix (2&times;2, 3&times;3)</button>
+          <button type="button" class="fx-tab-btn" data-tab="complex">&#127744; Complex (a+bi &#8660; r&ang;&theta;)</button>
+          <button type="button" class="fx-tab-btn" data-tab="poly">&#128290; Polynomial &amp; Roots</button>
           <button type="button" class="fx-tab-btn" data-tab="calculus">&#128200; Calculus (d/dx, &int;dx)</button>
         </div>
       </div>
@@ -1433,7 +1433,7 @@
         <!-- Matrix Action Buttons -->
         <div class="fx-solver-actions">
           <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-mat-det">det(A)</button>
-          <button type="button" class="fx-solver-btn" id="btn-mat-inv">Inverse Aâ»Â¹</button>
+          <button type="button" class="fx-solver-btn" id="btn-mat-inv">Inverse A&#8315;¹</button>
           <button type="button" class="fx-solver-btn" id="btn-mat-trans">Transpose A<sup>T</sup></button>
           <button type="button" class="fx-solver-btn" id="btn-mat-trace">Trace tr(A)</button>
           <button type="button" class="fx-solver-btn" id="btn-mat-mul" style="display:none;">A &times; B</button>
@@ -3219,7 +3219,7 @@
           const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
           matResult.innerHTML = `
             <span class="fx-step-badge">Determinant det(A):</span><br>
-            Formula: det(A) = (aâ‚â‚ &times; aâ‚‚â‚‚) - (aâ‚â‚‚ &times; aâ‚‚â‚)<br>
+            Formula: det(A) = (aâ‚â‚ &times; a<sub>22</sub>) - (aâ‚â‚‚ &times; aâ‚‚â‚)<br>
             Calculation: (${A[0][0]} &times; ${A[1][1]}) - (${A[0][1]} &times; ${A[1][0]})<br>
             <strong>det(A) = ${det}</strong>
           `;
@@ -3281,10 +3281,10 @@
             [-A[1][0] / det, A[0][0] / det]
           ];
           matResult.innerHTML = `
-            <span class="fx-step-badge">Inverse Aâ»Â¹:</span><br>
+            <span class="fx-step-badge">Inverse A&#8315;¹:</span><br>
             det(A) = ${det}<br>
-            Aâ»Â¹ = (1 / ${det}) &times; [ [${A[1][1]}, ${-A[0][1]}], [${-A[1][0]}, ${A[0][0]}] ]<br>
-            Aâ»Â¹ =<br>&nbsp;&nbsp;${formatMat(inv)}
+            A&#8315;¹ = (1 / ${det}) &times; [ [${A[1][1]}, ${-A[0][1]}], [${-A[1][0]}, ${A[0][0]}] ]<br>
+            A&#8315;¹ =<br>&nbsp;&nbsp;${formatMat(inv)}
           `;
         } else {
           const a = A[0][0], b = A[0][1], c = A[0][2];
@@ -3316,9 +3316,9 @@
           ];
           const inv = adj.map(row => row.map(v => v / det));
           matResult.innerHTML = `
-            <span class="fx-step-badge">Inverse Aâ»Â¹:</span><br>
+            <span class="fx-step-badge">Inverse A&#8315;¹:</span><br>
             det(A) = ${det}<br>
-            Aâ»Â¹ = Adj(A) / det(A) =<br>&nbsp;&nbsp;${formatMat(inv)}
+            A&#8315;¹ = Adj(A) / det(A) =<br>&nbsp;&nbsp;${formatMat(inv)}
           `;
         }
       });
@@ -3614,7 +3614,7 @@
           out.innerHTML = `
             <span style="color:#38BDF8; font-weight:800;">d/dx [${expr}] at x = ${x0}:</span><br>
             Numerical derivative: <strong>${derivative.toFixed(6)}</strong><br>
-            <span style="color:#94A3B8; font-size:0.75rem;">O(hâ´) central 5-point stencil (h=10â»âµ)</span>
+            <span style="color:#94A3B8; font-size:0.75rem;">O(h&#8308;) central 5-point stencil (h=10&#8315;µ)</span>
           `;
         } catch (err) {
           out.innerHTML = `<span style="color:#EF4444;">Evaluation Error: ${err.message}</span>`;
