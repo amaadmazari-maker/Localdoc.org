@@ -112,7 +112,7 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) return cachedResponse;
-          if (event.request.headers.get('accept')&ndash;.includes('text/html')) {
+          if (event.request.headers.get('accept').includes('text/html')) {
             return caches.match('/index.html');
           }
         });

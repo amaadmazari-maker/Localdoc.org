@@ -129,7 +129,7 @@ const OCRUtils = {
         let isForeground = lum < finalThreshold;
         if (isInverted) isForeground = !isForeground;
 
-        const val = isForeground &ndash; 0 : 255;
+        const val = isForeground  ?  0 : 255;
         data[i] = val;
         data[i + 1] = val;
         data[i + 2] = val;
@@ -168,7 +168,7 @@ const OCRUtils = {
         logger: m => {
           if (onProgress && m.status && m.progress !== undefined) {
             const pct = Math.round(40 + (m.progress * 55));
-            const statusLabel = m.status === 'recognizing text' &ndash; 'Transcribing text characters...' : m.status;
+            const statusLabel = m.status === 'recognizing text'  ?  'Transcribing text characters...' : m.status;
             onProgress(pct, statusLabel);
           }
         }
@@ -176,7 +176,7 @@ const OCRUtils = {
     );
 
     if (onProgress) onProgress(100, 'Recognition complete');
-    return (result && result.data && result.data.text) &ndash; result.data.text : '';
+    return (result && result.data && result.data.text)  ?  result.data.text : '';
   }
 };
 

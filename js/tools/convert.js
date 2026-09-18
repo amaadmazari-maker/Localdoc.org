@@ -15,10 +15,10 @@ const PDFConvert = {
     return String(str)
       .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
       .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
+      .replace(/</g, '<')
+      .replace(/>/g, '>')
+      .replace(/"/g, '"')
+      .replace(/'/g, ''');
   },
 
   // Helper: Sanitize text for WinAnsi / StandardFonts fallback
@@ -32,7 +32,7 @@ const PDFConvert = {
       .replace(/[\u2022\u2023\u25E6\u2043\u2219\u25CF\u25AA\u25AB\uF0B7]/g, '* ')
       .replace(/[\u00A0\u2000-\u200B\u202F\u205F\u3000]/g, ' ')
       .replace(/[\u2026]/g, '...')
-      .replace(/[^\x00-\x7F]/g, () => '&ndash;');
+      .replace(/[^\x00-\x7F]/g, () => '-');
   },
 
   // 1. PDF to Images (JPG / PNG) with selectable DPI
@@ -59,7 +59,7 @@ const PDFConvert = {
 
       await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-      const quality = format === 'image/png' &ndash; 1.0 : 0.92;
+      const quality = format === 'image/png'  ?  1.0 : 0.92;
       const blob = await new Promise(resolve => canvas.toBlob(resolve, format, quality));
       const dataUrl = canvas.toDataURL(format, quality);
 
@@ -77,7 +77,7 @@ const PDFConvert = {
 
   // 1b. Create ZIP of all images
   async createImagesZip(images, baseName = 'page', ext = 'jpg') {
-    const zip = typeof MiniZip !== 'undefined' &ndash; new MiniZip() : null;
+    const zip = typeof MiniZip !== 'undefined'  ?  new MiniZip() : null;
     if (!zip) throw new Error("MiniZip encoder library not found.");
     for (const img of images) {
       const fileName = `${baseName}-page-${String(img.pageNumber).padStart(2, '0')}.${ext}`;
@@ -90,7 +90,7 @@ const PDFConvert = {
   // 2. Images to PDF with layout controls
   async imagesToPDF(files, options = {}, onProgress = null) {
     const orientation = options.orientation || 'auto';
-    const margin = options.margin !== undefined &ndash; options.margin : 20;
+    const margin = options.margin !== undefined  ?  options.margin : 20;
     const pageSize = options.pageSize || 'a4';
 
     const baseSizes = {
@@ -274,8 +274,8 @@ const PDFConvert = {
             bold: item.bold || isSectionHeader,
             italic: item.italic,
             underline: false,
-            fontSize: isSectionHeader &ndash; Math.max(26, halfPoints) : halfPoints,
-            color: isSectionHeader &ndash; '0F172A' : (item.bold &ndash; '1E293B' : '334155')
+            fontSize: isSectionHeader  ?  Math.max(26, halfPoints) : halfPoints,
+            color: isSectionHeader  ?  '0F172A' : (item.bold  ?  '1E293B' : '334155')
           });
 
           // Build preview run using safe escaper
@@ -297,7 +297,7 @@ const PDFConvert = {
 
         if (isSectionHeader) {
           pType = 'heading';
-          headingLevel = maxFontSizeInLine >= medianFontSize * 1.5 &ndash; 1 : 2;
+          headingLevel = maxFontSizeInLine >= medianFontSize * 1.5  ?  1 : 2;
           hasBottomBorder = true;
           htmlPreviewBlocks.push(`<h${headingLevel} style="border-bottom:1.5px solid #cbd5e1; padding-bottom:3px; margin:16px 0 6px; color:#0f172a;">${htmlLineContent}</h${headingLevel}>`);
         } else if (isBullet) {
@@ -314,8 +314,8 @@ const PDFConvert = {
           isBullet: isBullet,
           bulletChar: '•',
           hasRightTab: hasWideGap,
-          spacingBefore: isSectionHeader &ndash; 220 : (isBullet &ndash; 40 : 60),
-          spacingAfter: isSectionHeader &ndash; 80 : (isBullet &ndash; 40 : 60),
+          spacingBefore: isSectionHeader  ?  220 : (isBullet  ?  40 : 60),
+          spacingAfter: isSectionHeader  ?  80 : (isBullet  ?  40 : 60),
           runs: runs
         });
       });
@@ -554,7 +554,7 @@ const PDFConvert = {
             const isHeader = rIdx === 0 && row.querySelector('th') !== null;
 
             // Row background
-            curPage.ctx.fillStyle = isHeader &ndash; '#F1F5F9' : (rIdx % 2 === 0 &ndash; '#FAFAFA' : '#FFFFFF');
+            curPage.ctx.fillStyle = isHeader  ?  '#F1F5F9' : (rIdx % 2 === 0  ?  '#FAFAFA' : '#FFFFFF');
             curPage.ctx.fillRect(marginL, curPage.currentY, contentW, rowH);
 
             // Draw cells
@@ -566,8 +566,8 @@ const PDFConvert = {
               curPage.ctx.lineWidth = 1;
               curPage.ctx.strokeRect(cellX, curPage.currentY, colW, rowH);
 
-              curPage.ctx.font = isHeader &ndash; 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif' : '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif';
-              curPage.ctx.fillStyle = isHeader &ndash; '#0F172A' : '#334155';
+              curPage.ctx.font = isHeader  ?  'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif' : '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif';
+              curPage.ctx.fillStyle = isHeader  ?  '#0F172A' : '#334155';
 
               // Truncate cell text if overflowing
               let displayCell = cellText;
@@ -615,12 +615,12 @@ const PDFConvert = {
         const text = node.textContent.trim();
         if (text) {
           const hasBold = node.querySelector('strong, b') !== null;
-          curPage.ctx.font = hasBold &ndash; 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif' : '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif';
+          curPage.ctx.font = hasBold  ?  'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif' : '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Arial", sans-serif';
           const lines = wrapTextLines(curPage.ctx, text, contentW);
           const blockHeight = lines.length * 24 + 10;
           checkPageBreak(blockHeight);
 
-          curPage.ctx.fillStyle = hasBold &ndash; '#0F172A' : '#334155';
+          curPage.ctx.fillStyle = hasBold  ?  '#0F172A' : '#334155';
           lines.forEach(line => {
             curPage.ctx.fillText(line, marginL, curPage.currentY + 17);
             curPage.currentY += 24;
@@ -747,7 +747,7 @@ const PDFConvert = {
           let cellVal = item.text;
           // Check if numeric currency or percentage
           const cleanNum = cellVal.replace(/[$,€£¥\s]/g, '').replace(/^\((.+)\)$/, '-$1');
-          if (/^-&ndash;\d+(\.\d+)&ndash;$/.test(cleanNum)) {
+          if (/^--\d+(\.\d+)-$/.test(cleanNum)) {
             cellVal = parseFloat(cleanNum);
           }
 
@@ -812,8 +812,8 @@ const PDFConvert = {
     const boldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
 
     const isLandscape = orientation === 'landscape';
-    const a4Width = isLandscape &ndash; 841.89 : 595.28;
-    const a4Height = isLandscape &ndash; 595.28 : 841.89;
+    const a4Width = isLandscape  ?  841.89 : 595.28;
+    const a4Height = isLandscape  ?  595.28 : 841.89;
     const margin = 36;
     const rowHeight = 22;
 
@@ -869,15 +869,15 @@ const PDFConvert = {
         }
 
         for (let c = 0; c < maxCols; c++) {
-          const rawCell = row[c] !== undefined && row[c] !== null &ndash; String(row[c]) : '';
+          const rawCell = row[c] !== undefined && row[c] !== null  ?  String(row[c]) : '';
           const safeCell = PDFConvert.sanitizeWinAnsiText(rawCell).substring(0, 26);
 
           page.drawText(safeCell, {
             x: margin + c * colWidth + 5,
             y: currentY + 4,
-            size: isHeader &ndash; 8.5 : 8,
-            font: isHeader &ndash; boldFont : font,
-            color: isHeader &ndash; PDFLib.rgb(1, 1, 1) : PDFLib.rgb(0.12, 0.16, 0.22)
+            size: isHeader  ?  8.5 : 8,
+            font: isHeader  ?  boldFont : font,
+            color: isHeader  ?  PDFLib.rgb(1, 1, 1) : PDFLib.rgb(0.12, 0.16, 0.22)
           });
 
           if (showGridlines && !isHeader) {

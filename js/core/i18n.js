@@ -36,7 +36,7 @@ const I18N = {
 
   async loadTranslations(lang) {
     try {
-      const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/') &ndash; '../' : './';
+      const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/')  ?  '../' : './';
       const res = await fetch(`${basePath}lang/${lang}.json`);
       if (res.ok) {
         this.translations = await res.json();
@@ -51,7 +51,7 @@ const I18N = {
       const link = document.createElement('link');
       link.id = 'rtl-font-stylesheet';
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2&ndash;family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2 ? family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap';
       document.head.appendChild(link);
     }
   },
@@ -62,7 +62,7 @@ const I18N = {
     const isRtl = (lang === 'ur' || lang === 'ar');
     this.ensureRtlFonts(isRtl);
     document.documentElement.lang = lang;
-    document.documentElement.dir = isRtl &ndash; 'rtl' : 'ltr';
+    document.documentElement.dir = isRtl  ?  'rtl' : 'ltr';
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => { select.value = lang; });
     this.loadTranslations(lang).then(() => {
@@ -74,7 +74,7 @@ const I18N = {
     const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
     this.ensureRtlFonts(isRtl);
     document.documentElement.lang = this.currentLang;
-    document.documentElement.dir = isRtl &ndash; 'rtl' : 'ltr';
+    document.documentElement.dir = isRtl  ?  'rtl' : 'ltr';
     if (document.body) {
       if (isRtl) {
         document.body.classList.add('is-rtl');
@@ -115,7 +115,7 @@ const I18N = {
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => {
       select.innerHTML = this.availableLanguages.map(item => `
-        <option value="${item.code}" ${this.currentLang === item.code &ndash; 'selected' : ''}>${item.label}</option>
+        <option value="${item.code}" ${this.currentLang === item.code  ?  'selected' : ''}>${item.label}</option>
       `).join('');
       select.addEventListener('change', (e) => {
         this.setLanguage(e.target.value);

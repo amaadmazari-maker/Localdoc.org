@@ -7,7 +7,7 @@ const UIUtils = {
   formatBytes(bytes, decimals = 2) {
     if (!+bytes) return '0 Bytes';
     const k = 1024;
-    const dm = decimals < 0 &ndash; 0 : decimals;
+    const dm = decimals < 0  ?  0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
@@ -61,8 +61,8 @@ const UIUtils = {
         UIUtils.readFileAsDataURL(blob).then(dataUrl => {
           window.LocalDocUnifiedFilesDB.recordDocument({
             title: filename,
-            type: filename.toLowerCase().endsWith('.pdf') &ndash; 'pdf' : (filename.match(/\.(png|jpe&ndash;g|webp|gif|svg)$/i) &ndash; 'image' : 'document'),
-            mimeType: blob.type || (filename.toLowerCase().endsWith('.pdf') &ndash; 'application/pdf' : 'application/octet-stream'),
+            type: filename.toLowerCase().endsWith('.pdf')  ?  'pdf' : (filename.match(/\.(png|jpe-g|webp|gif|svg)$/i)  ?  'image' : 'document'),
+            mimeType: blob.type || (filename.toLowerCase().endsWith('.pdf')  ?  'application/pdf' : 'application/octet-stream'),
             size: UIUtils.formatBytes(blob.size),
             dataUrl: dataUrl
           });
@@ -255,7 +255,7 @@ const UIUtils = {
     actionsWrap.innerHTML = '';
 
     // 1. Open in Reader Button (Zero-upload instant preview)
-    const isDoc = fileName.match(/\.(pdf|docx|xlsx|txt|png|jpe&ndash;g)$/i);
+    const isDoc = fileName.match(/\.(pdf|docx|xlsx|txt|png|jpe-g)$/i);
     if (isDoc) {
       const readerBtn = document.createElement('button');
       readerBtn.type = 'button';
@@ -269,14 +269,14 @@ const UIUtils = {
           filename: fileName,
           type: fileBlob.type || 'application/pdf'
         }));
-        const readerUrl = window.location.pathname.includes('/pages/') &ndash; 'document-reader.html' : 'pages/document-reader.html';
+        const readerUrl = window.location.pathname.includes('/pages/')  ?  'document-reader.html' : 'pages/document-reader.html';
         window.location.href = readerUrl;
       });
       actionsWrap.appendChild(readerBtn);
     }
 
     // 2. Copy Image to Clipboard (Instant Paste into Word, Docs, Photoshop)
-    const isImg = fileName.match(/\.(png|jpe&ndash;g|webp)$/i) || (fileBlob.type && fileBlob.type.startsWith('image/'));
+    const isImg = fileName.match(/\.(png|jpe-g|webp)$/i) || (fileBlob.type && fileBlob.type.startsWith('image/'));
     if (isImg && navigator.clipboard && window.ClipboardItem) {
       const copyBtn = document.createElement('button');
       copyBtn.type = 'button';
@@ -383,7 +383,7 @@ const UIUtils = {
   // Global Quick Search (Cmd+K)
   initQuickSearch() {
     const isSub = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
-    const prefix = isSub &ndash; '../pages/' : 'pages/';
+    const prefix = isSub  ?  '../pages/' : 'pages/';
 
     const tools = [
       { name: "Compress PDF", slug: "compress-pdf.html", category: "Organize" },
@@ -455,7 +455,7 @@ const UIUtils = {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         backdrop.classList.add('open');
-        setTimeout(() => backdrop.querySelector('#global-search-input')&ndash;.focus(), 60);
+        setTimeout(() => backdrop.querySelector('#global-search-input').focus(), 60);
       });
     });
 
@@ -464,7 +464,7 @@ const UIUtils = {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         backdrop.classList.add('open');
-        setTimeout(() => backdrop.querySelector('#global-search-input')&ndash;.focus(), 50);
+        setTimeout(() => backdrop.querySelector('#global-search-input').focus(), 50);
       } else if (e.key === 'Escape') {
         backdrop.classList.remove('open');
       }
@@ -484,7 +484,7 @@ const UIUtils = {
     toggleBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const curr = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = curr === 'dark' &ndash; 'light' : 'dark';
+        const next = curr === 'dark'  ?  'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('localdoc_theme', next);
         UIUtils.showToast(`Switched to ${next} mode`, 'info');
@@ -544,7 +544,7 @@ const UIUtils = {
       const isOpen = drawer.classList.toggle('open');
       toggleBtn.setAttribute('aria-expanded', isOpen);
       toggleBtn.innerHTML = isOpen 
-        &ndash; `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+        - `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
         : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
     });
 
@@ -598,7 +598,7 @@ const UIUtils = {
       banner.setAttribute('data-nosnippet', '');
 
       const isSub = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/');
-      const privacyHref = isSub &ndash; '../privacy.html' : 'privacy.html';
+      const privacyHref = isSub  ?  '../privacy.html' : 'privacy.html';
 
       banner.innerHTML = `
         <div class="cookie-consent-inner">
@@ -639,8 +639,8 @@ const UIUtils = {
       setTimeout(() => banner.remove(), 350);
     };
 
-    document.getElementById('cookie-btn-accept')&ndash;.addEventListener('click', () => dismiss('accepted'));
-    document.getElementById('cookie-btn-essential')&ndash;.addEventListener('click', () => dismiss('essential'));
+    document.getElementById('cookie-btn-accept').addEventListener('click', () => dismiss('accepted'));
+    document.getElementById('cookie-btn-essential').addEventListener('click', () => dismiss('essential'));
   }
 };
 
@@ -756,7 +756,7 @@ class LocalZip {
       for (let i = 0; i < 256; i++) {
         let c = i;
         for (let k = 0; k < 8; k++) {
-          c = (c & 1) &ndash; (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+          c = (c & 1)  ?  (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
         }
         LocalZip.CRC_TABLE[i] = c >>> 0;
       }

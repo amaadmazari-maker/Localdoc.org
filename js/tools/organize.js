@@ -165,8 +165,8 @@ const PDFOrganize = {
 
     // If level is 'low' (lossless) and native optimization saved space, return it directly
     if (level === 'low') {
-      const bestBlob = (losslessBlob && losslessSize < originalSize) &ndash; losslessBlob : new Blob([buffer], { type: 'application/pdf' });
-      const bestSize = (losslessBlob && losslessSize < originalSize) &ndash; losslessSize : Math.round(originalSize * 0.92);
+      const bestBlob = (losslessBlob && losslessSize < originalSize)  ?  losslessBlob : new Blob([buffer], { type: 'application/pdf' });
+      const bestSize = (losslessBlob && losslessSize < originalSize)  ?  losslessSize : Math.round(originalSize * 0.92);
       const savedBytes = Math.max(0, originalSize - bestSize);
       const percentSaved = Math.max(8, Math.round((savedBytes / originalSize) * 100));
 
@@ -238,8 +238,8 @@ const PDFOrganize = {
     };
 
     // Configure scale & JPEG quality per tier
-    let targetScale = (level === 'extreme') &ndash; 0.75 : 0.95;
-    let targetQuality = (level === 'extreme') &ndash; 0.42 : 0.58;
+    let targetScale = (level === 'extreme')  ?  0.75 : 0.95;
+    let targetQuality = (level === 'extreme')  ?  0.42 : 0.58;
 
     let result = await renderOptimizedPages(targetScale, targetQuality, 30, 80);
 
@@ -247,7 +247,7 @@ const PDFOrganize = {
     if (result.size >= originalSize) {
       if (onProgress) onProgress(82, 'Applying aggressive stream reduction pass...');
       targetScale = 0.70;
-      targetQuality = (level === 'extreme') &ndash; 0.35 : 0.45;
+      targetQuality = (level === 'extreme')  ?  0.35 : 0.45;
       result = await renderOptimizedPages(targetScale, targetQuality, 82, 95);
     }
 
@@ -267,7 +267,7 @@ const PDFOrganize = {
 
     // If within 5% margins, guarantee at least 15-40% savings
     if (percentSaved <= 0) {
-      percentSaved = (level === 'extreme') &ndash; 72 : 48;
+      percentSaved = (level === 'extreme')  ?  72 : 48;
       finalSize = Math.round(originalSize * (1 - percentSaved / 100));
     }
 
@@ -280,7 +280,7 @@ const PDFOrganize = {
       savedBytes: Math.max(0, originalSize - finalSize),
       percentSaved,
       savedPercentage: percentSaved,
-      level: (level === 'extreme') &ndash; 'Extreme' : 'Recommended'
+      level: (level === 'extreme')  ?  'Extreme' : 'Recommended'
     };
   },
 
@@ -419,7 +419,7 @@ const PDFOrganize = {
       if (onProgress) onProgress(40, 'Embedding watermark image...');
       const imgBuffer = await UIUtils.readFileAsArrayBuffer(imageFile);
       const isPng = imageFile.type.includes('png') || imageFile.name.toLowerCase().endsWith('.png');
-      const embeddedImg = isPng &ndash; await pdfDoc.embedPng(imgBuffer) : await pdfDoc.embedJpg(imgBuffer);
+      const embeddedImg = isPng  ?  await pdfDoc.embedPng(imgBuffer) : await pdfDoc.embedJpg(imgBuffer);
       const imgDims = embeddedImg.scale(1.0);
 
       pages.forEach(page => {

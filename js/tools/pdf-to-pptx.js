@@ -106,7 +106,7 @@
         for (let i = 0; i < 256; i++) {
           let c = i;
           for (let k = 0; k < 8; k++) {
-            c = (c & 1) &ndash; (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+            c = (c & 1)  ?  (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
           }
           LocalZip.CRC_TABLE[i] = c >>> 0;
         }
@@ -264,7 +264,7 @@
     const zip = new LocalZip();
 
     // 1. Content Types XML
-    let contentTypesXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+    let contentTypesXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
@@ -278,7 +278,7 @@
     zip.addFile('[Content_Types].xml', contentTypesXml);
 
     // 2. Top-level Relationships (_rels/.rels)
-    const rootRelsXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+    const rootRelsXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
 </Relationships>`;
@@ -286,11 +286,11 @@
 
     // 3. Presentation XML & its rels
     // Dimensions in EMUs: 16:9 = 12192000 x 6858000, 4:3 = 9144000 x 6858000
-    const slideW = slideAspect === '4:3' &ndash; 9144000 : 12192000;
+    const slideW = slideAspect === '4:3'  ?  9144000 : 12192000;
     const slideH = 6858000;
 
     let sldIdLst = '';
-    let presRelsXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+    let presRelsXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">`;
 
     for (let i = 1; i <= totalPages; i++) {
@@ -300,14 +300,14 @@
     presRelsXml += `\n</Relationships>`;
     zip.addFile('ppt/_rels/presentation.xml.rels', presRelsXml);
 
-    const presXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+    const presXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
                 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
                 xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
   <p:sldMasterIdLst/>
   <p:sldIdLst>${sldIdLst}
   </p:sldIdLst>
-  <p:sldSz cx="${slideW}" cy="${slideH}" type="${slideAspect === '4:3' &ndash; 'screen4x3' : 'screen16x9'}"/>
+  <p:sldSz cx="${slideW}" cy="${slideH}" type="${slideAspect === '4:3'  ?  'screen4x3' : 'screen16x9'}"/>
   <p:notesSz cx="6858000" cy="9144000"/>
 </p:presentation>`;
     zip.addFile('ppt/presentation.xml', presXml);
@@ -337,7 +337,7 @@
       zip.addFile(`ppt/media/image${i}.png`, pngBytes);
 
       // Slide rels
-      const slideRelXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+      const slideRelXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image${i}.png"/>
 </Relationships>`;
@@ -362,7 +362,7 @@
       }
 
       // Slide XML
-      const slideXml = `<&ndash;xml version="1.0" encoding="UTF-8" standalone="yes"&ndash;>
+      const slideXml = `<-xml version="1.0" encoding="UTF-8" standalone="yes"->
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
        xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
@@ -430,7 +430,7 @@
     if (!convertedBlob) return;
     const a = document.createElement('a');
     a.href = URL.createObjectURL(convertedBlob);
-    const baseName = currentFile &ndash; currentFile.name.replace(/\.[^/.]+$/, '') : 'presentation';
+    const baseName = currentFile  ?  currentFile.name.replace(/\.[^/.]+$/, '') : 'presentation';
     a.download = `${baseName}.pptx`;
     document.body.appendChild(a);
     a.click();

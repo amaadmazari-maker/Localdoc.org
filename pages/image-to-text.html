@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js&ndash;id=G-TKJ5FEYGWJ"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -28,7 +28,7 @@
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2&ndash;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/rtl.css">
@@ -95,7 +95,7 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "Why did the first OCR scan take a few extra seconds to start&ndash;,
+            "name": "Why did the first OCR scan take a few extra seconds to start?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "During your first session, the browser loads the lightweight Tesseract WebAssembly engine and optical dictionary into local cache (~4 MB). All subsequent extractions run near-instantaneously without network requests."
@@ -103,7 +103,7 @@
           },
           {
             "@type": "Question",
-            "name": "How can I maximize OCR accuracy on photos taken with a smartphone camera&ndash;,
+            "name": "How can I maximize OCR accuracy on photos taken with a smartphone camera?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "Hold your phone parallel to the paper surface to avoid perspective distortion, ensure even lighting without harsh shadows, and enable LocalDoc's High-Contrast B&W filter."
@@ -111,7 +111,7 @@
           },
           {
             "@type": "Question",
-            "name": "Can LocalDoc recognize handwritten notes or cursive calligraphy&ndash;,
+            "name": "Can LocalDoc recognize handwritten notes or cursive calligraphy?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "The neural model is optimized for printed, typeset, and mechanical typography. While neat block handwriting often produces readable text, freehand cursive scripts have lower confidence."
@@ -119,7 +119,7 @@
           },
           {
             "@type": "Question",
-            "name": "Are my sensitive financial receipts or medical scans transmitted to any third party&ndash;,
+            "name": "Are my sensitive financial receipts or medical scans transmitted to any third party?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "Never. LocalDoc runs 100% inside your local device memory using WebAssembly. There are zero cloud uploads or external server calls."
@@ -127,7 +127,7 @@
           },
           {
             "@type": "Question",
-            "name": "How do I extract tabular data into Excel instead of plain text&ndash;,
+            "name": "How do I extract tabular data into Excel instead of plain text?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "For financial spreadsheets or structured tables, convert your scan into a PDF and use our dedicated PDF to Excel Converter, which uses spatial clustering to generate native .xlsx workbooks."
@@ -135,7 +135,7 @@
           },
           {
             "@type": "Question",
-            "name": "What is the maximum image resolution or file size supported&ndash;,
+            "name": "What is the maximum image resolution or file size supported?,
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "Because processing occurs within your device's physical memory, LocalDoc easily processes 20+ megapixel photos and files up to 50 MB. 300 DPI is the recommended resolution."
@@ -167,8 +167,8 @@
       </ul>
 
       <div class="header-actions">
-        <form role="search" onsubmit="event.preventDefault(); document.getElementById('search-modal-backdrop')&ndash;.classList.add('open');" style="margin:0; display:flex;">
-          <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')&ndash;.classList.add('open')">
+        <form role="search" onsubmit="event.preventDefault(); document.getElementById('search-modal-backdrop').classList.add('open');" style="margin:0; display:flex;">
+          <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop').classList.add('open')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="search" class="header-search-input" placeholder="Search tools &amp; guides..." aria-label="Search all tools and guides" autocomplete="off">
             <span class="kbd-shortcut">&#8984;K</span>
@@ -223,7 +223,7 @@
           <h3>Drop your image files here</h3>
           <p>Or click to browse from your device. Supports JPG, PNG, and WebP photos.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="document.getElementById('file-input') &ndash; document.getElementById('file-input').click() : null">Select Image Files</button>
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select Image Files</button>
         <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;">
       </div>
 
@@ -649,7 +649,7 @@
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
         queueFiles = Array.from(files);
-        queueName.textContent = queueFiles.length > 1 &ndash; `${queueFiles.length} images selected` : queueFiles[0].name;
+        queueName.textContent = queueFiles.length > 1 - `${queueFiles.length} images selected` : queueFiles[0].name;
         const totalSize = queueFiles.reduce((acc, f) => acc + f.size, 0);
         queueSize.textContent = UIUtils.formatBytes(totalSize);
         fileQueue.style.display = "block";
@@ -670,7 +670,7 @@
     });
 
     function progressCb(pct, status) {
-      const step = pct < 35 &ndash; 1 : (pct < 90 &ndash; 2 : 3);
+      const step = pct < 35  ?  1 : (pct < 90  ?  2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
@@ -682,8 +682,8 @@
         UIUtils.setWorkflowStep(0, 10, "Initializing neural OCR worker in local memory...");
         let combinedText = '';
 
-        const filterVal = filterSelect &ndash; filterSelect.value : 'adaptive-bw';
-        const langVal = langSelect &ndash; langSelect.value : 'eng';
+        const filterVal = filterSelect  ?  filterSelect.value : 'adaptive-bw';
+        const langVal = langSelect  ?  langSelect.value : 'eng';
 
         for (let i = 0; i < queueFiles.length; i++) {
           const file = queueFiles[i];
@@ -702,7 +702,7 @@
         UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
         resultCard.style.display = "block";
         const ocrBlob = new Blob([transcribedText], { type: 'text/plain;charset=utf-8' });
-        UIUtils.renderQuickActions(resultCard, ocrBlob, (queueFiles[0] &ndash; queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-ocr") + ".txt");
+        UIUtils.renderQuickActions(resultCard, ocrBlob, (queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-ocr") + ".txt");
         UIUtils.showToast("OCR transcription completed successfully!", "success");
       } catch (err) {
         console.error(err);
@@ -714,13 +714,13 @@
 
     function updateStats() {
       const val = resultTextArea.value.trim();
-      const words = val &ndash; val.split(/\s+/).filter(Boolean).length : 0;
+      const words = val  ?  val.split(/\s+/).filter(Boolean).length : 0;
       const chars = val.length;
       resultStats.textContent = `${words} words &bull; ${chars} characters`;
     }
     resultTextArea.addEventListener("input", updateStats);
 
-    replaceBtn&ndash;.addEventListener("click", () => {
+    replaceBtn.addEventListener("click", () => {
       const findVal = findInput.value;
       const repVal = replaceInput.value;
       if (!findVal) {
@@ -744,7 +744,7 @@
     downloadTxtBtn.addEventListener("click", () => {
       if (resultTextArea.value) {
         const blob = new Blob([resultTextArea.value], { type: 'text/plain;charset=utf-8' });
-        const baseName = queueFiles[0] &ndash; queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        const baseName = queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
         UIUtils.downloadBlob(blob, `${baseName}-ocr.txt`);
       }
     });
@@ -756,7 +756,7 @@
           return { type: 'paragraph', text: line };
         });
         const docxBlob = DocxBuilder.createDocxFromContent(paragraphs, { title: 'OCR Transcription' });
-        const baseName = queueFiles[0] &ndash; queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        const baseName = queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
         UIUtils.downloadBlob(docxBlob, `${baseName}-ocr.docx`);
         UIUtils.showToast("Word document downloaded!", "success");
       } catch (e) {

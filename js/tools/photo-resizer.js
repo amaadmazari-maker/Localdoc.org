@@ -230,7 +230,7 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('[data-format]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        outputFormat = btn.getAttribute('data-format') === 'png' &ndash; 'image/png' : 'image/jpeg';
+        outputFormat = btn.getAttribute('data-format') === 'png'  ?  'image/png' : 'image/jpeg';
         processResize();
       });
     });
@@ -245,7 +245,7 @@
   }
 
   async function loadFiles(fileList) {
-    const rawFiles = Array.from(fileList).filter(f => f.type.startsWith('image/') || /\.(jpe&ndash;g|png|webp)$/i.test(f.name));
+    const rawFiles = Array.from(fileList).filter(f => f.type.startsWith('image/') || /\.(jpe-g|png|webp)$/i.test(f.name));
     if (rawFiles.length === 0) {
       if (window.UIUtils && UIUtils.showToast) {
         UIUtils.showToast('Please select valid JPG, PNG, or WebP photos.', 'warning');
@@ -309,7 +309,7 @@
       batchPanel.style.display = 'block';
       batchTitle.textContent = `Batch Queue (${loadedItems.length} Photos)`;
       batchThumbnails.innerHTML = loadedItems.map((item, idx) => `
-        <div class="batch-thumb-item ${idx === activeIndex &ndash; 'active' : ''}" data-idx="${idx}" style="cursor:pointer; flex-shrink:0; position:relative; border-radius:4px; overflow:hidden; border:2px solid ${idx === activeIndex &ndash; 'var(--primary)' : 'var(--line)'}; width:52px; height:52px;" title="${item.file.name}">
+        <div class="batch-thumb-item ${idx === activeIndex  ?  'active' : ''}" data-idx="${idx}" style="cursor:pointer; flex-shrink:0; position:relative; border-radius:4px; overflow:hidden; border:2px solid ${idx === activeIndex  ?  'var(--primary)' : 'var(--line)'}; width:52px; height:52px;" title="${item.file.name}">
           <img src="${item.dataUrl}" style="width:100%; height:100%; object-fit:cover;">
           <span style="position:absolute; bottom:0; right:0; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px; font-weight:700;">${idx+1}</span>
         </div>
@@ -339,7 +339,7 @@
       batchThumbnails.querySelectorAll('.batch-thumb-item').forEach(el => {
         const idx = parseInt(el.getAttribute('data-idx'), 10);
         const isActive = idx === activeIndex;
-        el.style.borderColor = isActive &ndash; 'var(--primary)' : 'var(--line)';
+        el.style.borderColor = isActive  ?  'var(--primary)' : 'var(--line)';
         el.classList.toggle('active', isActive);
       });
       if (batchDownloadBtn && loadedItems.length > 1) {
@@ -453,8 +453,8 @@
       }
     }
 
-    const ext = outputFormat === 'image/png' &ndash; 'png' : 'jpg';
-    const baseName = item.file &ndash; item.file.name.replace(/\.[^/.]+$/, '') : 'photo';
+    const ext = outputFormat === 'image/png'  ?  'png' : 'jpg';
+    const baseName = item.file  ?  item.file.name.replace(/\.[^/.]+$/, '') : 'photo';
     const filename = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
 
     return { blob: bestBlob, filename, pxW, pxH };
@@ -475,7 +475,7 @@
     outputPreview.src = outputDataUrl;
 
     const finalSizeKB = (res.blob.size / 1024).toFixed(1);
-    const badgeColor = parseFloat(finalSizeKB) <= targetMaxKB &ndash; 'var(--success)' : 'var(--danger)';
+    const badgeColor = parseFloat(finalSizeKB) <= targetMaxKB  ?  'var(--success)' : 'var(--danger)';
 
     outputInfo.innerHTML = `
       <strong>${targetWidth} × ${targetHeight} ${currentUnit}</strong> (${res.pxW} × ${res.pxH} px @ ${targetDPI} DPI)<br>
@@ -489,8 +489,8 @@
 
   function downloadActivePhoto() {
     if (!outputBlob) return;
-    const ext = outputFormat === 'image/png' &ndash; 'png' : 'jpg';
-    const baseName = originalFile &ndash; originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
+    const ext = outputFormat === 'image/png'  ?  'png' : 'jpg';
+    const baseName = originalFile  ?  originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
     const filename = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
 
     if (window.UIUtils && UIUtils.downloadBlob) {

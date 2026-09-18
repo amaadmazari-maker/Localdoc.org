@@ -303,7 +303,7 @@
       sheetTabsBar.innerHTML = '';
       sheetNames.forEach((sheetName, index) => {
         const tabBtn = document.createElement('button');
-        tabBtn.className = `sheet-tab-btn ${index === 0 &ndash; 'active' : ''}`;
+        tabBtn.className = `sheet-tab-btn ${index === 0  ?  'active' : ''}`;
         tabBtn.textContent = sheetName;
         tabBtn.addEventListener('click', () => {
           document.querySelectorAll('.sheet-tab-btn').forEach(b => b.classList.remove('active'));
