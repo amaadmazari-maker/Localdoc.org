@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Compress PDF Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Compress PDF Online â€” 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Reduce PDF file size with selectable quality tiers in your browser RAM. 100% private.">
   <meta property="og:url" content="https://localdoc.org/pages/compress-pdf.html">
   <meta property="og:image" content="../assets/icons/compress-pdf.svg">
@@ -158,7 +158,7 @@
           <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="search" class="header-search-input" placeholder="Search tools &amp; guides..." aria-label="Search all tools and guides" autocomplete="off">
-            <span class="kbd-shortcut">âŒ˜K</span>
+            <span class="kbd-shortcut">Ã¢Å’ËœK</span>
           </div>
         </form>
         <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
@@ -334,9 +334,9 @@
     <article class="tool-guide-wrap">
       <!-- 1. Real-Device Performance Telemetry Banner -->
       <div class="tool-telemetry-banner">
-        <div class="telemetry-icon-pulse">⚡</div>
+        <div class="telemetry-icon-pulse">âš¡</div>
         <div class="telemetry-text">
-          <strong>Real-Device Performance Benchmark:</strong> Compresses an 18-page illustrated PDF (24.6 MB) down to 4.8 MB (<strong>-80.4%</strong> size reduction) in <strong>1.84 seconds</strong> on a mid-range Android phone (Snapdragon 778G) and <strong>0.52 seconds</strong> on Desktop Chrome (M2 / Core i5). Processed 100% in local device RAM using WebAssembly stream defragmentation — 0 bytes uploaded to external servers.
+          <strong>Real-Device Performance Benchmark:</strong> Compresses an 18-page illustrated PDF (24.6 MB) down to 4.8 MB (<strong>-80.4%</strong> size reduction) in <strong>1.84 seconds</strong> on a mid-range Android phone (Snapdragon 778G) and <strong>0.52 seconds</strong> on Desktop Chrome (M2 / Core i5). Processed 100% in local device RAM using WebAssembly stream defragmentation â€” 0 bytes uploaded to external servers.
         </div>
       </div>
 
@@ -551,13 +551,13 @@
     </div>
   </footer>
 
-  <script src=../js/core/i18n.js?v=20260918-v3"></script>
-  <script src=../js/core/ui-utils.js?v=20260918-v3"></script>
-  <script src=../js/lib/pdf.min.js?v=20260918-v3"></script>
-  <script src=../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
-  <script src=../js/lib/docx.min.js?v=20260918-v3"></script>
-  <script src=../js/tools/convert.js?v=20260918-v3"></script>
-  <script src=../js/tools/organize.js?v=20260918-v3"></script>
+  <script src="../js/core/i18n.js?v=20260918-v3"></script>
+  <script src="../js/core/ui-utils.js?v=20260918-v3"></script>
+  <script src="../js/lib/pdf.min.js?v=20260918-v3"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
+  <script src="../js/lib/docx.min.js?v=20260918-v3"></script>
+  <script src="../js/tools/convert.js?v=20260918-v3"></script>
+  <script src="../js/tools/organize.js?v=20260918-v3"></script>
 
     <script>
     let selectedFiles = [];
@@ -632,15 +632,15 @@
       } else {
         queueName.textContent = "Batch Queue (" + selectedFiles.length + " PDF documents)";
         queueSize.textContent = "Total: " + UIUtils.formatBytes(totalSize);
-        batchFileList.innerHTML = selectedFiles.map((f, idx) => 
+        batchFileList.innerHTML = selectedFiles.map((f, idx) => `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.85rem; border-bottom:1px dashed var(--line);">
             <div style="display:flex; align-items:center; gap:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">
-              <span style="color:var(--text-tertiary); font-weight:700;"> + "$" + {idx + 1}.</span>
-              <span style="color:var(--text-primary);"> + "$" + {f.name}</span>
+              <span style="color:var(--text-tertiary); font-weight:700;">${idx + 1}.</span>
+              <span style="color:var(--text-primary);">${f.name}</span>
             </div>
-            <span id="queue-item-status- + "$" + {idx}" style="color:var(--text-muted); font-size:0.8rem;"> + "$" + {UIUtils.formatBytes(f.size)}</span>
+            <span id="queue-item-status-${idx}" style="color:var(--text-muted); font-size:0.8rem;">${UIUtils.formatBytes(f.size)}</span>
           </div>
-        ).join("");
+        `).join("");
         batchFileList.style.display = "block";
         processBtn.querySelector("span").textContent = "Compress All " + selectedFiles.length + " PDFs Now";
       }
@@ -732,20 +732,20 @@
           zipResultBlob = zip.generateBlob();
           downloadBtnText.textContent = "Download All (" + processedResults.length + " PDFs) as ZIP";
 
-          batchResultsItems.innerHTML = processedResults.map((item, idx) => 
+          batchResultsItems.innerHTML = processedResults.map((item, idx) => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-surface); border-radius:4px; border:1px solid var(--line);">
               <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65%;">
-                <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;"> + "$" + {item.filename}</div>
+                <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;">${item.filename}</div>
                 <div style="color:var(--text-muted); font-size:0.78rem;">
-                   + "$" + {UIUtils.formatBytes(item.originalSize)} &rarr;  + "$" + {UIUtils.formatBytes(item.compressedSize)} 
-                  <strong style="color:var(--success);">(- + "$" + {item.savedPercentage}%)</strong>
+                  ${UIUtils.formatBytes(item.originalSize)} &rarr; ${UIUtils.formatBytes(item.compressedSize)} 
+                  <strong style="color:var(--success);">(-${item.savedPercentage}%)</strong>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult( + "$" + {idx})" style="padding:4px 10px; font-size:0.8rem;">
-                â¬‡ Download
+              <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult(${idx})" style="padding:4px 10px; font-size:0.8rem;">
+                ⬇ Download
               </button>
             </div>
-          ).join("");
+          `).join("");
           batchResultsList.style.display = "block";
         }
 

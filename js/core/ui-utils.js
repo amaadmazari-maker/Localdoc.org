@@ -136,13 +136,16 @@ const UIUtils = {
     });
 
     zoneEl.addEventListener('click', (e) => {
-      if (inputEl && e.target !== inputEl) {
+      if (e.target.closest('button, #browse-btn, .btn, input')) return;
+      if (inputEl) {
         inputEl.click();
       }
     });
 
     const browseBtns = zoneEl.querySelectorAll('button, #browse-btn, .btn');
     browseBtns.forEach(btn => {
+      // Remove inline onclick attribute if present to avoid dual-trigger cancellation
+      btn.removeAttribute('onclick');
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -166,56 +169,62 @@ const UIUtils = {
     this.initFullscreenDrop(onFilesSelected);
   },
 
-  // Initialize Global Fullscreen Drag Overlay
+  // Initialize Global Fullscreen Drag Overlay (Singleton with persistent listener)
   initFullscreenDrop(onFilesSelected) {
+    window.__activeFileDropHandler = onFilesSelected;
+
     let overlay = document.getElementById('global-fullscreen-drop-overlay');
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.id = 'global-fullscreen-drop-overlay';
       overlay.className = 'fullscreen-drop-overlay';
+      overlay.style.pointerEvents = 'none';
       overlay.innerHTML = `
-        <div class="fullscreen-drop-box">
-          <div class="fullscreen-drop-icon">⚡</div>
-          <h3 class="fullscreen-drop-title">Drop Your Document Anywhere</h3>
-          <p class="fullscreen-drop-sub">100% Private in Browser RAM • Zero Server Uploads</p>
+        <div class="fullscreen-drop-box" style="pointer-events: none;">
+          <div class="fullscreen-drop-icon" style="pointer-events: none;">⚡</div>
+          <h3 class="fullscreen-drop-title" style="pointer-events: none;">Drop Your Document Anywhere</h3>
+          <p class="fullscreen-drop-sub" style="pointer-events: none;">100% Private in Browser RAM • Zero Server Uploads</p>
         </div>
       `;
       document.body.appendChild(overlay);
-    }
 
-    let dragCounter = 0;
+      let dragCounter = 0;
 
-    window.addEventListener('dragenter', (e) => {
-      e.preventDefault();
-      dragCounter++;
-      if (e.dataTransfer && e.dataTransfer.types && e.dataTransfer.types.includes('Files')) {
-        overlay.classList.add('active');
-      }
-    });
+      window.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        dragCounter++;
+        if (e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+          overlay.classList.add('active');
+          overlay.style.pointerEvents = 'auto';
+        }
+      });
 
-    window.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      dragCounter--;
-      if (dragCounter <= 0) {
+      window.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dragCounter--;
+        if (dragCounter <= 0) {
+          dragCounter = 0;
+          overlay.classList.remove('active');
+          overlay.style.pointerEvents = 'none';
+        }
+      });
+
+      window.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
         dragCounter = 0;
         overlay.classList.remove('active');
-      }
-    });
-
-    window.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-
-    window.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dragCounter = 0;
-      overlay.classList.remove('active');
-      const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) {
-        UIUtils.triggerHaptic();
-        onFilesSelected(files);
-      }
-    });
+        overlay.style.pointerEvents = 'none';
+        const files = Array.from(e.dataTransfer.files);
+        if (files.length > 0 && typeof window.__activeFileDropHandler === 'function') {
+          UIUtils.triggerHaptic();
+          window.__activeFileDropHandler(files);
+        }
+      });
+    }
   },
 
   // Subtle Haptic & Click Feedback

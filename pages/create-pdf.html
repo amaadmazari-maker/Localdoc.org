@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Create PDF Online from Images & Scans — 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Create PDF Online from Images & Scans â€” 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Combine JPG, PNG, WEBP photos into clean A4 or Letter PDFs with reordering, rotation, and margin controls. 100% private in-browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/create-pdf.html">
   <meta property="og:image" content="../assets/icons/jpg-to-pdf.svg">
@@ -81,7 +81,7 @@
           {
             "@type": "HowToStep",
             "name": "Sequence, Rotate & Format",
-            "text": "Arrange page order with navigation arrows, correct orientation with 90° rotation, and set target paper size (A4 or US Letter)."
+            "text": "Arrange page order with navigation arrows, correct orientation with 90Â° rotation, and set target paper size (A4 or US Letter)."
           },
           {
             "@type": "HowToStep",
@@ -114,7 +114,7 @@
             "name": "Can I change page order or fix rotated images before saving?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Each thumbnail features arrows to shift order, a 90° rotation button, and a delete button."
+              "text": "Yes. Each thumbnail features arrows to shift order, a 90Â° rotation button, and a delete button."
             }
           },
           {
@@ -238,7 +238,7 @@
           <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="search" class="header-search-input" placeholder="Search tools &amp; guides..." aria-label="Search all tools and guides" autocomplete="off">
-            <span class="kbd-shortcut">âŒ˜K</span>
+            <span class="kbd-shortcut">Ã¢Å’ËœK</span>
           </div>
         </form>
         <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
@@ -288,7 +288,7 @@
         </div>
         <div class="drop-zone-text">
           <h3>Drag & drop multiple images here, or browse files</h3>
-          <p>Supports JPG, PNG, WEBP, and BMP photos • Multiple selection enabled</p>
+          <p>Supports JPG, PNG, WEBP, and BMP photos â€¢ Multiple selection enabled</p>
         </div>
         <button class="btn btn-primary" id="browse-btn" onclick="document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Browse Image Files</button>
         <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/bmp" multiple style="display:none;">
@@ -547,7 +547,7 @@
           <details class="faq-item">
             <summary class="faq-question">Are my personal photos or scanned documents saved anywhere online?</summary>
             <div class="faq-answer">
-              <p>Never. LocalDoc contains no backend servers or upload APIs. You can verify this by disconnecting your Wi-Fi or enabling Airplane Mode after loading the page—the tool will continue to work flawlessly 100% offline.</p>
+              <p>Never. LocalDoc contains no backend servers or upload APIs. You can verify this by disconnecting your Wi-Fi or enabling Airplane Mode after loading the pageâ€”the tool will continue to work flawlessly 100% offline.</p>
             </div>
           </details>
         </div>
@@ -667,9 +667,9 @@
     </div>
   </footer>
 
-  <script src=../js/core/i18n.js?v=20260918-v3"></script>
-  <script src=../js/core/ui-utils.js?v=20260918-v3"></script>
-  <script src=../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
+  <script src="../js/core/i18n.js?v=20260918-v3"></script>
+  <script src="../js/core/ui-utils.js?v=20260918-v3"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
 
   <script>
     let imageList = []; // { id, file, dataUrl, rotation }
@@ -744,10 +744,10 @@
           <div class="thumb-footer">
             <span style="font-weight:700;">#${idx + 1}</span>
             <div class="thumb-actions">
-              <button class="thumb-action-btn" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">←</button>
-              <button class="thumb-action-btn" onclick="moveItem(${idx}, 1)" ${idx === imageList.length - 1 ? 'disabled' : ''} title="Move Right">→</button>
-              <button class="thumb-action-btn" onclick="rotateItem(${idx})" title="Rotate 90°">↻</button>
-              <button class="thumb-action-btn" style="color:var(--danger);" onclick="deleteItem(${idx})" title="Remove">✕</button>
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Left">â†</button>
+              <button class="thumb-action-btn" onclick="moveItem(${idx}, 1)" ${idx === imageList.length - 1 ? 'disabled' : ''} title="Move Right">â†’</button>
+              <button class="thumb-action-btn" onclick="rotateItem(${idx})" title="Rotate 90Â°">â†»</button>
+              <button class="thumb-action-btn" style="color:var(--danger);" onclick="deleteItem(${idx})" title="Remove">âœ•</button>
             </div>
           </div>
         `;
@@ -858,7 +858,7 @@
         compiledBlob = new Blob([pdfBytes], { type: 'application/pdf' });
         compiledFilename = `LocalDoc_Created_${new Date().toISOString().slice(0, 10)}.pdf`;
 
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledBlob.size)} • Compiled ${imageList.length} Pages into Vector PDF`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(compiledBlob.size)} â€¢ Compiled ${imageList.length} Pages into Vector PDF`;
         document.getElementById("download-btn-text").textContent = `Download ${compiledFilename}`;
 
         UIUtils.setWorkflowStep(3, 100, "PDF Ready!");
@@ -895,11 +895,11 @@
       if (isPlaying) {
         clearInterval(tTimer);
         isPlaying = false;
-        document.getElementById("tut-btn-icon").textContent = "▶";
+        document.getElementById("tut-btn-icon").textContent = "â–¶";
         document.getElementById("tut-btn-text").textContent = "Play Demo";
       } else {
         isPlaying = true;
-        document.getElementById("tut-btn-icon").textContent = "⏸";
+        document.getElementById("tut-btn-icon").textContent = "â¸";
         document.getElementById("tut-btn-text").textContent = "Pause Demo";
         tTimer = setInterval(() => {
           step = (step % sList.length) + 1;

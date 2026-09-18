@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Merge PDF Files Online — 100% Zero-Upload | LocalDoc">
+  <meta property="og:title" content="Merge PDF Files Online â€” 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Combine multiple PDF documents with custom ordering in browser RAM. 100% private.">
   <meta property="og:url" content="https://localdoc.org/pages/merge-pdf.html">
   <meta property="og:image" content="../assets/icons/merge-pdf.svg">
@@ -101,7 +101,7 @@
             "name": "Is there a limit on how many PDF files I can merge?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "There are no arbitrary software limits or daily task caps. You can merge as many documents as your device's available RAM can accommodate — routinely 30 to 50+ files on modern browsers."
+              "text": "There are no arbitrary software limits or daily task caps. You can merge as many documents as your device's available RAM can accommodate â€” routinely 30 to 50+ files on modern browsers."
             }
           },
           {
@@ -150,7 +150,7 @@
           <div class="search-trigger-btn" onclick="document.getElementById('search-modal-backdrop')?.classList.add('open')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="search" class="header-search-input" placeholder="Search tools &amp; guides..." aria-label="Search all tools and guides" autocomplete="off">
-            <span class="kbd-shortcut">âŒ˜K</span>
+            <span class="kbd-shortcut">Ã¢Å’ËœK</span>
           </div>
         </form>
         <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
@@ -269,7 +269,7 @@
     <article class="tool-guide-wrap">
       <!-- 1. Real-Device Performance Telemetry Banner -->
       <div class="tool-telemetry-banner">
-        <div class="telemetry-icon-pulse">⚡</div>
+        <div class="telemetry-icon-pulse">âš¡</div>
         <div class="telemetry-text">
           <strong>Real-Device Performance Benchmark:</strong> Merged 6 distinct PDF documents (total 42 pages, 18.2 MB) into a single unified binder in <strong>0.68 seconds</strong> on a mid-range Android phone (Snapdragon 778G) and <strong>0.19 seconds</strong> on Desktop Chrome. Page trees and indirect object references stitched directly in browser memory.
         </div>
@@ -511,10 +511,10 @@
     </div>
     </footer>
 
-  <script src=../js/core/i18n.js?v=20260918-v3"></script>
-  <script src=../js/core/ui-utils.js?v=20260918-v3"></script>
-  <script src=../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
-  <script src=../js/tools/organize.js?v=20260918-v3"></script>
+  <script src="../js/core/i18n.js?v=20260918-v3"></script>
+  <script src="../js/core/ui-utils.js?v=20260918-v3"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260918-v3"></script>
+  <script src="../js/tools/organize.js?v=20260918-v3"></script>
 
   <script>
     let queueFiles = [];
@@ -557,21 +557,21 @@
         const item = document.createElement("div");
         item.className = "reorder-item";
 
-        item.innerHTML = 
+        item.innerHTML = `
           <div class="reorder-item-left">
-            <span class="reorder-item-num">#</span>
+            <span class="reorder-item-num">#${idx + 1}</span>
             <img src="../assets/icons/merge-pdf.svg" width="24" height="24" alt="PDF">
             <div>
-              <h5 style="margin:0; font-size:0.88rem; color:var(--text-primary); font-weight:700;"></h5>
-              <span style="font-size:0.75rem; color:var(--text-muted);"></span>
+              <h5 style="margin:0; font-size:0.88rem; color:var(--text-primary); font-weight:700;">${file.name}</h5>
+              <span style="font-size:0.75rem; color:var(--text-muted);">${UIUtils.formatBytes(file.size)}</span>
             </div>
           </div>
           <div class="reorder-item-actions">
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(, -1)" >↑ Move Up</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(, 1)" >↓ Move Down</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);" onclick="removeItem()">âœ•</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, -1)">↑ Move Up</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, 1)">↓ Move Down</button>
+            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);" onclick="removeItem(${idx})">✕</button>
           </div>
-        ;
+        `;
 
         reorderList.appendChild(item);
       });
@@ -621,7 +621,8 @@
 
         UIUtils.setWorkflowStep(3, 100, "Merge complete!");
         resultCard.style.display = "flex";
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob ? resultBlob.size : (resultData && resultData.xlsxBlob ? resultData.xlsxBlob.size : 0))} â€¢ Processed Successfully`;
+        const resultSize = resultData && resultData.pdfBlob ? resultData.pdfBlob.size : 0;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultSize)} • Processed Successfully`;
         UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-merged-document.pdf");
         UIUtils.showToast("PDF files merged successfully!", "success");
       } catch (err) {
