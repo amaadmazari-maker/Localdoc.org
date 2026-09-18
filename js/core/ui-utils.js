@@ -190,16 +190,20 @@ const UIUtils = {
 
       let dragCounter = 0;
 
+      const isFileDrag = (e) => {
+        return e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files');
+      };
+
       window.addEventListener('dragenter', (e) => {
+        if (!isFileDrag(e)) return;
         e.preventDefault();
         dragCounter++;
-        if (e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
-          overlay.classList.add('active');
-          overlay.style.pointerEvents = 'auto';
-        }
+        overlay.classList.add('active');
+        overlay.style.pointerEvents = 'auto';
       });
 
       window.addEventListener('dragleave', (e) => {
+        if (!isFileDrag(e)) return;
         e.preventDefault();
         dragCounter--;
         if (dragCounter <= 0) {
@@ -210,15 +214,17 @@ const UIUtils = {
       });
 
       window.addEventListener('dragover', (e) => {
+        if (!isFileDrag(e)) return;
         e.preventDefault();
       });
 
       window.addEventListener('drop', (e) => {
+        if (!isFileDrag(e)) return;
         e.preventDefault();
         dragCounter = 0;
         overlay.classList.remove('active');
         overlay.style.pointerEvents = 'none';
-        const files = Array.from(e.dataTransfer.files);
+        const files = Array.from(e.dataTransfer.files || []);
         if (files.length > 0 && typeof window.__activeFileDropHandler === 'function') {
           UIUtils.triggerHaptic();
           window.__activeFileDropHandler(files);
