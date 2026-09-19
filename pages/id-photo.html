@@ -111,7 +111,7 @@
       font-weight: 700;
       color: var(--text-secondary);
       background: var(--bg-surface);
-      border: 1px solid var(--line);
+      border: 1.5px solid var(--line);
       border-radius: var(--radius-sm);
       cursor: pointer;
       display: inline-flex;
@@ -148,54 +148,51 @@
       min-height: 240px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-    }
-    .id-side-box.has-file {
-      border-style: solid;
-      border-color: var(--primary);
-      background: var(--bg-body);
+      align-items: center;
+      cursor: pointer;
     }
     .id-side-box:hover {
       border-color: var(--primary);
-      box-shadow: var(--shadow-sm);
+      background: rgba(2, 132, 199, 0.03);
+    }
+    .id-side-box.has-file {
+      border-style: solid;
+      border-color: #10B981;
+      background: rgba(16, 185, 129, 0.03);
+    }
+    .side-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
     .id-side-preview {
-      width: 100%;
-      max-height: 180px;
+      max-width: 100%;
+      max-height: 170px;
       object-fit: contain;
-      border-radius: var(--radius-sm);
+      border-radius: 6px;
       border: 1px solid var(--line);
       margin-bottom: 12px;
       background: #FFFFFF;
-    }
-    .side-badge {
-      display: inline-block;
-      background: var(--primary);
-      color: #FFFFFF;
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Document Config Panel */
-    .doc-config-panel {
+    /* Options Panel */
+    .photocopy-options-panel {
       background: var(--bg-surface);
       border: 1px solid var(--line);
       border-radius: var(--radius-md);
       padding: 18px 20px;
-      margin: 20px 0;
+      margin: 20px auto;
+      max-width: 720px;
       text-align: left;
-    }
-    .quick-title-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
     }
     .quick-pill {
       background: var(--bg-body);
@@ -233,6 +230,7 @@
       cursor: grab;
       user-select: none;
       touch-action: none;
+      margin: 0 auto;
     }
     .crop-preview-box:active { cursor: grabbing; }
     .crop-canvas-elem {
@@ -281,6 +279,7 @@
       margin-top: 14px;
       width: 100%;
       max-width: 640px;
+      box-sizing: border-box;
     }
     .control-row {
       display: flex;
@@ -392,7 +391,7 @@
         <!-- Quick Info Banner -->
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:12px 16px; border-radius:var(--radius-sm); margin:0 auto 20px; max-width:850px; text-align:left;">
           <p style="margin:0; font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
-            <strong style="color:var(--text-primary);">Standard A4 Double-Sided Layout:</strong> Automatically scales Front &amp; Back to official ISO ID-1 physical dimensions (85.6 &times; 53.98 mm) on standard A4 paper with official attestation area.
+            <strong style="color:var(--text-primary);">Standard A4 Double-Sided Layout:</strong> Automatically scales Front &amp; Back to official ISO ID-1 physical dimensions (85.6 &times; 53.98 mm) on standard A4 paper with optional attestation area.
           </p>
         </div>
 
@@ -400,24 +399,24 @@
         <div class="id-cards-grid">
           
           <!-- FRONT SIDE BOX -->
-          <div class="id-side-box" id="front-card-box">
+          <div class="id-side-box" id="front-card-box" title="Click to upload Front Side">
             <span class="side-badge">1. Front Side</span>
             
             <div id="front-placeholder">
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="10" y2="8"></line><line x1="6" y1="12" x2="18" y2="12"></line><line x1="6" y1="16" x2="14" y2="16"></line></svg>
               <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Front of ID Card / CNIC</h4>
-              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Select from gallery or snap with camera</p>
-              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
+              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
                 <button type="button" class="btn btn-primary" id="front-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
                   📁 Gallery
                 </button>
-                <button type="button" class="btn btn-outline" id="front-camera-btn" style="padding:6px 14px; font-size:0.82rem;">
+                <button type="button" class="btn btn-outline" id="front-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
                   📷 Camera
                 </button>
               </div>
             </div>
 
-            <div id="front-loaded-view" style="display:none; width:100%;">
+            <div id="front-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
               <img id="front-preview-img" class="id-side-preview" src="" alt="Front ID Preview">
               <div style="display:flex; gap:8px; justify-content:center;">
                 <button type="button" class="btn btn-outline" id="front-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
@@ -435,24 +434,24 @@
           </div>
 
           <!-- BACK SIDE BOX -->
-          <div class="id-side-box" id="back-card-box">
+          <div class="id-side-box" id="back-card-box" title="Click to upload Back Side">
             <span class="side-badge">2. Back Side</span>
 
             <div id="back-placeholder">
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><circle cx="8" cy="12" r="2"></circle><line x1="14" y1="10" x2="18" y2="10"></line><line x1="14" y1="14" x2="18" y2="14"></line></svg>
               <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Back of ID Card / CNIC</h4>
-              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Select from gallery or snap with camera</p>
-              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
+              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
                 <button type="button" class="btn btn-primary" id="back-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
                   📁 Gallery
                 </button>
-                <button type="button" class="btn btn-outline" id="back-camera-btn" style="padding:6px 14px; font-size:0.82rem;">
+                <button type="button" class="btn btn-outline" id="back-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
                   📷 Camera
                 </button>
               </div>
             </div>
 
-            <div id="back-loaded-view" style="display:none; width:100%;">
+            <div id="back-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
               <img id="back-preview-img" class="id-side-preview" src="" alt="Back ID Preview">
               <div style="display:flex; gap:8px; justify-content:center;">
                 <button type="button" class="btn btn-outline" id="back-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
@@ -471,22 +470,24 @@
 
         </div>
 
-        <!-- Document Header & Settings Panel -->
-        <div class="doc-config-panel">
-          <label for="doc-title-input" style="font-weight:700; font-size:0.88rem; color:var(--text-primary); display:block; margin-bottom:6px;">
-            Document Header Title:
-          </label>
-          <input type="text" id="doc-title-input" value="IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET" style="width:100%; padding:10px 14px; border:1px solid var(--line); border-radius:var(--radius-sm); font-size:0.9rem; background:var(--bg-body); color:var(--text-primary);">
-          
-          <div class="quick-title-pills">
-            <span class="quick-pill" onclick="setDocTitle('PAKISTAN CNIC PHOTOCOPY')">🇵🇰 Pakistan CNIC</span>
-            <span class="quick-pill" onclick="setDocTitle('NATIONAL IDENTITY CARD PHOTOCOPY')">🪪 National ID</span>
-            <span class="quick-pill" onclick="setDocTitle('DRIVING LICENSE PHOTOCOPY')">🚗 Driving License</span>
-            <span class="quick-pill" onclick="setDocTitle('IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET')">Standard Header</span>
+        <!-- Photocopy Options -->
+        <div class="photocopy-options-panel">
+          <div style="margin-bottom:14px;">
+            <label for="doc-title-input" style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:6px;">
+              Document Header Note / Purpose (Optional):
+            </label>
+            <input type="text" id="doc-title-input" class="form-control" value="IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET" style="width:100%; padding:8px 12px; font-size:0.85rem; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+            
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+              <button type="button" class="quick-pill" onclick="setDocTitle('CNIC COPY FOR BANK ACCOUNT VERIFICATION')">Bank Verification</button>
+              <button type="button" class="quick-pill" onclick="setDocTitle('IDENTITY CARD PHOTOCOPY / SIM VERIFICATION')">SIM Verification</button>
+              <button type="button" class="quick-pill" onclick="setDocTitle('DRIVING LICENSE PHOTOCOPY')">Driving License</button>
+              <button type="button" class="quick-pill" onclick="setDocTitle('STUDENT ID CARD PHOTOCOPY')">Student Card</button>
+            </div>
           </div>
 
-          <div style="display:flex; align-items:center; gap:8px; margin-top:14px;">
-            <input type="checkbox" id="include-stamp-box" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="include-stamp-box" checked style="width:16px; height:16px; cursor:pointer;">
             <label for="include-stamp-box" style="font-size:0.85rem; color:var(--text-primary); cursor:pointer;">
               Include Attestation / Signature &amp; Official Stamp area at bottom
             </label>
@@ -495,7 +496,7 @@
 
         <!-- Action Button -->
         <div style="text-align:center; margin:24px 0;">
-          <button type="button" class="btn btn-primary btn-lg" id="generate-idcard-btn" style="min-width:300px;">
+          <button type="button" class="btn btn-primary btn-lg" id="generate-idcard-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
             <span>Generate 2-in-1 A4 Photocopy Sheet</span> &rarr;
           </button>
         </div>
@@ -536,15 +537,15 @@
       <!-- ======================================================== -->
       <div id="section-photo-mode" style="display:none;">
         <!-- Drop Zone & Direct Capture Area -->
-        <div class="drop-zone" id="cnic-photo-drop-zone">
+        <div class="drop-zone" id="cnic-photo-drop-zone" style="cursor:pointer;" title="Click to select photo or drop here">
           <div class="drop-zone-icon">
             <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker Icon" width="54" height="54">
           </div>
           <div class="drop-zone-text">
-            <h3>Drop your portrait photo here</h3>
-            <p>For Pakistan NADRA CNIC, NICOP, Pak-Identity &amp; Passport (354&times;472 px, 35&times;45mm).</p>
+            <h3 style="margin:0 0 6px;">Tap or Drop your portrait photo here</h3>
+            <p style="margin:0;">For Pakistan NADRA CNIC, NICOP, Pak-Identity &amp; Passport (354&times;472 px, 35&times;45mm).</p>
           </div>
-          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px;" onclick="event.stopPropagation()">
             <button type="button" class="btn btn-primary btn-lg" id="cnic-photo-browse-btn">
               📁 Select from Gallery
             </button>
@@ -558,22 +559,22 @@
 
         <!-- CNIC Photo Workspace -->
         <div id="cnic-photo-workspace" style="display:none; margin-top:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
             <span style="font-weight:700; color:var(--text-primary); font-size:0.95rem;">🇵🇰 NADRA Biometric Spec (354&times;472 px @ 350 DPI)</span>
             <button type="button" class="btn btn-outline" id="cnic-photo-change-btn" style="padding:4px 12px; font-size:0.8rem;">Change Photo</button>
           </div>
 
           <!-- Background Color Selector -->
           <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:16px; text-align:left;">
-            <label style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:6px;">Background Color:</label>
+            <label style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:8px;">Background Color:</label>
             <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              <button type="button" class="btn btn-outline" id="bg-blue-btn" onclick="setCnicBg('#E0F2FE')" style="padding:6px 12px; font-size:0.8rem; font-weight:700; border-color:#0284C7; color:#0284C7; background:rgba(2,132,199,0.08);">
+              <button type="button" class="btn btn-outline" id="bg-blue-btn" onclick="setCnicBg('#E0F2FE')" style="padding:6px 14px; font-size:0.82rem; font-weight:700; border-color:#0284C7; color:#0284C7; background:rgba(2,132,199,0.08);">
                 🇵🇰 NADRA Light Blue (#E0F2FE)
               </button>
-              <button type="button" class="btn btn-outline" id="bg-white-btn" onclick="setCnicBg('#FFFFFF')" style="padding:6px 12px; font-size:0.8rem; font-weight:600;">
+              <button type="button" class="btn btn-outline" id="bg-white-btn" onclick="setCnicBg('#FFFFFF')" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 Pure White (#FFFFFF)
               </button>
-              <button type="button" class="btn btn-outline" id="bg-grey-btn" onclick="setCnicBg('#F1F5F9')" style="padding:6px 12px; font-size:0.8rem; font-weight:600;">
+              <button type="button" class="btn btn-outline" id="bg-grey-btn" onclick="setCnicBg('#F1F5F9')" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 Light Grey (#F1F5F9)
               </button>
             </div>
@@ -615,7 +616,7 @@
 
           <!-- Generate Photo Button -->
           <div style="text-align:center; margin:20px 0;">
-            <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="min-width:280px;">
+            <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
               <span>Generate Official NADRA CNIC Photo</span> &rarr;
             </button>
           </div>
@@ -764,7 +765,6 @@
     let cnicSheetBlob = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Check query param for default mode
       const params = new URLSearchParams(window.location.search);
       if (params.get('mode') === 'photo') {
         switchStudioMode('photo');
@@ -783,6 +783,10 @@
 
       document.getElementById('tab-photocopy-btn').classList.toggle('active', mode === 'photocopy');
       document.getElementById('tab-photo-btn').classList.toggle('active', mode === 'photo');
+
+      if (mode === 'photo' && cnicPhotoImg) {
+        requestAnimationFrame(() => renderCnicPreview());
+      }
     }
 
     function setDocTitle(val) {
@@ -795,10 +799,29 @@
     function setupPhotocopyHandlers() {
       const frontFileInput = document.getElementById('front-file-input');
       const frontCamInput = document.getElementById('front-camera-input');
+      const frontBox = document.getElementById('front-card-box');
 
-      document.getElementById('front-browse-btn').addEventListener('click', () => frontFileInput.click());
-      document.getElementById('front-camera-btn').addEventListener('click', () => frontCamInput.click());
-      document.getElementById('front-change-btn').addEventListener('click', () => frontFileInput.click());
+      // Click anywhere on front box triggers gallery
+      frontBox.addEventListener('click', () => {
+        frontFileInput.value = '';
+        frontFileInput.click();
+      });
+
+      document.getElementById('front-browse-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        frontFileInput.value = '';
+        frontFileInput.click();
+      });
+      document.getElementById('front-camera-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        frontCamInput.value = '';
+        frontCamInput.click();
+      });
+      document.getElementById('front-change-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        frontFileInput.value = '';
+        frontFileInput.click();
+      });
 
       frontFileInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
@@ -807,7 +830,6 @@
         if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
       });
 
-      const frontBox = document.getElementById('front-card-box');
       frontBox.addEventListener('dragover', (e) => { e.preventDefault(); frontBox.classList.add('drag-over'); });
       frontBox.addEventListener('dragleave', () => frontBox.classList.remove('drag-over'));
       frontBox.addEventListener('drop', (e) => {
@@ -816,17 +838,37 @@
         if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('front', e.dataTransfer.files[0]);
       });
 
-      document.getElementById('front-rotate-btn').addEventListener('click', () => {
+      document.getElementById('front-rotate-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
         frontRotationDeg = (frontRotationDeg + 90) % 360;
         updateSidePreview('front');
       });
 
       const backFileInput = document.getElementById('back-file-input');
       const backCamInput = document.getElementById('back-camera-input');
+      const backBox = document.getElementById('back-card-box');
 
-      document.getElementById('back-browse-btn').addEventListener('click', () => backFileInput.click());
-      document.getElementById('back-camera-btn').addEventListener('click', () => backCamInput.click());
-      document.getElementById('back-change-btn').addEventListener('click', () => backFileInput.click());
+      // Click anywhere on back box triggers gallery
+      backBox.addEventListener('click', () => {
+        backFileInput.value = '';
+        backFileInput.click();
+      });
+
+      document.getElementById('back-browse-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        backFileInput.value = '';
+        backFileInput.click();
+      });
+      document.getElementById('back-camera-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        backCamInput.value = '';
+        backCamInput.click();
+      });
+      document.getElementById('back-change-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        backFileInput.value = '';
+        backFileInput.click();
+      });
 
       backFileInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
@@ -835,7 +877,6 @@
         if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
       });
 
-      const backBox = document.getElementById('back-card-box');
       backBox.addEventListener('dragover', (e) => { e.preventDefault(); backBox.classList.add('drag-over'); });
       backBox.addEventListener('dragleave', () => backBox.classList.remove('drag-over'));
       backBox.addEventListener('drop', (e) => {
@@ -844,7 +885,8 @@
         if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('back', e.dataTransfer.files[0]);
       });
 
-      document.getElementById('back-rotate-btn').addEventListener('click', () => {
+      document.getElementById('back-rotate-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
         backRotationDeg = (backRotationDeg + 90) % 360;
         updateSidePreview('back');
       });
@@ -891,7 +933,7 @@
 
     async function handleSideLoad(side, file) {
       try {
-        UIUtils.showToast(`Loading ${side} image...`, 'info');
+        UIUtils.showToast(`Loading ${side} image into memory...`, 'info');
         const dataUrl = await UIUtils.readFileAsDataURL(file);
 
         if (side === 'front') {
@@ -901,7 +943,7 @@
           document.getElementById('front-loaded-view').style.display = 'block';
           document.getElementById('front-card-box').classList.add('has-file');
           updateSidePreview('front');
-          UIUtils.showToast('Front side loaded successfully!', 'success');
+          UIUtils.showToast('Front side loaded! Now upload or snap the Back side.', 'success');
         } else {
           backImgData = dataUrl;
           backRotationDeg = 0;
@@ -978,9 +1020,25 @@
       const camInput = document.getElementById('cnic-photo-camera-input');
       const dropZone = document.getElementById('cnic-photo-drop-zone');
 
-      document.getElementById('cnic-photo-browse-btn').addEventListener('click', () => fileInput.click());
-      document.getElementById('cnic-photo-camera-btn').addEventListener('click', () => camInput.click());
-      document.getElementById('cnic-photo-change-btn').addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('click', () => {
+        fileInput.value = '';
+        fileInput.click();
+      });
+
+      document.getElementById('cnic-photo-browse-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.value = '';
+        fileInput.click();
+      });
+      document.getElementById('cnic-photo-camera-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        camInput.value = '';
+        camInput.click();
+      });
+      document.getElementById('cnic-photo-change-btn').addEventListener('click', () => {
+        fileInput.value = '';
+        fileInput.click();
+      });
 
       fileInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
@@ -1070,9 +1128,14 @@
         cnicPhotoImg = await UIUtils.loadImage(dataUrl);
 
         document.getElementById('cnic-photo-drop-zone').style.display = 'none';
-        document.getElementById('cnic-photo-workspace').style.display = 'block';
+        const ws = document.getElementById('cnic-photo-workspace');
+        ws.style.display = 'block';
 
-        renderCnicPreview();
+        requestAnimationFrame(() => {
+          renderCnicPreview();
+          ws.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
         UIUtils.showToast("Portrait loaded! Align your face inside the biometric oval.", "success");
       } catch (err) {
         console.error(err);
@@ -1082,6 +1145,24 @@
 
     function setCnicBg(color) {
       cnicBgColor = color;
+      
+      const blueBtn = document.getElementById('bg-blue-btn');
+      const whiteBtn = document.getElementById('bg-white-btn');
+      const greyBtn = document.getElementById('bg-grey-btn');
+
+      if (blueBtn) {
+        blueBtn.style.background = color === '#E0F2FE' ? 'rgba(2,132,199,0.12)' : '';
+        blueBtn.style.borderColor = color === '#E0F2FE' ? '#0284C7' : '';
+      }
+      if (whiteBtn) {
+        whiteBtn.style.background = color === '#FFFFFF' ? 'rgba(2,132,199,0.12)' : '';
+        whiteBtn.style.borderColor = color === '#FFFFFF' ? '#0284C7' : '';
+      }
+      if (greyBtn) {
+        greyBtn.style.background = color === '#F1F5F9' ? 'rgba(2,132,199,0.12)' : '';
+        greyBtn.style.borderColor = color === '#F1F5F9' ? '#0284C7' : '';
+      }
+
       if (cnicPhotoImg) renderCnicPreview();
     }
 
@@ -1090,8 +1171,11 @@
       const canvas = document.getElementById('cnic-canvas');
       const box = document.getElementById('cnic-preview-box');
 
-      canvas.width = box.clientWidth;
-      canvas.height = box.clientHeight;
+      const boxW = box.clientWidth || parseInt(box.style.width) || 280;
+      const boxH = box.clientHeight || parseInt(box.style.height) || 350;
+
+      canvas.width = boxW;
+      canvas.height = boxH;
       const ctx = canvas.getContext('2d');
 
       ctx.fillStyle = cnicBgColor;
@@ -1119,9 +1203,10 @@
 
       try {
         const box = document.getElementById('cnic-preview-box');
+        const boxW = box.clientWidth || parseInt(box.style.width) || 280;
         const targetW = 413; // 35x45mm at 300 DPI
         const targetH = 531;
-        const scaleMultiplier = targetW / box.clientWidth;
+        const scaleMultiplier = targetW / boxW;
 
         // 1. Single Biometric Photo
         const singleRes = await IDPhoto.renderPortraitPhoto({
