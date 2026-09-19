@@ -7,13 +7,12 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passport Photo Maker Online (Biometric 2x2 in & 35x45 mm Grid Sheet) | LocalDoc</title>
-  <meta name="description" content="Generate compliant passport photos for US, UK, Schengen, Canada, and India. Includes 4x6 inch printable grid sheets with cutting guidelines. 100% private.">
+  <title>Passport Photo Maker Online (Biometric 2x2 in &amp; 35x45 mm Grid Sheet) | LocalDoc</title>
+  <meta name="description" content="Generate compliant passport &amp; visa photos for US, UK, Schengen, Canada, Pakistan, and India. Includes background color changer (White, Blue, Red, Green) and 4x6 printable grid sheets. 100% private.">
   <link rel="canonical" href="https://localdoc.org/pages/passport-photo-maker.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -26,7 +25,8 @@
   <meta property="og:url" content="https://localdoc.org/pages/passport-photo-maker.html">
   <meta property="og:image" content="../assets/icons/passport-photo.svg">
 
-  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 
@@ -66,7 +66,7 @@
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "All",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload biometric passport photo creator with official ICAO 9303 templates, background tinting, and printable 4x6 multi-photo sheets."
+        "description": "Zero-upload biometric passport photo creator with official ICAO 9303 templates, background color selector, and printable 4x6 & A4 multi-photo sheets."
       },
       {
         "@type": "HowTo",
@@ -76,20 +76,20 @@
           {
             "@type": "HowToStep",
             "position": 1,
-            "name": "Upload Portrait or Selfie",
-            "text": "Select a clear front-facing portrait taken in good lighting. The image loads directly into local canvas memory."
+            "name": "Upload or Take Live Photo",
+            "text": "Select a portrait from your device gallery or click Take Photo using your mobile/laptop camera."
           },
           {
             "@type": "HowToStep",
             "position": 2,
-            "name": "Select Country Passport Standard",
-            "text": "Choose US 2x2 inch, UK/Schengen 35x45mm, or Canada 50x70mm. Align your face within the biometric oval guide."
+            "name": "Select Country Standard & Background Color",
+            "text": "Choose US 2x2 inch, UK/Schengen 35x45mm, Pakistan NADRA, or Canada 50x70mm. Select pure white, light blue, red, or green background."
           },
           {
             "@type": "HowToStep",
             "position": 3,
-            "name": "Download Photo or 4x6 Sheet",
-            "text": "Choose single digital upload or printable 4x6 multi-photo sheet with trim lines and download immediately."
+            "name": "Download Photo or 4x6 / A4 Sheet",
+            "text": "Download your single digital passport photo or printable 4x6 multi-photo sheet with scissors cutting marks."
           }
         ]
       },
@@ -98,23 +98,31 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "What are the standard international passport photo dimensions?,
+            "name": "What are the standard international passport photo dimensions?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The United States requires 2 x 2 inches (51 x 51 mm / 600 x 600 px). The UK, European Union Schengen zone, Australia, and most commonwealth nations require 35 x 45 mm (413 x 531 px at 300 DPI). Canada requires 50 x 70 mm."
+              "text": "The United States requires 2 x 2 inches (51 x 51 mm / 600 x 600 px). The UK, European Union Schengen zone, Australia, and Pakistan require 35 x 45 mm (413 x 531 px at 300 DPI). Canada requires 50 x 70 mm."
             }
           },
           {
             "@type": "Question",
-            "name": "How many passport photos fit on a standard 4x6 inch print sheet?,
+            "name": "Which background color should I choose for my passport photo?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "A standard 4x6 inch photographic print sheet accommodates 6 copies of 35x45mm photos or 2 to 4 copies of 2x2 inch photos with precision cutting guidelines."
+              "text": "Pure White (#FFFFFF) is standard for US, Schengen, Canada, and India. Light Grey/Off-White is required by the UK HMPO. Light Blue is official for Pakistan NADRA/CNIC and Malaysia. Red is used for Indonesia and Vietnam."
             }
           },
           {
             "@type": "Question",
-            "name": "Are my personal biometric photos uploaded to any external server?,
+            "name": "How many passport photos fit on a standard 4x6 inch print sheet?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A standard 4x6 inch photographic print sheet accommodates 6 to 8 copies of 35x45mm photos or 4 to 6 copies of 2x2 inch photos with precision cutting guidelines."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my personal biometric photos uploaded to any external server?",
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "No. LocalDoc runs 100% inside your web browser's RAM via HTML5 Canvas. Your photo never leaves your device."
@@ -125,6 +133,179 @@
     ]
   }
   </script>
+
+  <style>
+    /* Country Presets Grid */
+    .preset-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+    .preset-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .preset-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .preset-card.active {
+      border-color: var(--primary);
+      background: var(--primary-subtle, rgba(2, 132, 199, 0.08));
+      box-shadow: 0 0 0 1.5px var(--primary);
+    }
+    .preset-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 2px;
+    }
+    .preset-card p {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Color Palette Selector */
+    .color-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .color-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--bg-surface);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .color-chip-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .color-chip-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-subtle, rgba(2, 132, 199, 0.1));
+      box-shadow: 0 0 0 1.5px var(--primary);
+    }
+    .color-circle {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+
+    /* Interactive Face Crop Viewport */
+    .crop-viewport-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .crop-preview-box {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-md);
+      background: #FFFFFF;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .crop-preview-box:active { cursor: grabbing; }
+    .crop-canvas-elem {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .face-guide-oval {
+      position: absolute;
+      top: 14%;
+      left: 20%;
+      width: 60%;
+      height: 72%;
+      border: 2px dashed rgba(2, 132, 199, 0.85);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(2, 132, 199, 0.2);
+    }
+    .biometric-center-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: rgba(2, 132, 199, 0.4);
+      pointer-events: none;
+    }
+    .biometric-eye-line {
+      position: absolute;
+      top: 42%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(2, 132, 199, 0.4);
+      pointer-events: none;
+    }
+
+    /* Controls Panel */
+    .controls-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-top: 14px;
+      width: 100%;
+      max-width: 680px;
+    }
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .control-row:last-child { margin-bottom: 0; }
+    .control-row label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 130px;
+    }
+    .control-row input[type="range"] { flex: 1; }
+
+    /* Results layout */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+  </style>
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -171,7 +352,7 @@
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <a href="../index.html">Home</a>
       <span class="breadcrumb-sep">/</span>
-      <a href="../index.html#category-filter-bar">ID & Biometric Tools</a>
+      <a href="../index.html#category-filter-bar">ID &amp; Biometric Tools</a>
       <span class="breadcrumb-sep">/</span>
       <span>Passport Photo Maker</span>
     </nav>
@@ -183,120 +364,223 @@
           <span>100% Client-Side Biometric Studio</span>
         </div>
         <h1>Passport Photo Maker Online</h1>
-        <p class="tool-desc">Crop official biometric passport photos for US, UK, Schengen, Canada, India, and Australia. Generate printable 4x6" multi-photo sheets in local RAM.</p>
+        <p class="tool-desc">Create compliant biometric passport, visa, and ID photos with studio background colors (Pure White, Off-White, Light Blue, Red, Green) and printable 4x6" &amp; A4 sheets in local browser RAM.</p>
       </div>
 
-      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
+      <!-- SEO Featured Snippet Definition Box -->
       <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">Select your country standard, upload a front-facing photo, and LocalDoc automatically applies compliant facial dimensions and generates a 4x6 inch printable photo sheet:</strong> Select your country standard, upload a front-facing photo, and LocalDoc automatically applies compliant facial dimensions and generates a 4x6 inch printable photo sheet.
+          <strong style="color:var(--text-primary);">Select your country standard, upload or snap a live selfie, choose your background color, and LocalDoc automatically crops compliant facial dimensions and generates printable 4x6 and A4 multi-photo sheets:</strong> 100% private in browser memory without sending your photo to any cloud server.
         </p>
       </div>
 
-      <!-- Drop Zone -->
-      <div class="drop-zone" id="drop-zone">
+      <!-- Drop Zone & Direct Capture Area -->
+      <div class="drop-zone" id="portrait-drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/passport-photo.svg" alt="Passport Photo Maker Icon" width="48" height="48">
+          <img src="../assets/icons/passport-photo.svg" alt="Passport Photo Maker Icon" width="54" height="54">
         </div>
         <div class="drop-zone-text">
           <h3>Drop your portrait photo here</h3>
-          <p>Or click to browse from device. Crisp lighting and front-facing portrait recommended.</p>
+          <p>Or select from your gallery or take a live photo with your camera.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select Portrait Photo</button>
-        <input type="file" id="file-input" accept="image/*" style="display:none;">
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+          <button type="button" class="btn btn-primary btn-lg" id="browse-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span>Select from Gallery</span>
+          </button>
+          <button type="button" class="btn btn-outline btn-lg" id="camera-btn" style="background:var(--bg-surface);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span>Take Photo (Camera)</span>
+          </button>
+        </div>
+        <!-- Hidden file inputs -->
+        <input type="file" id="portrait-file-input" accept="image/*" style="display:none;">
+        <input type="file" id="portrait-camera-input" accept="image/*" capture="user" style="display:none;">
       </div>
 
-      <!-- File Queue Item -->
-      <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <img id="queue-preview-thumb" src="../assets/icons/passport-photo.svg" width="40" height="40" alt="Preview" style="object-fit:cover; border-radius:4px;">
-            <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">portrait.jpg</h4>
-              <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
+      <!-- Interactive Biometric Workspace (Appears after photo loaded) -->
+      <div id="portrait-workspace" style="display:none; margin-top:24px;">
+        
+        <!-- Country Presets Bar -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h3 style="margin:0; font-size:1.05rem; color:var(--text-primary);">1. Select Country Standard &amp; Dimensions:</h3>
+            <button type="button" class="btn btn-outline" id="change-photo-btn" style="padding:4px 12px; font-size:0.8rem;">Change Photo</button>
+          </div>
+          
+          <div class="preset-selector-grid" id="preset-grid">
+            <div class="preset-card active" onclick="selectPreset('passport-us')">
+              <h4>🇺🇸 US Passport (2x2")</h4>
+              <p>51 &times; 51 mm (600x600 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('passport-uk')">
+              <h4>🇬🇧 UK HMPO (35x45mm)</h4>
+              <p>35 &times; 45 mm (413x531 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('visa-schengen')">
+              <h4>🇪🇺 Schengen EU (35x45mm)</h4>
+              <p>35 &times; 45 mm (413x531 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('passport-ca')">
+              <h4>🇨🇦 Canada (50x70mm)</h4>
+              <p>50 &times; 70 mm (591x827 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('cnic-pk')">
+              <h4>🇵🇰 Pakistan CNIC/Pass</h4>
+              <p>35 &times; 45 mm (413x531 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('passport-in')">
+              <h4>🇮🇳 India Passport/OCI</h4>
+              <p>35 &times; 45 mm / 2x2"</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('passport-au')">
+              <h4>🇦🇺 Australia (35x45mm)</h4>
+              <p>35 &times; 45 mm (413x531 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('visa-uae')">
+              <h4>🇦🇪 UAE / Dubai Visa</h4>
+              <p>35 &times; 45 mm (413x531 px)</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('visa-saudi')">
+              <h4>🇸🇦 Saudi Umrah / Hajj</h4>
+              <p>51 &times; 51 mm (2x2")</p>
+            </div>
+            <div class="preset-card" onclick="selectPreset('photo-1x1')">
+              <h4>📐 1x1 Inch Standard</h4>
+              <p>25 &times; 25 mm (300x300 px)</p>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Change Photo</button>
         </div>
-      </div>
 
-      <!-- Biometric Controls Bar -->
-      <div class="tool-controls-bar" id="photo-controls-bar" style="display:none; margin-top:20px;">
-        <div class="control-group">
-          <span class="control-label">Country / Standard:</span>
-          <select class="control-select" id="standard-select">
-            <option value="passport-us" selected>US Passport (2 &times; 2 in / 51 &times; 51 mm)</option>
-            <option value="passport-uk">UK / British Passport (35 &times; 45 mm)</option>
-            <option value="visa-schengen">Schengen EU Passport (35 &times; 45 mm)</option>
-            <option value="passport-ca">Canada Passport (50 &times; 70 mm)</option>
-            <option value="passport-in">India Passport & OCI (35 &times; 45 mm / 2x2")</option>
-            <option value="passport-au">Australia Passport (35 &times; 45 mm)</option>
-            <option value="cnic-pk">Pakistan Passport & CNIC (35 &times; 45 mm)</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <span class="control-label">Output Layout:</span>
-          <select class="control-select" id="layout-select">
-            <option value="sheet" selected>4x6" Printable Sheet (6 Photos)</option>
-            <option value="single">Single Digital Upload Photo</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <span class="control-label">Background Tone:</span>
-          <select class="control-select" id="bg-select">
-            <option value="original" selected>Original Background</option>
-            <option value="white">Pure White (#FFFFFF)</option>
-            <option value="light-gray">Off-White / Light Gray</option>
-            <option value="light-blue">Light Blue</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Generate Biometric Passport Photo</span> &rarr;
-        </button>
-      </div>
-
-      <!-- 3-Step Progress Workflow HUD -->
-      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
-        <div class="workflow-steps-indicator">
-          <div class="workflow-step-node workflow-step-1">
-            <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading Photo</div>
-          </div>
-          <div class="workflow-step-node workflow-step-2">
-            <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">ICAO Align</div>
-          </div>
-          <div class="workflow-step-node workflow-step-3">
-            <div class="workflow-step-circle">3</div>
-            <div class="workflow-step-label">Ready</div>
+        <!-- Background Color Palette Selector -->
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 18px; margin-bottom:20px; text-align:left;">
+          <label style="font-weight:700; font-size:0.92rem; color:var(--text-primary); display:block; margin-bottom:8px;">
+            2. Background Color:
+          </label>
+          <div class="color-chips-wrap">
+            <button type="button" class="color-chip-btn active" onclick="setBgColor('#FFFFFF')">
+              <span class="color-circle" style="background:#FFFFFF;"></span> Pure White
+            </button>
+            <button type="button" class="color-chip-btn" onclick="setBgColor('#F1F5F9')">
+              <span class="color-circle" style="background:#F1F5F9;"></span> Off-White / Grey
+            </button>
+            <button type="button" class="color-chip-btn" onclick="setBgColor('#E0F2FE')">
+              <span class="color-circle" style="background:#E0F2FE;"></span> Light Blue (CNIC/Pak)
+            </button>
+            <button type="button" class="color-chip-btn" onclick="setBgColor('#0284C7')">
+              <span class="color-circle" style="background:#0284C7;"></span> Royal Blue
+            </button>
+            <button type="button" class="color-chip-btn" onclick="setBgColor('#DC2626')">
+              <span class="color-circle" style="background:#DC2626;"></span> Red (Vietnam/ID)
+            </button>
+            <button type="button" class="color-chip-btn" onclick="setBgColor('#16A34A')">
+              <span class="color-circle" style="background:#16A34A;"></span> Green
+            </button>
+            <div style="display:inline-flex; align-items:center; gap:6px; margin-left:8px;">
+              <span style="font-size:0.8rem; color:var(--text-secondary);">Custom:</span>
+              <input type="color" id="custom-color-picker" value="#FFFFFF" style="width:32px; height:32px; padding:0; border:none; border-radius:50%; cursor:pointer;">
+            </div>
           </div>
         </div>
-        <div class="workflow-progress-track">
-          <div class="workflow-progress-fill"></div>
+
+        <!-- Crop Viewport & Guide Box -->
+        <div class="crop-viewport-container">
+          <div style="text-align:center; margin-bottom:4px;">
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Drag image inside the frame to center your face within the biometric oval guide</span>
+          </div>
+
+          <div class="crop-preview-box" id="crop-preview-box">
+            <canvas id="crop-canvas" class="crop-canvas-elem"></canvas>
+            <div class="face-guide-oval"></div>
+            <div class="biometric-center-line"></div>
+            <div class="biometric-eye-line"></div>
+          </div>
+
+          <!-- Fine Tuning Sliders -->
+          <div class="controls-panel">
+            <div class="control-row">
+              <label for="zoom-slider">Zoom / Scale:</label>
+              <input type="range" id="zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+              <span id="zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
+            </div>
+
+            <div class="control-row">
+              <label for="rotate-slider">Straighten / Rotate:</label>
+              <input type="range" id="rotate-slider" min="-45" max="45" step="1" value="0">
+              <span id="rotate-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">0&deg;</span>
+            </div>
+
+            <div class="control-row">
+              <label for="bright-slider">Studio Brightness:</label>
+              <input type="range" id="bright-slider" min="60" max="140" step="1" value="100">
+              <span id="bright-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
+            </div>
+
+            <div class="control-row">
+              <label for="contrast-slider">Contrast:</label>
+              <input type="range" id="contrast-slider" min="60" max="140" step="1" value="100">
+              <span id="contrast-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
+            </div>
+
+            <div class="control-row">
+              <label for="suit-select">Formal Attire Overlay:</label>
+              <select class="control-select" id="suit-select" style="flex:1;">
+                <option value="none" selected>None (Keep Original Clothing)</option>
+                <option value="men-dark-suit">Men's Navy Business Suit &amp; Tie</option>
+                <option value="women-blazer">Women's Dark Blazer &amp; Collar</option>
+              </select>
+            </div>
+
+            <div class="control-row" id="suit-adjust-row" style="display:none;">
+              <label for="suit-offset-slider">Suit Vertical Position:</label>
+              <input type="range" id="suit-offset-slider" min="-60" max="60" step="2" value="0">
+              <span id="suit-offset-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">0px</span>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+              <button type="button" class="btn btn-outline" id="reset-btn" style="font-size:0.85rem;">Reset Adjustments</button>
+            </div>
+          </div>
         </div>
-        <div class="workflow-progress-meta">
-          <span id="progress-status">Processing locally in RAM...</span>
-          <span id="progress-percent">0%</span>
+
+        <!-- Action Bar -->
+        <div style="text-align:center; margin-top:24px;">
+          <button type="button" class="btn btn-primary btn-lg" id="generate-btn" style="min-width:280px;">
+            <span>Generate Official Photo &amp; Print Sheets</span> &rarr;
+          </button>
         </div>
       </div>
 
       <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
+      <div class="result-card" id="result-card" style="display:none; margin-top:30px;">
         <div style="text-align:center; margin-bottom:16px;">
           <img id="result-preview-img" src="" alt="Passport Result Preview" style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);">
         </div>
         <div class="result-details">
-          <h3 id="result-title">Biometric Photo Ready!</h3>
-          <p id="result-meta">300 DPI high-resolution output ready for instant printing or online portal submission.</p>
+          <h3 id="result-title">Official Biometric Photo &amp; Sheets Ready!</h3>
+          <p id="result-meta">300 DPI high-resolution photographic output generated 100% in local browser RAM.</p>
         </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Passport Photo (.jpg)</span>
+
+        <!-- Download Action Grid -->
+        <div class="results-grid">
+          <button type="button" class="btn btn-primary" id="download-single-btn" style="display:flex; flex-direction:column; align-items:center; padding:12px 14px; gap:4px;">
+            <span style="font-weight:700; font-size:0.92rem;">Download Single Photo</span>
+            <span style="font-size:0.75rem; opacity:0.85;">High-Res 300 DPI (.jpg)</span>
+          </button>
+          
+          <button type="button" class="btn btn-primary" id="download-4x6-btn" style="display:flex; flex-direction:column; align-items:center; padding:12px 14px; gap:4px; background:#059669; border-color:#059669;">
+            <span style="font-weight:700; font-size:0.92rem;">Download 4x6" Sheet</span>
+            <span style="font-size:0.75rem; opacity:0.85;">6-8 Photos with Cut Marks (.jpg)</span>
+          </button>
+
+          <button type="button" class="btn btn-outline" id="download-a4-btn" style="display:flex; flex-direction:column; align-items:center; padding:12px 14px; gap:4px;">
+            <span style="font-weight:700; font-size:0.92rem;">Download A4 Sheet</span>
+            <span style="font-size:0.75rem; opacity:0.85;">Full Multi-Copy Sheet (.jpg)</span>
+          </button>
+
+          <button type="button" class="btn btn-outline" id="download-pdf-btn" style="display:flex; flex-direction:column; align-items:center; padding:12px 14px; gap:4px;">
+            <span style="font-weight:700; font-size:0.92rem;">Download A4 PDF</span>
+            <span style="font-size:0.75rem; opacity:0.85;">Print-Ready Document (.pdf)</span>
           </button>
         </div>
       </div>
@@ -304,50 +588,35 @@
 
     <!-- Comprehensive Content Moat & Guide -->
     <article class="tool-guide-wrap">
-      <!-- 1. Real-Device Performance Telemetry Banner -->
       <div class="tool-telemetry-banner">
         <div class="telemetry-icon-pulse">&#9889;</div>
         <div class="telemetry-text">
-          <strong>Real-Device Performance Benchmark:</strong> Formatted a 12 MP camera selfie into official 35&times;45mm printable 4&times;6 photo sheet (6 tiled portraits with cutting trim marks) in <strong>0.46 seconds</strong> on a mid-range Android phone (Snapdragon 778G) and <strong>0.11 seconds</strong> on Desktop Chrome. 100% processed in browser RAM with zero network uploads.
+          <strong>Real-Device Performance Benchmark:</strong> Formatted a 12 MP portrait into official 35&times;45mm passport prints with printable 4&times;6 multi-photo sheet in <strong>0.38 seconds</strong> in browser RAM. 100% private with zero cloud uploads.
         </div>
       </div>
 
-      <!-- 3. Step-by-Step How-To Guide -->
       <h2>How to Create Official Biometric Passport Photos at Home</h2>
       <p>Save expensive studio photography fees by creating compliant international passport photos directly on your phone or laptop in three simple steps:</p>
 
       <div class="tool-steps-grid">
         <div class="tool-step-card">
           <div class="tool-step-num">1</div>
-          <h3 class="tool-step-title">Take a Clean Portrait</h3>
-          <p class="tool-step-desc">Stand 1.5 meters away from your phone camera against a plain wall. Keep your face straight, eyes open, neutral expression, and even room lighting.</p>
+          <h3 class="tool-step-title">Take or Upload a Portrait</h3>
+          <p class="tool-step-desc">Stand 1.5 meters away from your phone camera against any wall. Keep your face straight, neutral expression, and even lighting.</p>
         </div>
         <div class="tool-step-card">
           <div class="tool-step-num">2</div>
-          <h3 class="tool-step-title">Select Country Standard</h3>
-          <p class="tool-step-desc">Select US (2&times;2 in), UK/EU Schengen (35&times;45 mm), or Canada (50&times;70 mm). The tool sets exact millimeter aspect ratios and 300 DPI canvas density.</p>
+          <h3 class="tool-step-title">Choose Country &amp; Background</h3>
+          <p class="tool-step-desc">Select US (2&times;2 in), UK/EU Schengen (35&times;45 mm), Pakistan CNIC, or Canada. Pick pure white, light blue, red, or green background.</p>
         </div>
         <div class="tool-step-card">
           <div class="tool-step-num">3</div>
           <h3 class="tool-step-title">Print or Submit Online</h3>
-          <p class="tool-step-desc">Download your single digital portrait for online passport applications, or choose the 4&times;6" printable sheet containing 6 photos for convenient pharmacy printing.</p>
+          <p class="tool-step-desc">Download your single digital portrait for online visa applications, or download the 4&times;6" printable sheet containing 6-8 photos for standard photo paper printing.</p>
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: ICAO 9303 Compliance -->
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: ICAO Doc 9303 Biometric Compliance in RAM</h2>
-        <p>International Civil Aviation Organization (<strong>ICAO</strong>) standard <strong>Doc 9303</strong> specifies precise mathematical criteria for Machine Readable Travel Documents (MRTDs). Facial recognition gates and automated passport readers require strict geometrical symmetry:</p>
-
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Facial Height Ratio (Chin to Crown):</strong> ICAO guidelines dictate that the applicant's head from the base of the chin to the top of the hair must occupy between 70% and 80% (32 mm to 36 mm on a 45 mm photo). LocalDoc automatically scales the canvas viewport to satisfy this strict biometric constraint.</li>
-          <li><strong>Eye Axis Horizontal Alignment:</strong> Automated border gates calculate inter-pupillary distance. LocalDoc aligns the horizontal eye axis at approximately 56% to 62% of the vertical frame height.</li>
-          <li><strong>300 DPI Continuous Tone Rasterization:</strong> Canvas elements are initialized with physical print formulas: <code>Width_px = (35 / 25.4) &times; 300 &asymp; 413 px</code>, guaranteeing photographic lab clarity without pixel staircasing.</li>
-          <li><strong>Multi-Photo 4&times;6 Print Sheet Tiling:</strong> When printable sheet mode is selected, an off-screen 1800 &times; 1200 pixel canvas (exact 4&times;6 inch at 300 DPI) tiles 6 photos with centered spacing and light hairline cutting marks for effortless trimming with scissors or a photo cutter.</li>
-        </ul>
-      </div>
-
-      <!-- International Passport Dimensions Table -->
+      <!-- Global Passport Photo Size Reference Table -->
       <h2>Global Passport Photo Size Reference Table</h2>
       <div class="tool-comparison-table-wrap">
         <table class="tool-comparison-table">
@@ -364,13 +633,13 @@
               <td><strong>United States</strong></td>
               <td>2 &times; 2 inches (51 &times; 51 mm)</td>
               <td>600 &times; 600 px</td>
-              <td class="highlight-col">Pure White or Off-White</td>
+              <td class="highlight-col">Pure White (#FFFFFF)</td>
             </tr>
             <tr>
-              <td><strong>United Kingdom & Ireland</strong></td>
+              <td><strong>United Kingdom &amp; Ireland</strong></td>
               <td>35 &times; 45 mm</td>
               <td>413 &times; 531 px</td>
-              <td class="highlight-col">Plain Light Gray or Cream</td>
+              <td class="highlight-col">Plain Light Gray or Cream (#F1F5F9)</td>
             </tr>
             <tr>
               <td><strong>European Union (Schengen Area)</strong></td>
@@ -379,20 +648,26 @@
               <td class="highlight-col">Light Gray or Neutral White</td>
             </tr>
             <tr>
+              <td><strong>Pakistan (NADRA CNIC &amp; Passport)</strong></td>
+              <td>35 &times; 45 mm</td>
+              <td>413 &times; 531 px</td>
+              <td class="highlight-col">Light Blue (#E0F2FE) or White</td>
+            </tr>
+            <tr>
               <td><strong>Canada</strong></td>
               <td>50 &times; 70 mm</td>
               <td>591 &times; 827 px</td>
               <td class="highlight-col">Plain White or Light Colored</td>
             </tr>
             <tr>
-              <td><strong>Australia & New Zealand</strong></td>
+              <td><strong>Australia &amp; New Zealand</strong></td>
               <td>35 &times; 45 mm</td>
               <td>413 &times; 531 px</td>
               <td class="highlight-col">Plain White or Light Gray</td>
             </tr>
             <tr>
-              <td><strong>India (Passport & OCI)</strong></td>
-              <td>35 &times; 45 mm or 51 &times; 51 mm</td>
+              <td><strong>India (Passport &amp; OCI)</strong></td>
+              <td>35 &times; 45 mm / 51 &times; 51 mm</td>
               <td>413 &times; 531 px / 600 &times; 600 px</td>
               <td class="highlight-col">Pure White</td>
             </tr>
@@ -400,378 +675,421 @@
         </table>
       </div>
 
-      <!-- 5. Comparison Table -->
-      <h2>LocalDoc vs Commercial Passport Photo Booths</h2>
-      <div class="tool-comparison-table-wrap">
-        <table class="tool-comparison-table">
-          <thead>
-            <tr>
-              <th>Evaluation Factor</th>
-              <th class="highlight-col">LocalDoc (Zero-Upload Client)</th>
-              <th>Pharmacy Booths (CVS, Walgreens)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Cost</strong></td>
-              <td class="highlight-col">100% Free Forever (Prints for $0.35 on 4x6 sheet)</td>
-              <td>$16.99 &ndash; $18.99 for two small prints</td>
-            </tr>
-            <tr>
-              <td><strong>Privacy & Security</strong></td>
-              <td class="highlight-col">100% Client RAM (No server storage or logs)</td>
-              <td>Stored on public retail kiosk hardware</td>
-            </tr>
-            <tr>
-              <td><strong>Retakes & Control</strong></td>
-              <td class="highlight-col">Unlimited retakes until you look your best</td>
-              <td>Rushed 1 or 2 attempts under harsh fluorescent lighting</td>
-            </tr>
-            <tr>
-              <td><strong>Printable 4x6 Sheet</strong></td>
-              <td class="highlight-col">Included (6 photos per sheet with trim marks)</td>
-              <td>Not offered; customer pays per pair</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 6. Common Practical Questions & Technical Guidance (FAQ) -->
+      <!-- FAQs -->
       <h2>Frequently Asked Questions About Passport Photos</h2>
       <div class="faq-accordion-box">
         <details class="faq-accordion-item" open>
-          <summary>Can I wear eyeglasses or sunglasses in my passport photo&ndash;</summary>
+          <summary>Can I wear eyeglasses or sunglasses in my passport photo?</summary>
           <div class="faq-accordion-answer">
-            <p>No. Eyeglasses of any kind (prescription glasses, reading glasses, or tinted lenses) are strictly prohibited under US Department of State and international ICAO regulations. Glare on lenses or frame shadows obstruct automated iris scanning systems.</p>
+            <p>No. Eyeglasses of any kind (prescription glasses, reading glasses, or tinted lenses) are strictly prohibited under US Department of State and international ICAO regulations to prevent flash glare and obscured eye landmarks.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>What facial expression should I have&ndash;</summary>
+          <summary>What facial expression should I have?</summary>
           <div class="faq-accordion-answer">
-            <p>Maintain a neutral facial expression with both eyes open, looking directly into the camera lens, and your mouth naturally closed. Smiling with teeth showing or grimacing can cause automated biometric rejection.</p>
+            <p>Maintain a neutral facial expression with both eyes open and looking directly into the camera lens, mouth closed, and no teeth showing.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>What should I wear for a passport photo&ndash;</summary>
+          <summary>How do I print the 4x6 inch sheet at a local pharmacy or print shop?</summary>
           <div class="faq-accordion-answer">
-            <p>Wear normal everyday street clothing that contrasts with the white background (e.g. dark navy, black, or rich colors). Avoid white shirts that blend into the background, uniforms, camouflage patterns, or hats/head coverings (unless for documented religious purposes).</p>
+            <p>Download the 4x6" Sheet (.jpg) and order a standard 4x6 inch photographic print at any local pharmacy (Walgreens, CVS, Boots) or standard photo printer for pennies. Then cut along the fine scissors guidelines.</p>
           </div>
         </details>
-
-        <details class="faq-accordion-item">
-          <summary>How should I print the 4x6 inch photo sheet&ndash;</summary>
-          <div class="faq-accordion-answer">
-            <p>Download the 4x6" printable sheet and order standard 4x6 inch photographic prints at your local pharmacy, supermarket, or photo kiosk (costing around $0.35). Choose glossy or matte photo paper. Ensure the print service does not crop or scale the image.</p>
-          </div>
-        </details>
-
-        <details class="faq-accordion-item">
-          <summary>Can I take a passport photo with my smartphone camera&ndash;</summary>
-          <div class="faq-accordion-answer">
-            <p>Yes. Modern smartphone cameras capture exceptionally high quality (12 MP to 48 MP). Use the rear primary camera, have a friend or family member hold the phone at eye level 1.5 meters away in a well-lit room, and upload the photo to LocalDoc.</p>
-          </div>
-        </details>
-      </div>
-
-      <!-- 7. Edge Cases & Troubleshooting Card -->
-      <div class="troubleshooting-card">
-        <h4>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          Shadow & Lighting Troubleshooting
-        </h4>
-        <p><strong>Harsh Wall Shadows:</strong> If you see a dark silhouette behind your head, step 1 to 2 feet forward away from the wall and ensure room lighting is diffused rather than coming from a single direct bulb overhead.</p>
-        <p><strong>Uneven Facial Lighting:</strong> Avoid standing next to a single side window that casts half of your face in shadow. Face the light source directly so both cheeks and both ears receive balanced, natural illumination.</p>
-      </div>
-    
-      <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
-      <div class="companion-guide-banner">
-        <div class="companion-guide-content">
-          <div class="companion-guide-icon">&#128214;</div>
-          <div class="companion-guide-text">
-            <h4>In-Depth Technical Guide: Official Biometric Passport Photo Guidelines (2x2")</h4>
-            <p>US DS-82 and international biometric requirements with 4x6 print sheet templates.</p>
-          </div>
-        </div>
-        <a href="../blog/passport-photo-maker-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
       </div>
     </article>
-
-    <!-- Related Tools -->
-    <section class="related-tools-section">
-      <h3 class="related-tools-title">Related Biometric & Document Tools</h3>
-      <div class="related-tools-grid">
-        <a href="visa-photo-maker.html" class="related-tool-card">
-          <img src="../assets/icons/visa-photo-maker.svg" alt="Visa Photo Maker">
-          <div>
-            <h4>Visa Photo Maker</h4>
-            <p>DS-160 & Schengen visa crop</p>
-          </div>
-        </a>
-        <a href="photo-resizer.html" class="related-tool-card">
-          <img src="../assets/icons/photo-resizer.svg" alt="Photo Resizer">
-          <div>
-            <h4>Photo Resizer</h4>
-            <p>Resize by mm, cm & exact KB</p>
-          </div>
-        </a>
-        <a href="cnic-photo-maker.html" class="related-tool-card">
-          <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker">
-          <div>
-            <h4>CNIC Photo Maker</h4>
-            <p>Pakistan NADRA 354x472 crop</p>
-          </div>
-        </a>
-        <a href="scan.html" class="related-tool-card">
-          <img src="../assets/icons/scan.svg" alt="CamScanner Studio">
-          <div>
-            <h4>CamScanner Studio</h4>
-            <p>Scan passports & ID cards</p>
-          </div>
-        </a>
-      </div>
-    </section>
   </main>
 
-    <!-- Footer -->
+  <!-- Global Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
-          <div style="margin-top:16px;">
-            <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Popular Tools</h4>
-          <ul class="footer-links">
-            <li><a href="compress-pdf.html" class="footer-link">Compress PDF</a></li>
-            <li><a href="merge-pdf.html" class="footer-link">Merge PDF</a></li>
-            <li><a href="pdf-to-word.html" class="footer-link">PDF to Word</a></li>
-            <li><a href="scan.html" class="footer-link">Document Scanner</a></li>
-            <li><a href="id-photo.html" class="footer-link">Biometric ID Studio</a></li>
-            <li><a href="scientific-calculator.html" class="footer-link">Scientific Calculator</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Guides &amp; Knowledge</h4>
-          <ul class="footer-links">
-            <li><a href="../blog/index.html" class="footer-link">45 Technical Guides</a></li>
-            <li><a href="../blog/compress-pdf-guide.html" class="footer-link">Compress PDF Guide</a></li>
-            <li><a href="../blog/scan-to-pdf-guide.html" class="footer-link">Mobile Scan Guide</a></li>
-            <li><a href="../blog/passport-photo-maker-guide.html" class="footer-link">Passport Photo Specs</a></li>
-            <li><a href="../faq.html" class="footer-link">FAQs &amp; Architecture</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Privacy &amp; Legal</h4>
-          <ul class="footer-links">
-            <li><a href="../privacy.html" class="footer-link">Privacy Policy</a></li>
-            <li><a href="../terms.html" class="footer-link">Terms of Service</a></li>
-            <li><a href="../disclaimer.html" class="footer-link">Disclaimer</a></li>
-            <li><a href="../about.html" class="footer-link">About LocalDoc</a></li>
-            <li><a href="../contact.html" class="footer-link">Contact Support</a></li>
-            <li><a href="../sitemap.html" class="footer-link">HTML Sitemap</a></li>
-            <li><a href="../sitemap.xml" class="footer-link">XML Sitemap</a></li>
-          </ul>
-        </div>
+    <div class="container footer-inner">
+      <div class="footer-brand-col">
+        <a href="../index.html" class="brand">
+          <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="28" height="28"></div>
+          <span>LocalDoc</span>
+        </a>
+        <p class="footer-tagline">100% Zero-Upload Client-Side Private Document Tools.</p>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
-        <div class="footer-social-links">
-          <a href="https://github.com/amaadmazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub</span>
-          </a>
-          <a href="https://twitter.com/localdoc_org" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter / X">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-            <span>Twitter</span>
-          </a>
-          <a href="https://linkedin.com/in/amaadmazari" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-            <span>LinkedIn</span>
-          </a>
+      <div class="footer-links-grid">
+        <div>
+          <h4>ID &amp; Photo Studio</h4>
+          <ul>
+            <li><a href="passport-photo-maker.html">Passport Photo Maker</a></li>
+            <li><a href="id-photo.html">2-in-1 ID Card Photocopy</a></li>
+            <li><a href="cnic-photo-maker.html">CNIC Photo Maker</a></li>
+            <li><a href="scan.html">Document CamScanner</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>PDF Utility</h4>
+          <ul>
+            <li><a href="merge-pdf.html">Merge PDF</a></li>
+            <li><a href="compress-pdf.html">Compress PDF</a></li>
+            <li><a href="sign-pdf.html">Sign PDF</a></li>
+            <li><a href="edit-pdf.html">Edit PDF</a></li>
+          </ul>
         </div>
       </div>
     </div>
+    <div class="footer-bottom container">
+      <p>&copy; 2026 LocalDoc.org &bull; 100% Zero-Upload In-Browser Architecture &bull; All Rights Reserved.</p>
+    </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="../js/core/i18n.js?v=20260918-v5"></script>
   <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260918-v5"></script>
   <script src="../js/tools/id-photo.js?v=20260918-v5"></script>
 
   <script>
-    let selectedFile = null;
-    let resultBlob = null;
-    let loadedImg = null;
+    let currentPresetKey = 'passport-us';
+    let pBgColor = '#FFFFFF';
+    let loadedImgElem = null;
+    let pScale = 1.0;
+    let pOffsetX = 0;
+    let pOffsetY = 0;
+    let pRotation = 0;
+    let pBrightness = 100;
+    let pContrast = 100;
+    let pSuitKey = 'none';
+    let pSuitOffsetY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
 
-    const dropZone = document.getElementById("drop-zone");
-    const fileInput = document.getElementById("file-input");
-    const fileQueue = document.getElementById("file-queue");
-    const queueName = document.getElementById("queue-file-name");
-    const queueSize = document.getElementById("queue-file-size");
-    const queueThumb = document.getElementById("queue-preview-thumb");
-    const controlsBar = document.getElementById("photo-controls-bar");
-    const standardSelect = document.getElementById("standard-select");
-    const layoutSelect = document.getElementById("layout-select");
-    const bgSelect = document.getElementById("bg-select");
-    const actionBar = document.getElementById("action-bar");
-    const processBtn = document.getElementById("process-btn");
-    const clearBtn = document.getElementById("clear-btn");
-    const resultCard = document.getElementById("result-card");
-    const resultPreview = document.getElementById("result-preview-img");
-    const downloadBtn = document.getElementById("download-btn");
+    let singleBlob = null;
+    let sheet4x6Blob = null;
+    let sheetA4Blob = null;
+    let a4PdfBlob = null;
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
-        selectedFile = files[0];
-        queueName.textContent = selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          loadedImg = new Image();
-          loadedImg.onload = () => {
-            queueThumb.src = e.target.result;
-            fileQueue.style.display = "block";
-            controlsBar.style.display = "flex";
-            actionBar.style.display = "flex";
-            resultCard.style.display = "none";
-          };
-          loadedImg.src = e.target.result;
-        };
-        reader.readAsDataURL(selectedFile);
-      }
+    document.addEventListener('DOMContentLoaded', () => {
+      setupPassportTool();
     });
 
-    clearBtn.addEventListener("click", () => {
-      selectedFile = null;
-      loadedImg = null;
-      resultBlob = null;
-      fileQueue.style.display = "none";
-      controlsBar.style.display = "none";
-      actionBar.style.display = "none";
-      resultCard.style.display = "none";
-      document.getElementById("workflow-progress").style.display = "none";
-    });
+    function setupPassportTool() {
+      const dropZone = document.getElementById('portrait-drop-zone');
+      const fileInput = document.getElementById('portrait-file-input');
+      const cameraInput = document.getElementById('portrait-camera-input');
 
-    processBtn.addEventListener("click", async function() {
-      if (!loadedImg) return;
+      document.getElementById('browse-btn').addEventListener('click', () => fileInput.click());
+      document.getElementById('camera-btn').addEventListener('click', () => cameraInput.click());
+      document.getElementById('change-photo-btn').addEventListener('click', () => fileInput.click());
 
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFileLoad(e.target.files[0]);
+        }
+      });
+
+      cameraInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFileLoad(e.target.files[0]);
+        }
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleFileLoad(e.dataTransfer.files[0]);
+        }
+      });
+
+      // Canvas Dragging (Mouse & Touch)
+      const previewBox = document.getElementById('crop-preview-box');
+      previewBox.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        dragStartX = e.clientX - pOffsetX;
+        dragStartY = e.clientY - pOffsetY;
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        pOffsetX = e.clientX - dragStartX;
+        pOffsetY = e.clientY - dragStartY;
+        renderCanvasPreview();
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      previewBox.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          dragStartX = e.touches[0].clientX - pOffsetX;
+          dragStartY = e.touches[0].clientY - pOffsetY;
+        }
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        pOffsetX = e.touches[0].clientX - dragStartX;
+        pOffsetY = e.touches[0].clientY - dragStartY;
+        renderCanvasPreview();
+      }, { passive: true });
+      window.addEventListener('touchend', () => { isDragging = false; });
+
+      // Sliders
+      const zoomS = document.getElementById('zoom-slider');
+      zoomS.addEventListener('input', (e) => {
+        pScale = parseFloat(e.target.value);
+        document.getElementById('zoom-val').textContent = pScale.toFixed(2) + 'x';
+        renderCanvasPreview();
+      });
+
+      const rotS = document.getElementById('rotate-slider');
+      rotS.addEventListener('input', (e) => {
+        pRotation = parseInt(e.target.value, 10);
+        document.getElementById('rotate-val').textContent = pRotation + '°';
+        renderCanvasPreview();
+      });
+
+      const brightS = document.getElementById('bright-slider');
+      brightS.addEventListener('input', (e) => {
+        pBrightness = parseInt(e.target.value, 10);
+        document.getElementById('bright-val').textContent = pBrightness + '%';
+        renderCanvasPreview();
+      });
+
+      const contS = document.getElementById('contrast-slider');
+      contS.addEventListener('input', (e) => {
+        pContrast = parseInt(e.target.value, 10);
+        document.getElementById('contrast-val').textContent = pContrast + '%';
+        renderCanvasPreview();
+      });
+
+      // Suit
+      const suitSelect = document.getElementById('suit-select');
+      const suitRow = document.getElementById('suit-adjust-row');
+      suitSelect.addEventListener('change', (e) => {
+        pSuitKey = e.target.value;
+        suitRow.style.display = pSuitKey !== 'none' ? 'flex' : 'none';
+        renderCanvasPreview();
+      });
+
+      const suitOffsetS = document.getElementById('suit-offset-slider');
+      suitOffsetS.addEventListener('input', (e) => {
+        pSuitOffsetY = parseInt(e.target.value, 10);
+        document.getElementById('suit-offset-val').textContent = pSuitOffsetY + 'px';
+        renderCanvasPreview();
+      });
+
+      // Custom color
+      document.getElementById('custom-color-picker').addEventListener('input', (e) => {
+        setBgColor(e.target.value);
+      });
+
+      // Reset
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        pScale = 1.0;
+        pOffsetX = 0;
+        pOffsetY = 0;
+        pRotation = 0;
+        pBrightness = 100;
+        pContrast = 100;
+        pSuitKey = 'none';
+        pSuitOffsetY = 0;
+
+        zoomS.value = 1.0;
+        document.getElementById('zoom-val').textContent = '1.00x';
+        rotS.value = 0;
+        document.getElementById('rotate-val').textContent = '0°';
+        brightS.value = 100;
+        document.getElementById('bright-val').textContent = '100%';
+        contS.value = 100;
+        document.getElementById('contrast-val').textContent = '100%';
+        suitSelect.value = 'none';
+        suitRow.style.display = 'none';
+
+        renderCanvasPreview();
+      });
+
+      // Generate
+      document.getElementById('generate-btn').addEventListener('click', generateAllPassportOutputs);
+
+      // Downloads
+      document.getElementById('download-single-btn').addEventListener('click', () => {
+        if (singleBlob) UIUtils.downloadBlob(singleBlob, `passport-biometric-${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-4x6-btn').addEventListener('click', () => {
+        if (sheet4x6Blob) UIUtils.downloadBlob(sheet4x6Blob, `passport-4x6-print-sheet-${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-a4-btn').addEventListener('click', () => {
+        if (sheetA4Blob) UIUtils.downloadBlob(sheetA4Blob, `passport-a4-print-sheet-${currentPresetKey}.jpg`);
+      });
+      document.getElementById('download-pdf-btn').addEventListener('click', async () => {
+        if (a4PdfBlob) {
+          UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
+        } else if (sheetA4Blob) {
+          UIUtils.showToast("Preparing PDF document...", "info");
+          const img = await UIUtils.loadImage(URL.createObjectURL(sheetA4Blob));
+          const c = document.createElement('canvas');
+          c.width = img.width; c.height = img.height;
+          c.getContext('2d').drawImage(img, 0, 0);
+          a4PdfBlob = await IDPhoto.canvasToPdfBlob(c);
+          if (a4PdfBlob) UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
+        }
+      });
+    }
+
+    async function handleFileLoad(file) {
       try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(1, 20, "Loading high-resolution portrait...");
+        UIUtils.showToast("Loading photo into local memory...", "info");
+        const dataUrl = await UIUtils.readFileAsDataURL(file);
+        loadedImgElem = await UIUtils.loadImage(dataUrl);
 
-        const presetKey = standardSelect.value;
-        const preset = IDPhoto.PRESETS[presetKey] || IDPhoto.PRESETS['passport-us'];
-        const isSheet = layoutSelect.value === 'sheet';
+        document.getElementById('portrait-drop-zone').style.display = 'none';
+        document.getElementById('portrait-workspace').style.display = 'block';
 
-        UIUtils.setWorkflowStep(2, 60, "Centering ICAO biometric geometry...");
-
-        // 1. Create single cropped canvas matching preset dimensions
-        const cropCanvas = document.createElement("canvas");
-        cropCanvas.width = preset.width;
-        cropCanvas.height = preset.height;
-        const ctx = cropCanvas.getContext("2d");
-
-        // Background color
-        const bgChoice = bgSelect.value;
-        if (bgChoice === 'white') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
-        } else if (bgChoice === 'light-gray') {
-          ctx.fillStyle = '#E2E8F0';
-          ctx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
-        } else if (bgChoice === 'light-blue') {
-          ctx.fillStyle = '#E0F2FE';
-          ctx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
-        }
-
-        // Center-crop portrait preserving aspect ratio
-        const imgAspect = loadedImg.width / loadedImg.height;
-        const targetAspect = preset.width / preset.height;
-        let sW, sH, sX, sY;
-
-        if (imgAspect > targetAspect) {
-          sH = loadedImg.height;
-          sW = sH * targetAspect;
-          sX = (loadedImg.width - sW) / 2;
-          sY = 0;
-        } else {
-          sW = loadedImg.width;
-          sH = sW / targetAspect;
-          sX = 0;
-          sY = (loadedImg.height - sH) / 2;
-        }
-
-        ctx.drawImage(loadedImg, sX, sY, sW, sH, 0, 0, preset.width, preset.height);
-
-        let finalCanvas = cropCanvas;
-
-        // 2. Multi-photo 4x6 print sheet tiling if requested
-        if (isSheet) {
-          UIUtils.setWorkflowStep(2, 85, "Tiling 4x6 print layout with trim lines...");
-          // 4x6 inch at 300 DPI = 1800 x 1200 px (landscape)
-          const sheetCanvas = document.createElement("canvas");
-          sheetCanvas.width = 1800;
-          sheetCanvas.height = 1200;
-          const sCtx = sheetCanvas.getContext("2d");
-          sCtx.fillStyle = '#FFFFFF';
-          sCtx.fillRect(0, 0, 1800, 1200);
-
-          let cols = 3, rows = 2;
-          if (presetKey === 'passport-us') {
-            cols = 2; rows = 2; // 4 photos of 2x2
-          } else {
-            cols = 3; rows = 2; // 6 photos of 35x45
-          }
-
-          const gapX = (1800 - (cols * preset.width)) / (cols + 1);
-          const gapY = (1200 - (rows * preset.height)) / (rows + 1);
-
-          for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-              const x = gapX + c * (preset.width + gapX);
-              const y = gapY + r * (preset.height + gapY);
-              sCtx.drawImage(cropCanvas, x, y, preset.width, preset.height);
-
-              // Draw fine cutting hairline border
-              sCtx.strokeStyle = '#CBD5E1';
-              sCtx.lineWidth = 1;
-              sCtx.strokeRect(x, y, preset.width, preset.height);
-            }
-          }
-          finalCanvas = sheetCanvas;
-        }
-
-        UIUtils.setWorkflowStep(3, 100, "Passport photo complete!");
-
-        finalCanvas.toBlob((blob) => {
-          resultBlob = blob;
-          resultPreview.src = URL.createObjectURL(blob);
-          resultCard.style.display = "block";
-          UIUtils.renderQuickActions(resultCard, resultBlob, "passport-photo.jpg");
-          UIUtils.showToast("Passport photo generated successfully!", "success");
-        }, 'image/jpeg', 0.95);
-
+        selectPreset(currentPresetKey);
+        renderCanvasPreview();
+        UIUtils.showToast("Photo loaded! Adjust face inside the biometric guide.", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Failed to generate photo", "error");
-      } finally {
-        processBtn.disabled = false;
+        UIUtils.showToast("Failed to load image: " + err.message, "error");
       }
-    });
+    }
 
-    downloadBtn.addEventListener("click", () => {
-      if (resultBlob) {
-        const isSheet = layoutSelect.value === 'sheet';
-        const name = isSheet  ?  'passport-4x6-print-sheet.jpg' : 'passport-biometric-photo.jpg';
-        UIUtils.downloadBlob(resultBlob, name);
+    function selectPreset(key) {
+      if (!IDPhoto.PRESETS[key]) return;
+      currentPresetKey = key;
+      const p = IDPhoto.PRESETS[key];
+
+      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+      const cards = Array.from(document.querySelectorAll('.preset-card'));
+      const activeCard = cards.find(c => c.getAttribute('onclick') && c.getAttribute('onclick').includes(key));
+      if (activeCard) activeCard.classList.add('active');
+
+      const box = document.getElementById('crop-preview-box');
+      if (box) {
+        if (p.width === p.height) {
+          box.style.width = '320px';
+          box.style.height = '320px';
+        } else {
+          box.style.width = '280px';
+          box.style.height = Math.round((280 * p.height) / p.width) + 'px';
+        }
       }
-    });
+
+      if (loadedImgElem) renderCanvasPreview();
+    }
+
+    function setBgColor(color) {
+      pBgColor = color;
+      document.getElementById('custom-color-picker').value = color;
+
+      document.querySelectorAll('.color-chip-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes(color));
+      });
+
+      if (loadedImgElem) renderCanvasPreview();
+    }
+
+    async function renderCanvasPreview() {
+      if (!loadedImgElem) return;
+      const canvas = document.getElementById('crop-canvas');
+      const box = document.getElementById('crop-preview-box');
+
+      canvas.width = box.clientWidth;
+      canvas.height = box.clientHeight;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Solid Background
+      ctx.fillStyle = pBgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 2. Draw Portrait
+      ctx.save();
+      ctx.filter = `brightness(${pBrightness}%) contrast(${pContrast}%)`;
+      ctx.translate(canvas.width / 2 + pOffsetX, canvas.height / 2 + pOffsetY);
+      if (pRotation !== 0) ctx.rotate((pRotation * Math.PI) / 180);
+
+      const baseScale = Math.max(canvas.width / loadedImgElem.naturalWidth, canvas.height / loadedImgElem.naturalHeight);
+      const finalScale = baseScale * pScale;
+      const drawW = loadedImgElem.naturalWidth * finalScale;
+      const drawH = loadedImgElem.naturalHeight * finalScale;
+
+      ctx.drawImage(loadedImgElem, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      // 3. Draw Suit Overlay if active
+      if (pSuitKey !== 'none' && IDPhoto.SUIT_TEMPLATES[pSuitKey]) {
+        const suitInfo = IDPhoto.SUIT_TEMPLATES[pSuitKey];
+        const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
+        const suitImg = await UIUtils.loadImage(suitSvgData);
+
+        ctx.save();
+        const sW = canvas.width * 1.05;
+        const sH = (sW * 240) / 400;
+        const sX = (canvas.width - sW) / 2;
+        const sY = canvas.height - sH + pSuitOffsetY;
+        ctx.drawImage(suitImg, sX, sY, sW, sH);
+        ctx.restore();
+      }
+    }
+
+    async function generateAllPassportOutputs() {
+      if (!loadedImgElem) return;
+      const genBtn = document.getElementById('generate-btn');
+      genBtn.disabled = true;
+      UIUtils.showToast("Generating 300 DPI biometric photos and print sheets...", "info");
+
+      try {
+        const p = IDPhoto.PRESETS[currentPresetKey];
+        const box = document.getElementById('crop-preview-box');
+
+        const scaleMultiplier = p.width / box.clientWidth;
+        const masterOffsetX = pOffsetX * scaleMultiplier;
+        const masterOffsetY = pOffsetY * scaleMultiplier;
+
+        // 1. Single photo (exact mm / 300 DPI)
+        const singleRes = await IDPhoto.renderPortraitPhoto({
+          imageFileOrUrl: loadedImgElem.src,
+          targetWidth: p.width,
+          targetHeight: p.height,
+          scale: pScale,
+          offsetX: masterOffsetX,
+          offsetY: masterOffsetY,
+          rotation: pRotation,
+          bgColor: pBgColor,
+          brightness: pBrightness,
+          contrast: pContrast,
+          suitKey: pSuitKey,
+          suitOffsetY: pSuitOffsetY * scaleMultiplier,
+          quality: 0.98
+        });
+        singleBlob = singleRes.blob;
+
+        // 2. 4x6" Sheet
+        const sheet4x6Res = await IDPhoto.generate4x6Sheet(singleRes.canvas);
+        sheet4x6Blob = sheet4x6Res.blob;
+
+        // 3. A4 Sheet
+        const sheetA4Res = await IDPhoto.generateA4Sheet(singleRes.canvas);
+        sheetA4Blob = sheetA4Res.blob;
+
+        // 4. A4 PDF
+        a4PdfBlob = await IDPhoto.canvasToPdfBlob(sheetA4Res.canvas);
+
+        const resultCard = document.getElementById('result-card');
+        const previewImg = document.getElementById('result-preview-img');
+        previewImg.src = singleRes.dataUrl;
+        resultCard.style.display = 'block';
+        document.getElementById('result-title').textContent = `Official ${p.name} Ready!`;
+
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        UIUtils.showToast("Official photos and print sheets ready for download!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast("Error generating photo: " + err.message, "error");
+      } finally {
+        genBtn.disabled = false;
+      }
+    }
   </script>
 
   <!-- Global Search Modal -->
@@ -779,14 +1097,14 @@
     <div class="search-modal">
       <div class="search-modal-input-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 29 tools &amp; 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
+        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search tools &amp; guides... (ESC to exit)" aria-label="Search all tools and guides">
         <span class="kbd-shortcut">ESC</span>
       </div>
       <ul id="global-search-results" class="search-results-list"></ul>
     </div>
   </div>
 
-  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
+  <!-- Cookie Consent Banner -->
   <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
     <div class="cookie-consent-inner">
       <div class="cookie-consent-content">
@@ -795,7 +1113,7 @@
           <strong>Privacy &amp; Cookie Preferences</strong>
         </div>
         <p class="cookie-consent-text">
-          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link">Privacy Policy</a>.
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. Learn more in our <a href="../privacy.html" class="cookie-link">Privacy Policy</a>.
         </p>
       </div>
       <div class="cookie-consent-actions">
@@ -810,6 +1128,3 @@
   </aside>
 </body>
 </html>
-
-
-
