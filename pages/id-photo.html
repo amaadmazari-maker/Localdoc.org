@@ -731,12 +731,66 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="../js/core/i18n.js?v=20260918-v5"></script>
-  <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260918-v5"></script>
-  <script src="../js/tools/id-photo.js?v=20260918-v5"></script>
+  <script src="../js/core/i18n.js?v=20260919-v6"></script>
+  <script src="../js/core/ui-utils.js?v=20260919-v6"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260919-v6"></script>
+  <script src="../js/tools/id-photo.js?v=20260919-v6"></script>
 
   <script>
+    // Bulletproof Fallbacks for UIUtils
+    window.UIUtils = window.UIUtils || {};
+    if (!window.UIUtils.showToast) {
+      window.UIUtils.showToast = function(msg, type = 'info', duration = 3000) {
+        let c = document.getElementById('toast-container');
+        if (!c) {
+          c = document.createElement('div');
+          c.id = 'toast-container';
+          c.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; display:flex; flex-direction:column; gap:10px; pointer-events:none;';
+          document.body.appendChild(c);
+        }
+        const t = document.createElement('div');
+        const bg = type === 'success' ? '#059669' : (type === 'error' ? '#DC2626' : (type === 'warning' ? '#D97706' : '#0284C7'));
+        t.style.cssText = `background:${bg}; color:#FFF; padding:10px 18px; border-radius:24px; font-size:0.88rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.25); pointer-events:auto; transition:all 0.3s ease; transform:translateY(0); opacity:1;`;
+        t.textContent = msg;
+        c.appendChild(t);
+        setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, duration);
+      };
+    }
+    if (!window.UIUtils.triggerHaptic) {
+      window.UIUtils.triggerHaptic = function() {
+        if (navigator.vibrate) try { navigator.vibrate(20); } catch(e){}
+      };
+    }
+    if (!window.UIUtils.readFileAsDataURL) {
+      window.UIUtils.readFileAsDataURL = function(file) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.onerror = reject;
+          r.readAsDataURL(file);
+        });
+      };
+    }
+    if (!window.UIUtils.loadImage) {
+      window.UIUtils.loadImage = function(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      };
+    }
+    if (!window.UIUtils.downloadBlob) {
+      window.UIUtils.downloadBlob = function(blob, filename) {
+        const u = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = u; a.download = filename;
+        document.body.appendChild(a); a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(u); }, 1000);
+      };
+    }
+
     // Mode Switching
     let currentStudioMode = 'photocopy';
 
@@ -764,7 +818,7 @@
     let cnicSingleBlob = null;
     let cnicSheetBlob = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function initStudio() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('mode') === 'photo') {
         switchStudioMode('photo');
@@ -774,24 +828,29 @@
 
       setupPhotocopyHandlers();
       setupCnicPhotoHandlers();
-    });
+    }
 
-    function switchStudioMode(mode) {
+    window.switchStudioMode = function(mode) {
       currentStudioMode = mode;
-      document.getElementById('section-photocopy-mode').style.display = mode === 'photocopy' ? 'block' : 'none';
-      document.getElementById('section-photo-mode').style.display = mode === 'photo' ? 'block' : 'none';
+      const sPhotocopy = document.getElementById('section-photocopy-mode');
+      const sPhoto = document.getElementById('section-photo-mode');
+      if (sPhotocopy) sPhotocopy.style.display = mode === 'photocopy' ? 'block' : 'none';
+      if (sPhoto) sPhoto.style.display = mode === 'photo' ? 'block' : 'none';
 
-      document.getElementById('tab-photocopy-btn').classList.toggle('active', mode === 'photocopy');
-      document.getElementById('tab-photo-btn').classList.toggle('active', mode === 'photo');
+      const tabP = document.getElementById('tab-photocopy-btn');
+      const tabPh = document.getElementById('tab-photo-btn');
+      if (tabP) tabP.classList.toggle('active', mode === 'photocopy');
+      if (tabPh) tabPh.classList.toggle('active', mode === 'photo');
 
       if (mode === 'photo' && cnicPhotoImg) {
         requestAnimationFrame(() => renderCnicPreview());
       }
-    }
+    };
 
-    function setDocTitle(val) {
-      document.getElementById('doc-title-input').value = val;
-    }
+    window.setDocTitle = function(val) {
+      const input = document.getElementById('doc-title-input');
+      if (input) input.value = val;
+    };
 
     // ==========================================
     // 1. Photocopy Handlers
@@ -801,137 +860,192 @@
       const frontCamInput = document.getElementById('front-camera-input');
       const frontBox = document.getElementById('front-card-box');
 
-      // Click anywhere on front box triggers gallery
-      frontBox.addEventListener('click', () => {
-        frontFileInput.value = '';
-        frontFileInput.click();
-      });
+      if (frontBox && frontFileInput) {
+        frontBox.addEventListener('click', (e) => {
+          if (e.target.closest('button') || e.target.closest('#front-loaded-view')) return;
+          frontFileInput.value = '';
+          frontFileInput.click();
+        });
+      }
 
-      document.getElementById('front-browse-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        frontFileInput.value = '';
-        frontFileInput.click();
-      });
-      document.getElementById('front-camera-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        frontCamInput.value = '';
-        frontCamInput.click();
-      });
-      document.getElementById('front-change-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        frontFileInput.value = '';
-        frontFileInput.click();
-      });
+      const fBrowse = document.getElementById('front-browse-btn');
+      if (fBrowse) {
+        fBrowse.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          frontFileInput.value = '';
+          frontFileInput.click();
+        });
+      }
 
-      frontFileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
-      });
-      frontCamInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
-      });
+      const fCam = document.getElementById('front-camera-btn');
+      if (fCam) {
+        fCam.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          frontCamInput.value = '';
+          frontCamInput.click();
+        });
+      }
 
-      frontBox.addEventListener('dragover', (e) => { e.preventDefault(); frontBox.classList.add('drag-over'); });
-      frontBox.addEventListener('dragleave', () => frontBox.classList.remove('drag-over'));
-      frontBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        frontBox.classList.remove('drag-over');
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('front', e.dataTransfer.files[0]);
-      });
+      const fChange = document.getElementById('front-change-btn');
+      if (fChange) {
+        fChange.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          frontFileInput.value = '';
+          frontFileInput.click();
+        });
+      }
 
-      document.getElementById('front-rotate-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        frontRotationDeg = (frontRotationDeg + 90) % 360;
-        updateSidePreview('front');
-      });
+      if (frontFileInput) {
+        frontFileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
+        });
+      }
+      if (frontCamInput) {
+        frontCamInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
+        });
+      }
+
+      if (frontBox) {
+        frontBox.addEventListener('dragover', (e) => { e.preventDefault(); frontBox.classList.add('drag-over'); });
+        frontBox.addEventListener('dragleave', () => frontBox.classList.remove('drag-over'));
+        frontBox.addEventListener('drop', (e) => {
+          e.preventDefault();
+          frontBox.classList.remove('drag-over');
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('front', e.dataTransfer.files[0]);
+        });
+      }
+
+      const fRot = document.getElementById('front-rotate-btn');
+      if (fRot) {
+        fRot.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          frontRotationDeg = (frontRotationDeg + 90) % 360;
+          updateSidePreview('front');
+        });
+      }
 
       const backFileInput = document.getElementById('back-file-input');
       const backCamInput = document.getElementById('back-camera-input');
       const backBox = document.getElementById('back-card-box');
 
-      // Click anywhere on back box triggers gallery
-      backBox.addEventListener('click', () => {
-        backFileInput.value = '';
-        backFileInput.click();
-      });
+      if (backBox && backFileInput) {
+        backBox.addEventListener('click', (e) => {
+          if (e.target.closest('button') || e.target.closest('#back-loaded-view')) return;
+          backFileInput.value = '';
+          backFileInput.click();
+        });
+      }
 
-      document.getElementById('back-browse-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        backFileInput.value = '';
-        backFileInput.click();
-      });
-      document.getElementById('back-camera-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        backCamInput.value = '';
-        backCamInput.click();
-      });
-      document.getElementById('back-change-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        backFileInput.value = '';
-        backFileInput.click();
-      });
+      const bBrowse = document.getElementById('back-browse-btn');
+      if (bBrowse) {
+        bBrowse.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          backFileInput.value = '';
+          backFileInput.click();
+        });
+      }
 
-      backFileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
-      });
-      backCamInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
-      });
+      const bCam = document.getElementById('back-camera-btn');
+      if (bCam) {
+        bCam.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          backCamInput.value = '';
+          backCamInput.click();
+        });
+      }
 
-      backBox.addEventListener('dragover', (e) => { e.preventDefault(); backBox.classList.add('drag-over'); });
-      backBox.addEventListener('dragleave', () => backBox.classList.remove('drag-over'));
-      backBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        backBox.classList.remove('drag-over');
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('back', e.dataTransfer.files[0]);
-      });
+      const bChange = document.getElementById('back-change-btn');
+      if (bChange) {
+        bChange.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          backFileInput.value = '';
+          backFileInput.click();
+        });
+      }
 
-      document.getElementById('back-rotate-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        backRotationDeg = (backRotationDeg + 90) % 360;
-        updateSidePreview('back');
-      });
+      if (backFileInput) {
+        backFileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
+        });
+      }
+      if (backCamInput) {
+        backCamInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
+        });
+      }
 
-      document.getElementById('generate-idcard-btn').addEventListener('click', generateA4Photocopy);
+      if (backBox) {
+        backBox.addEventListener('dragover', (e) => { e.preventDefault(); backBox.classList.add('drag-over'); });
+        backBox.addEventListener('dragleave', () => backBox.classList.remove('drag-over'));
+        backBox.addEventListener('drop', (e) => {
+          e.preventDefault();
+          backBox.classList.remove('drag-over');
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) handleSideLoad('back', e.dataTransfer.files[0]);
+        });
+      }
 
-      document.getElementById('download-idcard-jpg-btn').addEventListener('click', () => {
-        if (compiledA4Blob) UIUtils.downloadBlob(compiledA4Blob, 'id-card-2in1-a4-photocopy.jpg');
-      });
+      const bRot = document.getElementById('back-rotate-btn');
+      if (bRot) {
+        bRot.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          backRotationDeg = (backRotationDeg + 90) % 360;
+          updateSidePreview('back');
+        });
+      }
 
-      document.getElementById('download-idcard-pdf-btn').addEventListener('click', async () => {
-        if (compiledA4PdfBlob) {
-          UIUtils.downloadBlob(compiledA4PdfBlob, 'id-card-2in1-a4-photocopy.pdf');
-        } else if (compiledA4Canvas) {
-          UIUtils.showToast("Generating high-resolution PDF...", "info");
-          compiledA4PdfBlob = await IDPhoto.canvasToPdfBlob(compiledA4Canvas);
-          if (compiledA4PdfBlob) UIUtils.downloadBlob(compiledA4PdfBlob, 'id-card-2in1-a4-photocopy.pdf');
-        }
-      });
+      const genIdBtn = document.getElementById('generate-idcard-btn');
+      if (genIdBtn) genIdBtn.addEventListener('click', generateA4Photocopy);
 
-      document.getElementById('print-idcard-btn').addEventListener('click', () => {
-        if (!compiledA4Canvas) return;
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(`
-            <html>
-              <head>
-                <title>Print ID Card Photocopy</title>
-                <style>
-                  @page { size: A4 portrait; margin: 0; }
-                  body { margin: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
-                  img { width: 100vw; height: auto; max-height: 100vh; object-fit: contain; }
-                </style>
-              </head>
-              <body>
-                <img src="${compiledA4Canvas.toDataURL('image/jpeg', 0.98)}" onload="window.print(); window.close();" />
-              </body>
-            </html>
-          `);
-          printWindow.document.close();
-        }
-      });
+      const dJpg = document.getElementById('download-idcard-jpg-btn');
+      if (dJpg) {
+        dJpg.addEventListener('click', () => {
+          if (compiledA4Blob) UIUtils.downloadBlob(compiledA4Blob, 'id-card-2in1-a4-photocopy.jpg');
+        });
+      }
+
+      const dPdf = document.getElementById('download-idcard-pdf-btn');
+      if (dPdf) {
+        dPdf.addEventListener('click', async () => {
+          if (compiledA4PdfBlob) {
+            UIUtils.downloadBlob(compiledA4PdfBlob, 'id-card-2in1-a4-photocopy.pdf');
+          } else if (compiledA4Canvas) {
+            UIUtils.showToast("Generating high-resolution PDF...", "info");
+            compiledA4PdfBlob = await IDPhoto.canvasToPdfBlob(compiledA4Canvas);
+            if (compiledA4PdfBlob) UIUtils.downloadBlob(compiledA4PdfBlob, 'id-card-2in1-a4-photocopy.pdf');
+          }
+        });
+      }
+
+      const pPrint = document.getElementById('print-idcard-btn');
+      if (pPrint) {
+        pPrint.addEventListener('click', () => {
+          if (!compiledA4Canvas) return;
+          const printWindow = window.open('', '_blank');
+          if (printWindow) {
+            printWindow.document.write(`
+              <html>
+                <head>
+                  <title>Print ID Card Photocopy</title>
+                  <style>
+                    @page { size: A4 portrait; margin: 0; }
+                    body { margin: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+                    img { width: 100vw; height: auto; max-height: 100vh; object-fit: contain; }
+                  </style>
+                </head>
+                <body>
+                  <img src="${compiledA4Canvas.toDataURL('image/jpeg', 0.98)}" onload="window.print(); window.close();" />
+                </body>
+              </html>
+            `);
+            printWindow.document.close();
+          }
+        });
+      }
     }
 
     async function handleSideLoad(side, file) {
+      if (!file) return;
       try {
         UIUtils.showToast(`Loading ${side} image into memory...`, 'info');
         const dataUrl = await UIUtils.readFileAsDataURL(file);
@@ -977,12 +1091,12 @@
       const backSource = backImgData || frontImgData;
 
       const genBtn = document.getElementById('generate-idcard-btn');
-      genBtn.disabled = true;
+      if (genBtn) genBtn.disabled = true;
       UIUtils.showToast('Compiling 300 DPI A4 ID Card Photocopy...', 'info');
 
       try {
-        const docTitle = document.getElementById('doc-title-input').value.trim() || 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET';
-        const includeStamp = document.getElementById('include-stamp-box').checked;
+        const docTitle = (document.getElementById('doc-title-input')?.value || '').trim() || 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET';
+        const includeStamp = document.getElementById('include-stamp-box')?.checked ?? true;
 
         const res = await IDPhoto.generate2in1IDCardSheet({
           frontImageOrUrl: frontImgData,
@@ -999,16 +1113,16 @@
 
         const resultCard = document.getElementById('idcard-result-card');
         const previewImg = document.getElementById('a4-result-preview');
-        previewImg.src = res.dataUrl;
-        resultCard.style.display = 'block';
+        if (previewImg) previewImg.src = res.dataUrl;
+        if (resultCard) resultCard.style.display = 'block';
 
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        resultCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         UIUtils.showToast('2-in-1 A4 Photocopy ready for download & print!', 'success');
       } catch (err) {
         console.error(err);
         UIUtils.showToast('Error generating document: ' + err.message, 'error');
       } finally {
-        genBtn.disabled = false;
+        if (genBtn) genBtn.disabled = false;
       }
     }
 
@@ -1020,108 +1134,151 @@
       const camInput = document.getElementById('cnic-photo-camera-input');
       const dropZone = document.getElementById('cnic-photo-drop-zone');
 
-      dropZone.addEventListener('click', () => {
-        fileInput.value = '';
-        fileInput.click();
-      });
+      if (dropZone && fileInput) {
+        dropZone.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          fileInput.value = '';
+          fileInput.click();
+        });
+      }
 
-      document.getElementById('cnic-photo-browse-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        fileInput.value = '';
-        fileInput.click();
-      });
-      document.getElementById('cnic-photo-camera-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        camInput.value = '';
-        camInput.click();
-      });
-      document.getElementById('cnic-photo-change-btn').addEventListener('click', () => {
-        fileInput.value = '';
-        fileInput.click();
-      });
+      const cBrowse = document.getElementById('cnic-photo-browse-btn');
+      if (cBrowse) {
+        cBrowse.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          fileInput.value = '';
+          fileInput.click();
+        });
+      }
 
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
-      });
-      camInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
-      });
+      const cCam = document.getElementById('cnic-photo-camera-btn');
+      if (cCam) {
+        cCam.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          camInput.value = '';
+          camInput.click();
+        });
+      }
 
-      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) handleCnicPhotoLoad(e.dataTransfer.files[0]);
-      });
+      const cChange = document.getElementById('cnic-photo-change-btn');
+      if (cChange) {
+        cChange.addEventListener('click', (e) => {
+          e.preventDefault();
+          fileInput.value = '';
+          fileInput.click();
+        });
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
+        });
+      }
+      if (camInput) {
+        camInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
+        });
+      }
+
+      if (dropZone) {
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) handleCnicPhotoLoad(e.dataTransfer.files[0]);
+        });
+      }
 
       // Canvas Dragging
       const previewBox = document.getElementById('cnic-preview-box');
-      previewBox.addEventListener('mousedown', (e) => {
-        isCnicDragging = true;
-        cnicDragStartX = e.clientX - cnicOffsetX;
-        cnicDragStartY = e.clientY - cnicOffsetY;
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (!isCnicDragging) return;
-        cnicOffsetX = e.clientX - cnicDragStartX;
-        cnicOffsetY = e.clientY - cnicDragStartY;
-        renderCnicPreview();
-      });
-      window.addEventListener('mouseup', () => { isCnicDragging = false; });
-
-      previewBox.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
+      if (previewBox) {
+        previewBox.addEventListener('mousedown', (e) => {
           isCnicDragging = true;
-          cnicDragStartX = e.touches[0].clientX - cnicOffsetX;
-          cnicDragStartY = e.touches[0].clientY - cnicOffsetY;
-        }
-      }, { passive: true });
-      window.addEventListener('touchmove', (e) => {
-        if (!isCnicDragging || e.touches.length !== 1) return;
-        cnicOffsetX = e.touches[0].clientX - cnicDragStartX;
-        cnicOffsetY = e.touches[0].clientY - cnicDragStartY;
-        renderCnicPreview();
-      }, { passive: true });
-      window.addEventListener('touchend', () => { isCnicDragging = false; });
+          cnicDragStartX = e.clientX - cnicOffsetX;
+          cnicDragStartY = e.clientY - cnicOffsetY;
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!isCnicDragging) return;
+          cnicOffsetX = e.clientX - cnicDragStartX;
+          cnicOffsetY = e.clientY - cnicDragStartY;
+          renderCnicPreview();
+        });
+        window.addEventListener('mouseup', () => { isCnicDragging = false; });
+
+        previewBox.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            isCnicDragging = true;
+            cnicDragStartX = e.touches[0].clientX - cnicOffsetX;
+            cnicDragStartY = e.touches[0].clientY - cnicOffsetY;
+          }
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (!isCnicDragging || e.touches.length !== 1) return;
+          cnicOffsetX = e.touches[0].clientX - cnicDragStartX;
+          cnicOffsetY = e.touches[0].clientY - cnicDragStartY;
+          renderCnicPreview();
+        }, { passive: true });
+        window.addEventListener('touchend', () => { isCnicDragging = false; });
+      }
 
       // Sliders
-      document.getElementById('cnic-zoom-slider').addEventListener('input', (e) => {
-        cnicScale = parseFloat(e.target.value);
-        document.getElementById('cnic-zoom-val').textContent = cnicScale.toFixed(2) + 'x';
-        renderCnicPreview();
-      });
+      const zS = document.getElementById('cnic-zoom-slider');
+      if (zS) {
+        zS.addEventListener('input', (e) => {
+          cnicScale = parseFloat(e.target.value);
+          document.getElementById('cnic-zoom-val').textContent = cnicScale.toFixed(2) + 'x';
+          renderCnicPreview();
+        });
+      }
 
-      document.getElementById('cnic-rot-slider').addEventListener('input', (e) => {
-        cnicRotation = parseInt(e.target.value, 10);
-        document.getElementById('cnic-rot-val').textContent = cnicRotation + '°';
-        renderCnicPreview();
-      });
+      const rS = document.getElementById('cnic-rot-slider');
+      if (rS) {
+        rS.addEventListener('input', (e) => {
+          cnicRotation = parseInt(e.target.value, 10);
+          document.getElementById('cnic-rot-val').textContent = cnicRotation + '°';
+          renderCnicPreview();
+        });
+      }
 
-      document.getElementById('cnic-bright-slider').addEventListener('input', (e) => {
-        cnicBrightness = parseInt(e.target.value, 10);
-        document.getElementById('cnic-bright-val').textContent = cnicBrightness + '%';
-        renderCnicPreview();
-      });
+      const bS = document.getElementById('cnic-bright-slider');
+      if (bS) {
+        bS.addEventListener('input', (e) => {
+          cnicBrightness = parseInt(e.target.value, 10);
+          document.getElementById('cnic-bright-val').textContent = cnicBrightness + '%';
+          renderCnicPreview();
+        });
+      }
 
-      document.getElementById('cnic-cont-slider').addEventListener('input', (e) => {
-        cnicContrast = parseInt(e.target.value, 10);
-        document.getElementById('cnic-cont-val').textContent = cnicContrast + '%';
-        renderCnicPreview();
-      });
+      const cS = document.getElementById('cnic-cont-slider');
+      if (cS) {
+        cS.addEventListener('input', (e) => {
+          cnicContrast = parseInt(e.target.value, 10);
+          document.getElementById('cnic-cont-val').textContent = cnicContrast + '%';
+          renderCnicPreview();
+        });
+      }
 
-      document.getElementById('generate-cnic-photo-btn').addEventListener('click', generateCnicPhotoOutputs);
+      const genCnicBtn = document.getElementById('generate-cnic-photo-btn');
+      if (genCnicBtn) genCnicBtn.addEventListener('click', generateCnicPhotoOutputs);
 
-      document.getElementById('download-cnic-single-btn').addEventListener('click', () => {
-        if (cnicSingleBlob) UIUtils.downloadBlob(cnicSingleBlob, 'pak_identity_cnic_photo.jpg');
-      });
+      const dSingle = document.getElementById('download-cnic-single-btn');
+      if (dSingle) {
+        dSingle.addEventListener('click', () => {
+          if (cnicSingleBlob) UIUtils.downloadBlob(cnicSingleBlob, 'pak_identity_cnic_photo.jpg');
+        });
+      }
 
-      document.getElementById('download-cnic-sheet-btn').addEventListener('click', () => {
-        if (cnicSheetBlob) UIUtils.downloadBlob(cnicSheetBlob, 'nadra_cnic_8copy_sheet.jpg');
-      });
+      const dSheet = document.getElementById('download-cnic-sheet-btn');
+      if (dSheet) {
+        dSheet.addEventListener('click', () => {
+          if (cnicSheetBlob) UIUtils.downloadBlob(cnicSheetBlob, 'nadra_cnic_8copy_sheet.jpg');
+        });
+      }
     }
 
     async function handleCnicPhotoLoad(file) {
+      if (!file) return;
       try {
         UIUtils.showToast("Loading photo into RAM...", "info");
         const dataUrl = await UIUtils.readFileAsDataURL(file);
@@ -1129,11 +1286,11 @@
 
         document.getElementById('cnic-photo-drop-zone').style.display = 'none';
         const ws = document.getElementById('cnic-photo-workspace');
-        ws.style.display = 'block';
+        if (ws) ws.style.display = 'block';
 
         requestAnimationFrame(() => {
           renderCnicPreview();
-          ws.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          ws?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
         UIUtils.showToast("Portrait loaded! Align your face inside the biometric oval.", "success");
@@ -1143,7 +1300,7 @@
       }
     }
 
-    function setCnicBg(color) {
+    window.setCnicBg = function(color) {
       cnicBgColor = color;
       
       const blueBtn = document.getElementById('bg-blue-btn');
@@ -1164,12 +1321,13 @@
       }
 
       if (cnicPhotoImg) renderCnicPreview();
-    }
+    };
 
     function renderCnicPreview() {
       if (!cnicPhotoImg) return;
       const canvas = document.getElementById('cnic-canvas');
       const box = document.getElementById('cnic-preview-box');
+      if (!canvas || !box) return;
 
       const boxW = box.clientWidth || parseInt(box.style.width) || 280;
       const boxH = box.clientHeight || parseInt(box.style.height) || 350;
@@ -1198,12 +1356,12 @@
     async function generateCnicPhotoOutputs() {
       if (!cnicPhotoImg) return;
       const genBtn = document.getElementById('generate-cnic-photo-btn');
-      genBtn.disabled = true;
+      if (genBtn) genBtn.disabled = true;
       UIUtils.showToast("Generating official NADRA 354x472 px photo...", "info");
 
       try {
         const box = document.getElementById('cnic-preview-box');
-        const boxW = box.clientWidth || parseInt(box.style.width) || 280;
+        const boxW = (box && box.clientWidth) || 280;
         const targetW = 413; // 35x45mm at 300 DPI
         const targetH = 531;
         const scaleMultiplier = targetW / boxW;
@@ -1229,17 +1387,24 @@
         cnicSheetBlob = sheetRes.blob;
 
         const resultCard = document.getElementById('cnic-photo-result-card');
-        document.getElementById('cnic-photo-preview-img').src = singleRes.dataUrl;
-        resultCard.style.display = 'block';
+        const previewImg = document.getElementById('cnic-photo-preview-img');
+        if (previewImg) previewImg.src = singleRes.dataUrl;
+        if (resultCard) resultCard.style.display = 'block';
 
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        resultCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         UIUtils.showToast("NADRA CNIC Photo generated successfully!", "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Error: " + err.message, "error");
       } finally {
-        genBtn.disabled = false;
+        if (genBtn) genBtn.disabled = false;
       }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStudio);
+    } else {
+      initStudio();
     }
   </script>
 

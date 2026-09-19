@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v10-2026-mobile-scroll-fix';
+const CACHE_NAME = 'localdoc-v12-2026-photo-studio-fix';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -112,7 +112,8 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) return cachedResponse;
-          if (event.request.headers.get('accept').includes('text/html')) {
+          const acceptHeader = event.request.headers.get('accept') || '';
+          if (acceptHeader.includes('text/html')) {
             return caches.match('/index.html');
           }
         });

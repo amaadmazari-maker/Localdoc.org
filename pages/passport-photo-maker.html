@@ -794,12 +794,66 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="../js/core/i18n.js?v=20260918-v5"></script>
-  <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260918-v5"></script>
-  <script src="../js/tools/id-photo.js?v=20260918-v5"></script>
+  <script src="../js/core/i18n.js?v=20260919-v6"></script>
+  <script src="../js/core/ui-utils.js?v=20260919-v6"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260919-v6"></script>
+  <script src="../js/tools/id-photo.js?v=20260919-v6"></script>
 
   <script>
+    // Bulletproof Fallbacks for UIUtils
+    window.UIUtils = window.UIUtils || {};
+    if (!window.UIUtils.showToast) {
+      window.UIUtils.showToast = function(msg, type = 'info', duration = 3000) {
+        let c = document.getElementById('toast-container');
+        if (!c) {
+          c = document.createElement('div');
+          c.id = 'toast-container';
+          c.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; display:flex; flex-direction:column; gap:10px; pointer-events:none;';
+          document.body.appendChild(c);
+        }
+        const t = document.createElement('div');
+        const bg = type === 'success' ? '#059669' : (type === 'error' ? '#DC2626' : (type === 'warning' ? '#D97706' : '#0284C7'));
+        t.style.cssText = `background:${bg}; color:#FFF; padding:10px 18px; border-radius:24px; font-size:0.88rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.25); pointer-events:auto; transition:all 0.3s ease; transform:translateY(0); opacity:1;`;
+        t.textContent = msg;
+        c.appendChild(t);
+        setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, duration);
+      };
+    }
+    if (!window.UIUtils.triggerHaptic) {
+      window.UIUtils.triggerHaptic = function() {
+        if (navigator.vibrate) try { navigator.vibrate(20); } catch(e){}
+      };
+    }
+    if (!window.UIUtils.readFileAsDataURL) {
+      window.UIUtils.readFileAsDataURL = function(file) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.onerror = reject;
+          r.readAsDataURL(file);
+        });
+      };
+    }
+    if (!window.UIUtils.loadImage) {
+      window.UIUtils.loadImage = function(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      };
+    }
+    if (!window.UIUtils.downloadBlob) {
+      window.UIUtils.downloadBlob = function(blob, filename) {
+        const u = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = u; a.download = filename;
+        document.body.appendChild(a); a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(u); }, 1000);
+      };
+    }
+
     let currentPresetKey = 'passport-us';
     let pBgColor = '#FFFFFF';
     let loadedImgElem = null;
@@ -820,9 +874,12 @@
     let sheetA4Blob = null;
     let a4PdfBlob = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      setupPassportTool();
-    });
+    // Direct input handler attached to inline onchange
+    window.handlePassportFileInput = function(input) {
+      if (input.files && input.files[0]) {
+        handleFileLoad(input.files[0]);
+      }
+    };
 
     function updateStepper(step) {
       for (let i = 1; i <= 4; i++) {
@@ -842,28 +899,43 @@
       const fileInput = document.getElementById('portrait-file-input');
       const cameraInput = document.getElementById('portrait-camera-input');
 
-      // Click anywhere in drop zone opens file picker
-      dropZone.addEventListener('click', () => {
+      if (!dropZone || !fileInput) return;
+
+      // Click dropzone
+      dropZone.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
         fileInput.value = '';
         fileInput.click();
       });
 
-      document.getElementById('browse-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        fileInput.value = '';
-        fileInput.click();
-      });
+      const browseBtn = document.getElementById('browse-btn');
+      if (browseBtn) {
+        browseBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          fileInput.value = '';
+          fileInput.click();
+        });
+      }
 
-      document.getElementById('camera-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        cameraInput.value = '';
-        cameraInput.click();
-      });
+      const cameraBtn = document.getElementById('camera-btn');
+      if (cameraBtn) {
+        cameraBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          cameraInput.value = '';
+          cameraInput.click();
+        });
+      }
 
-      document.getElementById('change-photo-btn').addEventListener('click', () => {
-        fileInput.value = '';
-        fileInput.click();
-      });
+      const changePhotoBtn = document.getElementById('change-photo-btn');
+      if (changePhotoBtn) {
+        changePhotoBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          fileInput.value = '';
+          fileInput.click();
+        });
+      }
 
       fileInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -893,138 +965,170 @@
 
       // Canvas Dragging (Mouse & Touch)
       const previewBox = document.getElementById('crop-preview-box');
-      previewBox.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        dragStartX = e.clientX - pOffsetX;
-        dragStartY = e.clientY - pOffsetY;
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        pOffsetX = e.clientX - dragStartX;
-        pOffsetY = e.clientY - dragStartY;
-        renderCanvasPreview();
-      });
-      window.addEventListener('mouseup', () => { isDragging = false; });
-
-      previewBox.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
+      if (previewBox) {
+        previewBox.addEventListener('mousedown', (e) => {
           isDragging = true;
-          dragStartX = e.touches[0].clientX - pOffsetX;
-          dragStartY = e.touches[0].clientY - pOffsetY;
-        }
-      }, { passive: true });
-      window.addEventListener('touchmove', (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        pOffsetX = e.touches[0].clientX - dragStartX;
-        pOffsetY = e.touches[0].clientY - dragStartY;
-        renderCanvasPreview();
-      }, { passive: true });
-      window.addEventListener('touchend', () => { isDragging = false; });
+          dragStartX = e.clientX - pOffsetX;
+          dragStartY = e.clientY - pOffsetY;
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          pOffsetX = e.clientX - dragStartX;
+          pOffsetY = e.clientY - dragStartY;
+          renderCanvasPreview();
+        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        previewBox.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            isDragging = true;
+            dragStartX = e.touches[0].clientX - pOffsetX;
+            dragStartY = e.touches[0].clientY - pOffsetY;
+          }
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+          if (!isDragging || e.touches.length !== 1) return;
+          pOffsetX = e.touches[0].clientX - dragStartX;
+          pOffsetY = e.touches[0].clientY - dragStartY;
+          renderCanvasPreview();
+        }, { passive: true });
+        window.addEventListener('touchend', () => { isDragging = false; });
+      }
 
       // Sliders
       const zoomS = document.getElementById('zoom-slider');
-      zoomS.addEventListener('input', (e) => {
-        pScale = parseFloat(e.target.value);
-        document.getElementById('zoom-val').textContent = pScale.toFixed(2) + 'x';
-        renderCanvasPreview();
-      });
+      if (zoomS) {
+        zoomS.addEventListener('input', (e) => {
+          pScale = parseFloat(e.target.value);
+          document.getElementById('zoom-val').textContent = pScale.toFixed(2) + 'x';
+          renderCanvasPreview();
+        });
+      }
 
       const rotS = document.getElementById('rotate-slider');
-      rotS.addEventListener('input', (e) => {
-        pRotation = parseInt(e.target.value, 10);
-        document.getElementById('rotate-val').textContent = pRotation + '°';
-        renderCanvasPreview();
-      });
+      if (rotS) {
+        rotS.addEventListener('input', (e) => {
+          pRotation = parseInt(e.target.value, 10);
+          document.getElementById('rotate-val').textContent = pRotation + '°';
+          renderCanvasPreview();
+        });
+      }
 
       const brightS = document.getElementById('bright-slider');
-      brightS.addEventListener('input', (e) => {
-        pBrightness = parseInt(e.target.value, 10);
-        document.getElementById('bright-val').textContent = pBrightness + '%';
-        renderCanvasPreview();
-      });
+      if (brightS) {
+        brightS.addEventListener('input', (e) => {
+          pBrightness = parseInt(e.target.value, 10);
+          document.getElementById('bright-val').textContent = pBrightness + '%';
+          renderCanvasPreview();
+        });
+      }
 
       const contS = document.getElementById('contrast-slider');
-      contS.addEventListener('input', (e) => {
-        pContrast = parseInt(e.target.value, 10);
-        document.getElementById('contrast-val').textContent = pContrast + '%';
-        renderCanvasPreview();
-      });
+      if (contS) {
+        contS.addEventListener('input', (e) => {
+          pContrast = parseInt(e.target.value, 10);
+          document.getElementById('contrast-val').textContent = pContrast + '%';
+          renderCanvasPreview();
+        });
+      }
 
       // Suit
       const suitSelect = document.getElementById('suit-select');
       const suitRow = document.getElementById('suit-adjust-row');
-      suitSelect.addEventListener('change', (e) => {
-        pSuitKey = e.target.value;
-        suitRow.style.display = pSuitKey !== 'none' ? 'flex' : 'none';
-        renderCanvasPreview();
-      });
+      if (suitSelect && suitRow) {
+        suitSelect.addEventListener('change', (e) => {
+          pSuitKey = e.target.value;
+          suitRow.style.display = pSuitKey !== 'none' ? 'flex' : 'none';
+          renderCanvasPreview();
+        });
+      }
 
       const suitOffsetS = document.getElementById('suit-offset-slider');
-      suitOffsetS.addEventListener('input', (e) => {
-        pSuitOffsetY = parseInt(e.target.value, 10);
-        document.getElementById('suit-offset-val').textContent = pSuitOffsetY + 'px';
-        renderCanvasPreview();
-      });
+      if (suitOffsetS) {
+        suitOffsetS.addEventListener('input', (e) => {
+          pSuitOffsetY = parseInt(e.target.value, 10);
+          document.getElementById('suit-offset-val').textContent = pSuitOffsetY + 'px';
+          renderCanvasPreview();
+        });
+      }
 
       // Custom color
-      document.getElementById('custom-color-picker').addEventListener('input', (e) => {
-        setBgColor(e.target.value);
-      });
+      const colorPicker = document.getElementById('custom-color-picker');
+      if (colorPicker) {
+        colorPicker.addEventListener('input', (e) => {
+          setBgColor(e.target.value);
+        });
+      }
 
       // Reset
-      document.getElementById('reset-btn').addEventListener('click', () => {
-        pScale = 1.0;
-        pOffsetX = 0;
-        pOffsetY = 0;
-        pRotation = 0;
-        pBrightness = 100;
-        pContrast = 100;
-        pSuitKey = 'none';
-        pSuitOffsetY = 0;
+      const resetBtn = document.getElementById('reset-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          pScale = 1.0;
+          pOffsetX = 0;
+          pOffsetY = 0;
+          pRotation = 0;
+          pBrightness = 100;
+          pContrast = 100;
+          pSuitKey = 'none';
+          pSuitOffsetY = 0;
 
-        zoomS.value = 1.0;
-        document.getElementById('zoom-val').textContent = '1.00x';
-        rotS.value = 0;
-        document.getElementById('rotate-val').textContent = '0°';
-        brightS.value = 100;
-        document.getElementById('bright-val').textContent = '100%';
-        contS.value = 100;
-        document.getElementById('contrast-val').textContent = '100%';
-        suitSelect.value = 'none';
-        suitRow.style.display = 'none';
+          if (zoomS) { zoomS.value = 1.0; document.getElementById('zoom-val').textContent = '1.00x'; }
+          if (rotS) { rotS.value = 0; document.getElementById('rotate-val').textContent = '0°'; }
+          if (brightS) { brightS.value = 100; document.getElementById('bright-val').textContent = '100%'; }
+          if (contS) { contS.value = 100; document.getElementById('contrast-val').textContent = '100%'; }
+          if (suitSelect) { suitSelect.value = 'none'; }
+          if (suitRow) { suitRow.style.display = 'none'; }
 
-        renderCanvasPreview();
-      });
+          renderCanvasPreview();
+        });
+      }
 
       // Generate
-      document.getElementById('generate-btn').addEventListener('click', generateAllPassportOutputs);
+      const genBtn = document.getElementById('generate-btn');
+      if (genBtn) {
+        genBtn.addEventListener('click', generateAllPassportOutputs);
+      }
 
       // Downloads
-      document.getElementById('download-single-btn').addEventListener('click', () => {
-        if (singleBlob) UIUtils.downloadBlob(singleBlob, `passport-biometric-${currentPresetKey}.jpg`);
-      });
-      document.getElementById('download-4x6-btn').addEventListener('click', () => {
-        if (sheet4x6Blob) UIUtils.downloadBlob(sheet4x6Blob, `passport-4x6-print-sheet-${currentPresetKey}.jpg`);
-      });
-      document.getElementById('download-a4-btn').addEventListener('click', () => {
-        if (sheetA4Blob) UIUtils.downloadBlob(sheetA4Blob, `passport-a4-print-sheet-${currentPresetKey}.jpg`);
-      });
-      document.getElementById('download-pdf-btn').addEventListener('click', async () => {
-        if (a4PdfBlob) {
-          UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
-        } else if (sheetA4Blob) {
-          UIUtils.showToast("Preparing PDF document...", "info");
-          const img = await UIUtils.loadImage(URL.createObjectURL(sheetA4Blob));
-          const c = document.createElement('canvas');
-          c.width = img.width; c.height = img.height;
-          c.getContext('2d').drawImage(img, 0, 0);
-          a4PdfBlob = await IDPhoto.canvasToPdfBlob(c);
-          if (a4PdfBlob) UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
-        }
-      });
+      const dSingle = document.getElementById('download-single-btn');
+      if (dSingle) {
+        dSingle.addEventListener('click', () => {
+          if (singleBlob) UIUtils.downloadBlob(singleBlob, `passport-biometric-${currentPresetKey}.jpg`);
+        });
+      }
+      const d4x6 = document.getElementById('download-4x6-btn');
+      if (d4x6) {
+        d4x6.addEventListener('click', () => {
+          if (sheet4x6Blob) UIUtils.downloadBlob(sheet4x6Blob, `passport-4x6-print-sheet-${currentPresetKey}.jpg`);
+        });
+      }
+      const dA4 = document.getElementById('download-a4-btn');
+      if (dA4) {
+        dA4.addEventListener('click', () => {
+          if (sheetA4Blob) UIUtils.downloadBlob(sheetA4Blob, `passport-a4-print-sheet-${currentPresetKey}.jpg`);
+        });
+      }
+      const dPdf = document.getElementById('download-pdf-btn');
+      if (dPdf) {
+        dPdf.addEventListener('click', async () => {
+          if (a4PdfBlob) {
+            UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
+          } else if (sheetA4Blob) {
+            UIUtils.showToast("Preparing PDF document...", "info");
+            const img = await UIUtils.loadImage(URL.createObjectURL(sheetA4Blob));
+            const c = document.createElement('canvas');
+            c.width = img.width; c.height = img.height;
+            c.getContext('2d').drawImage(img, 0, 0);
+            a4PdfBlob = await IDPhoto.canvasToPdfBlob(c);
+            if (a4PdfBlob) UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
+          }
+        });
+      }
     }
 
     async function handleFileLoad(file) {
+      if (!file) return;
       try {
         UIUtils.showToast("Loading photo into local memory...", "info");
         const dataUrl = await UIUtils.readFileAsDataURL(file);
@@ -1049,47 +1153,52 @@
       }
     }
 
-    function selectPreset(key) {
-      if (!IDPhoto.PRESETS[key]) return;
-      currentPresetKey = key;
-      const p = IDPhoto.PRESETS[key];
+    window.selectPreset = function(key) {
+      if (typeof IDPhoto !== 'undefined' && IDPhoto.PRESETS && IDPhoto.PRESETS[key]) {
+        currentPresetKey = key;
+        const p = IDPhoto.PRESETS[key];
 
-      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
-      const cards = Array.from(document.querySelectorAll('.preset-card'));
-      const activeCard = cards.find(c => c.getAttribute('onclick') && c.getAttribute('onclick').includes(key));
-      if (activeCard) activeCard.classList.add('active');
+        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+        const cards = Array.from(document.querySelectorAll('.preset-card'));
+        const activeCard = cards.find(c => c.getAttribute('onclick') && c.getAttribute('onclick').includes(key));
+        if (activeCard) activeCard.classList.add('active');
 
-      const box = document.getElementById('crop-preview-box');
-      if (box) {
-        if (p.width === p.height) {
-          box.style.width = '300px';
-          box.style.height = '300px';
-        } else {
-          box.style.width = '280px';
-          box.style.height = Math.round((280 * p.height) / p.width) + 'px';
+        const box = document.getElementById('crop-preview-box');
+        if (box) {
+          if (p.width === p.height) {
+            box.style.width = '300px';
+            box.style.height = '300px';
+          } else {
+            box.style.width = '280px';
+            box.style.height = Math.round((280 * p.height) / p.width) + 'px';
+          }
         }
+      } else {
+        currentPresetKey = key;
       }
 
       if (loadedImgElem) {
         requestAnimationFrame(() => renderCanvasPreview());
       }
-    }
+    };
 
-    function setBgColor(color) {
+    window.setBgColor = function(color) {
       pBgColor = color;
-      document.getElementById('custom-color-picker').value = color;
+      const cp = document.getElementById('custom-color-picker');
+      if (cp) cp.value = color;
 
       document.querySelectorAll('.color-chip-btn').forEach(b => {
         b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes(color));
       });
 
       if (loadedImgElem) renderCanvasPreview();
-    }
+    };
 
     async function renderCanvasPreview() {
       if (!loadedImgElem) return;
       const canvas = document.getElementById('crop-canvas');
       const box = document.getElementById('crop-preview-box');
+      if (!canvas || !box) return;
 
       const boxW = box.clientWidth || parseInt(box.style.width) || 280;
       const boxH = box.clientHeight || parseInt(box.style.height) || 350;
@@ -1117,31 +1226,36 @@
       ctx.restore();
 
       // 3. Draw Suit Overlay if active
-      if (pSuitKey !== 'none' && IDPhoto.SUIT_TEMPLATES[pSuitKey]) {
-        const suitInfo = IDPhoto.SUIT_TEMPLATES[pSuitKey];
-        const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
-        const suitImg = await UIUtils.loadImage(suitSvgData);
+      if (typeof IDPhoto !== 'undefined' && IDPhoto.SUIT_TEMPLATES && pSuitKey !== 'none' && IDPhoto.SUIT_TEMPLATES[pSuitKey]) {
+        try {
+          const suitInfo = IDPhoto.SUIT_TEMPLATES[pSuitKey];
+          const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
+          const suitImg = await UIUtils.loadImage(suitSvgData);
 
-        ctx.save();
-        const sW = canvas.width * 1.05;
-        const sH = (sW * 240) / 400;
-        const sX = (canvas.width - sW) / 2;
-        const sY = canvas.height - sH + pSuitOffsetY;
-        ctx.drawImage(suitImg, sX, sY, sW, sH);
-        ctx.restore();
+          ctx.save();
+          const sW = canvas.width * 1.05;
+          const sH = (sW * 240) / 400;
+          const sX = (canvas.width - sW) / 2;
+          const sY = canvas.height - sH + pSuitOffsetY;
+          ctx.drawImage(suitImg, sX, sY, sW, sH);
+          ctx.restore();
+        } catch(e) {}
       }
     }
 
     async function generateAllPassportOutputs() {
       if (!loadedImgElem) return;
       const genBtn = document.getElementById('generate-btn');
-      genBtn.disabled = true;
+      if (genBtn) genBtn.disabled = true;
       UIUtils.showToast("Generating 300 DPI biometric photos and print sheets...", "info");
 
       try {
-        const p = IDPhoto.PRESETS[currentPresetKey];
+        const p = (typeof IDPhoto !== 'undefined' && IDPhoto.PRESETS && IDPhoto.PRESETS[currentPresetKey]) 
+          ? IDPhoto.PRESETS[currentPresetKey] 
+          : { name: 'Passport Photo', width: 600, height: 600, mmW: 51, mmH: 51 };
+        
         const box = document.getElementById('crop-preview-box');
-        const boxW = box.clientWidth || parseInt(box.style.width) || 280;
+        const boxW = (box && box.clientWidth) || 280;
 
         const scaleMultiplier = p.width / boxW;
         const masterOffsetX = pOffsetX * scaleMultiplier;
@@ -1190,8 +1304,14 @@
         console.error(err);
         UIUtils.showToast("Error generating photo outputs: " + err.message, "error");
       } finally {
-        genBtn.disabled = false;
+        if (genBtn) genBtn.disabled = false;
       }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupPassportTool);
+    } else {
+      setupPassportTool();
     }
   </script>
 
