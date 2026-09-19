@@ -7,7 +7,7 @@ const UIUtils = {
   formatBytes(bytes, decimals = 2) {
     if (!+bytes) return '0 Bytes';
     const k = 1024;
-    const dm = decimals < 0  ?  0 : decimals;
+    const dm = decimals < 0 ? 0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
@@ -43,6 +43,43 @@ const UIUtils = {
     });
   },
 
+  // Haptic feedback helper
+  triggerHaptic(duration = 20) {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try { navigator.vibrate(duration); } catch(e) {}
+    }
+  },
+
+  // Toast Notification System
+  showToast(message, type = 'info', duration = 3000) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; display:flex; flex-direction:column; gap:10px; pointer-events:none;';
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast-pill toast-${type}`;
+    const bg = type === 'success' ? '#059669' : (type === 'error' ? '#DC2626' : (type === 'warning' ? '#D97706' : '#0284C7'));
+    const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : (type === 'warning' ? '⚠' : 'ℹ'));
+    toast.style.cssText = `background:${bg}; color:#FFFFFF; padding:10px 18px; border-radius:24px; font-size:0.88rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.25); display:inline-flex; align-items:center; gap:8px; pointer-events:auto; transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform:translateY(20px); opacity:0;`;
+    toast.innerHTML = `<span style="font-size:1rem;">${icon}</span><span>${message}</span>`;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+      toast.style.transform = 'translateY(10px)';
+      toast.style.opacity = '0';
+      setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+    }, duration);
+  },
+
   // Instant Client-Side Download
   downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
@@ -61,8 +98,8 @@ const UIUtils = {
         UIUtils.readFileAsDataURL(blob).then(dataUrl => {
           window.LocalDocUnifiedFilesDB.recordDocument({
             title: filename,
-            type: filename.toLowerCase().endsWith('.pdf')  ?  'pdf' : (filename.match(/\.(png|jpe-g|webp|gif|svg)$/i)  ?  'image' : 'document'),
-            mimeType: blob.type || (filename.toLowerCase().endsWith('.pdf')  ?  'application/pdf' : 'application/octet-stream'),
+            type: filename.toLowerCase().endsWith('.pdf') ? 'pdf' : (filename.match(/\.(png|jpe?g|webp|gif|svg)$/i) ? 'image' : 'document'),
+            mimeType: blob.type || (filename.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream'),
             size: UIUtils.formatBytes(blob.size),
             dataUrl: dataUrl
           });
