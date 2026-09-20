@@ -731,10 +731,11 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="../js/core/i18n.js?v=20260919-v6"></script>
-  <script src="../js/core/ui-utils.js?v=20260919-v6"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260919-v6"></script>
-  <script src="../js/tools/id-photo.js?v=20260919-v6"></script>
+  <script src="../js/core/i18n.js?v=20260919-v7"></script>
+  <script src="../js/core/ui-utils.js?v=20260919-v7"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260919-v7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+  <script src="../js/tools/id-photo.js?v=20260919-v7"></script>
 
   <script>
     // Bulletproof Fallbacks for UIUtils
@@ -805,6 +806,8 @@
 
     // CNIC Photo State
     let cnicPhotoImg = null;
+    let cnicCutoutCanvas = null;
+    let cnicAiCutoutEnabled = true;
     let cnicBgColor = '#E0F2FE';
     let cnicScale = 1.0;
     let cnicOffsetX = 0;
@@ -1063,6 +1066,11 @@
           updateSidePreview('back');
           UIUtils.showToast('Back side loaded successfully!', 'success');
         }
+
+        // Live automatic generation when cards are present
+        if (frontImgData || backImgData) {
+          generateA4Photocopy();
+        }
       } catch (err) {
         console.error(err);
         UIUtils.showToast('Failed to load image: ' + err.message, 'error');
@@ -1076,6 +1084,9 @@
       if (data && imgElem) {
         imgElem.src = data;
         imgElem.style.transform = `rotate(${rot}deg)`;
+      }
+      if (compiledA4Canvas && (frontImgData || backImgData)) {
+        generateA4Photocopy();
       }
     }
 
@@ -1287,7 +1298,15 @@
           ws?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-        UIUtils.showToast("Portrait loaded! Align your face inside the biometric oval.", "success");
+        // Run AI Segmentation
+        UIUtils.showToast("⚡ AI Studio: Isolating subject from room background in RAM...", "info", 2000);
+        try {
+          cnicCutoutCanvas = await IDPhoto.segmentPerson(cnicPhotoImg, { edgeFeather: 2 });
+          renderCnicPreview();
+          UIUtils.showToast("✓ Person isolated! Select background color and align oval.", "success");
+        } catch(segErr) {
+          console.warn("CNIC Segmentation warning:", segErr);
+        }
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Failed to load photo: " + err.message, "error");
@@ -1330,20 +1349,24 @@
       canvas.height = boxH;
       const ctx = canvas.getContext('2d');
 
-      ctx.fillStyle = cnicBgColor;
+      ctx.fillStyle = cnicBgColor || '#E0F2FE';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const drawSource = (cnicAiCutoutEnabled && cnicCutoutCanvas) ? cnicCutoutCanvas : cnicPhotoImg;
 
       ctx.save();
       ctx.filter = `brightness(${cnicBrightness}%) contrast(${cnicContrast}%)`;
       ctx.translate(canvas.width / 2 + cnicOffsetX, canvas.height / 2 + cnicOffsetY);
       if (cnicRotation !== 0) ctx.rotate((cnicRotation * Math.PI) / 180);
 
-      const baseScale = Math.max(canvas.width / cnicPhotoImg.naturalWidth, canvas.height / cnicPhotoImg.naturalHeight);
+      const srcW = drawSource.naturalWidth || drawSource.width;
+      const srcH = drawSource.naturalHeight || drawSource.height;
+      const baseScale = Math.max(canvas.width / srcW, canvas.height / srcH);
       const finalScale = baseScale * cnicScale;
-      const drawW = cnicPhotoImg.naturalWidth * finalScale;
-      const drawH = cnicPhotoImg.naturalHeight * finalScale;
+      const drawW = srcW * finalScale;
+      const drawH = srcH * finalScale;
 
-      ctx.drawImage(cnicPhotoImg, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.drawImage(drawSource, -drawW / 2, -drawH / 2, drawW, drawH);
       ctx.restore();
     }
 
@@ -1362,7 +1385,9 @@
 
         // 1. Single Biometric Photo
         const singleRes = await IDPhoto.renderPortraitPhoto({
-          imageFileOrUrl: cnicPhotoImg.src,
+          imageFileOrUrl: cnicPhotoImg,
+          cutoutCanvas: cnicCutoutCanvas,
+          removeBackground: cnicAiCutoutEnabled,
           targetWidth: targetW,
           targetHeight: targetH,
           scale: cnicScale,
@@ -1372,7 +1397,7 @@
           bgColor: cnicBgColor,
           brightness: cnicBrightness,
           contrast: cnicContrast,
-          quality: 0.95
+          quality: 0.98
         });
         cnicSingleBlob = singleRes.blob;
 
@@ -1386,10 +1411,10 @@
         if (resultCard) resultCard.style.display = 'block';
 
         resultCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        UIUtils.showToast("NADRA CNIC Photo generated successfully!", "success");
+        UIUtils.showToast("Official NADRA CNIC photo & 8-copy sheet ready!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast("Error: " + err.message, "error");
+        UIUtils.showToast("Error generating photo: " + err.message, "error");
       } finally {
         if (genBtn) genBtn.disabled = false;
       }

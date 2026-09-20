@@ -146,9 +146,198 @@ const IDPhoto = {
     }
   },
 
+  // 1. High-Performance Client-Side Selfie & Person Segmentation Engine
+  _segmenterInstance: null,
+
+  async initSegmenter() {
+    if (this._segmenterInstance) return this._segmenterInstance;
+    if (typeof window.SelfieSegmentation !== 'undefined') {
+      try {
+        const segmenter = new window.SelfieSegmentation({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+        });
+        segmenter.setOptions({
+          modelSelection: 1, // 1 for high quality portrait
+          selfieMode: false
+        });
+        await segmenter.initialize();
+        this._segmenterInstance = segmenter;
+        return segmenter;
+      } catch (e) {
+        console.warn('MediaPipe initialization warning (using fallback canvas matting):', e);
+      }
+    }
+    return null;
+  },
+
+  // Segment a person from any room or background image
+  async segmentPerson(imgElement, { edgeFeather = 2, threshold = 0.5 } = {}) {
+    if (!imgElement) return null;
+
+    const w = imgElement.naturalWidth || imgElement.width || 600;
+    const h = imgElement.naturalHeight || imgElement.height || 600;
+
+    // Try MediaPipe Selfie Segmentation first (WASM in RAM)
+    if (typeof window.SelfieSegmentation !== 'undefined') {
+      try {
+        const segmenter = await this.initSegmenter();
+        if (segmenter) {
+          const maskPromise = new Promise((resolve) => {
+            segmenter.onResults((results) => {
+              if (results && results.segmentationMask) {
+                const maskCanvas = document.createElement('canvas');
+                maskCanvas.width = w;
+                maskCanvas.height = h;
+                const mCtx = maskCanvas.getContext('2d');
+                mCtx.drawImage(results.segmentationMask, 0, 0, w, h);
+                resolve(maskCanvas);
+              } else {
+                resolve(null);
+              }
+            });
+          });
+
+          await segmenter.send({ image: imgElement });
+          const maskCanvas = await maskPromise;
+          if (maskCanvas) {
+            return this.applyMaskToImage(imgElement, maskCanvas, edgeFeather);
+          }
+        }
+      } catch (err) {
+        console.warn('MediaPipe execution fallback:', err);
+      }
+    }
+
+    // High-precision adaptive Canvas Matting fallback (100% offline, zero network dependencies)
+    return this.fallbackCanvasMatting(imgElement, { edgeFeather, threshold });
+  },
+
+  // Pure Client-Side Adaptive Canvas Background Matting Algorithm
+  fallbackCanvasMatting(imgElement, { edgeFeather = 3, threshold = 0.45 } = {}) {
+    const w = imgElement.naturalWidth || imgElement.width || 600;
+    const h = imgElement.naturalHeight || imgElement.height || 600;
+
+    const srcCanvas = document.createElement('canvas');
+    srcCanvas.width = w;
+    srcCanvas.height = h;
+    const srcCtx = srcCanvas.getContext('2d');
+    srcCtx.drawImage(imgElement, 0, 0, w, h);
+
+    const imgData = srcCtx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+
+    // Sample perimeter background colors (top, left, right borders)
+    const samples = [];
+    const sampleBorder = (x, y) => {
+      const idx = (y * w + x) * 4;
+      samples.push({ r: data[idx], g: data[idx + 1], b: data[idx + 2] });
+    };
+
+    const stepX = Math.max(1, Math.floor(w / 40));
+    const stepY = Math.max(1, Math.floor(h / 40));
+
+    // Top border
+    for (let x = 0; x < w; x += stepX) {
+      for (let y = 0; y < Math.min(h * 0.15, 30); y += 4) sampleBorder(x, y);
+    }
+    // Left & right upper borders
+    for (let y = 0; y < h * 0.6; y += stepY) {
+      for (let x = 0; x < Math.min(w * 0.12, 25); x += 4) sampleBorder(x, y);
+      for (let x = Math.max(0, w - Math.min(w * 0.12, 25)); x < w; x += 4) sampleBorder(x, y);
+    }
+
+    let meanR = 0, meanG = 0, meanB = 0;
+    samples.forEach(s => { meanR += s.r; meanG += s.g; meanB += s.b; });
+    const n = Math.max(1, samples.length);
+    meanR /= n; meanG /= n; meanB /= n;
+
+    // Create Cutout Output Canvas
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = w;
+    outCanvas.height = h;
+    const outCtx = outCanvas.getContext('2d');
+    const outImgData = outCtx.createImageData(w, h);
+    const outData = outImgData.data;
+
+    const centerX = w / 2;
+    const headCenterY = h * 0.42;
+    const radiusX = w * 0.38;
+    const radiusY = h * 0.48;
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx = (y * w + x) * 4;
+        const r = data[idx];
+        const g = data[idx + 1];
+        const b = data[idx + 2];
+
+        // Normalized distance from center portrait zone
+        const dx = (x - centerX) / radiusX;
+        const dy = (y - headCenterY) / radiusY;
+        const centerDist = dx * dx + dy * dy;
+
+        // Color difference from sampled room background
+        const colorDiff = Math.hypot(r - meanR, g - meanG, b - meanB);
+
+        // Skin detection heuristic in RGB space
+        const isSkin = (r > 60 && g > 35 && b > 20 && (r - g) > 8 && r > b);
+        const isDarkHairOrClothes = (r < 65 && g < 65 && b < 65 && centerDist < 1.4);
+
+        let alpha = 255;
+        if (centerDist > 1.6) {
+          alpha = Math.max(0, Math.min(255, (colorDiff - 30) * 3));
+        } else if (centerDist > 0.8) {
+          if (isSkin || isDarkHairOrClothes) {
+            alpha = 255;
+          } else {
+            const bgLikelihood = Math.max(0, Math.min(1, (65 - colorDiff) / 45));
+            alpha = Math.round(255 * (1 - bgLikelihood));
+          }
+        } else {
+          alpha = 255;
+        }
+
+        outData[idx] = r;
+        outData[idx + 1] = g;
+        outData[idx + 2] = b;
+        outData[idx + 3] = alpha;
+      }
+    }
+
+    outCtx.putImageData(outImgData, 0, 0);
+    return outCanvas;
+  },
+
+  // Apply a segmentation mask canvas to an image element to produce transparent cutout canvas
+  applyMaskToImage(imgElement, maskCanvas, featherPx = 2) {
+    const w = imgElement.naturalWidth || imgElement.width;
+    const h = imgElement.naturalHeight || imgElement.height;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Draw original photo
+    ctx.drawImage(imgElement, 0, 0, w, h);
+
+    // 2. Mask with segmentation alpha
+    ctx.globalCompositeOperation = 'destination-in';
+    if (featherPx > 0) {
+      ctx.filter = `blur(${featherPx}px)`;
+    }
+    ctx.drawImage(maskCanvas, 0, 0, w, h);
+    ctx.filter = 'none';
+    ctx.globalCompositeOperation = 'source-over';
+
+    return canvas;
+  },
+
   // Process and crop single portrait photo with background, zoom, pan, rotation, filters, suit overlay
   async renderPortraitPhoto({
     imageFileOrUrl,
+    cutoutCanvas = null,
+    removeBackground = true,
     targetWidth = 600,
     targetHeight = 600,
     scale = 1.0,
@@ -161,26 +350,31 @@ const IDPhoto = {
     suitKey = 'none',
     suitScale = 1.0,
     suitOffsetY = 0,
-    quality = 0.95
+    quality = 0.96
   }) {
     let img;
     if (typeof imageFileOrUrl === 'string') {
       img = await UIUtils.loadImage(imageFileOrUrl);
+    } else if (imageFileOrUrl instanceof HTMLImageElement || imageFileOrUrl instanceof HTMLCanvasElement) {
+      img = imageFileOrUrl;
     } else {
       const dataUrl = await UIUtils.readFileAsDataURL(imageFileOrUrl);
       img = await UIUtils.loadImage(dataUrl);
     }
+
+    // Determine drawable source: cutout isolated person or original
+    const drawSource = (removeBackground && cutoutCanvas) ? cutoutCanvas : img;
 
     const canvas = document.createElement('canvas');
     canvas.width = targetWidth;
     canvas.height = targetHeight;
     const ctx = canvas.getContext('2d');
 
-    // 1. Draw solid background
-    ctx.fillStyle = bgColor;
+    // 1. Draw solid chosen studio background color
+    ctx.fillStyle = bgColor || '#FFFFFF';
     ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-    // 2. Draw portrait with brightness & contrast filters
+    // 2. Draw portrait with scale, pan, rotation, brightness & contrast
     ctx.save();
     ctx.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
     ctx.translate(targetWidth / 2 + offsetX, targetHeight / 2 + offsetY);
@@ -188,92 +382,33 @@ const IDPhoto = {
       ctx.rotate((rotation * Math.PI) / 180);
     }
 
-    const baseScale = Math.max(targetWidth / img.naturalWidth, targetHeight / img.naturalHeight);
+    const imgW = drawSource.naturalWidth || drawSource.width;
+    const imgH = drawSource.naturalHeight || drawSource.height;
+    const baseScale = Math.max(targetWidth / imgW, targetHeight / imgH);
     const finalScale = baseScale * scale;
-    const drawW = img.naturalWidth * finalScale;
-    const drawH = img.naturalHeight * finalScale;
+    const drawW = imgW * finalScale;
+    const drawH = imgH * finalScale;
 
-    ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+    ctx.drawImage(drawSource, -drawW / 2, -drawH / 2, drawW, drawH);
     ctx.restore();
-
-    // 2b. Intelligent Studio Background Replacement & Edge Feathering
-    if (bgColor && bgColor !== 'transparent') {
-      try {
-        const imgData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-        const data = imgData.data;
-
-        // Parse target background RGB
-        let targetR = 255, targetG = 255, targetB = 255;
-        if (bgColor.startsWith('#')) {
-          const hex = bgColor.slice(1);
-          if (hex.length === 6) {
-            targetR = parseInt(hex.slice(0, 2), 16);
-            targetG = parseInt(hex.slice(2, 4), 16);
-            targetB = parseInt(hex.slice(4, 6), 16);
-          }
-        }
-
-        // Sample ambient background colors from top corners
-        const cornerSamples = [
-          0, 4, 8, targetWidth * 4 - 4, targetWidth * 4 - 8,
-          targetWidth * 10 * 4, targetWidth * 10 * 4 + targetWidth * 4 - 4
-        ];
-        let bgSampleR = 0, bgSampleG = 0, bgSampleB = 0, sampleCount = 0;
-        cornerSamples.forEach(idx => {
-          if (idx >= 0 && idx < data.length - 4) {
-            bgSampleR += data[idx];
-            bgSampleG += data[idx + 1];
-            bgSampleB += data[idx + 2];
-            sampleCount++;
-          }
-        });
-        if (sampleCount > 0) {
-          bgSampleR /= sampleCount;
-          bgSampleG /= sampleCount;
-          bgSampleB /= sampleCount;
-        }
-
-        // Apply smooth studio background keying for outer perimeter background
-        for (let y = 0; y < targetHeight; y++) {
-          for (let x = 0; x < targetWidth; x++) {
-            const isPerimeter = y < targetHeight * 0.48 || x < targetWidth * 0.18 || x > targetWidth * 0.82;
-            if (!isPerimeter) continue;
-
-            const idx = (y * targetWidth + x) * 4;
-            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
-
-            const dist = Math.hypot(r - bgSampleR, g - bgSampleG, b - bgSampleB);
-            
-            const isSkin = (r > 95 && g > 40 && b > 20 && (r - g) > 15 && r > b && (Math.max(r,g,b) - Math.min(r,g,b) > 15));
-            const isDarkHair = (r < 55 && g < 55 && b < 55);
-
-            if (dist < 55 && !isSkin && !isDarkHair) {
-              const blend = Math.max(0, Math.min(1, (55 - dist) / 35));
-              data[idx] = Math.round(r * (1 - blend) + targetR * blend);
-              data[idx + 1] = Math.round(g * (1 - blend) + targetG * blend);
-              data[idx + 2] = Math.round(b * (1 - blend) + targetB * blend);
-            }
-          }
-        }
-        ctx.putImageData(imgData, 0, 0);
-      } catch (err) {
-        console.warn('Background keying fallback:', err);
-      }
-    }
 
     // 3. Draw Suit Overlay if enabled
     if (suitKey && suitKey !== 'none' && this.SUIT_TEMPLATES[suitKey]) {
-      const suitInfo = this.SUIT_TEMPLATES[suitKey];
-      const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
-      const suitImg = await UIUtils.loadImage(suitSvgData);
+      try {
+        const suitInfo = this.SUIT_TEMPLATES[suitKey];
+        const suitSvgData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(suitInfo.svg);
+        const suitImg = await UIUtils.loadImage(suitSvgData);
 
-      ctx.save();
-      const sW = targetWidth * 1.05 * suitScale;
-      const sH = (sW * 240) / 400;
-      const sX = (targetWidth - sW) / 2;
-      const sY = targetHeight - sH + suitOffsetY;
-      ctx.drawImage(suitImg, sX, sY, sW, sH);
-      ctx.restore();
+        ctx.save();
+        const sW = targetWidth * 1.05 * suitScale;
+        const sH = (sW * 240) / 400;
+        const sX = (targetWidth - sW) / 2;
+        const sY = targetHeight - sH + suitOffsetY;
+        ctx.drawImage(suitImg, sX, sY, sW, sH);
+        ctx.restore();
+      } catch (err) {
+        console.warn('Suit render fallback:', err);
+      }
     }
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
@@ -484,10 +619,9 @@ const IDPhoto = {
     ctx.lineTo(canvas.width - 250, 295);
     ctx.stroke();
 
-    // Standard ID-1 Card Dimensions (85.6mm x 53.98mm @ 300 DPI = ~1011 x 638 px)
-    // Scale slightly for clear high-res visibility (1100 x 694 px)
-    const cardTargetW = 1100;
-    const cardTargetH = 694;
+    // Official ISO/IEC 7810 ID-1 Standard Dimensions (85.60mm x 53.98mm @ 300 DPI = exact 1011 x 638 px)
+    const cardTargetW = 1011;
+    const cardTargetH = 638;
     const centerX = (canvas.width - cardTargetW) / 2;
 
     // Helper to draw oriented image inside card box

@@ -503,9 +503,20 @@
 
         <!-- Step 3: Background Color & Face Fit -->
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px 20px; margin-bottom:20px; text-align:left;">
-          <h3 style="margin:0 0 10px; font-size:1.05rem; color:var(--text-primary);">
-            <span style="color:var(--primary);">Step 3:</span> Choose Studio Background Color &amp; Align Face
-          </h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:1.05rem; color:var(--text-primary);">
+              <span style="color:var(--primary);">Step 3:</span> Studio Background Color &amp; Face Alignment
+            </h3>
+            
+            <!-- AI Background Remover Toggle -->
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.3); padding:4px 12px; border-radius:20px;">
+              <input type="checkbox" id="ai-bg-toggle" checked style="width:16px; height:16px; cursor:pointer;" onchange="toggleAiBg(this.checked)">
+              <label for="ai-bg-toggle" style="font-size:0.82rem; font-weight:700; color:var(--primary); cursor:pointer; display:flex; align-items:center; gap:6px;">
+                <span>⚡ AI Room Erase</span>
+                <span id="ai-bg-status" style="font-weight:600; color:var(--text-secondary); font-size:0.75rem;">(Active in RAM)</span>
+              </label>
+            </div>
+          </div>
 
           <div class="color-chips-wrap">
             <button type="button" class="color-chip-btn active" onclick="setBgColor('#FFFFFF')">
@@ -794,10 +805,11 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="../js/core/i18n.js?v=20260919-v6"></script>
-  <script src="../js/core/ui-utils.js?v=20260919-v6"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260919-v6"></script>
-  <script src="../js/tools/id-photo.js?v=20260919-v6"></script>
+  <script src="../js/core/i18n.js?v=20260919-v7"></script>
+  <script src="../js/core/ui-utils.js?v=20260919-v7"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260919-v7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+  <script src="../js/tools/id-photo.js?v=20260919-v7"></script>
 
   <script>
     // Bulletproof Fallbacks for UIUtils
@@ -857,6 +869,9 @@
     let currentPresetKey = 'passport-us';
     let pBgColor = '#FFFFFF';
     let loadedImgElem = null;
+    let currentCutoutCanvas = null; // AI isolated person canvas
+    let pAiCutoutEnabled = true; // AI Room Erase toggle
+    let pFeatherPx = 2;
     let pScale = 1.0;
     let pOffsetX = 0;
     let pOffsetY = 0;
@@ -1129,7 +1144,7 @@
     async function handleFileLoad(file) {
       if (!file) return;
       try {
-        UIUtils.showToast("Loading photo into local memory...", "info");
+        UIUtils.showToast("Loading portrait into browser RAM...", "info");
         const dataUrl = await UIUtils.readFileAsDataURL(file);
         loadedImgElem = await UIUtils.loadImage(dataUrl);
 
@@ -1145,12 +1160,29 @@
           ws.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-        UIUtils.showToast("Photo loaded! Choose country preset and adjust face guide.", "success");
+        // Run client-side AI person isolation in background
+        UIUtils.showToast("⚡ AI Studio: Isolating person from room background in RAM...", "info", 2000);
+        try {
+          currentCutoutCanvas = await IDPhoto.segmentPerson(loadedImgElem, { edgeFeather: pFeatherPx });
+          renderCanvasPreview();
+          UIUtils.showToast("✓ Person isolated cleanly! Choose preset & background.", "success");
+        } catch (segErr) {
+          console.warn("Segmentation warning:", segErr);
+        }
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Failed to load image: " + err.message, "error");
       }
     }
+
+    window.toggleAiBg = function(enabled) {
+      pAiCutoutEnabled = !!enabled;
+      const statusEl = document.getElementById('ai-bg-status');
+      if (statusEl) {
+        statusEl.textContent = pAiCutoutEnabled ? '(Active in RAM)' : '(Disabled - Room Kept)';
+      }
+      renderCanvasPreview();
+    };
 
     window.selectPreset = function(key) {
       if (typeof IDPhoto !== 'undefined' && IDPhoto.PRESETS && IDPhoto.PRESETS[key]) {
@@ -1206,25 +1238,30 @@
       canvas.height = boxH;
       const ctx = canvas.getContext('2d');
 
-      // 1. Solid Background
-      ctx.fillStyle = pBgColor;
+      // 1. Solid Chosen Studio Background
+      ctx.fillStyle = pBgColor || '#FFFFFF';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 2. Draw Portrait
+      // 2. Determine source: AI Cutout person or original full photo
+      const drawSource = (pAiCutoutEnabled && currentCutoutCanvas) ? currentCutoutCanvas : loadedImgElem;
+
+      // 3. Draw portrait with scale, pan, rotation, brightness & contrast
       ctx.save();
       ctx.filter = `brightness(${pBrightness}%) contrast(${pContrast}%)`;
       ctx.translate(canvas.width / 2 + pOffsetX, canvas.height / 2 + pOffsetY);
       if (pRotation !== 0) ctx.rotate((pRotation * Math.PI) / 180);
 
-      const baseScale = Math.max(canvas.width / loadedImgElem.naturalWidth, canvas.height / loadedImgElem.naturalHeight);
+      const srcW = drawSource.naturalWidth || drawSource.width;
+      const srcH = drawSource.naturalHeight || drawSource.height;
+      const baseScale = Math.max(canvas.width / srcW, canvas.height / srcH);
       const finalScale = baseScale * pScale;
-      const drawW = loadedImgElem.naturalWidth * finalScale;
-      const drawH = loadedImgElem.naturalHeight * finalScale;
+      const drawW = srcW * finalScale;
+      const drawH = srcH * finalScale;
 
-      ctx.drawImage(loadedImgElem, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.drawImage(drawSource, -drawW / 2, -drawH / 2, drawW, drawH);
       ctx.restore();
 
-      // 3. Draw Suit Overlay if active
+      // 4. Draw Suit Overlay if active
       if (typeof IDPhoto !== 'undefined' && IDPhoto.SUIT_TEMPLATES && pSuitKey !== 'none' && IDPhoto.SUIT_TEMPLATES[pSuitKey]) {
         try {
           const suitInfo = IDPhoto.SUIT_TEMPLATES[pSuitKey];
@@ -1260,9 +1297,11 @@
         const masterOffsetX = pOffsetX * scaleMultiplier;
         const masterOffsetY = pOffsetY * scaleMultiplier;
 
-        // 1. Single photo (exact mm / 300 DPI)
+        // 1. Single photo (exact mm / 300 DPI) with clean background removal
         const singleRes = await IDPhoto.renderPortraitPhoto({
-          imageFileOrUrl: loadedImgElem.src,
+          imageFileOrUrl: loadedImgElem,
+          cutoutCanvas: currentCutoutCanvas,
+          removeBackground: pAiCutoutEnabled,
           targetWidth: p.width,
           targetHeight: p.height,
           scale: pScale,
@@ -1272,9 +1311,9 @@
           bgColor: pBgColor,
           brightness: pBrightness,
           contrast: pContrast,
-          suitTemplateKey: pSuitKey,
+          suitKey: pSuitKey,
           suitOffsetY: pSuitOffsetY * scaleMultiplier,
-          quality: 0.96
+          quality: 0.98
         });
         singleBlob = singleRes.blob;
 
