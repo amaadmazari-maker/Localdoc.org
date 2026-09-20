@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v13-2026-ai-segmentation';
+const CACHE_NAME = 'localdoc-v14-2026-calculator-scan-fix';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

@@ -1146,10 +1146,10 @@
 
         <!-- Oval 4-Way REPLAY Rocker D-Pad -->
         <div class="fx-replay-pad" title="Replay Navigation Pad">
-          <button type="button" class="fx-pad-btn fx-pad-up" id="pad-up" aria-label="Replay Up">â–²</button>
-          <button type="button" class="fx-pad-btn fx-pad-down" id="pad-down" aria-label="Replay Down">â–¼</button>
-          <button type="button" class="fx-pad-btn fx-pad-left" id="pad-left" aria-label="Replay Left">â—€</button>
-          <button type="button" class="fx-pad-btn fx-pad-right" id="pad-right" aria-label="Replay Right">â–¶</button>
+          <button type="button" class="fx-pad-btn fx-pad-up" id="pad-up" aria-label="Replay Up">&#9650;</button>
+          <button type="button" class="fx-pad-btn fx-pad-down" id="pad-down" aria-label="Replay Down">&#9660;</button>
+          <button type="button" class="fx-pad-btn fx-pad-left" id="pad-left" aria-label="Replay Left">&#9668;</button>
+          <button type="button" class="fx-pad-btn fx-pad-right" id="pad-right" aria-label="Replay Right">&#9658;</button>
           <span class="fx-replay-center-text">REPLAY</span>
         </div>
       </div>
@@ -1541,7 +1541,7 @@
 
           <!-- Definite Integral Box -->
           <div style="background:#131C2E; border:1px solid #1E293B; border-radius:10px; padding:14px;">
-            <div style="font-size:0.82rem; font-weight:800; color:#10B981; margin-bottom:8px;">Definite Integral âˆ«â‚áµ‡ f(x) dx</div>
+            <div style="font-size:0.82rem; font-weight:800; color:#10B981; margin-bottom:8px;">Definite Integral &int;â‚áµ‡ f(x) dx</div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
               <label style="font-size:0.8rem; color:#94A3B8;">Lower (a):</label>
               <input type="number" class="fx-solver-field" id="calc-int-a" value="0" step="any" style="width:70px;">
@@ -2693,7 +2693,7 @@
           'i': '&ang;', 'frac': 'd/c', 'dms': '&larr;',
           'sin': 'asin(', 'cos': 'acos(', 'tan': 'atan(',
           'rcl': '&rarr;', ',': '%',
-          '7': 'd/dx(', '8': 'âˆ«(', '9': 'nPr(', '4': 'nCr(', '5': '!', '6': 'Ran#',
+          '7': 'd/dx(', '8': '&int;(', '9': 'nPr(', '4': 'nCr(', '5': '!', '6': 'Ran#',
           '1': 'Pol(', '2': 'Rec(', '3': 'Abs(',
           '+': 'GCD(', '-': 'LCM(',
           '0': 'Rnd(', '.': 'RanInt(', 'exp': '&pi;', 'neg': 'Ans', 'exe': 'Disp'
@@ -2942,7 +2942,7 @@
 
         // Safe Variable Substitution (isolated single letters A-Z, excluding inside window.casio... or Math.)
         for (const [v, val] of Object.entries(variables)) {
-          s = s.replace(new RegExp(`(-<![a-zA-Z0-9_.])\\b${v}\\b(-![a-zA-Z0-9_])`, 'g'), `(${val})`);
+          s = s.replace(new RegExp(`(?<![a-zA-Z0-9_.])\\b${v}\\b(?![a-zA-Z0-9_])`, 'g'), `(${val})`);
         }
 
         // Auto-balance closing parentheses
@@ -3629,7 +3629,7 @@
         const out = document.getElementById('calc-int-out');
 
         if (a === b) {
-          out.innerHTML = 'âˆ« f(x) dx from ' + a + ' to ' + b + ' = <strong>0</strong>';
+          out.innerHTML = '&int; f(x) dx from ' + a + ' to ' + b + ' = <strong>0</strong>';
           return;
         }
 
@@ -3646,7 +3646,7 @@
           const integral = (h / 3) * sum;
 
           out.innerHTML = `
-            <span style="color:#10B981; font-weight:800;">âˆ« [${expr}] dx from ${a} to ${b}:</span><br>
+            <span style="color:#10B981; font-weight:800;">&int; [${expr}] dx from ${a} to ${b}:</span><br>
             Definite Integral: <strong>${integral.toFixed(6)}</strong><br>
             <span style="color:#94A3B8; font-size:0.75rem;">Composite Simpson's Rule (N=1000 subintervals)</span>
           `;
