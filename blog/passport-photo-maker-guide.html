@@ -429,11 +429,11 @@
               <td>State Dept 50%&ndash;69% threshold met</td>
             </tr>
             <tr>
-              <td><strong>3. Background Leveling</strong></td>
-              <td>Off-white paint (#E8E4DF)</td>
+              <td><strong>3. AI Room Erase &amp; Matting</strong></td>
+              <td>Domestic room background / furniture</td>
               <td>Pure Studio White (#FFFFFF)</td>
-              <td>95 ms</td>
-              <td>Zero perimeter haloing / artifacting</td>
+              <td>120 ms</td>
+              <td>100% Client-side silhouette segmentation</td>
             </tr>
             <tr>
               <td><strong>4. 4&times;6 Print Sheet Tiling</strong></td>
@@ -446,11 +446,29 @@
               <td><strong>Total Client Pipeline</strong></td>
               <td><strong>12.4 MB Source Photo</strong></td>
               <td><strong>Ready for Submission</strong></td>
-              <td><strong>320 ms in RAM</strong></td>
+              <td><strong>345 ms in RAM</strong></td>
               <td><strong>100% Consular Compliant</strong></td>
             </tr>
           </tbody>
         </table>
+      </section>
+
+      <!-- Section 3.5: AI Room Eraser Deep Dive -->
+      <section style="margin-top:36px;">
+        <h2>3.5 How In-Browser AI Room Background Segmentation Works</h2>
+        <p>
+          Historically, taking passport photos at home required standing in front of a completely flat, shadow-free white wall. If your room had wallpaper, texture, door frames, or shadows, consular acceptance systems would reject the submission.
+        </p>
+        <p>
+          LocalDoc solves this with our <strong>Zero-Upload AI Room Eraser (<code>⚡ AI Room Erase</code>)</strong>:
+        </p>
+        <div class="tech-card" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:20px;">
+          <ul style="margin:0; padding-left:20px; line-height:1.7; color:var(--text-secondary); font-size:0.92rem;">
+            <li><strong>Intelligent Silhouette Extraction:</strong> The algorithm separates the subject from room clutter (doors, chairs, curtains, textured walls) in client-side memory using browser-accelerated segmentation.</li>
+            <li><strong>Adaptive Color Backfill:</strong> Replaces everything behind your head and shoulders with the exact official solid color (Pure White for US/Canada/Schengen, Light Blue for NADRA, Cream for UK) while preserving fine hair edges.</li>
+            <li><strong>Zero Server Upload:</strong> Unlike cloud background removal websites that transmit your private biometric face to remote servers, LocalDoc processes every pixel strictly in your local device RAM.</li>
+          </ul>
+        </div>
       </section>
 
       <!-- Section 4 -->
