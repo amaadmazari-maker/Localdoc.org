@@ -141,7 +141,16 @@ const UIUtils = {
     if (inputEl) {
       inputEl.addEventListener('click', (e) => {
         e.stopPropagation();
-        inputEl.value = '';
+      });
+      inputEl.addEventListener('change', () => {
+        const files = Array.from(inputEl.files || []);
+        if (files.length > 0) {
+          UIUtils.triggerHaptic();
+          onFilesSelected(files);
+        }
+        setTimeout(() => {
+          try { inputEl.value = ''; } catch(err) {}
+        }, 150);
       });
     }
 
@@ -165,7 +174,7 @@ const UIUtils = {
     zoneEl.addEventListener('drop', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const files = Array.from(e.dataTransfer.files);
+      const files = Array.from(e.dataTransfer.files || []);
       if (files.length > 0) {
         UIUtils.triggerHaptic();
         onFilesSelected(files);
@@ -173,7 +182,7 @@ const UIUtils = {
     });
 
     zoneEl.addEventListener('click', (e) => {
-      if (e.target.closest('button, #browse-btn, .btn, input')) return;
+      if (e.target === inputEl || e.target.closest('button, #browse-btn, .btn, input, a, label')) return;
       if (inputEl) {
         inputEl.click();
       }
@@ -191,16 +200,6 @@ const UIUtils = {
         }
       });
     });
-
-    if (inputEl) {
-      inputEl.addEventListener('change', () => {
-        const files = Array.from(inputEl.files);
-        if (files.length > 0) {
-          UIUtils.triggerHaptic();
-          onFilesSelected(files);
-        }
-      });
-    }
 
     // 2. Window-Wide Drag & Drop Delight
     this.initFullscreenDrop(onFilesSelected);

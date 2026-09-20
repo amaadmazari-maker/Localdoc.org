@@ -903,8 +903,7 @@
 
       // Click dropzone
       dropZone.addEventListener('click', (e) => {
-        if (e.target.closest('button')) return;
-        fileInput.value = '';
+        if (e.target.closest('button, input, a, label')) return;
         fileInput.click();
       });
 
@@ -913,7 +912,6 @@
         browseBtn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          fileInput.value = '';
           fileInput.click();
         });
       }
@@ -923,7 +921,6 @@
         cameraBtn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          cameraInput.value = '';
           cameraInput.click();
         });
       }
@@ -932,7 +929,7 @@
       if (changePhotoBtn) {
         changePhotoBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          fileInput.value = '';
+          e.stopPropagation();
           fileInput.click();
         });
       }
@@ -941,12 +938,14 @@
         if (e.target.files && e.target.files[0]) {
           handleFileLoad(e.target.files[0]);
         }
+        setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 150);
       });
 
       cameraInput.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) {
           handleFileLoad(e.target.files[0]);
         }
+        setTimeout(() => { try { cameraInput.value = ''; } catch(err) {} }, 150);
       });
 
       // Drag and Drop

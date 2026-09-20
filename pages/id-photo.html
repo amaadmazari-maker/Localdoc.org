@@ -862,8 +862,7 @@
 
       if (frontBox && frontFileInput) {
         frontBox.addEventListener('click', (e) => {
-          if (e.target.closest('button') || e.target.closest('#front-loaded-view')) return;
-          frontFileInput.value = '';
+          if (e.target.closest('button, #front-loaded-view, input, a, label')) return;
           frontFileInput.click();
         });
       }
@@ -872,7 +871,6 @@
       if (fBrowse) {
         fBrowse.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          frontFileInput.value = '';
           frontFileInput.click();
         });
       }
@@ -881,7 +879,6 @@
       if (fCam) {
         fCam.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          frontCamInput.value = '';
           frontCamInput.click();
         });
       }
@@ -890,7 +887,6 @@
       if (fChange) {
         fChange.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          frontFileInput.value = '';
           frontFileInput.click();
         });
       }
@@ -898,11 +894,13 @@
       if (frontFileInput) {
         frontFileInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
+          setTimeout(() => { try { frontFileInput.value = ''; } catch(err) {} }, 150);
         });
       }
       if (frontCamInput) {
         frontCamInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleSideLoad('front', e.target.files[0]);
+          setTimeout(() => { try { frontCamInput.value = ''; } catch(err) {} }, 150);
         });
       }
 
@@ -931,8 +929,7 @@
 
       if (backBox && backFileInput) {
         backBox.addEventListener('click', (e) => {
-          if (e.target.closest('button') || e.target.closest('#back-loaded-view')) return;
-          backFileInput.value = '';
+          if (e.target.closest('button, #back-loaded-view, input, a, label')) return;
           backFileInput.click();
         });
       }
@@ -941,7 +938,6 @@
       if (bBrowse) {
         bBrowse.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          backFileInput.value = '';
           backFileInput.click();
         });
       }
@@ -950,7 +946,6 @@
       if (bCam) {
         bCam.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          backCamInput.value = '';
           backCamInput.click();
         });
       }
@@ -959,7 +954,6 @@
       if (bChange) {
         bChange.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          backFileInput.value = '';
           backFileInput.click();
         });
       }
@@ -967,11 +961,13 @@
       if (backFileInput) {
         backFileInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
+          setTimeout(() => { try { backFileInput.value = ''; } catch(err) {} }, 150);
         });
       }
       if (backCamInput) {
         backCamInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleSideLoad('back', e.target.files[0]);
+          setTimeout(() => { try { backCamInput.value = ''; } catch(err) {} }, 150);
         });
       }
 
@@ -1136,8 +1132,7 @@
 
       if (dropZone && fileInput) {
         dropZone.addEventListener('click', (e) => {
-          if (e.target.closest('button')) return;
-          fileInput.value = '';
+          if (e.target.closest('button, input, a, label')) return;
           fileInput.click();
         });
       }
@@ -1146,7 +1141,6 @@
       if (cBrowse) {
         cBrowse.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          fileInput.value = '';
           fileInput.click();
         });
       }
@@ -1155,7 +1149,6 @@
       if (cCam) {
         cCam.addEventListener('click', (e) => {
           e.preventDefault(); e.stopPropagation();
-          camInput.value = '';
           camInput.click();
         });
       }
@@ -1163,8 +1156,7 @@
       const cChange = document.getElementById('cnic-photo-change-btn');
       if (cChange) {
         cChange.addEventListener('click', (e) => {
-          e.preventDefault();
-          fileInput.value = '';
+          e.preventDefault(); e.stopPropagation();
           fileInput.click();
         });
       }
@@ -1172,11 +1164,13 @@
       if (fileInput) {
         fileInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
+          setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 150);
         });
       }
       if (camInput) {
         camInput.addEventListener('change', (e) => {
           if (e.target.files && e.target.files[0]) handleCnicPhotoLoad(e.target.files[0]);
+          setTimeout(() => { try { camInput.value = ''; } catch(err) {} }, 150);
         });
       }
 

@@ -142,7 +142,6 @@
   const progressBar = document.getElementById('pptx-progress-bar');
   const progressText = document.getElementById('pptx-progress-text');
   const resultMeta = document.getElementById('pptx-result-meta');
-
   function init() {
     if (typeof pdfjsLib !== 'undefined') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
@@ -152,9 +151,12 @@
 
   function setupEvents() {
     if (!dropZone || !fileInput) return;
-    fileInput.addEventListener('click', (e) => { e.stopPropagation(); fileInput.value = ''; });
+    fileInput.addEventListener('click', (e) => { e.stopPropagation(); });
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target === fileInput || e.target.closest('button, input, a, label')) return;
+      fileInput.click();
+    });
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-active');
@@ -172,6 +174,7 @@
       if (e.target.files && e.target.files.length > 0) {
         handleFile(e.target.files[0]);
       }
+      setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 150);
     });
 
     // Aspect Ratio options

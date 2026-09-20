@@ -103,9 +103,12 @@
 
   function setupEventListeners() {
     if (!dropZone || !fileInput) return;
-    fileInput.addEventListener('click', (e) => { e.stopPropagation(); fileInput.value = ''; });
+    fileInput.addEventListener('click', (e) => { e.stopPropagation(); });
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target === fileInput || e.target.closest('button, input, a, label')) return;
+      fileInput.click();
+    });
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-active');
@@ -123,6 +126,7 @@
       if (e.target.files && e.target.files.length > 0) {
         loadFiles(e.target.files);
       }
+      setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 150);
     });
 
     // Preset Dimension Buttons
