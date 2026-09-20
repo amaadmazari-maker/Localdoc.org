@@ -141,6 +141,7 @@ const UIUtils = {
     if (inputEl) {
       inputEl.addEventListener('click', (e) => {
         e.stopPropagation();
+        try { inputEl.value = ''; } catch(err) {}
       });
       inputEl.addEventListener('change', () => {
         const files = Array.from(inputEl.files || []);
@@ -148,9 +149,6 @@ const UIUtils = {
           UIUtils.triggerHaptic();
           onFilesSelected(files);
         }
-        setTimeout(() => {
-          try { inputEl.value = ''; } catch(err) {}
-        }, 150);
       });
     }
 
@@ -291,7 +289,7 @@ const UIUtils = {
     actionsWrap.innerHTML = '';
 
     // 1. Open in Reader Button (Zero-upload instant preview)
-    const isDoc = fileName.match(/\.(pdf|docx|xlsx|txt|png|jpe-g)$/i);
+    const isDoc = fileName.match(/\.(pdf|docx|xlsx|txt|png|jpe?g)$/i);
     if (isDoc) {
       const readerBtn = document.createElement('button');
       readerBtn.type = 'button';
