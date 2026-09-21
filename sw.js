@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v19-2026-fix-ui-utils-syntax-and-csp';
+const CACHE_NAME = 'localdoc-v20-2026-clean-pdf-worker';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -23,6 +23,7 @@ const ASSETS_TO_CACHE = [
   '/js/core/pwa-register.js',
   '/js/lib/pdf-lib.min.js',
   '/js/lib/pdf.min.js',
+  '/js/lib/pdf.worker.min.js',
   '/js/lib/docx.min.js',
   '/js/lib/sheetjs.min.js',
   '/js/lib/tesseract.min.js',

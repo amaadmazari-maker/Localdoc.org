@@ -1,11 +1,11 @@
-﻿/**
+/**
  * localdoc.org — PDF & Document Conversion Engine (js/tools/convert.js)
  * Real client-side conversions: PDF <-> Word, PDF <-> Excel, PDF <-> Images.
  * Zero cloud uploads. 100% in-browser RAM execution.
  */
 
 if (typeof pdfjsLib !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/workers/pdf.worker.js';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
 }
 
 const PDFConvert = {
