@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -24,9 +24,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 
-  <link rel="stylesheet" href="../css/main.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/blog.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/rtl.css?v=20260918-v5">
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v25">
 
   <script type="application/ld+json">
   {
@@ -127,7 +127,7 @@
       <div class="exec-summary-box">
         <h3>Executive Takeaways</h3>
         <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-          Almost everyone who handles legal contracts or financial audits has encountered this exact irritation: you open an upside-down document in Chrome, Edge, or Adobe Acrobat Reader, click "Rotate View," hit save, email it to a partnerâ€”and they open it only to discover every single page is still completely upside-down. Standard viewers merely flip a temporary viewing screen without altering the underlying byte stream. LocalDoc permanently rewrites the ISO 32000 <code>/Rotate</code> dictionary key directly inside browser RAM, ensuring orientation fixes persist across all devices with zero re-encoding and zero file size increase.
+          Almost everyone who handles legal contracts or financial audits has encountered this exact irritation: you open an upside-down document in Chrome, Edge, or Adobe Acrobat Reader, click "Rotate View," hit save, email it to a partner—and they open it only to discover every single page is still completely upside-down. Standard viewers merely flip a temporary viewing screen without altering the underlying byte stream. LocalDoc permanently rewrites the ISO 32000 <code>/Rotate</code> dictionary key directly inside browser RAM, ensuring orientation fixes persist across all devices with zero re-encoding and zero file size increase.
         </p>
       </div>
 
@@ -192,10 +192,10 @@
       <div class="tech-card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:20px; margin:20px 0;">
         <h4 style="margin:0 0 10px; color:var(--text-primary); font-size:1.05rem;">Empirical Benchmark: 48-Page Commercial Loan Closing Packet</h4>
         <ul style="margin:0; padding-left:20px; line-height:1.7; color:var(--text-secondary); font-size:0.92rem;">
-          <li><strong>Document Complexity:</strong> 48-page syndicated lending credit agreement (22.40 MB raw PDF) scanned on an automatic document feeder (ADF) where all 24 even-numbered duplex pages were inverted 180Â°, and 3 financial cash-flow exhibits were sideways at 90Â°.</li>
-          <li><strong>Operations Applied:</strong> Inverted even-numbered pages 180Â° back to upright; rotated pages 14, 15, and 16 by 90Â° clockwise into standard landscape orientation.</li>
+          <li><strong>Document Complexity:</strong> 48-page syndicated lending credit agreement (22.40 MB raw PDF) scanned on an automatic document feeder (ADF) where all 24 even-numbered duplex pages were inverted 180°, and 3 financial cash-flow exhibits were sideways at 90°.</li>
+          <li><strong>Operations Applied:</strong> Inverted even-numbered pages 180° back to upright; rotated pages 14, 15, and 16 by 90° clockwise into standard landscape orientation.</li>
           <li><strong>Processing Latency:</strong> Parsed the document catalog, updated 27 page dictionary keys, and emitted the output in <strong>65 milliseconds</strong> in browser RAM on Chrome 128 (Apple M2).</li>
-          <li><strong>Payload Delta:</strong> Exactly <strong>22.40 MB</strong> output (a <strong>0.00 KB byte change</strong>â€”no raster bloat, no font degradation).</li>
+          <li><strong>Payload Delta:</strong> Exactly <strong>22.40 MB</strong> output (a <strong>0.00 KB byte change</strong>—no raster bloat, no font degradation).</li>
           <li><strong>Network Footprint:</strong> Exactly 0 bytes uploaded to remote servers. Wireshark packet inspection confirmed zero external network transit.</li>
         </ul>
       </div>
@@ -241,7 +241,7 @@
       <h2>5. Step-by-Step Guide: How to Permanently Rotate PDF Pages</h2>
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
         <li><strong>Open Rotation Workspace:</strong> Drag your document into the LocalDoc <a href="../pages/rotate-pdf.html" style="color:var(--primary); font-weight:700;">Rotate PDF workspace</a>. High-speed visual thumbnails render immediately in memory.</li>
-        <li><strong>Select Target Orientation:</strong> Use the global <strong>Rotate All</strong> button to turn every page by 90Â°, 180Â°, or 270Â°, or hover over individual page thumbnails to rotate specific sideways exhibits.</li>
+        <li><strong>Select Target Orientation:</strong> Use the global <strong>Rotate All</strong> button to turn every page by 90°, 180°, or 270°, or hover over individual page thumbnails to rotate specific sideways exhibits.</li>
         <li><strong>Batch Duplex Fix:</strong> If an automatic document feeder scanned all back pages upside-down, select the even-pages filter to correct all inverted sheets simultaneously.</li>
         <li><strong>Click Save & Download:</strong> The client-side WebAssembly engine updates the dictionary rotation scalar and produces your clean, permanently oriented PDF in under 100 milliseconds.</li>
       </ol>
@@ -251,8 +251,8 @@
         Engineering honesty requires delineating what metadata-level rotation can and cannot accomplish:
       </p>
       <ul>
-        <li><strong>Off-Axis Feeder Skew (Non-Orthogonal Angles):</strong> The ISO 32000 <code>/Rotate</code> operator strictly supports orthogonal increments of 90 degrees (0Â°, 90Â°, 180Â°, 270Â°). If a sheet of paper was pulled into a mechanical roller at a 2.5-degree crooked angle, metadata rotation cannot fix it. Correcting off-axis crookedness requires deskewing affine transformations in our <a href="../pages/scan.html" style="color:var(--primary);">CamScanner studio</a>.</li>
-        <li><strong>Inherited Branch Rotation Collisions:</strong> In poorly authored legacy PDFs, rotation keys can be assigned at the intermediate <code>/Pages</code> branch level rather than the leaf <code>/Page</code> level. If a leaf page inherits a 90Â° rotation from an ancestor node and also defines its own 90Â° key, compliant viewers accumulate them to 180Â°. LocalDoc normalizes all branch keys into explicit leaf values, but malformed third-party documents can require manual preview verification.</li>
+        <li><strong>Off-Axis Feeder Skew (Non-Orthogonal Angles):</strong> The ISO 32000 <code>/Rotate</code> operator strictly supports orthogonal increments of 90 degrees (0°, 90°, 180°, 270°). If a sheet of paper was pulled into a mechanical roller at a 2.5-degree crooked angle, metadata rotation cannot fix it. Correcting off-axis crookedness requires deskewing affine transformations in our <a href="../pages/scan.html" style="color:var(--primary);">CamScanner studio</a>.</li>
+        <li><strong>Inherited Branch Rotation Collisions:</strong> In poorly authored legacy PDFs, rotation keys can be assigned at the intermediate <code>/Pages</code> branch level rather than the leaf <code>/Page</code> level. If a leaf page inherits a 90° rotation from an ancestor node and also defines its own 90° key, compliant viewers accumulate them to 180°. LocalDoc normalizes all branch keys into explicit leaf values, but malformed third-party documents can require manual preview verification.</li>
         <li><strong>Cryptographic Digital Signatures:</strong> If a document has been certified with an official cryptographic PKI digital signature (e.g., DocuSign or Adobe Certified Document Services), modifying even a single byte of metadata in the page dictionary will break the cryptographic hash. The signature will display a warning stating that the document was altered after signing. Documents must be rotated before applying cryptographic signatures.</li>
       </ul>
 
@@ -377,10 +377,10 @@
     </div>
   </footer>
 
-  <script src="../js/core/i18n.js?v=20260918-v5"></script>
-  <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
-  <script src="../js/core/pwa-register.js?v=20260918-v5"></script>
-  <script src="../js/core/seo.js?v=20260918-v5"></script>
+  <script src="../js/core/i18n.js?v=20260921-v25"></script>
+  <script src="../js/core/ui-utils.js?v=20260921-v25"></script>
+  <script src="../js/core/pwa-register.js?v=20260921-v25"></script>
+  <script src="../js/core/seo.js?v=20260921-v25"></script>
 </body>
 </html>
 

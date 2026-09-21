@@ -10,6 +10,14 @@
 
   // Service Worker Registration
   if ('serviceWorker' in navigator) {
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+
     window.addEventListener('load', () => {
       const swPath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/')  ?  '../sw.js' : './sw.js';
       navigator.serviceWorker.register(swPath).then((reg) => {

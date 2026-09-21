@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -15,9 +15,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
-  <link rel="stylesheet" href="../css/main.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/blog.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/rtl.css?v=20260918-v5">
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v25">
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
@@ -239,7 +239,7 @@
           <h3>The Anatomy of Bloat in a 48 MB Document</h3>
           <ul style="margin-left:20px; line-height:1.7;">
             <li><strong>Uncompressed 24-Bit Bitmap Payloads (39.4 MB / 82% of total size):</strong> Most office scanners default to 300 or 600 DPI in full 24-bit RGB color. A single letter-sized sheet at 300 DPI contains over 8.4 million individual pixels. In raw color data, that's roughly 25 MB of uncompressed bitmap per page before any filter touches it.</li>
-            <li><strong>Redundant Font Table Cloning (4.8 MB / 10%):</strong> Word processors and layout applications often embed complete 2,000-character OpenType font libraries for typefaces like Arial or Times New Romanâ€”even if your document only ever uses 45 unique letters and numbers.</li>
+            <li><strong>Redundant Font Table Cloning (4.8 MB / 10%):</strong> Word processors and layout applications often embed complete 2,000-character OpenType font libraries for typefaces like Arial or Times New Roman—even if your document only ever uses 45 unique letters and numbers.</li>
             <li><strong>Duplicate XObject Dictionaries (2.6 MB / 5.4%):</strong> If your firm's logo or a notary border appears on every single page, poorly written PDF export software frequently duplicates the raw image data 40 separate times instead of creating a single shared reference.</li>
             <li><strong>Uncompressed Cross-Reference (XRef) Tables (1.4 MB / 2.9%):</strong> Older PDF formats leave massive text-based index tables at the end of the file uncompressed, wasting megabytes on raw whitespace and byte offset numbers.</li>
           </ul>
@@ -249,7 +249,7 @@
       <section>
         <h2>FlateDecode vs. DCT: Keeping Fine Print Crisp While Dropping 90% of the Weight</h2>
         <p>
-          I hear this complaint all the time: <em>"Every time I use a free online compressor, the contract text comes back fuzzy and unreadable."</em> That happens because basic cloud tools take a lazy shortcutâ€”they rasterize the entire document into low-resolution JPEG images, permanently destroying clean vector text in the process.
+          I hear this complaint all the time: <em>"Every time I use a free online compressor, the contract text comes back fuzzy and unreadable."</em> That happens because basic cloud tools take a lazy shortcut—they rasterize the entire document into low-resolution JPEG images, permanently destroying clean vector text in the process.
         </p>
         
         <p>
@@ -286,7 +286,7 @@
               <td>300 DPI Native</td>
               <td>48.20 MB</td>
               <td>0% (Baseline)</td>
-              <td>â€”</td>
+              <td>—</td>
               <td>Raw heavy scan</td>
             </tr>
             <tr>
@@ -328,9 +328,9 @@
 
           <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:6px;">Target Profile:</label>
           <select id="profile-select" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface); color:var(--text-primary); margin-bottom:18px;" onchange="updateEstimate()">
-            <option value="0.85">Recommended (Web &amp; Email â€” 150 DPI, ~85% reduction)</option>
-            <option value="0.65">Moderate (Print Quality â€” 220 DPI, ~65% reduction)</option>
-            <option value="0.92">Extreme (Archival / Mobile â€” 96 DPI, ~92% reduction)</option>
+            <option value="0.85">Recommended (Web &amp; Email — 150 DPI, ~85% reduction)</option>
+            <option value="0.65">Moderate (Print Quality — 220 DPI, ~65% reduction)</option>
+            <option value="0.92">Extreme (Archival / Mobile — 96 DPI, ~92% reduction)</option>
           </select>
         </div>
 
@@ -361,7 +361,7 @@
           <li><strong>Drop Your File:</strong> Open <a href="../pages/compress-pdf.html">LocalDoc Compress PDF</a>. Drag your file onto the dropzone or select it from your local disk. It loads straight into your browser's RAM.</li>
           <li><strong>Select Your Compression Tier:</strong> For court portals, visa submissions, and general email attachments, pick <em>Recommended (150 DPI)</em>. If you intend to print physical copies on an office laser printer, choose <em>Archival (220 DPI)</em>.</li>
           <li><strong>Run the In-Browser Engine:</strong> Click <em>Compress PDF</em>. The WebAssembly thread parses the document tree, resamples image rasters, and recompresses stream dictionaries entirely in your device memory.</li>
-          <li><strong>Review the Savings and Download:</strong> Check the exact byte reduction displayed on your screen. Click <em>Download Compressed PDF</em> to save your optimized document instantlyâ€”with zero wait time and zero data transmitted over the internet.</li>
+          <li><strong>Review the Savings and Download:</strong> Check the exact byte reduction displayed on your screen. Click <em>Download Compressed PDF</em> to save your optimized document instantly—with zero wait time and zero data transmitted over the internet.</li>
         </ol>
       </section>
 
@@ -455,9 +455,9 @@
     </div>
   </footer>
 
-  <script src="../js/core/i18n.js?v=20260918-v5"></script>
-  <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
-  <script src="../js/core/seo.js?v=20260918-v5"></script>
+  <script src="../js/core/i18n.js?v=20260921-v25"></script>
+  <script src="../js/core/ui-utils.js?v=20260921-v25"></script>
+  <script src="../js/core/seo.js?v=20260921-v25"></script>
 
   <script>
     function updateEstimate() {

@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -24,9 +24,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 
-  <link rel="stylesheet" href="../css/main.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/blog.css?v=20260918-v5">
-  <link rel="stylesheet" href="../css/rtl.css?v=20260918-v5">
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v25">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v25">
 
   <script type="application/ld+json">
   {
@@ -134,7 +134,7 @@
 
       <h2>1. The Smartphone Photo Dump: Why Raw Images Break Submission Portals</h2>
       <p>Whether submitting an auto insurance claim, filing travel expense reimbursements, or submitting business receipts to an accountant, modern documentation relies heavily on mobile smartphone cameras. While convenient, raw camera snapshots create significant transmission bottlenecks. Modern 12 to 48-megapixel mobile sensors generate raw JPEG files ranging from 3 to 10 megabytes apiece. When a user captures 15 to 20 photographs of vehicle damage, repair estimates, and itemized invoices, the raw folder swells to over 80 megabytes.</p>
-      <p>Corporate intake portals, court filing systems, and email mailboxes strictly enforce file size limitsâ€”typically capping uploads at 10 MB or 25 MB. Furthermore, raw camera photos contain differing EXIF rotation tags, causing some pages to appear sideways or upside down when opened on desktop computers. Transmitting unvetted photos to commercial cloud conversion websites also exposes sensitive EXIF metadataâ€”including exact GPS coordinates of your home and personal device identifiersâ€”to third-party tracking databases.</p>
+      <p>Corporate intake portals, court filing systems, and email mailboxes strictly enforce file size limits—typically capping uploads at 10 MB or 25 MB. Furthermore, raw camera photos contain differing EXIF rotation tags, causing some pages to appear sideways or upside down when opened on desktop computers. Transmitting unvetted photos to commercial cloud conversion websites also exposes sensitive EXIF metadata—including exact GPS coordinates of your home and personal device identifiers—to third-party tracking databases.</p>
 
       <h2>2. EXIF Tag Parsing: Automatic Canvas Rotation in Client RAM</h2>
       <p>A frequent defect of basic photo-to-PDF utilities is misaligned orientation. Smartphone cameras do not always physically rotate pixel arrays when held vertically; instead, the hardware writes an orientation flag into the image's EXIF metadata header (tags 1 through 8). If a PDF generator ignores this metadata, portrait photos are displayed in sideways landscape mode.</p>
@@ -143,14 +143,14 @@
         <li><strong>Binary EXIF Inspection:</strong> The WebAssembly parser locates the JPEG <code>APP1</code> marker segment (<code>0xFFE1</code>) and reads the TIFF header to extract the primary orientation tag.</li>
         <li><strong>Matrix Transformation:</strong> The engine applies the corresponding 90&deg;, 180&deg;, or 270&deg; rotation matrix directly to the image canvas, ensuring that the visual content matches the photographer's intended perspective.</li>
         <li><strong>Standardized Page Geometry:</strong> The rotated image is mapped onto an International ISO A4 canvas (595.28 &times; 841.89 pt) or US Letter canvas (612 &times; 792 pt). The engine calculates proportional scale factors with 28 pt safety gutters to prevent laser printers from clipping margins.</li>
-        <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tagsâ€”such as GPS coordinates, camera serial numbers, and exposure timesâ€”are stripped from the binary streams, protecting user privacy.</li>
+        <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tags—such as GPS coordinates, camera serial numbers, and exposure times—are stripped from the binary streams, protecting user privacy.</li>
       </ol>
 
       <h2>3. Under the Hood: Lossless DCT Passthrough vs Smart Resampling</h2>
       <p>LocalDoc utilizes a dual-path pipeline to balance execution speed, visual quality, and output file size:</p>
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
         <li><strong>Lossless DCT Passthrough:</strong> If the input JPEG images are already optimized and correctly oriented, our engine bypasses canvas decompression entirely. The raw JPEG byte stream is injected directly into a PDF image XObject with <code>/Filter /DCTDecode</code>. This yields near-instant zero-latency packaging with zero generational compression loss.</li>
-        <li><strong>Adaptive Canvas Resampling:</strong> When processing oversized 48MP smartphone photos that would exceed corporate upload ceilings, the engine passes the image through an in-memory <code>OffscreenCanvas</code>. The canvas scales the image to a balanced 200â€“300 DPI resolution and applies controlled WebAssembly JPEG compression (typically 80â€“85% quality).</li>
+        <li><strong>Adaptive Canvas Resampling:</strong> When processing oversized 48MP smartphone photos that would exceed corporate upload ceilings, the engine passes the image through an in-memory <code>OffscreenCanvas</code>. The canvas scales the image to a balanced 200–300 DPI resolution and applies controlled WebAssembly JPEG compression (typically 80–85% quality).</li>
         <li><strong>Vector Coordinate Placement:</strong> The compressed stream is referenced inside the page's <code>/Contents</code> dictionary using a single PostScript drawing operator (<code>q W 0 0 H X Y cm /Im1 Do Q</code>), ensuring maximum viewer compatibility across Adobe Acrobat, Apple Preview, and mobile PDF readers.</li>
       </ol>
 
@@ -326,8 +326,8 @@
     </div>
   </footer>
 
-  <script src="../js/core/i18n.js?v=20260918-v5"></script>
-  <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
+  <script src="../js/core/i18n.js?v=20260921-v25"></script>
+  <script src="../js/core/ui-utils.js?v=20260921-v25"></script>
 </body>
 </html>
 
