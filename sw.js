@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v18-2026-fix-docx-builder-and-convert';
+const CACHE_NAME = 'localdoc-v19-2026-fix-ui-utils-syntax-and-csp';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -98,6 +98,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+  // Only intercept same-origin assets to avoid CSP connect-src violations and cross-origin fetch failures
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
@@ -116,6 +120,7 @@ self.addEventListener('fetch', (event) => {
           if (acceptHeader.includes('text/html')) {
             return caches.match('/index.html');
           }
+          return new Response('', { status: 408, statusText: 'Request timed out offline' });
         });
       })
   );
