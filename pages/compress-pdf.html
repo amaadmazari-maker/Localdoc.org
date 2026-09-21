@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -210,8 +210,8 @@
           <h3>Drop your PDF document(s) here</h3>
           <p>Or click to browse from your device. Single file or multi-file batch queue. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null" type="button">Select PDF Document(s)</button>
-        <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="display:none;">
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null" type="button">Select PDF Document(s)</button>
+        <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- File Queue Item & Batch List -->

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -337,7 +337,7 @@
     <!-- Empty Upload State -->
     <div id="resizer-empty-state">
       <div class="resizer-empty-box" id="resizer-drop-zone">
-        <input type="file" id="resizer-file-input" accept=".jpg,.jpeg,.png,.webp,image/*" multiple style="display: none;">
+        <input type="file" id="resizer-file-input" accept=".jpg,.jpeg,.png,.webp,image/*" multiple style="display: none;" onchange="window.handlePhotoResizerFiles && window.handlePhotoResizerFiles(this.files)">
         <div style="font-size: 3rem; margin-bottom: 12px;">&#128444;</div>
         <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
           Choose photos or drag & drop here
@@ -345,7 +345,7 @@
         <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
           Supports JPG, PNG, and WebP photos. Single image or multi-photo batch queue. Instant local processing in RAM.
         </p>
-        <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
+        <button class="btn btn-primary" type="button" id="resizer-browse-btn" onclick="event.stopPropagation(); document.getElementById('resizer-file-input').click();" style="padding: 10px 24px; font-weight: 700;">
           Select Photo(s) from Device
         </button>
       </div>

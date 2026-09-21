@@ -1218,7 +1218,7 @@
         </div>
         <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_gallery">Gallery &amp; Files</span>
       </div>
-      <input type="file" id="home-import-files" accept="image/*,application/pdf" multiple style="display:none;" onchange="handleHomeFileImport(event)">
+      <input type="file" id="home-import-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;" onchange="handleHomeFileImport(event)">
     </div>
 
     <!-- Recents Section Header -->
@@ -1381,7 +1381,7 @@
         <button type="button" class="cs-cam-hud-btn" onclick="triggerGalleryImport()" title="Import from Photos/Gallery">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
-        <input type="file" id="cam-gallery-file-input" accept="image/*" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
+        <input type="file" id="cam-gallery-file-input" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
 
         <!-- Large Double Ring Shutter -->
         <button type="button" class="cs-cam-shutter-btn" onclick="executeShutterSnap()" aria-label="Capture Scan">
@@ -1725,6 +1725,7 @@
   <!-- Scripts -->
   <script src="../js/core/i18n.js?v=20260918-v5"></script>
   <script src="../js/core/ui-utils.js?v=20260918-v5"></script>
+  <script src="../js/lib/pdf.min.js?v=20260918-v5"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260918-v5"></script>
   <script src="../js/tools/scan.js?v=20260918-v5"></script>
 
@@ -2054,7 +2055,10 @@
       if (window.AndroidNative && window.AndroidNative.launchNativeGallery) {
         window.AndroidNative.launchNativeGallery();
       } else {
-        const input = document.getElementById('cam-gallery-file-input') || document.getElementById('home-import-files');
+        const isCamActive = fullscreenCam && fullscreenCam.style.display === "flex";
+        const input = isCamActive
+          ? (document.getElementById('cam-gallery-file-input') || document.getElementById('home-import-files'))
+          : (document.getElementById('home-import-files') || document.getElementById('cam-gallery-file-input'));
         if (input) input.click();
       }
     }
@@ -2213,25 +2217,143 @@
       }
     }
 
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
+    }
+
+    async function renderPdfFileToPages(file) {
+      if (!window.pdfjsLib) {
+        throw new Error("PDF library not loaded. Please reload the page.");
+      }
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const img = await UIUtils.loadImage(dataUrl);
+        const corners = {
+          topLeft: { x: 0, y: 0 },
+          topRight: { x: 1, y: 0 },
+          bottomRight: { x: 1, y: 1 },
+          bottomLeft: { x: 0, y: 1 }
+        };
+        pages.push({
+          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          rawImg: img,
+          corners: corners,
+          filter: 'original',
+          rotation: 0,
+          processedDataUrl: dataUrl
+        });
+      }
+      return pages;
+    }
+
+    async function renderImageFileToPage(file) {
+      const dataUrl = await UIUtils.readFileAsDataURL(file);
+      const img = await UIUtils.loadImage(dataUrl);
+      const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+      const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+      return {
+        rawImg: img,
+        corners: corners,
+        filter: 'magic-color',
+        rotation: 0,
+        processedDataUrl: processed
+      };
+    }
+
     // Camera HUD Gallery Upload
     async function handleCamGalleryUpload(e) {
-      const files = Array.from(e.target.files || []);
+      return handleHomeFileImport(e);
+    }
+    window.handleCamGalleryUpload = handleCamGalleryUpload;
+
+    async function handleHomeFileImport(e) {
+      const fileList = e && e.target ? e.target.files : (e && e.files ? e.files : e);
+      const files = Array.from(fileList || []);
       if (files.length === 0) return;
 
-      if (files.length === 1 && camMode === 'single') {
-        const dataUrl = await UIUtils.readFileAsDataURL(files[0]);
-        const img = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-        stagingPage = { rawImg: img, corners: corners, rotation: 0, filter: 'magic-color' };
-        stagingIsEditingIndex = -1;
-        openCropScreen();
-        document.getElementById("cam-gallery-file-input").value = "";
-        return;
+      setTimeout(() => {
+        const i1 = document.getElementById("home-import-files");
+        if (i1) i1.value = "";
+        const i2 = document.getElementById("cam-gallery-file-input");
+        if (i2) i2.value = "";
+      }, 350);
+
+      const isCamActive = fullscreenCam && fullscreenCam.style.display === "flex";
+
+      // If single image and currently inside camera single mode:
+      if (files.length === 1 && (!files[0].type.includes('pdf') && !files[0].name.toLowerCase().endsWith('.pdf')) && isCamActive && camMode === 'single') {
+        try {
+          showProcessing("Scanning document edges...");
+          const pageData = await renderImageFileToPage(files[0]);
+          stagingPage = {
+            rawImg: pageData.rawImg,
+            corners: pageData.corners,
+            rotation: 0,
+            filter: 'magic-color'
+          };
+          stagingIsEditingIndex = -1;
+          hideProcessing();
+          openCropScreen();
+          return;
+        } catch (err) {
+          hideProcessing();
+          UIUtils.showToast("Could not process image: " + err.message, "danger");
+          return;
+        }
       }
 
-      // Batch import multiple photos: transition directly to document workspace
-      await handleHomeFileImport(e);
+      showProcessing(`Importing ${files.length} file(s)...`);
+      try {
+        let countAdded = 0;
+        for (const file of files) {
+          if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+            const pages = await renderPdfFileToPages(file);
+            for (const p of pages) {
+              docPages.push(p);
+              countAdded++;
+            }
+          } else {
+            const pageData = await renderImageFileToPage(file);
+            docPages.push({
+              id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+              ...pageData
+            });
+            countAdded++;
+          }
+        }
+
+        hideProcessing();
+        if (countAdded === 0) {
+          UIUtils.showToast("No readable pages found in selected file(s).", "warning");
+          return;
+        }
+
+        updateCamStackBadge();
+        if (isCamActive) {
+          fullscreenCam.style.display = "none";
+          if (scanner) scanner.stopCamera();
+        }
+        await autoSaveDocumentToDB();
+        openDocumentWorkspaceView();
+        renderWorkspacePages();
+        UIUtils.showToast(`Imported ${countAdded} page(s) successfully!`, "success");
+      } catch (err) {
+        hideProcessing();
+        console.error("Import error:", err);
+        UIUtils.showToast("Import failed: " + err.message, "danger");
+      }
     }
+    window.handleHomeFileImport = handleHomeFileImport;
 
     // =========================================================================
     // 2. 4-CORNER CROP SCREEN (WITH TOP-CORNER MAGNIFYING LOUPE)
@@ -3123,6 +3245,188 @@
       }
     }
 
+    function promptInsertPage(idx) {
+      targetInsertIndex = idx;
+      openAddPageChoiceModal();
+    }
+
+    // --- Multi-Channel Share Modal Handlers ---
+    function openShareModal() {
+      document.getElementById("cs-share-subtitle").textContent = `${docTitle}.pdf (${docPages.length} pages)`;
+      document.getElementById("cs-share-modal").style.display = "flex";
+    }
+
+    function closeShareModal() {
+      document.getElementById("cs-share-modal").style.display = "none";
+    }
+
+    function shareViaWhatsApp() {
+      const text = encodeURIComponent(`Check out this scanned PDF document: "${docTitle}" created with Localdoc PDF Camera Studio:\n${window.location.origin}/pages/scan.html`);
+      window.open(`https://api.whatsapp.com/send-text=${text}`, '_blank');
+    }
+
+    function shareViaFacebook() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php-u=${url}`, '_blank');
+    }
+
+    function shareViaEmail() {
+      const subject = encodeURIComponent(`Scanned Document: ${docTitle}.pdf`);
+      const body = encodeURIComponent(`Hello,\n\nI have scanned a ${docPages.length}-page document "${docTitle}.pdf" using Localdoc Studio.\n\nCreated safely 100% offline on-device.\n${window.location.origin}`);
+      window.location.href = `mailto:-subject=${subject}&body=${body}`;
+    }
+
+    async function shareViaSystemWebShare() {
+      if (docPages.length === 0) return;
+      showProcessing("Preparing document for sharing...");
+      try {
+        const blob = await DocumentScanner.exportToPDF(docPages);
+        hideProcessing();
+        const file = new File([blob], docTitle + ".pdf", { type: "application/pdf" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: docTitle,
+            text: `Scanned document: ${docTitle}.pdf`
+          });
+        } else if (navigator.share) {
+          await navigator.share({
+            title: docTitle,
+            text: `Scanned PDF document: ${docTitle}.pdf`,
+            url: window.location.href
+          });
+        } else {
+          // Direct download fallback
+          await exportDocPDF();
+          UIUtils.showToast("Document downloaded for sharing!", "success");
+        }
+      } catch (err) {
+        hideProcessing();
+        if (err.name !== 'AbortError') {
+          console.warn("Share cancelled or not supported:", err);
+          await exportDocPDF();
+        }
+      }
+    }
+
+    function copyDocumentShareLink() {
+      const link = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => {
+          UIUtils.showToast("&#10003; Document link copied to clipboard!", "success");
+        });
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = link;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        UIUtils.showToast("&#10003; Link copied to clipboard!", "success");
+      }
+    }
+
+    // Auto-Save Document to IndexedDB
+    async function autoSaveDocumentToDB() {
+      if (docPages.length === 0) return;
+      if (!docId) docId = 'scan_' + Date.now();
+
+      const docRecord = {
+        id: docId,
+        title: docTitle,
+        name: docTitle,
+        pageCount: docPages.length,
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        thumbnail: docPages[0]  ?  docPages[0].processedDataUrl : null,
+        pages: docPages.map(p => ({
+          id: p.id,
+          corners: p.corners,
+          filter: p.filter,
+          rotation: p.rotation,
+          rawDataUrl: p.rawDataUrl || p.processedDataUrl,
+          processedDataUrl: p.processedDataUrl
+        }))
+      };
+
+      try {
+        await LocalDocScanDB.save(docRecord);
+      } catch (err) {
+        console.warn("Auto-save note:", err);
+      }
+    }
+
+    // Document Rename Dialog (CamScanner Style)
+    function openRenameDialog() {
+      document.getElementById("rename-doc-input").value = docTitle;
+      document.getElementById("cs-rename-modal").style.display = "flex";
+    }
+
+    function closeRenameDialog() {
+      document.getElementById("cs-rename-modal").style.display = "none";
+    }
+
+    async function confirmRenameDialog() {
+      const newTitle = document.getElementById("rename-doc-input").value.trim();
+      if (newTitle) {
+        docTitle = newTitle;
+        document.getElementById("doc-view-title-text").textContent = docTitle;
+        await autoSaveDocumentToDB();
+        UIUtils.showToast("Title updated: " + docTitle, "success");
+      }
+      closeRenameDialog();
+    }
+
+    // Export PDF (Single-Click Direct Download to Device or PC)
+    async function exportDocPDF() {
+      if (docPages.length === 0) {
+        UIUtils.showToast("No pages to download", "warning");
+        return;
+      }
+      showProcessing("Generating PDF for 1-Click Download...");
+
+      try {
+        const blob = await DocumentScanner.exportToPDF(docPages);
+        const fileName = (docTitle || "Localdoc_Scan") + ".pdf";
+
+        // Single-click trigger for both mobile device and desktop PC
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1000);
+
+        hideProcessing();
+        UIUtils.showToast(`&#10003; Download started: ${fileName}`, "success");
+
+        if (window.LocalDocUnifiedFilesDB) {
+          try {
+            const dataUrl = await UIUtils.readFileAsDataURL(blob);
+            await LocalDocUnifiedFilesDB.recordDocument({
+              title: fileName,
+              type: 'pdf',
+              mimeType: 'application/pdf',
+              size: UIUtils.formatBytes(blob.size),
+              dataUrl: dataUrl,
+              thumbnail: docPages[0]  ?  (docPages[0].processedDataUrl || docPages[0].rawImg) : null,
+              pageCount: docPages.length
+            });
+          } catch(err) { console.warn('Could not save to unified db', err); }
+        }
+      } catch (e) {
+        hideProcessing();
+        console.error("Export error:", e);
+        alert("Export error: " + e.message);
+      }
+    }
+
     // Open in LocalDoc Document Reader
     async function openDocInLocalReader() {
       if (docPages.length === 0) return;
@@ -3145,6 +3449,24 @@
         alert("Reader error: " + e.message);
       }
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const homeInput = document.getElementById("home-import-files");
+      if (homeInput) {
+        homeInput.addEventListener("change", (e) => handleHomeFileImport(e));
+      }
+      const camInput = document.getElementById("cam-gallery-file-input");
+      if (camInput) {
+        camInput.addEventListener("change", (e) => handleHomeFileImport(e));
+      }
+      window.addEventListener("dragover", (e) => e.preventDefault());
+      window.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleHomeFileImport(e.dataTransfer.files);
+        }
+      });
+    });
   </script>
 
   <!-- Global Search Modal -->

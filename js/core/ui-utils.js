@@ -134,22 +134,41 @@ const UIUtils = {
     if (statusEl && statusText) statusEl.textContent = statusText;
   },
 
+  // Direct File Input Binding (Guaranteed Native Event Flow)
+  bindFileInput(inputEl, onFilesSelected) {
+    if (!inputEl) return;
+    inputEl.__localdoc_handler = onFilesSelected;
+    const handleChange = (e) => {
+      const files = Array.from((e && e.target && e.target.files) || inputEl.files || []);
+      if (files.length > 0) {
+        UIUtils.triggerHaptic();
+        onFilesSelected(files);
+      }
+      setTimeout(() => { try { inputEl.value = ''; } catch(err) {} }, 250);
+    };
+    inputEl.addEventListener('change', handleChange);
+    inputEl.addEventListener('input', handleChange);
+  },
+
+  // Global fallback called by inline onchange on file inputs
+  handleGlobalFileInput(inputEl) {
+    if (!inputEl) return;
+    const files = Array.from(inputEl.files || []);
+    if (files.length > 0) {
+      UIUtils.triggerHaptic();
+      if (typeof inputEl.__localdoc_handler === 'function') {
+        inputEl.__localdoc_handler(files);
+      }
+    }
+    setTimeout(() => { try { inputEl.value = ''; } catch(err) {} }, 250);
+  },
+
   // Drag & Drop Setup (With Fullscreen Window Drag Delight)
   setupDropZone(zoneEl, inputEl, onFilesSelected) {
     if (!zoneEl) return;
 
     if (inputEl) {
-      inputEl.addEventListener('click', (e) => {
-        e.stopPropagation();
-        try { inputEl.value = ''; } catch(err) {}
-      });
-      inputEl.addEventListener('change', () => {
-        const files = Array.from(inputEl.files || []);
-        if (files.length > 0) {
-          UIUtils.triggerHaptic();
-          onFilesSelected(files);
-        }
-      });
+      this.bindFileInput(inputEl, onFilesSelected);
     }
 
     // 1. Local Dropzone Listeners
@@ -188,7 +207,6 @@ const UIUtils = {
 
     const browseBtns = zoneEl.querySelectorAll('button, #browse-btn, .btn');
     browseBtns.forEach(btn => {
-      // Remove inline onclick attribute if present to avoid dual-trigger cancellation
       btn.removeAttribute('onclick');
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -804,6 +822,11 @@ class LocalZip {
 }
 UIUtils.Zip = LocalZip;
 window.MiniZip = LocalZip;
+window.handleLocalDocFileInput = function(el) {
+  if (window.UIUtils && typeof window.UIUtils.handleGlobalFileInput === 'function') {
+    window.UIUtils.handleGlobalFileInput(el);
+  }
+};
 
 // Auto Init
 document.addEventListener('DOMContentLoaded', () => {

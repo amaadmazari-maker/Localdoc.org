@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -2102,8 +2102,8 @@
               l3Arrow.textContent = "&#9698;";
               l4Ans.textContent = "Disp";
             } else if (appState.prgmPromptVar) {
-              // Prompting for variable: e.g. A- 5
-              l2Txt.textContent = `${appState.prgmPromptVar}- ${appState.prgmInputBuffer}`;
+              // Prompting for variable: e.g. A? 5
+              l2Txt.textContent = `${appState.prgmPromptVar}? ${appState.prgmInputBuffer}`;
               l2Cursor.style.display = 'inline-block';
               l4Txt.textContent = `Enter val & press EXE`;
             }
@@ -2350,16 +2350,20 @@
           return;
         }
 
-        // 1. Input: - -> A or -&rarr;A
-        if (stmt.startsWith('-') && (stmt.includes('->') || stmt.includes('&rarr;'))) {
-          const varName = stmt.replace('-', '').replace('->', '').replace('&rarr;', '').trim().toUpperCase();
+        // 1. Input: ? -> A or ?→A or - -> A or "LABEL"?→A
+        if ((stmt.startsWith('?') || stmt.includes('?') || stmt.startsWith('-')) && (stmt.includes('->') || stmt.includes('&rarr;') || stmt.includes('→'))) {
+          let clean = stmt;
+          if (clean.includes('"')) {
+            clean = clean.substring(clean.lastIndexOf('"') + 1);
+          }
+          const varName = clean.replace(/[?\-]/g, '').replace('->', '').replace('&rarr;', '').replace('→', '').trim().toUpperCase();
           appState.prgmPromptVar = varName;
           appState.prgmInputBuffer = '';
           appState.prgmWaitingForExe = false;
         }
-        // 2. Assignment / Formula: (B&sup2;-4AC) -> D or expr&rarr;D
-        else if (stmt.includes('->') || stmt.includes('&rarr;')) {
-          const sep = stmt.includes('&rarr;') - '&rarr;' : '->';
+        // 2. Assignment / Formula: (B&sup2;-4AC) -> D or expr&rarr;D or expr→D
+        else if (stmt.includes('->') || stmt.includes('&rarr;') || stmt.includes('→')) {
+          const sep = stmt.includes('→') ? '→' : (stmt.includes('&rarr;') ? '&rarr;' : '->');
           const parts = stmt.split(sep);
           const val = evaluateCasioMath(parts[0].trim());
           const varName = parts[1].trim().toUpperCase();
@@ -2367,9 +2371,9 @@
           appState.prgmStmtIdx++;
           advanceProgramStep();
         }
-        // 3. Print Output: expr &#9698; or "TXT="X&#9698;
-        else if (stmt.includes('&#9698;')) {
-          const cleanStmt = stmt.replace(/&#9698;/g, '').trim();
+        // 3. Print Output: expr &#9698; or expr ◢ or "TXT="X&#9698;
+        else if (stmt.includes('&#9698;') || stmt.includes('◢')) {
+          const cleanStmt = stmt.replace(/&#9698;/g, '').replace(/◢/g, '').trim();
           let outStr = '';
           if (cleanStmt.startsWith('"') && cleanStmt.includes('"', 1)) {
             const quoteEnd = cleanStmt.indexOf('"', 1);

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -335,7 +335,7 @@
     <!-- Empty Upload State -->
     <div id="org-empty-state">
       <div class="org-empty-box" id="org-drop-zone" onclick="document.getElementById('org-file-input').click()">
-        <input type="file" id="org-file-input" accept="application/pdf,.pdf" multiple style="display: none;">
+        <input type="file" id="org-file-input" accept="application/pdf,.pdf" multiple style="display: none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
         <div style="font-size: 3rem; margin-bottom: 12px;">&#128196;</div>
         <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
           Choose PDF file(s) or drag & drop here
@@ -360,7 +360,7 @@
         </div>
 
         <div class="org-toolbar-group">
-          <input type="file" id="org-add-more-input" accept="application/pdf,.pdf" multiple style="display: none;">
+          <input type="file" id="org-add-more-input" accept="application/pdf,.pdf" multiple style="display: none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
           <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 7px 14px;" onclick="document.getElementById('org-add-more-input').click()">
             &#10133; Add More Pages
           </button>

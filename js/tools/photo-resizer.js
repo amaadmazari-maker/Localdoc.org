@@ -105,8 +105,17 @@
     if (!dropZone || !fileInput) return;
     fileInput.addEventListener('click', (e) => { e.stopPropagation(); });
 
+    const browseBtns = dropZone.querySelectorAll('button, #resizer-browse-btn, .btn');
+    browseBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileInput.click();
+      });
+    });
+
     dropZone.addEventListener('click', (e) => {
-      if (e.target === fileInput || e.target.closest('button, input, a, label')) return;
+      if (e.target === fileInput) return;
       fileInput.click();
     });
     dropZone.addEventListener('dragover', (e) => {
@@ -122,11 +131,17 @@
       }
     });
 
+    window.handlePhotoResizerFiles = function(files) {
+      if (files && files.length > 0) {
+        loadFiles(files);
+      }
+    };
+
     fileInput.addEventListener('change', (e) => {
       if (e.target.files && e.target.files.length > 0) {
         loadFiles(e.target.files);
       }
-      setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 150);
+      setTimeout(() => { try { fileInput.value = ''; } catch(err) {} }, 250);
     });
 
     // Preset Dimension Buttons

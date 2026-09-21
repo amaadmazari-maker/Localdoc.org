@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -121,8 +121,8 @@
           <h3>Drop your JPG/JPEG photos here</h3>
           <p>Or click to browse multiple images. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select JPG Photos</button>
-        <input type="file" id="file-input" accept=".jpg,.jpeg,image/jpeg,image/*" multiple style="display:none;">
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select JPG Photos</button>
+        <input type="file" id="file-input" accept=".jpg,.jpeg,image/jpeg,image/*" multiple style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- Controls Bar -->

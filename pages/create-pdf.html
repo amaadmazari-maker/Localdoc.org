@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -290,8 +290,8 @@
           <h3>Drag & drop multiple images here, or browse files</h3>
           <p>Supports JPG, PNG, WEBP, and BMP photos &bull; Multiple selection enabled</p>
         </div>
-        <button class="btn btn-primary" id="browse-btn" onclick="document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Browse Image Files</button>
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.bmp,image/*" multiple style="display:none;">
+        <button class="btn btn-primary" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Browse Image Files</button>
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.bmp,image/*" multiple style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- Pages Reordering & Layout Workspace -->
