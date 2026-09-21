@@ -1,4 +1,4 @@
-/**
+﻿/**
  * localdoc.org — PDF & Document Conversion Engine (js/tools/convert.js)
  * Real client-side conversions: PDF <-> Word, PDF <-> Excel, PDF <-> Images.
  * Zero cloud uploads. 100% in-browser RAM execution.
@@ -15,10 +15,10 @@ const PDFConvert = {
     return String(str)
       .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
       .replace(/&/g, '&amp;')
-      .replace(/</g, '<')
-      .replace(/>/g, '>')
-      .replace(/"/g, '"')
-      .replace(/'/g, ''');
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
   },
 
   // Helper: Sanitize text for WinAnsi / StandardFonts fallback

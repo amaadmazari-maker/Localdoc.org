@@ -1,8 +1,8 @@
-﻿/**
+/**
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v17-2026-universal-transitions-and-calculators';
+const CACHE_NAME = 'localdoc-v18-2026-fix-docx-builder-and-convert';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
