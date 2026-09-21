@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -351,6 +351,7 @@
   <script>
     let selectedFile = null;
     let renderedImages = [];
+    let resultData = null;
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
@@ -471,8 +472,11 @@
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
-        if (resultData && resultData.zipBlob) UIUtils.renderQuickActions(resultCard, resultData.zipBlob, "localdoc-pages-jpg.zip");
-        document.getElementById("result-meta").textContent = `Rendered ${renderedImages.length} High-Res ${isPng  ?  'PNG' : 'JPEG'} Page(s)`;
+        if (renderedImages && renderedImages.length > 0) {
+          const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "page";
+          UIUtils.renderQuickActions(resultCard, renderedImages[0].blob, `${baseName}-page-1.${ext}`);
+        }
+        document.getElementById("result-meta").textContent = `Rendered ${renderedImages.length} High-Res ${isPng ? 'PNG' : 'JPEG'} Page(s)`;
 
         renderThumbnailGallery();
         UIUtils.showToast(`Extracted ${renderedImages.length} ${isPng  ?  'PNG' : 'JPG'} images successfully!`, "success");

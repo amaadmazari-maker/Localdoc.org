@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -733,7 +733,8 @@
     // =========================================================================
     async function loadAndRenderPdf(buffer) {
       try {
-        const loadingTask = pdfjsLib.getDocument({ data: buffer });
+        const previewBuffer = (buffer instanceof ArrayBuffer) ? buffer.slice(0) : buffer;
+        const loadingTask = pdfjsLib.getDocument({ data: previewBuffer });
         pdfDoc = await loadingTask.promise;
         totalPages = pdfDoc.numPages;
         currentPage = 1;
@@ -1026,8 +1027,12 @@
         const overlayW = overlayLayer.offsetWidth;
         const overlayH = overlayLayer.offsetHeight;
 
+        // Re-read fresh buffer from selectedFile to guarantee zero detachment issues
+        const freshBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+        selectedFileBuffer = freshBuffer;
+
         // Use PDF-Lib to obtain native unscaled page sizes
-        const tempPdfDoc = await PDFLib.PDFDocument.load(selectedFileBuffer, { ignoreEncryption: true });
+        const tempPdfDoc = await PDFLib.PDFDocument.load(freshBuffer.slice(0), { ignoreEncryption: true });
         const pdfPages = tempPdfDoc.getPages();
 
         Object.entries(pageAnnotations).forEach(([pNum, annos]) => {
@@ -1074,10 +1079,10 @@
           targetPages: sigTargetPages.value,
           includeDate: addDateChk.checked,
           dateString: todayStr,
-          annotationText: annoTextInput.value  ?  annoTextInput.value.trim() : ''
+          annotationText: annoTextInput.value ? annoTextInput.value.trim() : ''
         };
 
-        const res = await PDFEdit.processBatchEdit(selectedFileBuffer, options, progressCb);
+        const res = await PDFEdit.processBatchEdit(freshBuffer.slice(0), options, progressCb);
         resultBlob = res.pdfBlob;
 
         const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
@@ -1085,6 +1090,7 @@
 
         UIUtils.setWorkflowStep(3, 100, "Signing complete!");
         resultCard.style.display = "flex";
+        UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
         document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; Embedded signature and annotations into ${res.stampedPagesCount} Page(s)`;
         UIUtils.showToast("Signed PDF successfully generated in RAM!", "success");
       } catch (err) {

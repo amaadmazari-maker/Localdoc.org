@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v26-2026-sheetjs-mammoth-fix';
+const CACHE_NAME = 'localdoc-v27-fx5800p-pdf-fixes';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

@@ -25,7 +25,7 @@ const PDFEdit = {
     if (onProgress) onProgress(15, 'Loading PDF document into memory...');
     let buffer;
     if (fileInput instanceof ArrayBuffer) {
-      buffer = fileInput;
+      buffer = fileInput.slice(0);
     } else if (fileInput instanceof Blob || fileInput instanceof File) {
       buffer = await UIUtils.readFileAsArrayBuffer(fileInput);
     } else {
