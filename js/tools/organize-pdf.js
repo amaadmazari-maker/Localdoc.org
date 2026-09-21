@@ -29,6 +29,8 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
     }
     setupEvents();
+    window.handleOrganizePdfFiles = loadPdfFiles;
+    if (fileInput) fileInput._localDocDropHandler = loadPdfFiles;
   }
 
   function setupEvents() {
@@ -36,9 +38,19 @@
 
     fileInput.addEventListener('click', (e) => e.stopPropagation());
     dropZone.addEventListener('click', (e) => {
-      if (e.target === fileInput || e.target.closest('button, input, a, label')) return;
+      if (e.target === fileInput || e.target.closest('input, a, label')) return;
       fileInput.click();
     });
+
+    const browseBtn = document.getElementById('org-browse-btn');
+    if (browseBtn) {
+      browseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileInput.click();
+      });
+    }
+
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-active');
@@ -80,7 +92,7 @@
 
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
-        if (confirm('Reset all pages and clear work-')) {
+        if (confirm('Reset all pages and clear workspace?')) {
           sourceFiles = [];
           pagesList = [];
           workspace.style.display = 'none';
@@ -104,6 +116,10 @@
 
     emptyState.style.display = 'none';
     workspace.style.display = 'block';
+    workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+      UIUtils.showToast("Loading " + pdfFiles.length + " PDF(s) into workspace...", "info");
+    }
 
     for (const file of pdfFiles) {
       const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);

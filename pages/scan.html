@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -1903,90 +1903,6 @@
       }
     }
 
-    // Quick Home Import Photos & Multi-File Batch Handler
-    async function handleHomeFileImport(e) {
-      const files = Array.from(e.target.files || []);
-      if (files.length === 0) return;
-
-      showProcessing(`Importing ${files.length} document file(s)...`);
-      await new Promise(r => setTimeout(r, 25)); // Allow spinner to render
-
-      try {
-        if (docPages.length === 0) {
-          docId = 'scan_' + Date.now();
-          docTitle = 'PDFCamera_' + new Date().toISOString().slice(0,10);
-        }
-
-        let importedCount = 0;
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          showProcessing(`Enhancing page ${i + 1} of ${files.length}...`);
-          await new Promise(r => setTimeout(r, 15));
-
-          try {
-            const dataUrl = await UIUtils.readFileAsDataURL(file);
-            const img = await UIUtils.loadImage(dataUrl);
-
-            let corners = null;
-            try {
-              corners = DocumentScanner.detectDocumentEdges(img, 'a4');
-            } catch (edgeErr) {
-              corners = DocumentScanner.getDefaultCorners();
-            }
-
-            let processed = null;
-            try {
-              processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
-            } catch (procErr) {
-              processed = dataUrl;
-            }
-
-            docPages.push({
-              id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-              rawImg: img,
-              rawDataUrl: dataUrl,
-              corners: corners,
-              filter: 'magic-color',
-              rotation: 0,
-              processedDataUrl: processed
-            });
-            importedCount++;
-          } catch (fileErr) {
-            console.error('Failed to import file:', file.name, fileErr);
-          }
-        }
-
-        if (document.getElementById("home-import-files")) {
-          document.getElementById("home-import-files").value = "";
-        }
-        if (document.getElementById("cam-gallery-file-input")) {
-          document.getElementById("cam-gallery-file-input").value = "";
-        }
-
-        if (importedCount > 0) {
-          currentViewingPageIndex = 0;
-          workspaceViewMode = 'grid'; // Immediately show multi-page studio grid!
-          await autoSaveDocumentToDB();
-
-          // Close camera if open
-          if (fullscreenCam) {
-            fullscreenCam.style.display = "none";
-            scanner.stopCamera();
-          }
-
-          openDocumentWorkspaceView();
-          UIUtils.showToast(`&#10003; Imported ${importedCount} document page(s)!`, "success");
-        } else {
-          UIUtils.showToast("Could not load selected images.", "warning");
-        }
-      } catch (err) {
-        console.error('Batch import failed:', err);
-        UIUtils.showToast("Import error: " + err.message, "danger");
-      } finally {
-        hideProcessing();
-      }
-    }
-
     // =========================================================================
     // 1. FULLSCREEN CAMERA VIEWFINDER
     // =========================================================================
@@ -3080,18 +2996,18 @@
 
     function shareViaWhatsApp() {
       const text = encodeURIComponent(`Check out this scanned PDF document: "${docTitle}" created with Localdoc PDF Camera Studio:\n${window.location.origin}/pages/scan.html`);
-      window.open(`https://api.whatsapp.com/send-text=${text}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
     }
 
     function shareViaFacebook() {
       const url = encodeURIComponent(window.location.href);
-      window.open(`https://www.facebook.com/sharer/sharer.php-u=${url}`, '_blank');
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
     }
 
     function shareViaEmail() {
       const subject = encodeURIComponent(`Scanned Document: ${docTitle}.pdf`);
       const body = encodeURIComponent(`Hello,\n\nI have scanned a ${docPages.length}-page document "${docTitle}.pdf" using Localdoc Studio.\n\nCreated safely 100% offline on-device.\n${window.location.origin}`);
-      window.location.href = `mailto:-subject=${subject}&body=${body}`;
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
     async function shareViaSystemWebShare() {
@@ -3262,18 +3178,18 @@
 
     function shareViaWhatsApp() {
       const text = encodeURIComponent(`Check out this scanned PDF document: "${docTitle}" created with Localdoc PDF Camera Studio:\n${window.location.origin}/pages/scan.html`);
-      window.open(`https://api.whatsapp.com/send-text=${text}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
     }
 
     function shareViaFacebook() {
       const url = encodeURIComponent(window.location.href);
-      window.open(`https://www.facebook.com/sharer/sharer.php-u=${url}`, '_blank');
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
     }
 
     function shareViaEmail() {
       const subject = encodeURIComponent(`Scanned Document: ${docTitle}.pdf`);
       const body = encodeURIComponent(`Hello,\n\nI have scanned a ${docPages.length}-page document "${docTitle}.pdf" using Localdoc Studio.\n\nCreated safely 100% offline on-device.\n${window.location.origin}`);
-      window.location.href = `mailto:-subject=${subject}&body=${body}`;
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
     async function shareViaSystemWebShare() {
@@ -3327,107 +3243,6 @@
       }
     }
 
-    // Auto-Save Document to IndexedDB
-    async function autoSaveDocumentToDB() {
-      if (docPages.length === 0) return;
-      if (!docId) docId = 'scan_' + Date.now();
-
-      const docRecord = {
-        id: docId,
-        title: docTitle,
-        name: docTitle,
-        pageCount: docPages.length,
-        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        thumbnail: docPages[0]  ?  docPages[0].processedDataUrl : null,
-        pages: docPages.map(p => ({
-          id: p.id,
-          corners: p.corners,
-          filter: p.filter,
-          rotation: p.rotation,
-          rawDataUrl: p.rawDataUrl || p.processedDataUrl,
-          processedDataUrl: p.processedDataUrl
-        }))
-      };
-
-      try {
-        await LocalDocScanDB.save(docRecord);
-      } catch (err) {
-        console.warn("Auto-save note:", err);
-      }
-    }
-
-    // Document Rename Dialog (CamScanner Style)
-    function openRenameDialog() {
-      document.getElementById("rename-doc-input").value = docTitle;
-      document.getElementById("cs-rename-modal").style.display = "flex";
-    }
-
-    function closeRenameDialog() {
-      document.getElementById("cs-rename-modal").style.display = "none";
-    }
-
-    async function confirmRenameDialog() {
-      const newTitle = document.getElementById("rename-doc-input").value.trim();
-      if (newTitle) {
-        docTitle = newTitle;
-        document.getElementById("doc-view-title-text").textContent = docTitle;
-        await autoSaveDocumentToDB();
-        UIUtils.showToast("Title updated: " + docTitle, "success");
-      }
-      closeRenameDialog();
-    }
-
-    // Export PDF (Single-Click Direct Download to Device or PC)
-    async function exportDocPDF() {
-      if (docPages.length === 0) {
-        UIUtils.showToast("No pages to download", "warning");
-        return;
-      }
-      showProcessing("Generating PDF for 1-Click Download...");
-
-      try {
-        const blob = await DocumentScanner.exportToPDF(docPages);
-        const fileName = (docTitle || "Localdoc_Scan") + ".pdf";
-
-        // Single-click trigger for both mobile device and desktop PC
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 1000);
-
-        hideProcessing();
-        UIUtils.showToast(`&#10003; Download started: ${fileName}`, "success");
-
-        if (window.LocalDocUnifiedFilesDB) {
-          try {
-            const dataUrl = await UIUtils.readFileAsDataURL(blob);
-            await LocalDocUnifiedFilesDB.recordDocument({
-              title: fileName,
-              type: 'pdf',
-              mimeType: 'application/pdf',
-              size: UIUtils.formatBytes(blob.size),
-              dataUrl: dataUrl,
-              thumbnail: docPages[0]  ?  (docPages[0].processedDataUrl || docPages[0].rawImg) : null,
-              pageCount: docPages.length
-            });
-          } catch(err) { console.warn('Could not save to unified db', err); }
-        }
-      } catch (e) {
-        hideProcessing();
-        console.error("Export error:", e);
-        alert("Export error: " + e.message);
-      }
-    }
-
-    // Open in LocalDoc Document Reader
     async function openDocInLocalReader() {
       if (docPages.length === 0) return;
       showProcessing("Opening in Offline Reader...");

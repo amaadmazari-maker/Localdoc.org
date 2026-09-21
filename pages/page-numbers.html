@@ -526,10 +526,12 @@
           selectedFile = files[0];
           queueName.textContent = selectedFile.name;
           queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+          dropZone.style.display = "none";
           fileQueue.style.display = "block";
           configWrap.style.display = "block";
           actionBar.style.display = "flex";
           resultCard.style.display = "none";
+          UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
 
           try {
             const arrBuf = await UIUtils.readFileAsArrayBuffer(selectedFile);
@@ -538,60 +540,18 @@
             currentPreviewPage = 1;
             if (pagerEl && totalDocPages > 1) pagerEl.style.display = 'inline-flex';
             await renderCurrentPreviewPage();
+            configWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
           } catch (e) {
             console.error("Failed to render preview canvas:", e);
+            UIUtils.showToast("Failed to render PDF: " + (e.message || e), "error");
           }
         }
       });
-      mockupTag.style.right = '';
-      mockupTag.style.transform = '';
-
-      switch (selectedPosition) {
-        case 'top-left':
-          mockupTag.style.top = '15px';
-          mockupTag.style.left = '15px';
-          break;
-        case 'top-center':
-          mockupTag.style.top = '15px';
-          mockupTag.style.left = '50%';
-          mockupTag.style.transform = 'translateX(-50%)';
-          break;
-        case 'top-right':
-          mockupTag.style.top = '15px';
-          mockupTag.style.right = '15px';
-          break;
-        case 'bottom-left':
-          mockupTag.style.bottom = '15px';
-          mockupTag.style.left = '15px';
-          break;
-        case 'bottom-center':
-          mockupTag.style.bottom = '15px';
-          mockupTag.style.left = '50%';
-          mockupTag.style.transform = 'translateX(-50%)';
-          break;
-        case 'bottom-right':
-          mockupTag.style.bottom = '15px';
-          mockupTag.style.right = '15px';
-          break;
-      }
-    }
-
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
-        selectedFile = files[0];
-        queueName.textContent = selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
-        fileQueue.style.display = "block";
-        configWrap.style.display = "block";
-        actionBar.style.display = "flex";
-        resultCard.style.display = "none";
-        updateMockup();
-      }
-    });
 
     clearBtn.addEventListener("click", () => {
       selectedFile = null;
       resultBlob = null;
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       configWrap.style.display = "none";
       actionBar.style.display = "none";

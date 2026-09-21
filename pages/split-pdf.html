@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -601,13 +601,16 @@
         selectedFile = files[0];
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        dropZone.style.display = "none";
         fileQueue.style.display = "block";
         controlsBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+        UIUtils.showToast("Loading " + selectedFile.name + " pages...", "info");
 
         // Load document structure and render thumbnails
         await loadDocumentThumbnails();
+        controlsBar.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
@@ -716,6 +719,7 @@
       selectedFile = null;
       resultBlob = null;
       selectedPagesSet.clear();
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       controlsBar.style.display = "none";
       selectionGridWrap.style.display = "none";

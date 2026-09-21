@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -364,8 +364,8 @@
           <h3>Drop ANY Document Here to Read</h3>
           <p>Supports <strong>PDF, Word (.docx), Excel (.xlsx, .csv), TXT, and Images</strong></p>
         </div>
-        <button class="btn btn-primary btn-lg" type="button">Select Document from Device</button>
-        <input type="file" id="reader-file-input" style="display:none;" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.json,.md,image/*" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
+        <button class="btn btn-primary btn-lg" type="button" id="reader-browse-btn" onclick="event.stopPropagation(); document.getElementById('reader-file-input').click();">Select Document from Device</button>
+        <input type="file" id="reader-file-input" style="display:none;" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.json,.md,image/*" onchange="if(window.handleReaderFile){window.handleReaderFile(this.files[0]);}else if(window.handleLocalDocFileInput){window.handleLocalDocFileInput(this);}">
       </div>
 
       <div style="display:flex; justify-content:center; gap:20px; color:var(--text-muted); font-size:0.86rem; flex-wrap:wrap; margin-bottom:40px;">

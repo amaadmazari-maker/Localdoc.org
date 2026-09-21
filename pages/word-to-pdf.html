@@ -346,16 +346,20 @@
         selectedFile = files[0];
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        dropZone.style.display = "none";
         fileQueue.style.display = "block";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
         previewCard.style.display = "none";
+        UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
+        fileQueue.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
     clearBtn.addEventListener("click", function() {
       selectedFile = null;
       resultData = null;
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";

@@ -539,12 +539,16 @@
         for (const file of files) {
           queueFiles.push(file);
         }
+        dropZone.style.display = "none";
         renderQueue();
+        UIUtils.showToast("Added " + files.length + " PDF(s) to merger queue", "info");
+        queueContainer.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
     function renderQueue() {
       if (queueFiles.length === 0) {
+        dropZone.style.display = "block";
         queueContainer.style.display = "none";
         actionBar.style.display = "none";
         return;

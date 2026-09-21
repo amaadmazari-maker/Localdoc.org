@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -649,19 +649,23 @@
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
         queueFiles = Array.from(files);
-        queueName.textContent = queueFiles.length > 1 - `${queueFiles.length} images selected` : queueFiles[0].name;
+        queueName.textContent = queueFiles.length > 1 ? `${queueFiles.length} images selected` : queueFiles[0].name;
         const totalSize = queueFiles.reduce((acc, f) => acc + f.size, 0);
         queueSize.textContent = UIUtils.formatBytes(totalSize);
+        dropZone.style.display = "none";
         fileQueue.style.display = "block";
         controlsBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+        UIUtils.showToast("Loaded " + queueFiles.length + " image(s) for OCR", "info");
+        controlsBar.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
     clearBtn.addEventListener("click", () => {
       queueFiles = [];
       transcribedText = '';
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       controlsBar.style.display = "none";
       actionBar.style.display = "none";

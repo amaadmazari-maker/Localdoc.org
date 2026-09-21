@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -369,17 +369,21 @@
         selectedFile = files[0];
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        dropZone.style.display = "none";
         fileQueue.style.display = "block";
         controlsBar.style.display = "flex";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
         galleryWrap.style.display = "none";
+        UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
+        controlsBar.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
     clearBtn.addEventListener("click", function() {
       selectedFile = null;
       renderedImages = [];
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       controlsBar.style.display = "none";
       actionBar.style.display = "none";

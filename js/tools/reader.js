@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LocalDoc.org — Universal Document Reader & In-Browser Viewer Engine
  * Supports PDF, Word (.docx), Excel (.xlsx, .xls, .csv), Text, and Images.
  * 100% Client-Side In-Memory Execution. Zero Server Uploads.
@@ -41,6 +41,8 @@
   function init() {
     setupEventListeners();
     checkIncomingDocument();
+    window.handleReaderFile = handleFile;
+    if (fileInput) fileInput._localDocDropHandler = function(files) { if(files && files[0]) handleFile(files[0]); };
   }
 
   function setupEventListeners() {
@@ -184,6 +186,10 @@
 
     emptyState.style.display = 'none';
     viewerWorkspace.style.display = 'flex';
+    viewerWorkspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+      UIUtils.showToast('Opening ' + file.name + ' in RAM...', 'info');
+    }
     contentContainer.innerHTML = '<div class="reader-loading-spinner"><div class="spinner"></div><p>Loading document in secure RAM...</p></div>';
     sheetTabsBar.style.display = 'none';
     pageNavGroup.style.display = 'none';

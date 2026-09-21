@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -718,6 +718,7 @@
 
     clearAllBtn.addEventListener("click", () => {
       imageList = [];
+      dropZone.style.display = 'block';
       renderGrid();
       resultCard.style.display = 'none';
       document.getElementById("workflow-progress").style.display = 'none';
@@ -727,11 +728,14 @@
       totalCount.textContent = imageList.length;
 
       if (imageList.length === 0) {
+        dropZone.style.display = 'block';
         workspace.style.display = 'none';
         return;
       }
 
+      dropZone.style.display = 'none';
       workspace.style.display = 'block';
+      workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
       pagesGrid.innerHTML = '';
 
       imageList.forEach((item, idx) => {

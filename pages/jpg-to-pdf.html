@@ -361,12 +361,16 @@
             rotation: 0
           });
         }
+        dropZone.style.display = "none";
         renderGallery();
+        UIUtils.showToast("Added " + files.length + " image(s) into RAM", "info");
+        galleryWrap.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
     function renderGallery() {
       if (uploadedImages.length === 0) {
+        dropZone.style.display = "block";
         galleryWrap.style.display = "none";
         controlsBar.style.display = "none";
         actionBar.style.display = "none";
@@ -433,6 +437,7 @@
     clearAllBtn.addEventListener("click", () => {
       uploadedImages = [];
       resultBlob = null;
+      dropZone.style.display = "block";
       renderGallery();
       document.getElementById("workflow-progress").style.display = "none";
     });

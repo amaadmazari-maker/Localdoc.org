@@ -1,4 +1,4 @@
-/**
+﻿/**
  * localdoc.org — 2500HP UI Utilities & Global Interactive Engine (js/core/ui-utils.js)
  */
 
@@ -328,7 +328,7 @@ const UIUtils = {
     }
 
     // 2. Copy Image to Clipboard (Instant Paste into Word, Docs, Photoshop)
-    const isImg = fileName.match(/\.(png|jpe-g|webp)$/i) || (fileBlob.type && fileBlob.type.startsWith('image/'));
+    const isImg = fileName.match(/\.(png|jpe?g|webp)$/i) || (fileBlob.type && fileBlob.type.startsWith('image/'));
     if (isImg && navigator.clipboard && window.ClipboardItem) {
       const copyBtn = document.createElement('button');
       copyBtn.type = 'button';

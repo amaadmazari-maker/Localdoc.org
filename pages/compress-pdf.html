@@ -645,9 +645,12 @@
         processBtn.querySelector("span").textContent = "Compress All " + selectedFiles.length + " PDFs Now";
       }
 
+      dropZone.style.display = "none";
       fileQueue.style.display = "block";
       tiersContainer.style.display = "block";
       actionBar.style.display = "flex";
+      UIUtils.showToast("Loaded " + selectedFiles.length + " PDF(s) into memory", "info");
+      tiersContainer.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     UIUtils.setupDropZone(dropZone, fileInput, handleFiles);
@@ -657,6 +660,7 @@
       processedResults = [];
       singleResultBlob = null;
       zipResultBlob = null;
+      dropZone.style.display = "block";
       fileQueue.style.display = "none";
       tiersContainer.style.display = "none";
       actionBar.style.display = "none";

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LocalDoc.org — Photo Resizer & Exact KB Reducer Engine (js/tools/photo-resizer.js)
  * 100% Client-Side In-Memory Execution. Zero Server Uploads.
  * Resize by mm, cm, inches, or pixels + compress to exact target file size in KB.
@@ -264,7 +264,7 @@
   }
 
   async function loadFiles(fileList) {
-    const rawFiles = Array.from(fileList).filter(f => f.type.startsWith('image/') || /\.(jpe-g|png|webp)$/i.test(f.name));
+    const rawFiles = Array.from(fileList).filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp)$/i.test(f.name));
     if (rawFiles.length === 0) {
       if (window.UIUtils && UIUtils.showToast) {
         UIUtils.showToast('Please select valid JPG, PNG, or WebP photos.', 'warning');

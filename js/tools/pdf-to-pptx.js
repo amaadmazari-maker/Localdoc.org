@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LocalDoc.org — PDF to PowerPoint (.pptx) In-Memory Generator
  * Converts PDF pages into genuine Microsoft PowerPoint (.pptx) presentations in client RAM.
  * 100% In-Browser Execution. Zero Server Uploads.
@@ -147,6 +147,8 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
     }
     setupEvents();
+    window.handlePptxFile = handleFile;
+    if (fileInput) fileInput._localDocDropHandler = function(files) { if(files && files[0]) handleFile(files[0]); };
   }
 
   function setupEvents() {
@@ -154,9 +156,18 @@
     fileInput.addEventListener('click', (e) => { e.stopPropagation(); });
 
     dropZone.addEventListener('click', (e) => {
-      if (e.target === fileInput || e.target.closest('button, input, a, label')) return;
+      if (e.target === fileInput || e.target.closest('input, a, label')) return;
       fileInput.click();
     });
+
+    const pptxBrowseBtn = document.getElementById('pptx-browse-btn');
+    if (pptxBrowseBtn) {
+      pptxBrowseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        fileInput.click();
+      });
+    }
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-active');
@@ -215,6 +226,10 @@
       progressState.style.display = 'none';
       resultState.style.display = 'none';
       activeState.style.display = 'block';
+      activeState.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+        UIUtils.showToast('Loaded ' + file.name + ' into browser RAM', 'info');
+      }
 
       renderSlidePreviews();
     } catch (err) {

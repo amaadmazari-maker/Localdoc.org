@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -578,10 +578,13 @@
         selectedFile = files[0];
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+        dropZone.style.display = "none";
         fileQueue.style.display = "block";
         securityPanel.style.display = "block";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
+        UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
+        securityPanel.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 

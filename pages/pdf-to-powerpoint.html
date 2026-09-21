@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -167,7 +167,7 @@
     <!-- Empty Upload State -->
     <div id="pptx-empty-state">
       <div class="pptx-box" id="pptx-drop-zone">
-        <input type="file" id="pptx-file-input" accept="application/pdf,.pdf" style="display: none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
+        <input type="file" id="pptx-file-input" accept="application/pdf,.pdf" style="display: none;" onchange="if(window.handlePptxFile){window.handlePptxFile(this.files[0]);}else if(window.handleLocalDocFileInput){window.handleLocalDocFileInput(this);}">
         <div style="font-size: 3rem; margin-bottom: 12px;">&#128202;</div>
         <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
           Choose a PDF file or drag & drop here
@@ -175,7 +175,7 @@
         <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
           Fast client-side conversion. Files are never uploaded to any cloud server.
         </p>
-        <button class="btn btn-primary" type="button" style="padding: 10px 24px; font-weight: 700;">
+        <button class="btn btn-primary" type="button" id="pptx-browse-btn" onclick="event.stopPropagation(); document.getElementById('pptx-file-input').click();" style="padding: 10px 24px; font-weight: 700;">
           Select PDF from Device
         </button>
       </div>
