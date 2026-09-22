@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v27-fx5800p-pdf-fixes';
+const CACHE_NAME = 'localdoc-v28-camscanner-homography-hd';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

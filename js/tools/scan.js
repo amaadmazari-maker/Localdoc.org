@@ -353,8 +353,17 @@ class DocumentScanner {
   }
 
   // =========================================================================
-  // 4. Robust 4-Corner Paper Detection for Tilted, Angled & Moving Pages
+  // 4. Robust 4-Corner Paper Detection for Tilted, Angled & Camera Pages
   // =========================================================================
+  static getDefaultCorners() {
+    return {
+      topLeft: { x: 0.0, y: 0.0 },
+      topRight: { x: 1.0, y: 0.0 },
+      bottomRight: { x: 1.0, y: 1.0 },
+      bottomLeft: { x: 0.0, y: 1.0 }
+    };
+  }
+
   static detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'a4') {
     const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;
     const height = sourceImgOrCanvas.videoHeight || sourceImgOrCanvas.naturalHeight || sourceImgOrCanvas.height;
@@ -362,9 +371,9 @@ class DocumentScanner {
       return this.getDefaultCorners();
     }
 
-    // Downsample for real-time edge analysis (sub-25ms)
-    const sampleW = 240;
-    const sampleH = Math.max(140, Math.round((height / width) * 240));
+    // Downsample for real-time edge analysis (sub-20ms)
+    const sampleW = 280;
+    const sampleH = Math.max(160, Math.round((height / width) * 280));
 
     const helperCanvas = document.createElement('canvas');
     helperCanvas.width = sampleW;
@@ -378,190 +387,211 @@ class DocumentScanner {
 
     // 1. Grayscale luminance
     const gray = new Uint8Array(totalPixels);
-    const hist = new Int32Array(256);
-    let totalLum = 0;
-
     for (let i = 0, j = 0; i < data.length; i += 4, j++) {
-      const lum = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) | 0;
-      gray[j] = lum;
-      hist[lum]++;
-      totalLum += lum;
+      gray[j] = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) | 0;
     }
 
-    // 2. Otsu's Adaptive Thresholding with Edge-Gradient Boost
-    let weightB = 0;
-    let sumB = 0;
-    let maxVariance = 0;
-    let otsuThreshold = 128;
-
-    for (let t = 0; t < 256; t++) {
-      weightB += hist[t];
-      if (weightB === 0) continue;
-      const weightF = totalPixels - weightB;
-      if (weightF === 0) break;
-
-      sumB += t * hist[t];
-      const meanB = sumB / weightB;
-      const meanF = (totalLum - sumB) / weightF;
-      const variance = weightB * weightF * Math.pow(meanB - meanF, 2);
-
-      if (variance > maxVariance) {
-        maxVariance = variance;
-        otsuThreshold = t;
-      }
-    }
-
-    const paperThreshold = Math.max(60, Math.min(215, otsuThreshold));
-
-    // 3. Binary mask & Morphological bridging
-    const binary = new Uint8Array(totalPixels);
-    for (let i = 0; i < totalPixels; i++) {
-      binary[i] = gray[i] >= paperThreshold  ?  1 : 0;
-    }
-
-    const closed = new Uint8Array(totalPixels);
+    // 2. Sobel Edge Gradient Magnitude
+    const grad = new Float32Array(totalPixels);
+    let maxGrad = 0;
     for (let y = 1; y < sampleH - 1; y++) {
+      const yOff = y * sampleW;
       for (let x = 1; x < sampleW - 1; x++) {
-        const idx = y * sampleW + x;
-        if (binary[idx] || binary[idx - 1] || binary[idx + 1] || binary[idx - sampleW] || binary[idx + sampleW]) {
-          closed[idx] = 1;
+        const idx = yOff + x;
+        // Horizontal Sobel
+        const gx = -gray[idx - sampleW - 1] + gray[idx - sampleW + 1]
+                   - 2 * gray[idx - 1]       + 2 * gray[idx + 1]
+                   - gray[idx + sampleW - 1] + gray[idx + sampleW + 1];
+        // Vertical Sobel
+        const gy = -gray[idx - sampleW - 1] - 2 * gray[idx - sampleW] - gray[idx - sampleW + 1]
+                   + gray[idx + sampleW - 1] + 2 * gray[idx + sampleW] + gray[idx + sampleW + 1];
+
+        const mag = Math.hypot(gx, gy);
+        grad[idx] = mag;
+        if (mag > maxGrad) maxGrad = mag;
+      }
+    }
+
+    if (maxGrad < 25) {
+      // Very low contrast image (e.g. digital sheet or plain paper) -> full frame
+      return this.getDefaultCorners();
+    }
+
+    // 3. Ray-Cast Perimeter Boundary Search (Outside -> Inside)
+    // Real document pages on tables have a noticeable edge step where paper meets table.
+    const threshold = Math.max(30, maxGrad * 0.22);
+    const borderPoints = [];
+
+    // Scan horizontal lines (top down, bottom up)
+    for (let y = 8; y < sampleH - 8; y += 4) {
+      const yOff = y * sampleW;
+      // Left to right
+      for (let x = 4; x < sampleW / 2; x++) {
+        if (grad[yOff + x] >= threshold) {
+          borderPoints.push({ x: x / sampleW, y: y / sampleH });
+          break;
+        }
+      }
+      // Right to left
+      for (let x = sampleW - 5; x > sampleW / 2; x--) {
+        if (grad[yOff + x] >= threshold) {
+          borderPoints.push({ x: x / sampleW, y: y / sampleH });
+          break;
         }
       }
     }
 
-    // 4. Find largest connected component (Paper sheet)
-    const visited = new Uint8Array(totalPixels);
-    let largestBlobPoints = [];
-    let maxBlobSize = 0;
-
-    for (let y = 4; y < sampleH - 4; y += 2) {
-      for (let x = 4; x < sampleW - 4; x += 2) {
-        const startIdx = y * sampleW + x;
-        if (closed[startIdx] === 1 && visited[startIdx] === 0) {
-          const queue = [startIdx];
-          visited[startIdx] = 1;
-          const currentBlob = [{ x, y }];
-
-          let qHead = 0;
-          while (qHead < queue.length && queue.length < 22000) {
-            const curr = queue[qHead++];
-            const cx = curr % sampleW;
-            const cy = (curr / sampleW) | 0;
-
-            const neighbors = [curr - 1, curr + 1, curr - sampleW, curr + sampleW];
-            for (let k = 0; k < 4; k++) {
-              const nIdx = neighbors[k];
-              if (nIdx >= 0 && nIdx < totalPixels && visited[nIdx] === 0 && closed[nIdx] === 1) {
-                visited[nIdx] = 1;
-                queue.push(nIdx);
-                const nx = nIdx % sampleW;
-                const ny = (nIdx / sampleW) | 0;
-                if (queue.length % 2 === 0) {
-                  currentBlob.push({ x: nx, y: ny });
-                }
-              }
-            }
-          }
-
-          if (currentBlob.length > maxBlobSize) {
-            maxBlobSize = currentBlob.length;
-            largestBlobPoints = currentBlob;
-          }
+    // Scan vertical lines (left to right, right to left)
+    for (let x = 8; x < sampleW - 8; x += 4) {
+      // Top to bottom
+      for (let y = 4; y < sampleH / 2; y++) {
+        if (grad[y * sampleW + x] >= threshold) {
+          borderPoints.push({ x: x / sampleW, y: y / sampleH });
+          break;
+        }
+      }
+      // Bottom to top
+      for (let y = sampleH - 5; y > sampleH / 2; y--) {
+        if (grad[y * sampleW + x] >= threshold) {
+          borderPoints.push({ x: x / sampleW, y: y / sampleH });
+          break;
         }
       }
     }
 
-    // If largest blob covers at least 6% of the frame, extract 4 robust corners
-    if (largestBlobPoints.length > 70) {
-      let minSum = Infinity, maxSum = -Infinity;
-      let minDiff = Infinity, maxDiff = -Infinity;
-      let tl = largestBlobPoints[0], tr = largestBlobPoints[0];
-      let br = largestBlobPoints[0], bl = largestBlobPoints[0];
-
-      // Normalized rotated projection bounds
-      for (let i = 0; i < largestBlobPoints.length; i++) {
-        const p = largestBlobPoints[i];
-        const nx = p.x / sampleW;
-        const ny = p.y / sampleH;
-        const sum = nx + ny;
-        const diff = nx - ny;
-
-        if (sum < minSum) { minSum = sum; tl = p; }
-        if (sum > maxSum) { maxSum = sum; br = p; }
-        if (diff > maxDiff) { maxDiff = diff; tr = p; }
-        if (diff < minDiff) { minDiff = diff; bl = p; }
-      }
-
-      const normTL = { x: Math.max(0.01, Math.min(0.92, (tl.x - 2) / sampleW)), y: Math.max(0.01, Math.min(0.92, (tl.y - 2) / sampleH)) };
-      const normTR = { x: Math.max(0.08, Math.min(0.99, (tr.x + 2) / sampleW)), y: Math.max(0.01, Math.min(0.92, (tr.y - 2) / sampleH)) };
-      const normBR = { x: Math.max(0.08, Math.min(0.99, (br.x + 2) / sampleW)), y: Math.max(0.08, Math.min(0.99, (br.y + 2) / sampleH)) };
-      const normBL = { x: Math.max(0.01, Math.min(0.92, (bl.x - 2) / sampleW)), y: Math.max(0.08, Math.min(0.99, (bl.y + 2) / sampleH)) };
-
-      const validWidth = (normTR.x > normTL.x + 0.12) && (normBR.x > normBL.x + 0.12);
-      const validHeight = (normBL.y > normTL.y + 0.12) && (normBR.y > normTR.y + 0.12);
-
-      if (validWidth && validHeight) {
-        return {
-          topLeft: normTL,
-          topRight: normTR,
-          bottomRight: normBR,
-          bottomLeft: normBL
-        };
-      }
+    if (borderPoints.length < 24) {
+      return this.getDefaultCorners();
     }
 
-    return this.getDefaultCorners();
-  }
+    // 4. Find 4 Extremal Boundary Points (Rotated Projection Bounds)
+    let minSum = Infinity, maxSum = -Infinity;
+    let minDiff = Infinity, maxDiff = -Infinity;
+    let tl = { x: 0, y: 0 }, tr = { x: 1, y: 0 }, br = { x: 1, y: 1 }, bl = { x: 0, y: 1 };
 
-  static getDefaultCorners() {
+    for (let i = 0; i < borderPoints.length; i++) {
+      const p = borderPoints[i];
+      const sum = p.x + p.y;
+      const diff = p.x - p.y;
+
+      if (sum < minSum) { minSum = sum; tl = p; }
+      if (sum > maxSum) { maxSum = sum; br = p; }
+      if (diff > maxDiff) { maxDiff = diff; tr = p; }
+      if (diff < minDiff) { minDiff = diff; bl = p; }
+    }
+
+    // 5. Strict Convexity & Area Validation
+    // Check area via Shoelace formula
+    const area = 0.5 * Math.abs(
+      (tl.x * (tr.y - bl.y)) +
+      (tr.x * (br.y - tl.y)) +
+      (br.x * (bl.y - tr.y)) +
+      (bl.x * (tl.y - br.y))
+    );
+
+    // If area covers less than 22% of the frame or greater than 98%, default to full frame
+    if (area < 0.22 || area > 0.98) {
+      return this.getDefaultCorners();
+    }
+
+    // Verify strict convexity: cross products of consecutive edges must all have same sign
+    function cross(p0, p1, p2) {
+      return (p1.x - p0.x) * (p2.y - p1.y) - (p1.y - p0.y) * (p2.x - p1.x);
+    }
+    const c1 = cross(tl, tr, br);
+    const c2 = cross(tr, br, bl);
+    const c3 = cross(br, bl, tl);
+    const c4 = cross(bl, tl, tr);
+
+    const isAllPositive = (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0);
+    const isAllNegative = (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
+
+    if (!isAllPositive && !isAllNegative) {
+      // Non-convex / self-intersecting polygon -> fall back to full frame
+      return this.getDefaultCorners();
+    }
+
+    // Aspect ratio check
+    const topW = Math.hypot(tr.x - tl.x, tr.y - tl.y);
+    const botW = Math.hypot(br.x - bl.x, br.y - bl.y);
+    const lH = Math.hypot(bl.x - tl.x, bl.y - tl.y);
+    const rH = Math.hypot(br.x - tr.x, br.y - tr.y);
+    const avgW = (topW + botW) / 2;
+    const avgH = (lH + rH) / 2;
+    const ratio = avgW / avgH;
+
+    if (ratio < 0.35 || ratio > 2.8) {
+      return this.getDefaultCorners();
+    }
+
     return {
-      topLeft: { x: 0.05, y: 0.05 },
-      topRight: { x: 0.95, y: 0.05 },
-      bottomRight: { x: 0.95, y: 0.95 },
-      bottomLeft: { x: 0.05, y: 0.95 }
+      topLeft: { x: Math.max(0, Math.min(0.95, tl.x)), y: Math.max(0, Math.min(0.95, tl.y)) },
+      topRight: { x: Math.max(0.05, Math.min(1, tr.x)), y: Math.max(0, Math.min(0.95, tr.y)) },
+      bottomRight: { x: Math.max(0.05, Math.min(1, br.x)), y: Math.max(0.05, Math.min(1, br.y)) },
+      bottomLeft: { x: Math.max(0, Math.min(0.95, bl.x)), y: Math.max(0.05, Math.min(1, bl.y)) }
     };
   }
 
   // =========================================================================
-  // 5. True 2D Affine Triangular Mesh Homography (Zero Distortion on Tilted/Folded Pages)
+  // 5. True 4-Point Projective Homography (Zero Distortion on Tilted/Folded Pages)
+  // Mathematically maps quadrilateral to flat rectangle with straight perspective lines.
   // =========================================================================
   static warpDocument(sourceImg, corners, targetW = 0, targetH = 0) {
     const origW = sourceImg.naturalWidth || sourceImg.videoWidth || sourceImg.width;
     const origH = sourceImg.naturalHeight || sourceImg.videoHeight || sourceImg.height;
 
-    const tl = { x: corners.topLeft.x * origW, y: corners.topLeft.y * origH };
-    const tr = { x: corners.topRight.x * origW, y: corners.topRight.y * origH };
-    const br = { x: corners.bottomRight.x * origW, y: corners.bottomRight.y * origH };
-    const bl = { x: corners.bottomLeft.x * origW, y: corners.bottomLeft.y * origH };
-
-    // Calculate natural target width and height using Euclidean distances
-    const topW = Math.hypot(tr.x - tl.x, tr.y - tl.y);
-    const bottomW = Math.hypot(br.x - bl.x, br.y - bl.y);
-    const maxW = Math.max(topW, bottomW);
-
-    const leftH = Math.hypot(bl.x - tl.x, bl.y - tl.y);
-    const rightH = Math.hypot(br.x - tr.x, br.y - tr.y);
-    const maxH = Math.max(leftH, rightH);
-
-    // Standard A4 Ratio: 1 : 1.4142
-    let destW = targetW || Math.round(maxW);
-    let destH = targetH || Math.round(destW * 1.4142);
-
-    if (!targetW && !targetH) {
-      if (maxH / maxW < 1.1) {
-        // Landscape A4
-        destW = Math.round(maxW);
-        destH = Math.round(destW / 1.4142);
-      } else {
-        // Portrait A4
-        destW = Math.round(maxW);
-        destH = Math.round(destW * 1.4142);
-      }
+    if (!origW || !origH) {
+      const fallback = document.createElement('canvas');
+      fallback.width = 100;
+      fallback.height = 100;
+      return fallback;
     }
 
-    // Ultra-HD clarity up to 2480x3508 (Standard A4 @ 300 DPI)
-    destW = Math.max(600, Math.min(2480, destW));
-    destH = Math.max(850, Math.min(3508, destH));
+    const c = corners || this.getDefaultCorners();
+    const tl = {
+      x: (c.topLeft && typeof c.topLeft.x === 'number') ? c.topLeft.x : 0,
+      y: (c.topLeft && typeof c.topLeft.y === 'number') ? c.topLeft.y : 0
+    };
+    const tr = {
+      x: (c.topRight && typeof c.topRight.x === 'number') ? c.topRight.x : 1,
+      y: (c.topRight && typeof c.topRight.y === 'number') ? c.topRight.y : 0
+    };
+    const br = {
+      x: (c.bottomRight && typeof c.bottomRight.x === 'number') ? c.bottomRight.x : 1,
+      y: (c.bottomRight && typeof c.bottomRight.y === 'number') ? c.bottomRight.y : 1
+    };
+    const bl = {
+      x: (c.bottomLeft && typeof c.bottomLeft.x === 'number') ? c.bottomLeft.x : 0,
+      y: (c.bottomLeft && typeof c.bottomLeft.y === 'number') ? c.bottomLeft.y : 1
+    };
+
+    // Check if corners are full-frame (within 1.5% margin)
+    const isFullFrame = (
+      Math.abs(tl.x) < 0.015 && Math.abs(tl.y) < 0.015 &&
+      Math.abs(tr.x - 1) < 0.015 && Math.abs(tr.y) < 0.015 &&
+      Math.abs(br.x - 1) < 0.015 && Math.abs(br.y - 1) < 0.015 &&
+      Math.abs(bl.x) < 0.015 && Math.abs(bl.y - 1) < 0.015
+    );
+
+    // Calculate natural target width and height using Euclidean distances
+    const sTL = { x: tl.x * origW, y: tl.y * origH };
+    const sTR = { x: tr.x * origW, y: tr.y * origH };
+    const sBR = { x: br.x * origW, y: br.y * origH };
+    const sBL = { x: bl.x * origW, y: bl.y * origH };
+
+    const topW = Math.hypot(sTR.x - sTL.x, sTR.y - sTL.y);
+    const bottomW = Math.hypot(sBR.x - sBL.x, sBR.y - sBL.y);
+    const maxW = Math.max(topW, bottomW);
+
+    const leftH = Math.hypot(sBL.x - sTL.x, sBL.y - sTL.y);
+    const rightH = Math.hypot(sBR.x - sTR.x, sBR.y - sTR.y);
+    const maxH = Math.max(leftH, rightH);
+
+    let destW = targetW || Math.round(maxW);
+    let destH = targetH || Math.round(maxH);
+
+    // Preserve 300 DPI clarity up to 2480x3508 (Standard A4 @ 300 DPI)
+    destW = Math.max(400, Math.min(2480, destW));
+    destH = Math.max(400, Math.min(3508, destH));
 
     const canvas = document.createElement('canvas');
     canvas.width = destW;
@@ -570,73 +600,236 @@ class DocumentScanner {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
 
-    // Bilinear bilinear quadrilateral interpolation via 2-triangle affine mapping per cell
-    const subdivisions = 16; // 16x16 = 256 high-density triangles for vector smoothness
-
-    function getQuadPoint(u, v) {
-      return {
-        x: (1 - u) * (1 - v) * tl.x + u * (1 - v) * tr.x + (1 - u) * v * bl.x + u * v * br.x,
-        y: (1 - u) * (1 - v) * tl.y + u * (1 - v) * tr.y + (1 - u) * v * bl.y + u * v * br.y
-      };
+    // Direct 1:1 draw if full-frame (100% native quality, zero overhead, zero distortion)
+    if (isFullFrame) {
+      ctx.drawImage(sourceImg, 0, 0, destW, destH);
+      return canvas;
     }
 
-    // Affine triangle renderer mapping source triangle (x0,y0, x1,y1, x2,y2) to dest triangle (u0,v0, u1,v1, u2,v2)
-    function renderAffineTriangle(s0, s1, s2, d0, d1, d2) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(d0.x, d0.y);
-      ctx.lineTo(d1.x, d1.y);
-      ctx.lineTo(d2.x, d2.y);
-      ctx.closePath();
-      ctx.clip();
-
-      const denom = (s0.x * (s1.y - s2.y) + s1.x * (s2.y - s0.y) + s2.x * (s0.y - s1.y));
-      if (Math.abs(denom) < 1e-6) {
-        ctx.restore();
-        return;
-      }
-
-      const a = (d0.x * (s1.y - s2.y) + d1.x * (s2.y - s0.y) + d2.x * (s0.y - s1.y)) / denom;
-      const b = (d0.y * (s1.y - s2.y) + d1.y * (s2.y - s0.y) + d2.y * (s0.y - s1.y)) / denom;
-      const c = (d0.x * (s2.x - s1.x) + d1.x * (s0.x - s2.x) + d2.x * (s1.x - s0.x)) / denom;
-      const d = (d0.y * (s2.x - s1.x) + d1.y * (s0.x - s2.x) + d2.y * (s1.x - s0.x)) / denom;
-      const e = (d0.x * (s1.x * s2.y - s2.x * s1.y) + d1.x * (s2.x * s0.y - s0.x * s2.y) + d2.x * (s0.x * s1.y - s1.x * s0.y)) / denom;
-      const f = (d0.y * (s1.x * s2.y - s2.x * s1.y) + d1.y * (s2.x * s0.y - s0.x * s2.y) + d2.y * (s0.x * s1.y - s1.x * s0.y)) / denom;
-
-      ctx.transform(a, b, c, d, e, f);
-      ctx.drawImage(sourceImg, 0, 0);
-      ctx.restore();
+    // True 4-Point Projective Homography with WebGL
+    const webglCanvas = this.renderProjectiveWebGL(sourceImg, tl, tr, br, bl, destW, destH);
+    if (webglCanvas) {
+      ctx.drawImage(webglCanvas, 0, 0);
+      return canvas;
     }
 
-    for (let r = 0; r < subdivisions; r++) {
-      for (let c = 0; c < subdivisions; c++) {
-        const u0 = c / subdivisions;
-        const u1 = (c + 1) / subdivisions;
-        const v0 = r / subdivisions;
-        const v1 = (r + 1) / subdivisions;
-
-        const s00 = getQuadPoint(u0, v0);
-        const s10 = getQuadPoint(u1, v0);
-        const s01 = getQuadPoint(u0, v1);
-        const s11 = getQuadPoint(u1, v1);
-
-        const d00 = { x: u0 * destW, y: v0 * destH };
-        const d10 = { x: u1 * destW, y: v0 * destH };
-        const d01 = { x: u0 * destW, y: v1 * destH };
-        const d11 = { x: u1 * destW, y: v1 * destH };
-
-        // Render Upper-Left Triangle
-        renderAffineTriangle(s00, s10, s01, d00, d10, d01);
-        // Render Lower-Right Triangle
-        renderAffineTriangle(s10, s11, s01, d10, d11, d01);
-      }
-    }
-
+    // Canvas 2D Homography Fallback (Exact mathematical perspective)
+    this.renderProjectiveCanvas2D(sourceImg, tl, tr, br, bl, canvas, ctx);
     return canvas;
   }
 
+  // Compute 3x3 Projective Homography Matrix mapping unit square [0,1]^2 to source quad (x0,y0)-(x3,y3)
+  static computeHomography(p0, p1, p2, p3) {
+    const x0 = p0.x, y0 = p0.y;
+    const x1 = p1.x, y1 = p1.y;
+    const x2 = p2.x, y2 = p2.y;
+    const x3 = p3.x, y3 = p3.y;
+
+    const dx1 = x1 - x2;
+    const dx2 = x3 - x2;
+    const sx = x0 - x1 + x2 - x3;
+    const dy1 = y1 - y2;
+    const dy2 = y3 - y2;
+    const sy = y0 - y1 + y2 - y3;
+
+    if (Math.abs(sx) < 1e-7 && Math.abs(sy) < 1e-7) {
+      // Affine mapping (parallelogram)
+      return {
+        a: x1 - x0, b: x3 - x0, c: x0,
+        d: y1 - y0, e: y3 - y0, f: y0,
+        g: 0, h: 0, i: 1
+      };
+    }
+
+    const det = dx1 * dy2 - dx2 * dy1;
+    if (Math.abs(det) < 1e-7) {
+      return {
+        a: x1 - x0, b: x3 - x0, c: x0,
+        d: y1 - y0, e: y3 - y0, f: y0,
+        g: 0, h: 0, i: 1
+      };
+    }
+
+    const g = (sx * dy2 - sy * dx2) / det;
+    const h = (dx1 * sy - dy1 * sx) / det;
+
+    return {
+      a: x1 - x0 + g * x1,
+      b: x3 - x0 + h * x3,
+      c: x0,
+      d: y1 - y0 + g * y1,
+      e: y3 - y0 + h * y3,
+      f: y0,
+      g: g,
+      h: h,
+      i: 1.0
+    };
+  }
+
+  // Hardware-Accelerated WebGL Projective Homography Renderer
+  static renderProjectiveWebGL(sourceImg, tl, tr, br, bl, destW, destH) {
+    try {
+      const glCanvas = document.createElement('canvas');
+      glCanvas.width = destW;
+      glCanvas.height = destH;
+      const gl = glCanvas.getContext('webgl', { antialias: true, alpha: false, preserveDrawingBuffer: true });
+      if (!gl) return null;
+
+      const vsSource = `
+        attribute vec2 a_position;
+        void main() {
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      const fsSource = `
+        precision highp float;
+        uniform sampler2D u_image;
+        uniform mat3 u_H;
+        uniform vec2 u_destSize;
+
+        void main() {
+          vec2 destUV = vec2(gl_FragCoord.x / u_destSize.x, 1.0 - (gl_FragCoord.y / u_destSize.y));
+          vec3 p = u_H * vec3(destUV, 1.0);
+          if (p.z == 0.0) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            return;
+          }
+          vec2 srcUV = p.xy / p.z;
+          if (srcUV.x < 0.0 || srcUV.x > 1.0 || srcUV.y < 0.0 || srcUV.y > 1.0) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+          } else {
+            gl_FragColor = texture2D(u_image, srcUV);
+          }
+        }
+      `;
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          gl.deleteShader(s);
+          return null;
+        }
+        return s;
+      }
+
+      const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+      const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+      if (!vs || !fs) return null;
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vs);
+      gl.attachShader(program, fs);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
+
+      gl.useProgram(program);
+
+      // Unit quad covering entire viewport [-1, 1]
+      const quadBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1,
+         1, -1,
+        -1,  1,
+        -1,  1,
+         1, -1,
+         1,  1
+      ]), gl.STATIC_DRAW);
+
+      const aPos = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+      // Texture
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sourceImg);
+
+      // Homography Matrix (Column-Major for WebGL mat3)
+      const H = this.computeHomography(tl, tr, br, bl);
+      const uHLoc = gl.getUniformLocation(program, 'u_H');
+      gl.uniformMatrix3fv(uHLoc, false, new Float32Array([
+        H.a, H.d, H.g,
+        H.b, H.e, H.h,
+        H.c, H.f, H.i
+      ]));
+
+      const uDestLoc = gl.getUniformLocation(program, 'u_destSize');
+      gl.uniform2f(uDestLoc, destW, destH);
+
+      gl.viewport(0, 0, destW, destH);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      return glCanvas;
+    } catch (e) {
+      console.warn('WebGL homography exception:', e);
+      return null;
+    }
+  }
+
+  // High-Precision Canvas 2D Homography Fallback
+  static renderProjectiveCanvas2D(sourceImg, tl, tr, br, bl, canvas, ctx) {
+    const origW = sourceImg.naturalWidth || sourceImg.videoWidth || sourceImg.width;
+    const origH = sourceImg.naturalHeight || sourceImg.videoHeight || sourceImg.height;
+    const destW = canvas.width;
+    const destH = canvas.height;
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = origW;
+    offscreen.height = origH;
+    const offCtx = offscreen.getContext('2d');
+    offCtx.drawImage(sourceImg, 0, 0);
+    const srcData = offCtx.getImageData(0, 0, origW, origH);
+    const srcBuf = new Uint32Array(srcData.data.buffer);
+
+    const dstData = ctx.createImageData(destW, destH);
+    const dstBuf = new Uint32Array(dstData.data.buffer);
+
+    const H = this.computeHomography(tl, tr, br, bl);
+    const a = H.a, b = H.b, c = H.c;
+    const d = H.d, e = H.e, f = H.f;
+    const g = H.g, h = H.h;
+
+    const maxSrcX = origW - 1;
+    const maxSrcY = origH - 1;
+
+    for (let y = 0; y < destH; y++) {
+      const v = y / destH;
+      const yOff = y * destW;
+      for (let x = 0; x < destW; x++) {
+        const u = x / destW;
+        const w = g * u + h * v + 1.0;
+        if (w === 0) {
+          dstBuf[yOff + x] = 0xFFFFFFFF;
+          continue;
+        }
+
+        const srcNormX = (a * u + b * v + c) / w;
+        const srcNormY = (d * u + e * v + f) / w;
+
+        if (srcNormX < 0 || srcNormX > 1 || srcNormY < 0 || srcNormY > 1) {
+          dstBuf[yOff + x] = 0xFFFFFFFF; // Pure white paper outside boundary
+          continue;
+        }
+
+        const sx = Math.min(maxSrcX, Math.max(0, Math.round(srcNormX * maxSrcX)));
+        const sy = Math.min(maxSrcY, Math.max(0, Math.round(srcNormY * maxSrcY)));
+        dstBuf[yOff + x] = srcBuf[sy * origW + sx];
+      }
+    }
+
+    ctx.putImageData(dstData, 0, 0);
+  }
+
   // =========================================================================
-  // 6. World-Class CamScanner Filters: Local Adaptive Whitening & Sharp Ink
+  // 6. World-Class CamScanner Filters: Adaptive Shadow Removal & Laser-Sharp Ink
   // =========================================================================
   static processImage(imgElement, filter = 'magic-color', rotation = 0, corners = null, options = {}) {
     let sourceCanvas;
@@ -655,8 +848,8 @@ class DocumentScanner {
     // Apply rotation if needed
     const isRotated90 = (rotation % 180 !== 0);
     const canvas = document.createElement('canvas');
-    canvas.width = isRotated90  ?  sourceCanvas.height : sourceCanvas.width;
-    canvas.height = isRotated90  ?  sourceCanvas.width : sourceCanvas.height;
+    canvas.width = isRotated90 ? sourceCanvas.height : sourceCanvas.width;
+    canvas.height = isRotated90 ? sourceCanvas.width : sourceCanvas.height;
     const ctx = canvas.getContext('2d', { alpha: false });
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
@@ -676,81 +869,102 @@ class DocumentScanner {
     const imgData = ctx.getImageData(0, 0, imgW, imgH);
     const data = imgData.data;
     const len = data.length;
+    const totalPixels = imgW * imgH;
 
     const brightnessAdjust = options.brightness || 0;
     const contrastAdjust = options.contrast || 0;
 
     switch (filter) {
       case 'magic-color': {
-        // CamScanner True Magic Color: Local Adaptive Background Normalization
-        // 1. Calculate luminance map
-        const lum = new Float32Array(imgW * imgH);
+        // CamScanner Signature Magic Color: Smooth Illumination Equalization + Vivid Ink & Color
+        const lum = new Float32Array(totalPixels);
         for (let i = 0, j = 0; i < len; i += 4, j++) {
           lum[j] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
         }
 
-        // 2. Compute 2D Integral Image for sub-millisecond local background window calculation
-        const integral = new Float64Array((imgW + 1) * (imgH + 1));
+        // 2D Integral Image for fast local background calculation
         const intW = imgW + 1;
-
+        const integral = new Float64Array(intW * (imgH + 1));
         for (let y = 0; y < imgH; y++) {
           let rowSum = 0;
+          const yOff = y * imgW;
+          const intOff = (y + 1) * intW;
+          const prevOff = y * intW;
           for (let x = 0; x < imgW; x++) {
-            rowSum += lum[y * imgW + x];
-            integral[(y + 1) * intW + (x + 1)] = integral[y * intW + (x + 1)] + rowSum;
+            rowSum += lum[yOff + x];
+            integral[intOff + x + 1] = integral[prevOff + x + 1] + rowSum;
           }
         }
 
-        // Adaptive window radius proportional to image scale (eliminates both macro shadows & micro folds)
-        const radius = Math.max(16, Math.round(imgW / 28));
+        // Adaptive large background radius (avoids micro-halo while flattening big shadows)
+        const radius = Math.max(24, Math.round(Math.min(imgW, imgH) / 14));
 
         for (let y = 0; y < imgH; y++) {
           const y0 = Math.max(0, y - radius);
           const y1 = Math.min(imgH - 1, y + radius);
+          const intRow1 = (y1 + 1) * intW;
+          const intRow0 = y0 * intW;
+          const hSpan = y1 - y0 + 1;
 
           for (let x = 0; x < imgW; x++) {
             const x0 = Math.max(0, x - radius);
             const x1 = Math.min(imgW - 1, x + radius);
+            const area = (x1 - x0 + 1) * hSpan;
 
-            const area = (x1 - x0 + 1) * (y1 - y0 + 1);
-            const sum = integral[(y1 + 1) * intW + (x1 + 1)]
-                      - integral[y0 * intW + (x1 + 1)]
-                      - integral[(y1 + 1) * intW + x0]
-                      + integral[y0 * intW + x0];
+            const sum = integral[intRow1 + (x1 + 1)]
+                      - integral[intRow0 + (x1 + 1)]
+                      - integral[intRow1 + x0]
+                      + integral[intRow0 + x0];
 
-            const localBg = Math.max(60, sum / area);
-            const idx = (y * imgW + x) * 4;
+            const localBg = Math.max(35, sum / area);
+            const pIdx = y * imgW + x;
+            const pLum = lum[pIdx];
+            const idx = pIdx * 4;
 
             const r = data[idx];
             const g = data[idx + 1];
             const b = data[idx + 2];
-            const pixelLum = lum[y * imgW + x];
 
+            // Ratio of pixel luminance to local paper background
+            const ratio = pLum / localBg;
+
+            // Smooth tone curve:
+            // ratio >= 0.93 -> smooth paper whitening to 255
+            // ratio < 0.93  -> high-contrast dark ink
+            let targetLum;
+            if (ratio >= 0.93) {
+              const t = Math.min(1, (ratio - 0.93) / 0.07);
+              // Smooth Hermite interpolation to pure paper white 255
+              targetLum = 244 + 11 * (3 * t * t - 2 * t * t * t);
+            } else {
+              const norm = Math.max(0, ratio / 0.93);
+              // Deepen text and lines for laser-sharp readability
+              targetLum = Math.pow(norm, 1.4) * 244;
+            }
+
+            // Color detection (passport photos, colored stamps, signatures, seals)
             const maxC = Math.max(r, g, b);
             const minC = Math.min(r, g, b);
-            const isColor = (maxC - minC) > 22 && pixelLum < 225;
+            const chroma = maxC - minC;
 
-            // Normalized ratio of pixel to local paper background
-            const ratio = pixelLum / localBg;
+            if (chroma > 14) {
+              // Color element: preserve RGB chromaticity while normalizing paper lighting
+              const gain = targetLum / Math.max(pLum, 1);
+              // Subtle saturation boost for official stamps & photos
+              const satBoost = 1.2;
+              let nr = (r - pLum) * satBoost + pLum * gain;
+              let ng = (g - pLum) * satBoost + pLum * gain;
+              let nb = (b - pLum) * satBoost + pLum * gain;
 
-            if (ratio >= 0.88) {
-              // Pure clean paper white
-              data[idx] = 255;
-              data[idx + 1] = 255;
-              data[idx + 2] = 255;
-            } else if (isColor) {
-              // Boost color vibrancy for stamps, colored ink, seals
-              const colorBoost = 1.3;
-              data[idx] = Math.min(255, Math.max(0, (r - pixelLum) * colorBoost + pixelLum * (ratio * 1.1)));
-              data[idx + 1] = Math.min(255, Math.max(0, (g - pixelLum) * colorBoost + pixelLum * (ratio * 1.1)));
-              data[idx + 2] = Math.min(255, Math.max(0, (b - pixelLum) * colorBoost + pixelLum * (ratio * 1.1)));
+              data[idx] = Math.min(255, Math.max(0, Math.round(nr)));
+              data[idx + 1] = Math.min(255, Math.max(0, Math.round(ng)));
+              data[idx + 2] = Math.min(255, Math.max(0, Math.round(nb)));
             } else {
-              // Laser-sharp high-contrast black ink
-              const normalized = Math.max(0, ratio / 0.88);
-              const enhanced = Math.pow(normalized, 1.8) * 255;
-              data[idx] = enhanced;
-              data[idx + 1] = enhanced;
-              data[idx + 2] = enhanced;
+              // Monochromatic text / line: crisp deep ink
+              const val = Math.min(255, Math.max(0, Math.round(targetLum)));
+              data[idx] = val;
+              data[idx + 1] = val;
+              data[idx + 2] = val;
             }
           }
         }
@@ -758,11 +972,11 @@ class DocumentScanner {
       }
 
       case 'no-shadow': {
-        // Equalize shadow gradients
+        // Equalize shadow gradients while preserving original colors
         for (let i = 0; i < len; i += 4) {
-          data[i] = Math.min(255, Math.pow(data[i] / 255, 0.7) * 255 + 10);
-          data[i + 1] = Math.min(255, Math.pow(data[i + 1] / 255, 0.7) * 255 + 10);
-          data[i + 2] = Math.min(255, Math.pow(data[i + 2] / 255, 0.7) * 255 + 10);
+          data[i] = Math.min(255, Math.pow(data[i] / 255, 0.75) * 255 + 8);
+          data[i + 1] = Math.min(255, Math.pow(data[i + 1] / 255, 0.75) * 255 + 8);
+          data[i + 2] = Math.min(255, Math.pow(data[i + 2] / 255, 0.75) * 255 + 8);
         }
         break;
       }
@@ -770,51 +984,58 @@ class DocumentScanner {
       case 'lighten': {
         // Boost light ink and pencil writing
         for (let i = 0; i < len; i += 4) {
-          data[i] = Math.min(255, data[i] * 1.3 + 20);
-          data[i + 1] = Math.min(255, data[i + 1] * 1.3 + 20);
-          data[i + 2] = Math.min(255, data[i + 2] * 1.3 + 20);
+          data[i] = Math.min(255, data[i] * 1.25 + 15);
+          data[i + 1] = Math.min(255, data[i + 1] * 1.25 + 15);
+          data[i + 2] = Math.min(255, data[i + 2] * 1.25 + 15);
         }
         break;
       }
 
-      case 'clean-bw': {
-        // Adaptive Sauvola Binarization for crisp text extraction
-        const lum = new Float32Array(imgW * imgH);
+      case 'clean-bw':
+      case 'bw': {
+        // Adaptive Sauvola Binarization for crisp text extraction without noise
+        const lum = new Float32Array(totalPixels);
         for (let i = 0, j = 0; i < len; i += 4, j++) {
           lum[j] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
         }
 
-        const integral = new Float64Array((imgW + 1) * (imgH + 1));
         const intW = imgW + 1;
+        const integral = new Float64Array(intW * (imgH + 1));
         for (let y = 0; y < imgH; y++) {
           let rowSum = 0;
+          const yOff = y * imgW;
+          const intOff = (y + 1) * intW;
+          const prevOff = y * intW;
           for (let x = 0; x < imgW; x++) {
-            rowSum += lum[y * imgW + x];
-            integral[(y + 1) * intW + (x + 1)] = integral[y * intW + (x + 1)] + rowSum;
+            rowSum += lum[yOff + x];
+            integral[intOff + x + 1] = integral[prevOff + x + 1] + rowSum;
           }
         }
 
-        const radius = Math.max(12, Math.round(imgW / 32));
+        const radius = Math.max(16, Math.round(Math.min(imgW, imgH) / 24));
 
         for (let y = 0; y < imgH; y++) {
           const y0 = Math.max(0, y - radius);
           const y1 = Math.min(imgH - 1, y + radius);
+          const intRow1 = (y1 + 1) * intW;
+          const intRow0 = y0 * intW;
+          const hSpan = y1 - y0 + 1;
 
           for (let x = 0; x < imgW; x++) {
             const x0 = Math.max(0, x - radius);
             const x1 = Math.min(imgW - 1, x + radius);
+            const area = (x1 - x0 + 1) * hSpan;
 
-            const area = (x1 - x0 + 1) * (y1 - y0 + 1);
-            const sum = integral[(y1 + 1) * intW + (x1 + 1)]
-                      - integral[y0 * intW + (x1 + 1)]
-                      - integral[(y1 + 1) * intW + x0]
-                      + integral[y0 * intW + x0];
+            const sum = integral[intRow1 + (x1 + 1)]
+                      - integral[intRow0 + (x1 + 1)]
+                      - integral[intRow1 + x0]
+                      + integral[intRow0 + x0];
 
             const localMean = sum / area;
-            const threshold = localMean * 0.85;
+            const threshold = localMean * 0.88;
 
             const idx = (y * imgW + x) * 4;
-            const val = lum[y * imgW + x] >= threshold  ?  255 : 0;
+            const val = lum[y * imgW + x] >= threshold ? 255 : 0;
             data[idx] = val;
             data[idx + 1] = val;
             data[idx + 2] = val;
@@ -825,7 +1046,7 @@ class DocumentScanner {
 
       case 'grayscale': {
         for (let i = 0; i < len; i += 4) {
-          const lumVal = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          const lumVal = Math.min(255, Math.pow((data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) / 255, 1.15) * 255);
           data[i] = lumVal;
           data[i + 1] = lumVal;
           data[i + 2] = lumVal;
@@ -834,7 +1055,7 @@ class DocumentScanner {
       }
     }
 
-    // Apply brightness and contrast adjustments
+    // Apply brightness and contrast adjustments if requested
     if (brightnessAdjust !== 0 || contrastAdjust !== 0) {
       const factor = (259 * (contrastAdjust + 255)) / (255 * (259 - contrastAdjust));
       for (let i = 0; i < len; i += 4) {
@@ -849,7 +1070,7 @@ class DocumentScanner {
   }
 
   // =========================================================================
-  // 7. Multi-Page PDF Export with PDF-Lib
+  // 7. Multi-Page PDF Export with PDF-Lib (High-DPI 300 DPI A4)
   // =========================================================================
   static async exportToPDF(pagesArray, options = {}) {
     if (typeof PDFLib === 'undefined') {
@@ -862,6 +1083,7 @@ class DocumentScanner {
     for (let i = 0; i < pagesArray.length; i++) {
       const pageData = pagesArray[i];
       const dataUrl = pageData.processedDataUrl || pageData.dataUrl;
+      if (!dataUrl) continue;
 
       const base64Data = dataUrl.split(',')[1];
       const imageBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
@@ -874,24 +1096,29 @@ class DocumentScanner {
       }
 
       // Standard A4 PDF Dimensions in points: 595.28 x 841.89
-      const a4Width = 595.28;
-      const a4Height = 841.89;
-
-      const page = pdfDoc.addPage([a4Width, a4Height]);
+      const a4PortraitW = 595.28;
+      const a4PortraitH = 841.89;
       const imgAspect = imageEmbed.width / imageEmbed.height;
-      const pageAspect = a4Width / a4Height;
+
+      // Auto-orient page to match document aspect ratio (Landscape vs Portrait)
+      const isLandscape = imgAspect > 1.15;
+      const pageWidth = isLandscape ? a4PortraitH : a4PortraitW;
+      const pageHeight = isLandscape ? a4PortraitW : a4PortraitH;
+
+      const page = pdfDoc.addPage([pageWidth, pageHeight]);
+      const pageAspect = pageWidth / pageHeight;
 
       let drawW, drawH, drawX, drawY;
       if (imgAspect > pageAspect) {
-        drawW = a4Width - 20;
+        drawW = pageWidth;
         drawH = drawW / imgAspect;
-        drawX = 10;
-        drawY = (a4Height - drawH) / 2;
+        drawX = 0;
+        drawY = (pageHeight - drawH) / 2;
       } else {
-        drawH = a4Height - 20;
+        drawH = pageHeight;
         drawW = drawH * imgAspect;
-        drawX = (a4Width - drawW) / 2;
-        drawY = 10;
+        drawX = (pageWidth - drawW) / 2;
+        drawY = 0;
       }
 
       page.drawImage(imageEmbed, {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -2025,7 +2025,7 @@
       for (const dataUrl of dataUrls) {
         try {
           const rawImg = await UIUtils.loadImage(dataUrl);
-          const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+          const corners = DocumentScanner.getDefaultCorners();
 
           if (dataUrls.length === 1 && camMode === 'single') {
             stagingPage = { rawImg: rawImg, corners: corners, rotation: 0, filter: 'magic-color' };
@@ -2175,7 +2175,7 @@
     async function renderImageFileToPage(file) {
       const dataUrl = await UIUtils.readFileAsDataURL(file);
       const img = await UIUtils.loadImage(dataUrl);
-      const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+      const corners = DocumentScanner.getDefaultCorners();
       const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
       return {
         rawImg: img,
