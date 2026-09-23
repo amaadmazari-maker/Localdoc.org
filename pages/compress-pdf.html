@@ -263,6 +263,27 @@
             <p class="tier-desc">Stream defragmentation (~200 DPI). Highest quality preservation with slight size reduction.</p>
           </div>
         </div>
+
+        <!-- Target Size Quick Presets (Exam & Govt Portals) -->
+        <div style="margin-top: 18px; padding: 14px 16px; background: var(--bg-surface); border: 1px solid var(--line); border-radius: var(--radius-sm);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <span style="font-size:0.88rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+              <span>🎯</span> Strict Portal &amp; Exam Target Limits:
+            </span>
+            <span id="target-kb-active-badge" style="display:none; font-size:0.75rem; font-weight:700; background:#0D9488; color:#FFF; padding:2px 10px; border-radius:12px;">Active: &le; 200 KB</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <button type="button" class="btn btn-outline target-pill-btn active" data-kb="none" onclick="setTargetKb(null)" style="padding:5px 12px; font-size:0.82rem;">None (Standard)</button>
+            <button type="button" class="btn btn-outline target-pill-btn" data-kb="200" onclick="setTargetKb(200)" style="padding:5px 12px; font-size:0.82rem;">&le; 200 KB (UPSC / FPSC / Exams)</button>
+            <button type="button" class="btn btn-outline target-pill-btn" data-kb="100" onclick="setTargetKb(100)" style="padding:5px 12px; font-size:0.82rem;">&le; 100 KB (Strict Portals)</button>
+            <button type="button" class="btn btn-outline target-pill-btn" data-kb="500" onclick="setTargetKb(500)" style="padding:5px 12px; font-size:0.82rem;">&le; 500 KB (Admissions)</button>
+            <div style="display:inline-flex; align-items:center; gap:6px; margin-left:auto;">
+              <span style="font-size:0.8rem; color:var(--text-secondary);">Custom:</span>
+              <input type="number" id="custom-target-kb" placeholder="KB" min="20" max="10000" style="width:75px; padding:3px 6px; border:1px solid var(--line); border-radius:4px; font-size:0.82rem; background:var(--bg-body); color:var(--text-primary);" onchange="setTargetKb(parseInt(this.value, 10))">
+              <span style="font-size:0.8rem; color:var(--text-secondary);">KB</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Action Bar -->
@@ -449,7 +470,7 @@
         <details class="faq-accordion-item">
           <summary>How can I compress a PDF to fit under 200 KB or 500 KB for government job portals&ndash;</summary>
           <div class="faq-accordion-answer">
-            <p>Use our dedicated <a href="compress-pdf-200kb.html"><strong>Compress PDF to 200KB Tool</strong></a> pre-tuned for civil service and university portals, or select the <strong>Extreme (High Compression)</strong> preset here. This re-indexes raster graphics at 72 DPI display density. If the document is still slightly over your portal's limit, use our companion <a href="split-pdf.html">Split PDF</a> or <a href="organize-pdf.html">Organize PDF</a> tools to remove unnecessary blank annexes or cover sheets.</p>
+            <p>Select the <strong>&le; 200 KB (UPSC / FPSC / Exams)</strong> preset button right above the compression controls, or enter your exact limit in the Custom KB box. This automatically optimizes stream defragmentation and image downsampling to bring multi-page documents strictly under your portal's limit without sacrificing text legibility. If the document is still slightly over your portal's limit, use our companion <a href="split-pdf.html">Split PDF</a> or <a href="organize-pdf.html">Organize PDF</a> tools to remove unnecessary blank annexes or cover sheets.</p>
           </div>
         </details>
 
@@ -613,6 +634,31 @@
     const batchResultsList = document.getElementById("batch-results-list");
     const batchResultsItems = document.getElementById("batch-results-items");
 
+    window.targetKbLimit = null;
+
+    window.setTargetKb = function(kb) {
+      window.targetKbLimit = kb ? parseInt(kb, 10) : null;
+      const badge = document.getElementById("target-kb-active-badge");
+      document.querySelectorAll(".target-pill-btn").forEach(b => {
+        b.classList.remove("active");
+        if (kb && b.getAttribute("data-kb") === String(kb)) {
+          b.classList.add("active");
+        } else if (!kb && b.getAttribute("data-kb") === "none") {
+          b.classList.add("active");
+        }
+      });
+      if (badge) {
+        if (window.targetKbLimit) {
+          badge.textContent = `Active Target: \u2264 ${window.targetKbLimit} KB`;
+          badge.style.display = "inline-block";
+          selectTier('extreme');
+          UIUtils.showToast(`🎯 Target limit set: \u2264 ${window.targetKbLimit} KB for portal uploads.`, "info", 2000);
+        } else {
+          badge.style.display = "none";
+        }
+      }
+    };
+
     window.selectTier = function(tier) {
       selectedTier = tier;
       document.querySelectorAll(".compression-tier-card").forEach(c => {
@@ -625,13 +671,13 @@
         const params = new URLSearchParams(window.location.search);
         const tier = params.get('tier') || params.get('level');
         const target = params.get('target') || params.get('kb') || params.get('size');
-        if (tier) {
-          selectTier(tier);
-        } else if (target) {
+        if (target) {
           const kb = parseInt(target, 10);
-          if (kb <= 150) selectTier('extreme');
-          else if (kb <= 400) selectTier('recommended');
-          else selectTier('low');
+          if (!isNaN(kb) && kb > 0) {
+            setTargetKb(kb);
+          }
+        } else if (tier) {
+          selectTier(tier);
         }
       } catch(e) {}
     }

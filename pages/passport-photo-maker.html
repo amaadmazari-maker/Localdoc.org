@@ -11,8 +11,9 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passport Photo Maker Online (Biometric 2x2 in &amp; 35x45 mm Grid Sheet) | LocalDoc</title>
-  <meta name="description" content="Generate compliant passport &amp; visa photos for US, UK, Schengen, Canada, Pakistan, and India. Includes background color changer (White, Blue, Red, Green) and 4x6 printable grid sheets. 100% private.">
+  <title>Passport &amp; Visa Photo Maker Online (US, UAE, India, UK, Schengen, Canada, Pakistan) | LocalDoc</title>
+  <meta name="description" content="Generate compliant passport &amp; visa photos for US (2x2&quot;), UK, Schengen, UAE Emirates ID, India PAN, Canada, Pakistan CNIC, Russia, and Korea. Includes AI background remover and printable 4x6 / A4 sheets. 100% private in browser RAM.">
+  <meta name="keywords" content="passport photo maker, visa photo maker, us visa photo ds160, uae emirates id photo, indian pan card photo resizer, canada pr photo, nadra cnic photo, schengen visa photo, south korea arc photo, russian passport photo, 2x2 inch, 35x45mm, zero upload">
   <link rel="canonical" href="https://localdoc.org/pages/passport-photo-maker.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -478,52 +479,96 @@
             </button>
           </div>
           
+                    <!-- Sub-Category Filter Tabs (Passports vs Consular Visas vs National IDs) -->
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin: 12px 0 16px;">
+            <button type="button" class="btn btn-outline active preset-filter-tab" data-filter-type="all" onclick="filterPresets('all', this)" style="padding:5px 14px; font-size:0.82rem; font-weight:700; border-radius:20px; border-color:var(--primary); background:rgba(2, 132, 199, 0.08); color:var(--primary);">
+              ðŸŒ All Presets
+            </button>
+            <button type="button" class="btn btn-outline preset-filter-tab" data-filter-type="visa" onclick="filterPresets('visa', this)" style="padding:5px 14px; font-size:0.82rem; font-weight:600; border-radius:20px;">
+              âœˆï¸ Consular Visa Photos (US DS-160, Schengen, Canada PR, UAE, China, Japan)
+            </button>
+            <button type="button" class="btn btn-outline preset-filter-tab" data-filter-type="passport" onclick="filterPresets('passport', this)" style="padding:5px 14px; font-size:0.82rem; font-weight:600; border-radius:20px;">
+              ðŸ›‚ Standard Passports
+            </button>
+            <button type="button" class="btn btn-outline preset-filter-tab" data-filter-type="id" onclick="filterPresets('id', this)" style="padding:5px 14px; font-size:0.82rem; font-weight:600; border-radius:20px;">
+              ðŸªª National ID &amp; Cards (PAN, CNIC, Iqama)
+            </button>
+          </div>
+
           <div class="preset-selector-grid" id="preset-grid">
-            <div class="preset-card active" onclick="selectPreset('passport-us')">
-              <h4>🇺🇸 US Passport</h4>
-              <p>2&times;2" (51&times;51mm)</p>
+            <div class="preset-card active" data-type="passport visa" onclick="selectPreset('passport-us')">
+              <h4>🇺🇸 US Passport &amp; Visa</h4>
+              <p>2&times;2" (51&times;51mm / DS-160)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('passport-uk')">
+            <div class="preset-card" data-type="passport" onclick="selectPreset('passport-uk')">
               <h4>🇬🇧 UK HMPO</h4>
               <p>35&times;45mm (Standard)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('visa-schengen')">
+            <div class="preset-card" data-type="visa" onclick="selectPreset('visa-schengen')">
               <h4>🇪🇺 Schengen EU</h4>
               <p>35&times;45mm (Visa)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('passport-ca')">
+            <div class="preset-card" data-type="passport visa" onclick="selectPreset('passport-ca')">
               <h4>🇨🇦 Canada</h4>
-              <p>50&times;70mm (Large)</p>
+              <p>50&times;70mm (Passport &amp; PR)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('cnic-pk')">
-              <h4>🇵🇰 Pakistan CNIC</h4>
-              <p>35&times;45mm (NADRA)</p>
+            <div class="preset-card" data-type="visa id" onclick="selectPreset('visa-uae')">
+              <h4>🇦🇪 UAE / Emirates ID</h4>
+              <p>35&times;45mm (ICP &amp; Visa)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('passport-in')">
+            <div class="preset-card" data-type="passport visa" onclick="selectPreset('passport-in')">
               <h4>🇮🇳 India Passport</h4>
               <p>35&times;45mm / 2&times;2"</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('passport-au')">
+            <div class="preset-card" data-type="id" onclick="selectPreset('pan-in')">
+              <h4>🇮🇳 India PAN Card</h4>
+              <p>213&times;213 px (&le;30 KB)</p>
+            </div>
+            <div class="preset-card" data-type="id" onclick="selectPreset('cnic-pk')">
+              <h4>🇵🇰 Pakistan CNIC</h4>
+              <p>35&times;45mm (NADRA)</p>
+            </div>
+            <div class="preset-card" data-type="id" onclick="selectPreset('pak-identity')">
+              <h4>🇵🇰 Pak-Identity</h4>
+              <p>354&times;472 px (Light Blue)</p>
+            </div>
+            <div class="preset-card" data-type="visa" onclick="selectPreset('visa-saudi')">
+              <h4>🇸🇦 Saudi Arabia</h4>
+              <p>2&times;2" (Hajj / Umrah)</p>
+            </div>
+            <div class="preset-card" data-type="id" onclick="selectPreset('iqama-saudi')">
+              <h4>🇸🇦 Saudi Iqama</h4>
+              <p>40&times;60mm (Driving Licence)</p>
+            </div>
+            <div class="preset-card" data-type="passport visa" onclick="selectPreset('passport-kr')">
+              <h4>🇰🇷 South Korea</h4>
+              <p>35&times;45mm (ARC &amp; Passport)</p>
+            </div>
+            <div class="preset-card" data-type="passport visa" onclick="selectPreset('passport-ru')">
+              <h4>🇷🇺 Russia</h4>
+              <p>35&times;45mm (Gosuslugi / 80%)</p>
+            </div>
+            <div class="preset-card" data-type="visa passport" onclick="selectPreset('passport-cn')">
+              <h4>🇨🇳 China Visa</h4>
+              <p>33&times;48mm (Standard)</p>
+            </div>
+            <div class="preset-card" data-type="visa passport" onclick="selectPreset('passport-jp')">
+              <h4>🇯🇵 Japan Visa</h4>
+              <p>35&times;45mm (Residence)</p>
+            </div>
+            <div class="preset-card" data-type="passport visa" onclick="selectPreset('passport-au')">
               <h4>🇦🇺 Australia</h4>
               <p>35&times;45mm (Passport)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('visa-uae')">
-              <h4>🇦🇪 UAE / Dubai</h4>
-              <p>35&times;45mm (Visa)</p>
-            </div>
-            <div class="preset-card" onclick="selectPreset('visa-saudi')">
-              <h4>🇸🇦 Saudi Arabia</h4>
-              <p>2&times;2" (Hajj/Umrah)</p>
-            </div>
-            <div class="preset-card" onclick="selectPreset('photo-1x1')">
+            <div class="preset-card" data-type="id" onclick="selectPreset('photo-1x1')">
               <h4>📐 1&times;1 Inch</h4>
               <p>25&times;25mm (Badge)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('photo-2x2')">
+            <div class="preset-card" data-type="visa passport" onclick="selectPreset('photo-2x2')">
               <h4>📐 2&times;2 Inch</h4>
               <p>51&times;51mm (Standard)</p>
             </div>
-            <div class="preset-card" onclick="selectPreset('photo-3x4')">
+            <div class="preset-card" data-type="id" onclick="selectPreset('photo-3x4')">
               <h4>📐 3&times;4 cm</h4>
               <p>30&times;40mm (ID Photo)</p>
             </div>
@@ -937,6 +982,29 @@
       };
     }
 
+    window.filterPresets = function(type, btn) {
+      document.querySelectorAll('.preset-filter-tab').forEach(b => {
+        b.classList.remove('active');
+        b.style.borderColor = 'var(--line)';
+        b.style.background = 'var(--bg-surface)';
+        b.style.color = 'var(--text-primary)';
+      });
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.background = 'rgba(2, 132, 199, 0.08)';
+        btn.style.color = 'var(--primary)';
+      }
+      document.querySelectorAll('#preset-grid .preset-card').forEach(card => {
+        const cardType = card.getAttribute('data-type') || 'all';
+        if (type === 'all' || cardType.includes(type)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    };
+
     let currentPresetKey = 'passport-us';
     let pBgColor = '#FFFFFF';
     let loadedImgElem = null;
@@ -1230,6 +1298,39 @@
             if (a4PdfBlob) UIUtils.downloadBlob(a4PdfBlob, `passport-a4-print-sheet-${currentPresetKey}.pdf`);
           }
         });
+      }
+
+      // URL Parameter Deep-Linking & Country Pre-selection
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const countryParam = (urlParams.get('country') || urlParams.get('preset') || urlParams.get('standard') || '').toLowerCase().trim();
+        if (countryParam) {
+          const map = {
+            'us': 'passport-us', 'usa': 'passport-us', 'ds160': 'passport-us', 'ds-160': 'passport-us', 'america': 'passport-us',
+            'uk': 'passport-uk', 'britain': 'passport-uk', 'hmpo': 'passport-uk',
+            'schengen': 'visa-schengen', 'eu': 'visa-schengen', 'europe': 'visa-schengen', 'france': 'visa-schengen', 'germany': 'visa-schengen', 'spain': 'visa-schengen', 'italy': 'visa-schengen',
+            'ca': 'passport-ca', 'canada': 'passport-ca', 'pr': 'passport-ca',
+            'in': 'passport-in', 'india': 'passport-in', 'oci': 'passport-in',
+            'pan': 'pan-in', 'pan-in': 'pan-in',
+            'pk': 'cnic-pk', 'pakistan': 'cnic-pk', 'cnic': 'cnic-pk', 'nadra': 'cnic-pk', 'pak-identity': 'pak-identity',
+            'uae': 'visa-uae', 'dubai': 'visa-uae', 'emirates': 'visa-uae', 'icp': 'visa-uae', 'gdrfa': 'visa-uae',
+            'sa': 'visa-saudi', 'saudi': 'visa-saudi', 'umrah': 'visa-saudi', 'hajj': 'visa-saudi', 'iqama': 'iqama-saudi',
+            'kr': 'passport-kr', 'korea': 'passport-kr', 'koria': 'passport-kr', 'arc': 'passport-kr',
+            'ru': 'passport-ru', 'russia': 'passport-ru', 'russian': 'passport-ru', 'gosuslugi': 'passport-ru',
+            'cn': 'passport-cn', 'china': 'passport-cn',
+            'jp': 'passport-jp', 'japan': 'passport-jp',
+            'au': 'passport-au', 'australia': 'passport-au', 'nz': 'passport-au'
+          };
+          if (map[countryParam]) {
+            selectPreset(map[countryParam]);
+            if (typeof IDPhoto !== 'undefined' && IDPhoto.PRESETS && IDPhoto.PRESETS[map[countryParam]]) {
+              const recBg = IDPhoto.PRESETS[map[countryParam]].bgRecommended;
+              if (recBg) setBgColor(recBg);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("URL param parsing error:", e);
       }
     }
 

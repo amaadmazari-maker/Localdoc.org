@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -11,8 +11,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Official National ID Card Size (85.6 x 54 mm / 3.37 x 2.12 in) &amp; 2-in-1 A4 Photocopy Maker | LocalDoc</title>
-  <meta name="description" content="Official national ID card size in inches (3.37 x 2.125 in) &amp; mm (85.6 x 54 mm) for Aadhaar, Emirates ID, Iqama, CNIC, US &amp; Canadian licenses. Print 2-in-1 front &amp; back A4 photocopy sheets with zero server uploads.">
+  <title>Global National ID &amp; CNIC Studio (Aadhaar, PAN, Emirates ID, Iqama, US ID) | LocalDoc</title>
+  <meta name="description" content="Global National ID Studio. Print 2-in-1 A4 photocopy sheets and create biometric photos for Pakistan CNIC, India Aadhaar &amp; PAN Card, UAE Emirates ID, Saudi Iqama, and US Real ID in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/id-photo.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -415,8 +415,8 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% In-Browser ID &amp; CNIC Studio</span>
         </div>
-        <h1>CNIC &amp; ID Card Studio</h1>
-        <p class="tool-desc">Create 100% life-size 2-in-1 A4 double-sided photocopy sheets, or generate compliant NADRA CNIC &amp; Pak-Identity biometric passport photos in local browser RAM.</p>
+        <h1>Global National ID &amp; CNIC Studio</h1>
+        <p class="tool-desc">Create 100% life-size 2-in-1 A4 photocopy sheets or generate official biometric photos for Pakistan CNIC, India PAN/Aadhaar, UAE Emirates ID, Saudi Iqama, US Driver License, and UK ID cards in local browser RAM.</p>
       </div>
 
       <!-- Studio Mode Selector Tabs -->
@@ -432,7 +432,23 @@
       <!-- ======================================================== -->
       <!-- MODE 1: 2-IN-1 ID CARD PHOTOCOPY SECTION -->
       <!-- ======================================================== -->
-      <div id="section-photocopy-mode">
+            <div id="section-photocopy-mode">
+        <!-- Country Card Selection for 2-in-1 Photocopy -->
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin:0 auto 16px; max-width:850px; text-align:left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+            <span style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">Card Type &amp; Country Standard:</span>
+            <span style="font-size:0.75rem; color:var(--primary); font-weight:700; background:rgba(2,132,199,0.08); padding:2px 8px; border-radius:10px;">ISO/IEC 7810 ID-1 Standard (85.60 &times; 53.98 mm)</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button type="button" class="btn btn-outline active card-preset-btn" onclick="selectCardStandard('all', '100% Life-Size A4 Double-Sided Photocopy', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">Global ISO ID-1 Standard</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('pk', 'Pakistan CNIC / Smart Card', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#0284C7; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">PK</span> Pakistan CNIC</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('in', 'India Aadhaar &amp; PAN Card', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India Aadhaar / PAN</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('ae', 'UAE Emirates ID', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#059669; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">AE</span> UAE Emirates ID</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('sa', 'Saudi Iqama / Muqeem', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#16A34A; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">SA</span> Saudi Iqama</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('us', 'US Driver License / Real ID', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#2563EB; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">US</span> US Driver License</button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('uk', 'UK Driving Licence / CitizenCard', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#DC2626; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">UK</span> UK Driving Licence</button>
+          </div>
+        </div>
         <!-- Quick Info Banner -->
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:12px 16px; border-radius:var(--radius-sm); margin:0 auto 20px; max-width:850px; text-align:left;">
           <p style="margin:0; font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
@@ -607,6 +623,34 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
             <span style="font-weight:700; color:var(--text-primary); font-size:0.95rem;">🇵🇰 NADRA Biometric Spec (354&times;472 px @ 350 DPI)</span>
             <button type="button" class="btn btn-outline" id="cnic-photo-change-btn" style="padding:4px 12px; font-size:0.8rem;">Change Photo</button>
+          </div>
+
+                    <!-- Global National ID Presets Bar -->
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:14px; text-align:left;">
+            <label style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:8px;">Select Country National ID Spec:</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;" id="id-country-presets-bar">
+              <button type="button" class="btn btn-outline active id-preset-btn" onclick="selectIdPreset('cnic-pk', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">
+                <span style="background:#0284C7; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">PK</span> Pakistan CNIC (354&times;472 px)
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('pan-in', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India PAN Card (213&times;213 px)
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('aadhaar-in', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India Aadhaar (35&times;45 mm)
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('emirates-ae', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#059669; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">AE</span> UAE Emirates ID (35&times;45 mm)
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('iqama-sa', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#16A34A; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">SA</span> Saudi Iqama (40&times;60 mm)
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('us-id', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#2563EB; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">US</span> US Real ID / Green Card (2&times;2")
+              </button>
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('uk-id', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+                <span style="background:#DC2626; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">UK</span> UK Driving Licence (35&times;45 mm)
+              </button>
+            </div>
           </div>
 
           <!-- Background Color Selector -->
@@ -1313,6 +1357,56 @@
     // ==========================================
     // 2. CNIC Photo Handlers
     // ==========================================
+        window.selectedIdPreset = 'cnic-pk';
+    window.ID_PRESET_CONFIG = {
+      'cnic-pk': { name: 'Pakistan CNIC', w: 413, h: 531, bg: '#E0F2FE', filename: 'pak_identity_cnic_photo.jpg', desc: 'ðŸ‡µðŸ‡° NADRA Biometric Spec (354Ã—472 px @ 350 DPI / 35Ã—45 mm)' },
+      'pan-in': { name: 'India PAN Card', w: 213, h: 213, bg: '#FFFFFF', filename: 'india_pan_card_photo.jpg', desc: 'ðŸ‡®ðŸ‡³ India PAN Card Biometric Spec (213Ã—213 px, â‰¤30 KB)' },
+      'aadhaar-in': { name: 'India Aadhaar Card', w: 413, h: 531, bg: '#FFFFFF', filename: 'india_aadhaar_photo.jpg', desc: 'ðŸ‡®ðŸ‡³ India Aadhaar / Passport Spec (35Ã—45 mm @ 300 DPI)' },
+      'emirates-ae': { name: 'UAE Emirates ID', w: 413, h: 531, bg: '#FFFFFF', filename: 'uae_emirates_id_photo.jpg', desc: 'ðŸ‡¦ðŸ‡ª UAE Emirates ID & Visa Spec (35Ã—45 mm, Pure White)' },
+      'iqama-sa': { name: 'Saudi Iqama', w: 472, h: 709, bg: '#FFFFFF', filename: 'saudi_iqama_photo.jpg', desc: 'ðŸ‡¸ðŸ‡¦ Saudi Iqama & Driving Licence (40Ã—60 mm @ 300 DPI)' },
+      'us-id': { name: 'US State ID / Green Card', w: 600, h: 600, bg: '#FFFFFF', filename: 'us_id_card_photo.jpg', desc: 'ðŸ‡ºðŸ‡¸ US Driver License & Green Card (2Ã—2 inch / 600Ã—600 px)' },
+      'uk-id': { name: 'UK Driving Licence', w: 413, h: 531, bg: '#F1F5F9', filename: 'uk_driving_licence_photo.jpg', desc: 'ðŸ‡¬ðŸ‡§ UK Driving Licence & CitizenCard (35Ã—45 mm, Off-White)' }
+    };
+
+    window.selectIdPreset = function(key, btn) {
+      window.selectedIdPreset = key;
+      document.querySelectorAll('.id-preset-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.borderColor = 'var(--line)';
+        b.style.background = 'var(--bg-surface)';
+        b.style.color = 'var(--text-primary)';
+      });
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.background = 'rgba(2, 132, 199, 0.08)';
+        btn.style.color = 'var(--primary)';
+      }
+      const cfg = window.ID_PRESET_CONFIG[key] || window.ID_PRESET_CONFIG['cnic-pk'];
+      const specLabel = document.getElementById('id-active-spec-label');
+      if (specLabel) specLabel.textContent = cfg.desc;
+      const genBtn = document.getElementById('generate-cnic-photo-btn');
+      if (genBtn) genBtn.querySelector('span').textContent = 'Generate Official ' + cfg.name + ' Photo';
+      if (cfg.bg) window.setCnicBg(cfg.bg);
+      renderCnicPreview();
+    };
+
+    window.selectCardStandard = function(country, label, btn) {
+      document.querySelectorAll('.card-preset-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.borderColor = 'var(--line)';
+        b.style.background = 'var(--bg-surface)';
+        b.style.color = 'var(--text-primary)';
+      });
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.background = 'rgba(2, 132, 199, 0.08)';
+        btn.style.color = 'var(--primary)';
+      }
+      UIUtils.showToast('Selected ' + label + ' (85.6 Ã— 54 mm physical standard)', 'info', 2000);
+    };
+
     function setupCnicPhotoHandlers() {
       const fileInput = document.getElementById('cnic-photo-file-input');
       const camInput = document.getElementById('cnic-photo-camera-input');
@@ -1447,7 +1541,7 @@
       const dSingle = document.getElementById('download-cnic-single-btn');
       if (dSingle) {
         dSingle.addEventListener('click', () => {
-          if (cnicSingleBlob) UIUtils.downloadBlob(cnicSingleBlob, 'pak_identity_cnic_photo.jpg');
+          if (cnicSingleBlob) const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { filename: 'national_id_photo.jpg' }; UIUtils.downloadBlob(cnicSingleBlob, cfg.filename);
         });
       }
 
@@ -1556,8 +1650,9 @@
       try {
         const box = document.getElementById('cnic-preview-box');
         const boxW = (box && box.clientWidth) || 280;
-        const targetW = 413; // 35x45mm at 300 DPI
-        const targetH = 531;
+        const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { w: 413, h: 531, name: 'ID Card', filename: 'id_card_photo.jpg' };
+        const targetW = cfg.w;
+        const targetH = cfg.h;
         const scaleMultiplier = targetW / boxW;
 
         // 1. Single Biometric Photo

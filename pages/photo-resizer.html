@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -340,7 +340,10 @@
         <span style="font-size: 1.1rem;">&#127891;</span>
         <span>Need exact <strong>20KB Photo</strong> or <strong>10KB Signature</strong> for UPSC, SSC, FPSC, or Bank exams?</span>
       </div>
-      <a href="photo-resizer-20kb.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.82rem; text-decoration: none; white-space: nowrap; border-radius: 20px;">Open 20KB Resizer &rarr;</a>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="btn btn-primary" onclick="window.applyJobPreset &amp;&amp; window.applyJobPreset(20)" style="padding: 6px 14px; font-size: 0.82rem; border-radius: 20px; cursor:pointer;">Quick &le; 20KB Photo</button>
+        <button type="button" class="btn btn-outline" onclick="window.applyJobPreset &amp;&amp; window.applyJobPreset(10)" style="padding: 6px 14px; font-size: 0.82rem; border-radius: 20px; cursor:pointer;">Quick &le; 10KB Signature</button>
+      </div>
     </div>
 
     <!-- Empty Upload State -->
@@ -388,10 +391,10 @@
               Ready for download
             </div>
             <button id="resizer-download-btn" class="btn btn-primary" style="width: 100%; margin-top: 14px; padding: 12px; font-weight: 700; font-size: 1rem;">
-              &#65533;‡ Download Resized Photo
+              Download Resized Photo
             </button>
             <button id="resizer-batch-download-btn" class="btn btn-outline" style="display:none; width: 100%; margin-top: 8px; padding: 8px; font-weight: 600; font-size: 0.88rem;">
-              &#65533;‡ Download Active Photo Only
+              Download Active Photo Only
             </button>
           </div>
 
@@ -422,7 +425,8 @@
               <button type="button" class="pill-btn active" data-preset-dim="35x45mm">35 &times; 45 mm (Passport)</button>
               <button type="button" class="pill-btn" data-preset-dim="2x2in">2 &times; 2 in (US Visa)</button>
               <button type="button" class="pill-btn" data-preset-dim="50x50mm">50 &times; 50 mm (Schengen)</button>
-              <button type="button" class="pill-btn" data-preset-dim="100x100mm">100 &times; 100 mm</button>
+              <button type="button" class="pill-btn" data-preset-dim="213x213px">213 &times; 213 px (India PAN)</button>
+              <button type="button" class="pill-btn" data-preset-dim="354x472px">354 &times; 472 px (CNIC)</button>
               <button type="button" class="pill-btn" data-preset-dim="600x600px">600 &times; 600 px</button>
             </div>
           </div>
@@ -479,7 +483,9 @@
             </div>
             
             <div class="pill-group" style="margin-bottom: 12px;">
+              <button type="button" class="pill-btn" data-preset-kb="10">&le; 10 KB (Signatures)</button>
               <button type="button" class="pill-btn" data-preset-kb="20">&le; 20 KB (Govt Forms)</button>
+              <button type="button" class="pill-btn" data-preset-kb="30">&le; 30 KB (PAN Card)</button>
               <button type="button" class="pill-btn active" data-preset-kb="50">&le; 50 KB (Passports)</button>
               <button type="button" class="pill-btn" data-preset-kb="100">&le; 100 KB (Visa)</button>
               <button type="button" class="pill-btn" data-preset-kb="200">&le; 200 KB</button>

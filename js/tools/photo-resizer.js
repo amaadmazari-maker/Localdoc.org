@@ -1,4 +1,4 @@
-﻿/**
+/**
  * LocalDoc.org — Photo Resizer & Exact KB Reducer Engine (js/tools/photo-resizer.js)
  * 100% Client-Side In-Memory Execution. Zero Server Uploads.
  * Resize by mm, cm, inches, or pixels + compress to exact target file size in KB.
@@ -64,10 +64,20 @@
   function parseQueryParams() {
     try {
       const params = new URLSearchParams(window.location.search);
-      const preset = params.get('preset') || params.get('size') || params.get('dim');
-      const kb = params.get('kb') || params.get('target') || params.get('max');
+      let preset = (params.get('preset') || params.get('size') || params.get('dim') || '').toLowerCase().trim();
+      let kb = (params.get('kb') || params.get('target') || params.get('max') || '').toLowerCase().trim();
       const bg = params.get('bg') || params.get('background');
       const unit = params.get('unit');
+
+      if (preset === 'pan' || preset === 'pan-card' || preset === 'pan213') {
+        preset = '213x213px';
+        if (!kb) kb = '30';
+      } else if (preset === 'cnic' || preset === 'nadra' || preset === 'pak-identity') {
+        preset = '354x472px';
+        if (!kb) kb = '50';
+      } else if (preset === 'signature') {
+        if (!kb) kb = '10';
+      }
 
       if (preset) {
         const btn = document.querySelector(`[data-preset-dim="${preset}"]`);

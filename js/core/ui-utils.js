@@ -438,41 +438,52 @@ const UIUtils = {
     const prefix = isSub  ?  '../pages/' : 'pages/';
 
     const tools = [
-      { name: "PDF Camera Studio (A4 Scanner)", slug: "scan.html", category: "Scanner & Cam" },
-      { name: "Document Reader (PDF/Word/Excel)", slug: "document-reader.html", category: "Viewer" },
-      { name: "Scientific Calculator (Casio FX)", slug: "scientific-calculator.html", category: "Calculator" },
-      { name: "Compress PDF to 200KB (Exams/Govt)", slug: "compress-pdf-200kb.html", category: "Organize" },
-      { name: "Sign PDF Online (Digital Signature)", slug: "sign-pdf.html", category: "Sign & Edit" },
-      { name: "Protect PDF (Password AES-256)", slug: "protect-pdf.html", category: "Security" },
-      { name: "Organize PDF Pages", slug: "organize-pdf.html", category: "Organize" },
-      { name: "Create PDF Studio", slug: "create-pdf.html", category: "Document Builder" },
-      { name: "PDF to PowerPoint (PPTX)", slug: "pdf-to-powerpoint.html", category: "Convert" },
-      { name: "National ID & CNIC Studio (2-in-1 A4)", slug: "id-photo.html", category: "Biometric ID" },
-      { name: "PAN Card Photo & Signature Resizer (India)", slug: "pan-card-photo-resizer.html", category: "India Portal" },
-      { name: "UAE Emirates ID & Visa Photo Maker", slug: "emirates-id-photo-maker.html", category: "UAE & GCC" },
-      { name: "US Visa & Passport Photo Maker (DS-160)", slug: "us-visa-photo-maker.html", category: "US & Canada" },
-      { name: "Photo Resizer to 20KB & 50KB (Govt Jobs)", slug: "photo-resizer-20kb.html", category: "Exam Resizer" },
-      { name: "Photo Resizer & KB Reducer", slug: "photo-resizer.html", category: "Photo Utility" },
-      { name: "Compress PDF", slug: "compress-pdf.html", category: "Organize" },
-      { name: "Merge PDF", slug: "merge-pdf.html", category: "Organize" },
-      { name: "Split PDF", slug: "split-pdf.html", category: "Organize" },
-      { name: "Rotate PDF", slug: "rotate-pdf.html", category: "Organize" },
-      { name: "Edit PDF & Sign", slug: "edit-pdf.html", category: "Edit" },
-      { name: "PDF to Word (DOCX)", slug: "pdf-to-word.html", category: "Convert" },
-      { name: "Word to PDF", slug: "word-to-pdf.html", category: "Convert" },
-      { name: "PDF to Excel (XLSX)", slug: "pdf-to-excel.html", category: "Convert" },
-      { name: "Excel to PDF", slug: "excel-to-pdf.html", category: "Convert" },
-      { name: "PDF to High-Res JPG", slug: "pdf-to-jpg.html", category: "Convert" },
-      { name: "JPG to PDF", slug: "jpg-to-pdf.html", category: "Convert" },
-      { name: "PDF to PNG", slug: "pdf-to-png.html", category: "Convert" },
-      { name: "PNG to PDF", slug: "png-to-pdf.html", category: "Convert" },
-      { name: "Document Scanner", slug: "scan.html", category: "Scanner" },
-      { name: "CNIC Photo Maker", slug: "cnic-photo-maker.html", category: "Biometric ID" },
-      { name: "Passport Photo Maker", slug: "passport-photo-maker.html", category: "Biometric ID" },
-      { name: "Visa Photo Maker", slug: "visa-photo-maker.html", category: "Biometric ID" },
-      { name: "Image to Text (OCR)", slug: "image-to-text.html", category: "OCR" },
-      { name: "Add Watermark", slug: "watermark.html", category: "Security" },
-      { name: "Add Page Numbers", slug: "page-numbers.html", category: "Organize" }
+      // Core Tools
+      { name: "PDF Camera Studio (A4 Scanner)", slug: "scan.html", category: "Scanner & Cam", keywords: "camscanner scan papers ocr camera mobile perspective crop" },
+      { name: "Document Reader (PDF/Word/Excel)", slug: "document-reader.html", category: "Viewer", keywords: "reader viewer docx xlsx preview sheets office" },
+      { name: "Scientific Calculator (Casio FX)", slug: "scientific-calculator.html", category: "Calculator", keywords: "calculator math casio fx scientific deg rad fractions base-n" },
+      { name: "Sign PDF Online (Digital Signature)", slug: "sign-pdf.html", category: "Sign & Edit", keywords: "sign signature draw sign stamp e-sign sign contracts fill and sign" },
+      { name: "Protect PDF (Password & Restrictions)", slug: "protect-pdf.html", category: "Security", keywords: "protect encrypt password lock permissions restrict printing aes-256" },
+      { name: "Organize PDF Pages", slug: "organize-pdf.html", category: "Organize", keywords: "organize sort reorder drag drop rotate delete pages" },
+      { name: "Create PDF Studio", slug: "create-pdf.html", category: "Document Builder", keywords: "create pdf blank build document multi-page combine images" },
+      { name: "PDF to PowerPoint (PPTX)", slug: "pdf-to-powerpoint.html", category: "Convert", keywords: "pdf to powerpoint pptx slides presentation google slides" },
+      { name: "National ID & CNIC Studio (2-in-1 A4)", slug: "id-photo.html", category: "Biometric ID", keywords: "cnic nadra id card studio 2-in-1 a4 photocopy identity card front and back" },
+      { name: "Passport Photo Maker", slug: "passport-photo-maker.html", category: "Biometric ID", keywords: "passport photo visa photo biometric 2x2 35x45 print sheet 4x6 a4 background color" },
+      { name: "Photo Resizer & KB Reducer", slug: "photo-resizer.html", category: "Photo Utility", keywords: "photo resizer kb reducer reduce size compress image 20kb 50kb 100kb mm cm inches px" },
+      { name: "Compress PDF", slug: "compress-pdf.html", category: "Organize", keywords: "compress pdf reduce file size reduce mb 200kb 100kb shrink pdf optimization" },
+      { name: "Merge PDF", slug: "merge-pdf.html", category: "Organize", keywords: "merge combine join multiple pdfs unite concatenate" },
+      { name: "Split PDF", slug: "split-pdf.html", category: "Organize", keywords: "split extract pages burst separate page ranges" },
+      { name: "Rotate PDF", slug: "rotate-pdf.html", category: "Organize", keywords: "rotate 90 180 degrees fix sideways upside down pages" },
+      { name: "Edit PDF & Annotate", slug: "edit-pdf.html", category: "Edit", keywords: "edit annotate text draw highlight add notes pdf" },
+      { name: "PDF to Word (DOCX)", slug: "pdf-to-word.html", category: "Convert", keywords: "pdf to word docx editable microsoft word text tables" },
+      { name: "Word to PDF", slug: "word-to-pdf.html", category: "Convert", keywords: "word to pdf docx to pdf convert document printable a4" },
+      { name: "PDF to Excel (XLSX)", slug: "pdf-to-excel.html", category: "Convert", keywords: "pdf to excel xlsx spreadsheet financial table extraction bank statements" },
+      { name: "Excel to PDF", slug: "excel-to-pdf.html", category: "Convert", keywords: "excel to pdf xlsx to pdf spreadsheets table sheet to pdf" },
+      { name: "PDF to High-Res JPG", slug: "pdf-to-jpg.html", category: "Convert", keywords: "pdf to jpg jpeg high resolution 300 dpi convert images" },
+      { name: "JPG to PDF", slug: "jpg-to-pdf.html", category: "Convert", keywords: "jpg to pdf photos to document images to pdf compile jpgs" },
+      { name: "PDF to PNG (Lossless)", slug: "pdf-to-png.html", category: "Convert", keywords: "pdf to png transparent lossless high quality images" },
+      { name: "PNG to PDF", slug: "png-to-pdf.html", category: "Convert", keywords: "png to pdf transparent images artwork graphics to pdf" },
+      { name: "Image to Text (OCR)", slug: "image-to-text.html", category: "OCR", keywords: "ocr image to text optical character recognition extract text scan to text" },
+      { name: "Add Watermark", slug: "watermark.html", category: "Security", keywords: "watermark stamp confidential draft text opacity custom angle" },
+      { name: "Add Page Numbers", slug: "page-numbers.html", category: "Organize", keywords: "page numbers pagination header footer number pages" },
+
+      // Deep-Link Presets for Popular Regional & Exam Searches
+      { name: "PAN Card Photo Resizer (213\u00D7213 px, \u226430 KB)", slug: "photo-resizer.html?preset=pan", category: "India Portal Preset", keywords: "pan card photo 213x213 uti nsdl income tax 30kb signature 10kb" },
+      { name: "CNIC Biometric Photo (354\u00D7472 px, Light Blue)", slug: "passport-photo-maker.html?country=pk", category: "NADRA Portal Preset", keywords: "cnic photo pak identity nadra online 354x472 light blue background pakistan" },
+      { name: "UAE Emirates ID & Visa Photo (35\u00D745 mm)", slug: "passport-photo-maker.html?country=uae", category: "UAE & GCC Preset", keywords: "uae dubai emirates id icp gdrfa resident tourist visa 35x45" },
+      { name: "US Visa & Passport Photo (2\u00D72\" / DS-160)", slug: "passport-photo-maker.html?country=us", category: "US & Canada Preset", keywords: "us visa ds160 ds-160 united states passport 2x2 inch 51x51 green card" },
+      { name: "Canada Passport & PR Photo (50\u00D770 mm)", slug: "passport-photo-maker.html?country=ca", category: "US & Canada Preset", keywords: "canada pr permanent resident passport photo 50x70 large" },
+      { name: "UK HMPO Passport Photo (35\u00D745 mm)", slug: "passport-photo-maker.html?country=uk", category: "UK & Europe Preset", keywords: "uk passport hmpo british driving licence 35x45" },
+      { name: "Schengen Europe Visa Photo (35\u00D745 mm)", slug: "passport-photo-maker.html?country=schengen", category: "UK & Europe Preset", keywords: "schengen visa france germany italy spain 35x45 european union" },
+      { name: "South Korea ARC & Passport Photo (35\u00D745 mm)", slug: "passport-photo-maker.html?country=kr", category: "Asia Preset", keywords: "south korea koria arc alien registration passport visa 35x45" },
+      { name: "Russia Passport & Visa Photo (35\u00D745 mm, 80% Face)", slug: "passport-photo-maker.html?country=ru", category: "Europe Preset", keywords: "russia russian gosuslugi visa passport 35x45 80 percent" },
+      { name: "Saudi Arabia Hajj, Umrah & Iqama Photo", slug: "passport-photo-maker.html?country=saudi", category: "UAE & GCC Preset", keywords: "saudi arabia umrah hajj iqama driving license 2x2 40x60" },
+      { name: "China Visa Photo (33\u00D748 mm)", slug: "passport-photo-maker.html?country=cn", category: "Asia Preset", keywords: "china visa passport 33x48 standard" },
+      { name: "Japan Visa & Residence Photo (35\u00D745 mm)", slug: "passport-photo-maker.html?country=jp", category: "Asia Preset", keywords: "japan visa residence card 35x45" },
+      { name: "Compress PDF to \u2264 200 KB (UPSC / FPSC / Exams)", slug: "compress-pdf.html?target=200kb", category: "Exam Portal Preset", keywords: "compress pdf 200kb 200 kb upsc fpsc ssc government job upload portal" },
+      { name: "Compress PDF to \u2264 100 KB (Strict Portals)", slug: "compress-pdf.html?target=100kb", category: "Exam Portal Preset", keywords: "compress pdf 100kb 100 kb strict portal limit" },
+      { name: "Photo Resizer to \u2264 20 KB (Govt Job Applications)", slug: "photo-resizer.html?target=20kb", category: "Exam Portal Preset", keywords: "photo resizer 20kb 20 kb govt forms exams ssc upsc signature" },
+      { name: "Signature Resizer to \u2264 10 KB", slug: "photo-resizer.html?preset=signature", category: "Exam Portal Preset", keywords: "signature resizer 10kb 10 kb sign exam portal" }
     ];
 
     let backdrop = document.getElementById('search-modal-backdrop');
@@ -484,7 +495,7 @@ const UIUtils = {
         <div class="search-modal">
           <div class="search-modal-input-wrap">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 34 tools & 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
+            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 28 tools & 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
             <span class="kbd-shortcut">ESC</span>
           </div>
           <ul id="global-search-results" class="search-results-list"></ul>
@@ -501,7 +512,11 @@ const UIUtils = {
 
       const render = (query = '') => {
         const q = query.toLowerCase().trim();
-        const filtered = tools.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+        const filtered = q ? tools.filter(t => 
+          t.name.toLowerCase().includes(q) || 
+          t.category.toLowerCase().includes(q) || 
+          (t.keywords && t.keywords.toLowerCase().includes(q))
+        ) : tools.slice(0, 16);
         results.innerHTML = filtered.map(t => `
           <li class="search-result-item">
             <a href="${prefix}${t.slug}">
