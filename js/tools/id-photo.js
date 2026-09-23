@@ -192,7 +192,7 @@ const IDPhoto = {
           locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
         });
         segmenter.setOptions({
-          modelSelection: 1, // 1 for high quality portrait
+          modelSelection: 0, // 0 is fast general model (256x256, 3MB), crash-proof on mobile WebGL
           selfieMode: false
         });
         await segmenter.initialize();
@@ -206,24 +206,49 @@ const IDPhoto = {
   },
 
   // Segment a person from any room or background image
-  async segmentPerson(imgElement, { edgeFeather = 2, threshold = 0.5 } = {}) {
+  async segmentPerson(imgElement, { edgeFeather = 2, threshold = 0.5, tolerance = 42 } = {}) {
     if (!imgElement) return null;
 
     const w = imgElement.naturalWidth || imgElement.width || 600;
     const h = imgElement.naturalHeight || imgElement.height || 600;
 
-    // Try MediaPipe Selfie Segmentation first (WASM in RAM)
+    // 1. RAM Pre-scaler: downsample camera photos (12MP - 50MP) to max 512px buffer
+    // This prevents WebGL GL_OUT_OF_MEMORY crashes & texture allocation failures on mobile
+    const maxDim = 512;
+    let sendSource = imgElement;
+    if (w > maxDim || h > maxDim) {
+      const scale = maxDim / Math.max(w, h);
+      const bufW = Math.round(w * scale);
+      const bufH = Math.round(h * scale);
+      const bufCanvas = document.createElement('canvas');
+      bufCanvas.width = bufW;
+      bufCanvas.height = bufH;
+      const bCtx = bufCanvas.getContext('2d');
+      bCtx.drawImage(imgElement, 0, 0, bufW, bufH);
+      sendSource = bufCanvas;
+    }
+
+    // 2. Try MediaPipe Selfie Segmentation first (WASM/WebGL in RAM)
     if (typeof window.SelfieSegmentation !== 'undefined') {
       try {
         const segmenter = await this.initSegmenter();
         if (segmenter) {
           const maskPromise = new Promise((resolve) => {
+            // Safety timeout: 4s max so mobile users on slow connections never hang
+            const timeoutId = setTimeout(() => {
+              console.warn('MediaPipe segmentation timeout; switching to fast contour matting.');
+              resolve(null);
+            }, 4000);
+
             segmenter.onResults((results) => {
+              clearTimeout(timeoutId);
               if (results && results.segmentationMask) {
                 const maskCanvas = document.createElement('canvas');
                 maskCanvas.width = w;
                 maskCanvas.height = h;
                 const mCtx = maskCanvas.getContext('2d');
+                mCtx.imageSmoothingEnabled = true;
+                mCtx.imageSmoothingQuality = 'high';
                 mCtx.drawImage(results.segmentationMask, 0, 0, w, h);
                 resolve(maskCanvas);
               } else {
@@ -232,7 +257,7 @@ const IDPhoto = {
             });
           });
 
-          await segmenter.send({ image: imgElement });
+          await segmenter.send({ image: sendSource });
           const maskCanvas = await maskPromise;
           if (maskCanvas) {
             return this.applyMaskToImage(imgElement, maskCanvas, edgeFeather);
@@ -243,104 +268,241 @@ const IDPhoto = {
       }
     }
 
-    // High-precision adaptive Canvas Matting fallback (100% offline, zero network dependencies)
-    return this.fallbackCanvasMatting(imgElement, { edgeFeather, threshold });
+    // 3. High-precision adaptive Contour Canvas Matting fallback (100% offline, zero network dependencies)
+    return this.fallbackCanvasMatting(imgElement, { edgeFeather, threshold, tolerance });
   },
 
-  // Pure Client-Side Adaptive Canvas Background Matting Algorithm
-  fallbackCanvasMatting(imgElement, { edgeFeather = 3, threshold = 0.45 } = {}) {
-    const w = imgElement.naturalWidth || imgElement.width || 600;
-    const h = imgElement.naturalHeight || imgElement.height || 600;
+  // Pure Client-Side Adaptive Contour Background Matting Algorithm (No hardcoded circles/ellipses)
+  fallbackCanvasMatting(imgElement, { edgeFeather = 2, threshold = 0.45, tolerance = 42 } = {}) {
+    const origW = imgElement.naturalWidth || imgElement.width || 600;
+    const origH = imgElement.naturalHeight || imgElement.height || 600;
 
-    const srcCanvas = document.createElement('canvas');
-    srcCanvas.width = w;
-    srcCanvas.height = h;
-    const srcCtx = srcCanvas.getContext('2d');
-    srcCtx.drawImage(imgElement, 0, 0, w, h);
+    // Work on a fast analysis grid (max 360px) for instantaneous mobile processing (<30ms)
+    const maxGrid = 360;
+    const scale = Math.min(1.0, maxGrid / Math.max(origW, origH));
+    const gw = Math.max(120, Math.round(origW * scale));
+    const gh = Math.max(120, Math.round(origH * scale));
 
-    const imgData = srcCtx.getImageData(0, 0, w, h);
+    const gridCanvas = document.createElement('canvas');
+    gridCanvas.width = gw;
+    gridCanvas.height = gh;
+    const gCtx = gridCanvas.getContext('2d');
+    gCtx.drawImage(imgElement, 0, 0, gw, gh);
+
+    const imgData = gCtx.getImageData(0, 0, gw, gh);
     const data = imgData.data;
 
-    // Sample perimeter background colors (top, left, right borders)
-    const samples = [];
-    const sampleBorder = (x, y) => {
-      const idx = (y * w + x) * 4;
-      samples.push({ r: data[idx], g: data[idx + 1], b: data[idx + 2] });
+    // 1. Multi-cluster perimeter sampling: sample top border, top-left, top-right
+    // Where room backgrounds, walls, curtains, and switchboards reside
+    const topSamples = [];
+    const leftSamples = [];
+    const rightSamples = [];
+
+    const getPixel = (x, y) => {
+      const idx = (y * gw + x) * 4;
+      return { r: data[idx], g: data[idx + 1], b: data[idx + 2] };
     };
 
-    const stepX = Math.max(1, Math.floor(w / 40));
-    const stepY = Math.max(1, Math.floor(h / 40));
-
-    // Top border
-    for (let x = 0; x < w; x += stepX) {
-      for (let y = 0; y < Math.min(h * 0.15, 30); y += 4) sampleBorder(x, y);
-    }
-    // Left & right upper borders
-    for (let y = 0; y < h * 0.6; y += stepY) {
-      for (let x = 0; x < Math.min(w * 0.12, 25); x += 4) sampleBorder(x, y);
-      for (let x = Math.max(0, w - Math.min(w * 0.12, 25)); x < w; x += 4) sampleBorder(x, y);
-    }
-
-    let meanR = 0, meanG = 0, meanB = 0;
-    samples.forEach(s => { meanR += s.r; meanG += s.g; meanB += s.b; });
-    const n = Math.max(1, samples.length);
-    meanR /= n; meanG /= n; meanB /= n;
-
-    // Create Cutout Output Canvas
-    const outCanvas = document.createElement('canvas');
-    outCanvas.width = w;
-    outCanvas.height = h;
-    const outCtx = outCanvas.getContext('2d');
-    const outImgData = outCtx.createImageData(w, h);
-    const outData = outImgData.data;
-
-    const centerX = w / 2;
-    const headCenterY = h * 0.42;
-    const radiusX = w * 0.38;
-    const radiusY = h * 0.48;
-
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const idx = (y * w + x) * 4;
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
-
-        // Normalized distance from center portrait zone
-        const dx = (x - centerX) / radiusX;
-        const dy = (y - headCenterY) / radiusY;
-        const centerDist = dx * dx + dy * dy;
-
-        // Color difference from sampled room background
-        const colorDiff = Math.hypot(r - meanR, g - meanG, b - meanB);
-
-        // Skin detection heuristic in RGB space
-        const isSkin = (r > 60 && g > 35 && b > 20 && (r - g) > 8 && r > b);
-        const isDarkHairOrClothes = (r < 65 && g < 65 && b < 65 && centerDist < 1.4);
-
-        let alpha = 255;
-        if (centerDist > 1.6) {
-          alpha = Math.max(0, Math.min(255, (colorDiff - 30) * 3));
-        } else if (centerDist > 0.8) {
-          if (isSkin || isDarkHairOrClothes) {
-            alpha = 255;
-          } else {
-            const bgLikelihood = Math.max(0, Math.min(1, (65 - colorDiff) / 45));
-            alpha = Math.round(255 * (1 - bgLikelihood));
-          }
-        } else {
-          alpha = 255;
-        }
-
-        outData[idx] = r;
-        outData[idx + 1] = g;
-        outData[idx + 2] = b;
-        outData[idx + 3] = alpha;
+    // Top border (across entire width, top 12% height)
+    const topMaxY = Math.max(2, Math.floor(gh * 0.12));
+    for (let y = 0; y < topMaxY; y += 2) {
+      for (let x = 0; x < gw; x += 3) {
+        topSamples.push(getPixel(x, y));
       }
     }
 
-    outCtx.putImageData(outImgData, 0, 0);
-    return outCanvas;
+    // Upper left border (0 to 18% width, up to 65% height)
+    const leftMaxX = Math.max(2, Math.floor(gw * 0.18));
+    const sideMaxY = Math.max(2, Math.floor(gh * 0.65));
+    for (let y = topMaxY; y < sideMaxY; y += 3) {
+      for (let x = 0; x < leftMaxX; x += 3) {
+        leftSamples.push(getPixel(x, y));
+      }
+    }
+
+    // Upper right border (82% to 100% width, up to 65% height)
+    const rightMinX = Math.min(gw - 2, Math.floor(gw * 0.82));
+    for (let y = topMaxY; y < sideMaxY; y += 3) {
+      for (let x = rightMinX; x < gw; x += 3) {
+        rightSamples.push(getPixel(x, y));
+      }
+    }
+
+    const calcMean = (samples) => {
+      if (!samples.length) return { r: 240, g: 240, b: 240 };
+      let r = 0, g = 0, b = 0;
+      for (let i = 0; i < samples.length; i++) {
+        r += samples[i].r; g += samples[i].g; b += samples[i].b;
+      }
+      return { r: r / samples.length, g: g / samples.length, b: b / samples.length };
+    };
+
+    const meanTop = calcMean(topSamples);
+    const meanLeft = calcMean(leftSamples.length ? leftSamples : topSamples);
+    const meanRight = calcMean(rightSamples.length ? rightSamples : topSamples);
+
+    // Color distance function (perceptual human eye metric)
+    const colorDist = (r, g, b, bg) => {
+      const rmean = (r + bg.r) * 0.5;
+      const dr = r - bg.r;
+      const dg = g - bg.g;
+      const db = b - bg.b;
+      return Math.sqrt((2 + rmean / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rmean) / 256) * db * db);
+    };
+
+    const bgDist = (r, g, b) => {
+      return Math.min(
+        colorDist(r, g, b, meanTop),
+        colorDist(r, g, b, meanLeft),
+        colorDist(r, g, b, meanRight)
+      );
+    };
+
+    // 2. Perimeter-Connected Flood Map
+    // Background pixels connect to outer boundaries (ceiling/wall)
+    const bgMap = new Uint8Array(gw * gh); // 1 = background, 0 = foreground/person
+    const visited = new Uint8Array(gw * gh);
+    const queue = new Int32Array(gw * gh);
+    let qHead = 0;
+    let qTail = 0;
+
+    const tol = Math.max(20, tolerance || 42);
+
+    // Seed outer boundary pixels into flood queue
+    // Top row
+    for (let x = 0; x < gw; x++) {
+      const idx = x;
+      const pIdx = idx * 4;
+      if (bgDist(data[pIdx], data[pIdx + 1], data[pIdx + 2]) < tol * 1.5) {
+        visited[idx] = 1;
+        bgMap[idx] = 1;
+        queue[qTail++] = idx;
+      }
+    }
+    // Left & Right columns down to 75% height
+    const edgeLimitY = Math.floor(gh * 0.75);
+    for (let y = 1; y < edgeLimitY; y++) {
+      const idxL = y * gw;
+      const pL = idxL * 4;
+      if (!visited[idxL] && bgDist(data[pL], data[pL + 1], data[pL + 2]) < tol * 1.4) {
+        visited[idxL] = 1;
+        bgMap[idxL] = 1;
+        queue[qTail++] = idxL;
+      }
+      const idxR = y * gw + (gw - 1);
+      const pR = idxR * 4;
+      if (!visited[idxR] && bgDist(data[pR], data[pR + 1], data[pR + 2]) < tol * 1.4) {
+        visited[idxR] = 1;
+        bgMap[idxR] = 1;
+        queue[qTail++] = idxR;
+      }
+    }
+
+    // Breadth-First Flood-Fill to expand background around silhouette
+    while (qHead < qTail) {
+      const cur = queue[qHead++];
+      const cx = cur % gw;
+      const cy = Math.floor(cur / gw);
+
+      const neighbors = [
+        cx > 0 ? cur - 1 : -1,
+        cx < gw - 1 ? cur + 1 : -1,
+        cy > 0 ? cur - gw : -1,
+        cy < gh - 1 ? cur + gw : -1
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const nIdx = neighbors[i];
+        if (nIdx < 0 || visited[nIdx]) continue;
+        visited[nIdx] = 1;
+
+        const nx = nIdx % gw;
+        const ny = Math.floor(nIdx / gw);
+
+        // Core person protection: skin tones & center facial spine should NEVER be flooded
+        const np = nIdx * 4;
+        const nr = data[np];
+        const ng = data[np + 1];
+        const nb = data[np + 2];
+
+        // Biometric skin tone detection
+        const isSkin = (nr > 55 && ng > 35 && nb > 20 && (nr - ng) > 7 && nr > nb);
+        // Face center anchor (28% to 72% width, 18% to 62% height)
+        const inFaceBox = (nx > gw * 0.28 && nx < gw * 0.72 && ny > gh * 0.18 && ny < gh * 0.62);
+
+        if (isSkin && inFaceBox) {
+          // Protected person face feature
+          continue;
+        }
+
+        const d = bgDist(nr, ng, nb);
+        if (d < tol) {
+          bgMap[nIdx] = 1;
+          queue[qTail++] = nIdx;
+        }
+      }
+    }
+
+    // 3. Generate smooth Alpha Mask Canvas
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = gw;
+    maskCanvas.height = gh;
+    const mCtx = maskCanvas.getContext('2d');
+    const maskImgData = mCtx.createImageData(gw, gh);
+    const mData = maskImgData.data;
+
+    for (let y = 0; y < gh; y++) {
+      for (let x = 0; x < gw; x++) {
+        const idx = y * gw + x;
+        const pIdx = idx * 4;
+        const r = data[pIdx];
+        const g = data[pIdx + 1];
+        const b = data[pIdx + 2];
+
+        let alpha = 255;
+        if (bgMap[idx] === 1) {
+          alpha = 0;
+        } else {
+          // If not reached by flood, check color distance to background
+          const d = bgDist(r, g, b);
+          const isSkin = (r > 55 && g > 35 && b > 20 && (r - g) > 7 && r > b);
+          const inCenter = (x > gw * 0.25 && x < gw * 0.75 && y > gh * 0.2 && y < gh * 0.85);
+
+          if (isSkin && inCenter) {
+            alpha = 255;
+          } else if (d < tol * 0.75) {
+            // Very close to wall color and not skin
+            alpha = 0;
+          } else if (d < tol * 1.3) {
+            // Soft transitional feather edge between wall and person
+            const ramp = (d - tol * 0.75) / (tol * 0.55);
+            alpha = Math.max(0, Math.min(255, Math.round(ramp * 255)));
+          } else {
+            alpha = 255;
+          }
+        }
+
+        // Mask alpha channel: 0 = transparent background, 255 = person
+        mData[pIdx] = 255;
+        mData[pIdx + 1] = 255;
+        mData[pIdx + 2] = 255;
+        mData[pIdx + 3] = alpha;
+      }
+    }
+
+    mCtx.putImageData(maskImgData, 0, 0);
+
+    // 4. Scale up the mask to original image dimensions with edge smoothing
+    const fullMaskCanvas = document.createElement('canvas');
+    fullMaskCanvas.width = origW;
+    fullMaskCanvas.height = origH;
+    const fCtx = fullMaskCanvas.getContext('2d');
+    fCtx.imageSmoothingEnabled = true;
+    fCtx.imageSmoothingQuality = 'high';
+    fCtx.drawImage(maskCanvas, 0, 0, origW, origH);
+
+    // Apply Mask to original image
+    return this.applyMaskToImage(imgElement, fullMaskCanvas, edgeFeather);
   },
 
   // Apply a segmentation mask canvas to an image element to produce transparent cutout canvas

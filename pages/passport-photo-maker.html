@@ -626,6 +626,12 @@
                 <span id="suit-offset-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">0px</span>
               </div>
 
+              <div class="control-row" id="bg-tolerance-row">
+                <label for="bg-tolerance-slider">Wall Erase Sensitivity:</label>
+                <input type="range" id="bg-tolerance-slider" min="20" max="75" step="1" value="42">
+                <span id="bg-tolerance-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">42</span>
+              </div>
+
               <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
                 <button type="button" class="btn btn-outline" id="reset-btn" style="font-size:0.85rem;">Reset Adjustments</button>
               </div>
@@ -874,7 +880,7 @@
   <script src="../js/core/ui-utils.js?v=20260919-v7"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260919-v7"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
-  <script src="../js/tools/id-photo.js?v=20260919-v7"></script>
+  <script src="../js/tools/id-photo.js?v=20260923-v8"></script>
 
   <script>
     // Bulletproof Fallbacks for UIUtils
@@ -937,6 +943,7 @@
     let currentCutoutCanvas = null; // AI isolated person canvas
     let pAiCutoutEnabled = true; // AI Room Erase toggle
     let pFeatherPx = 2;
+    let pTolerance = 42;
     let pScale = 1.0;
     let pOffsetX = 0;
     let pOffsetY = 0;
@@ -1139,6 +1146,24 @@
         });
       }
 
+      // Wall Erase Tolerance
+      const tolS = document.getElementById('bg-tolerance-slider');
+      if (tolS) {
+        let rematTimer = null;
+        tolS.addEventListener('input', (e) => {
+          pTolerance = parseInt(e.target.value, 10);
+          const v = document.getElementById('bg-tolerance-val');
+          if (v) v.textContent = pTolerance;
+          if (loadedImgElem && pAiCutoutEnabled) {
+            clearTimeout(rematTimer);
+            rematTimer = setTimeout(async () => {
+              currentCutoutCanvas = await IDPhoto.segmentPerson(loadedImgElem, { edgeFeather: pFeatherPx, tolerance: pTolerance });
+              renderCanvasPreview();
+            }, 80);
+          }
+        });
+      }
+
       // Reset
       const resetBtn = document.getElementById('reset-btn');
       if (resetBtn) {
@@ -1151,6 +1176,7 @@
           pContrast = 100;
           pSuitKey = 'none';
           pSuitOffsetY = 0;
+          pTolerance = 42;
 
           if (zoomS) { zoomS.value = 1.0; document.getElementById('zoom-val').textContent = '1.00x'; }
           if (rotS) { rotS.value = 0; document.getElementById('rotate-val').textContent = '0°'; }
@@ -1158,6 +1184,7 @@
           if (contS) { contS.value = 100; document.getElementById('contrast-val').textContent = '100%'; }
           if (suitSelect) { suitSelect.value = 'none'; }
           if (suitRow) { suitRow.style.display = 'none'; }
+          if (tolS) { tolS.value = 42; const v = document.getElementById('bg-tolerance-val'); if (v) v.textContent = '42'; }
 
           renderCanvasPreview();
         });
@@ -1228,7 +1255,7 @@
         // Run client-side AI person isolation in background
         UIUtils.showToast("⚡ AI Studio: Isolating person from room background in RAM...", "info", 2000);
         try {
-          currentCutoutCanvas = await IDPhoto.segmentPerson(loadedImgElem, { edgeFeather: pFeatherPx });
+          currentCutoutCanvas = await IDPhoto.segmentPerson(loadedImgElem, { edgeFeather: pFeatherPx, tolerance: pTolerance });
           renderCanvasPreview();
           UIUtils.showToast("✓ Person isolated cleanly! Choose preset & background.", "success");
         } catch (segErr) {
