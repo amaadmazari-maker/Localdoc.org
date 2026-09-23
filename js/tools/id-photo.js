@@ -86,6 +86,41 @@ const IDPhoto = {
       headRatio: 0.70,
       bgRecommended: '#FFFFFF'
     },
+    'iqama-saudi': {
+      name: 'Saudi Arabia Iqama & Driving Licence (40x60mm)',
+      country: 'Saudi Arabia',
+      width: 472, height: 709, dpi: 300, mmW: 40, mmH: 60,
+      headRatio: 0.72,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-ru': {
+      name: 'Russia Passport & Visa (35x45mm, 80% face)',
+      country: 'Russia',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.80,
+      bgRecommended: '#F8FAFC'
+    },
+    'passport-kr': {
+      name: 'South Korea Passport & ARC (35x45mm)',
+      country: 'South Korea',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'pan-in': {
+      name: 'India PAN Card (213x213 px / 2.5x3.5 cm)',
+      country: 'India',
+      width: 213, height: 213, dpi: 300, mmW: 25, mmH: 25,
+      headRatio: 0.70,
+      bgRecommended: '#FFFFFF'
+    },
+    'pak-identity': {
+      name: 'Pak-Identity Online Portal (354x472 px, Light Blue)',
+      country: 'Pakistan',
+      width: 354, height: 472, dpi: 350, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#E0F2FE'
+    },
     'photo-1x1': {
       name: '1x1 Inch Square Photo (25x25mm)',
       country: 'Standard',
