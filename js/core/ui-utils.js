@@ -438,6 +438,21 @@ const UIUtils = {
     const prefix = isSub  ?  '../pages/' : 'pages/';
 
     const tools = [
+      { name: "PDF Camera Studio (A4 Scanner)", slug: "scan.html", category: "Scanner & Cam" },
+      { name: "Document Reader (PDF/Word/Excel)", slug: "document-reader.html", category: "Viewer" },
+      { name: "Scientific Calculator (Casio FX)", slug: "scientific-calculator.html", category: "Calculator" },
+      { name: "Compress PDF to 200KB (Exams/Govt)", slug: "compress-pdf-200kb.html", category: "Organize" },
+      { name: "Sign PDF Online (Digital Signature)", slug: "sign-pdf.html", category: "Sign & Edit" },
+      { name: "Protect PDF (Password AES-256)", slug: "protect-pdf.html", category: "Security" },
+      { name: "Organize PDF Pages", slug: "organize-pdf.html", category: "Organize" },
+      { name: "Create PDF Studio", slug: "create-pdf.html", category: "Document Builder" },
+      { name: "PDF to PowerPoint (PPTX)", slug: "pdf-to-powerpoint.html", category: "Convert" },
+      { name: "National ID & CNIC Studio (2-in-1 A4)", slug: "id-photo.html", category: "Biometric ID" },
+      { name: "PAN Card Photo & Signature Resizer (India)", slug: "pan-card-photo-resizer.html", category: "India Portal" },
+      { name: "UAE Emirates ID & Visa Photo Maker", slug: "emirates-id-photo-maker.html", category: "UAE & GCC" },
+      { name: "US Visa & Passport Photo Maker (DS-160)", slug: "us-visa-photo-maker.html", category: "US & Canada" },
+      { name: "Photo Resizer to 20KB & 50KB (Govt Jobs)", slug: "photo-resizer-20kb.html", category: "Exam Resizer" },
+      { name: "Photo Resizer & KB Reducer", slug: "photo-resizer.html", category: "Photo Utility" },
       { name: "Compress PDF", slug: "compress-pdf.html", category: "Organize" },
       { name: "Merge PDF", slug: "merge-pdf.html", category: "Organize" },
       { name: "Split PDF", slug: "split-pdf.html", category: "Organize" },
@@ -469,7 +484,7 @@ const UIUtils = {
         <div class="search-modal">
           <div class="search-modal-input-wrap">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 20 tools & 25 guides... (ESC to exit)" aria-label="Search all tools and guides">
+            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 34 tools & 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
             <span class="kbd-shortcut">ESC</span>
           </div>
           <ul id="global-search-results" class="search-results-list"></ul>
