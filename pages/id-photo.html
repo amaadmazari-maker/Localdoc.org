@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -11,8 +11,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global National ID &amp; CNIC Studio (Aadhaar, PAN, Emirates ID, Iqama, US ID) | LocalDoc</title>
-  <meta name="description" content="Global National ID Studio. Print 2-in-1 A4 photocopy sheets and create biometric photos for Pakistan CNIC, India Aadhaar &amp; PAN Card, UAE Emirates ID, Saudi Iqama, and US Real ID in browser RAM.">
+  <title>CNIC &amp; Global ID Card Studio (Pakistan CNIC, Aadhaar, PAN, Emirates ID, US ID) | LocalDoc</title>
+  <meta name="description" content="Official Pakistan NADRA CNIC &amp; Global National ID Studio. Print 2-in-1 A4 photocopy sheets and create compliant biometric photos for CNIC, India Aadhaar &amp; PAN Card, UAE Emirates ID, Saudi Iqama, and US Real ID in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/id-photo.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -20,8 +20,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Official CNIC Card Size &amp; 2-in-1 ID Photocopy Studio | LocalDoc">
-  <meta property="og:description" content="Exact NADRA CNIC size in inches &amp; mm. Generate true-scale 2-in-1 A4 photocopy sheets and 354x472 px biometric photos in browser RAM.">
+  <meta property="og:title" content="CNIC &amp; Global ID Card Studio | LocalDoc">
+  <meta property="og:description" content="Official Pakistan NADRA CNIC &amp; Global National ID Studio. Generate true-scale 2-in-1 A4 photocopy sheets and 354x472 px biometric photos in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/id-photo.html">
   <meta property="og:image" content="../assets/icons/cnic-photo-maker.svg">
 
@@ -124,6 +124,94 @@
   </script>
 
   <style>
+    /* Stepper Workflow Header */
+    .wizard-steps-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 auto 24px;
+      max-width: 850px;
+      padding: 10px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .wizard-steps-bar::-webkit-scrollbar { display: none; }
+    .wizard-step-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .wizard-step-item.active {
+      color: var(--primary);
+    }
+    .wizard-step-item.completed {
+      color: #10B981;
+    }
+    .wizard-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-body);
+      border: 1.5px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+    .wizard-step-item.active .wizard-step-num {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+    .wizard-step-item.completed .wizard-step-num {
+      background: #10B981;
+      color: #FFFFFF;
+      border-color: #10B981;
+    }
+    .wizard-step-sep {
+      color: var(--line);
+      font-weight: 300;
+      user-select: none;
+    }
+    .step-card-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 0 auto 16px;
+      max-width: 850px;
+      text-align: left;
+    }
+    .step-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 12px;
+      letter-spacing: 0.02em;
+    }
+
     /* Mode Switcher Tabs */
     .studio-mode-tabs {
       display: flex;
@@ -406,16 +494,16 @@
       <span class="breadcrumb-sep">/</span>
       <a href="../index.html#category-filter-bar">ID &amp; Biometric Tools</a>
       <span class="breadcrumb-sep">/</span>
-      <span>CNIC &amp; ID Card Studio</span>
+      <span>CNIC &amp; Global ID Studio</span>
     </nav>
 
     <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>100% In-Browser ID &amp; CNIC Studio</span>
+          <span>100% In-Browser CNIC &amp; ID Studio</span>
         </div>
-        <h1>Global National ID &amp; CNIC Studio</h1>
+        <h1>CNIC &amp; Global ID Card Studio</h1>
         <p class="tool-desc">Create 100% life-size 2-in-1 A4 photocopy sheets or generate official biometric photos for Pakistan CNIC, India PAN/Aadhaar, UAE Emirates ID, Saudi Iqama, US Driver License, and UK ID cards in local browser RAM.</p>
       </div>
 
@@ -429,115 +517,167 @@
         </button>
       </div>
 
+      <!-- Stepper Workflow Header -->
+      <div class="wizard-steps-bar" id="wizard-stepper">
+        <div class="wizard-step-item active" id="step-node-1" onclick="handleStepNav(1)">
+          <span class="wizard-step-num">1</span>
+          <span id="step-text-1">Country Standard</span>
+        </div>
+        <span class="wizard-step-sep">&rsaquo;</span>
+        <div class="wizard-step-item" id="step-node-2" onclick="handleStepNav(2)">
+          <span class="wizard-step-num">2</span>
+          <span id="step-text-2">Upload Front &amp; Back</span>
+        </div>
+        <span class="wizard-step-sep">&rsaquo;</span>
+        <div class="wizard-step-item" id="step-node-3" onclick="handleStepNav(3)">
+          <span class="wizard-step-num">3</span>
+          <span id="step-text-3">Purpose &amp; Attestation</span>
+        </div>
+        <span class="wizard-step-sep">&rsaquo;</span>
+        <div class="wizard-step-item" id="step-node-4" onclick="handleStepNav(4)">
+          <span class="wizard-step-num">4</span>
+          <span id="step-text-4">Download 2-in-1 Sheet</span>
+        </div>
+      </div>
+
       <!-- ======================================================== -->
       <!-- MODE 1: 2-IN-1 ID CARD PHOTOCOPY SECTION -->
       <!-- ======================================================== -->
-            <div id="section-photocopy-mode">
-        <!-- Country Card Selection for 2-in-1 Photocopy -->
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin:0 auto 16px; max-width:850px; text-align:left;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-            <span style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">Card Type &amp; Country Standard:</span>
-            <span style="font-size:0.75rem; color:var(--primary); font-weight:700; background:rgba(2,132,199,0.08); padding:2px 8px; border-radius:10px;">ISO/IEC 7810 ID-1 Standard (85.60 &times; 53.98 mm)</span>
+      <div id="section-photocopy-mode">
+        <!-- STEP 1: Country Card Selection for 2-in-1 Photocopy -->
+        <div class="step-card-panel" id="photocopy-step-1">
+          <div class="step-section-header">
+            <span class="step-badge">Step 1</span>
+            <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Select Card Type &amp; Country Standard</h3>
+            <span style="margin-left:auto; font-size:0.75rem; color:var(--primary); font-weight:700; background:rgba(2,132,199,0.08); padding:3px 10px; border-radius:10px;">ISO/IEC 7810 ID-1 Standard (85.60 &times; 53.98 mm)</span>
           </div>
+          <p style="margin:0 0 12px; font-size:0.84rem; color:var(--text-secondary); line-height:1.5;">
+            Choose your national card format to ensure 100% exact true-to-life physical sizing on standard A4 paper:
+          </p>
           <div style="display:flex; flex-wrap:wrap; gap:8px;">
-            <button type="button" class="btn btn-outline active card-preset-btn" onclick="selectCardStandard('all', '100% Life-Size A4 Double-Sided Photocopy', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">Global ISO ID-1 Standard</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('pk', 'Pakistan CNIC / Smart Card', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#0284C7; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">PK</span> Pakistan CNIC</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('in', 'India Aadhaar &amp; PAN Card', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India Aadhaar / PAN</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('ae', 'UAE Emirates ID', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#059669; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">AE</span> UAE Emirates ID</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('sa', 'Saudi Iqama / Muqeem', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#16A34A; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">SA</span> Saudi Iqama</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('us', 'US Driver License / Real ID', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#2563EB; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">US</span> US Driver License</button>
-            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('uk', 'UK Driving Licence / CitizenCard', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;"><span style="background:#DC2626; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">UK</span> UK Driving Licence</button>
+            <button type="button" class="btn btn-outline active card-preset-btn" onclick="selectCardStandard('pk', 'Pakistan CNIC / Smart Card', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">
+              <span style="background:#0284C7; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">PK</span> Pakistan CNIC
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('all', 'Global ISO ID-1 Standard (85.6x54 mm)', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              🌐 Global ISO ID-1 Standard
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('in', 'India Aadhaar &amp; PAN Card', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              <span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India Aadhaar / PAN
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('ae', 'UAE Emirates ID', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              <span style="background:#059669; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">AE</span> UAE Emirates ID
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('sa', 'Saudi Iqama / Muqeem', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              <span style="background:#16A34A; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">SA</span> Saudi Iqama
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('us', 'US Driver License / Real ID', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              <span style="background:#2563EB; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">US</span> US Driver License
+            </button>
+            <button type="button" class="btn btn-outline card-preset-btn" onclick="selectCardStandard('uk', 'UK Driving Licence / CitizenCard', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              <span style="background:#DC2626; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">UK</span> UK Driving Licence
+            </button>
           </div>
         </div>
+
         <!-- Quick Info Banner -->
-        <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:12px 16px; border-radius:var(--radius-sm); margin:0 auto 20px; max-width:850px; text-align:left;">
-          <p style="margin:0; font-size:0.9rem; color:var(--text-secondary); line-height:1.6;">
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:10px 14px; border-radius:var(--radius-sm); margin:0 auto 16px; max-width:850px; text-align:left;">
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.5;">
             <strong style="color:var(--text-primary);">Standard A4 Double-Sided Layout:</strong> Automatically scales Front &amp; Back to official ISO ID-1 physical dimensions (85.6 &times; 53.98 mm) on standard A4 paper with optional attestation area.
           </p>
         </div>
 
-        <!-- 2-in-1 Cards Upload Section -->
-        <div class="id-cards-grid">
-          
-          <!-- FRONT SIDE BOX -->
-          <div class="id-side-box" id="front-card-box" title="Click to upload Front Side">
-            <span class="side-badge">1. Front Side</span>
-            
-            <div id="front-placeholder">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="10" y2="8"></line><line x1="6" y1="12" x2="18" y2="12"></line><line x1="6" y1="16" x2="14" y2="16"></line></svg>
-              <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Front of ID Card / CNIC</h4>
-              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
-              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
-                <button type="button" class="btn btn-primary" id="front-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
-                  📁 Gallery
-                </button>
-                <button type="button" class="btn btn-outline" id="front-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
-                  📷 Camera
-                </button>
-              </div>
-            </div>
-
-            <div id="front-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
-              <img id="front-preview-img" class="id-side-preview" src="" alt="Front ID Preview">
-              <div style="display:flex; gap:8px; justify-content:center;">
-                <button type="button" class="btn btn-outline" id="front-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
-                  🔄 Rotate 90&deg;
-                </button>
-                <button type="button" class="btn btn-outline" id="front-change-btn" style="padding:4px 10px; font-size:0.78rem;">
-                  Change
-                </button>
-              </div>
-            </div>
-
-            <!-- Hidden inputs for Front -->
-            <input type="file" id="front-file-input" accept="image/*" style="display:none;">
-            <input type="file" id="front-camera-input" accept="image/*" capture="environment" style="display:none;">
+        <!-- STEP 2: 2-in-1 Cards Upload Section -->
+        <div class="step-card-panel" id="photocopy-step-2" style="background:transparent; border:none; padding:0;">
+          <div class="step-section-header" style="padding:0 4px;">
+            <span class="step-badge">Step 2</span>
+            <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Upload or Snap Front &amp; Back Sides</h3>
+            <span style="margin-left:auto; font-size:0.8rem; color:var(--text-secondary);">Direct Camera or Gallery Upload</span>
           </div>
 
-          <!-- BACK SIDE BOX -->
-          <div class="id-side-box" id="back-card-box" title="Click to upload Back Side">
-            <span class="side-badge">2. Back Side</span>
-
-            <div id="back-placeholder">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><circle cx="8" cy="12" r="2"></circle><line x1="14" y1="10" x2="18" y2="10"></line><line x1="14" y1="14" x2="18" y2="14"></line></svg>
-              <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Back of ID Card / CNIC</h4>
-              <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
-              <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
-                <button type="button" class="btn btn-primary" id="back-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
-                  📁 Gallery
-                </button>
-                <button type="button" class="btn btn-outline" id="back-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
-                  📷 Camera
-                </button>
+          <div class="id-cards-grid" style="margin-top:8px;">
+            <!-- FRONT SIDE BOX -->
+            <div class="id-side-box" id="front-card-box" title="Click to upload Front Side">
+              <span class="side-badge">1. Front Side</span>
+              
+              <div id="front-placeholder">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="8" x2="10" y2="8"></line><line x1="6" y1="12" x2="18" y2="12"></line><line x1="6" y1="16" x2="14" y2="16"></line></svg>
+                <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Front of ID Card / CNIC</h4>
+                <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
+                <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
+                  <button type="button" class="btn btn-primary" id="front-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
+                    📁 Gallery
+                  </button>
+                  <button type="button" class="btn btn-outline" id="front-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
+                    📷 Camera
+                  </button>
+                </div>
               </div>
+
+              <div id="front-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
+                <img id="front-preview-img" class="id-side-preview" src="" alt="Front ID Preview">
+                <div style="display:flex; gap:8px; justify-content:center;">
+                  <button type="button" class="btn btn-outline" id="front-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
+                    🔄 Rotate 90&deg;
+                  </button>
+                  <button type="button" class="btn btn-outline" id="front-change-btn" style="padding:4px 10px; font-size:0.78rem;">
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              <!-- Hidden inputs for Front -->
+              <input type="file" id="front-file-input" accept="image/*" style="display:none;">
+              <input type="file" id="front-camera-input" accept="image/*" capture="environment" style="display:none;">
             </div>
 
-            <div id="back-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
-              <img id="back-preview-img" class="id-side-preview" src="" alt="Back ID Preview">
-              <div style="display:flex; gap:8px; justify-content:center;">
-                <button type="button" class="btn btn-outline" id="back-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
-                  🔄 Rotate 90&deg;
-                </button>
-                <button type="button" class="btn btn-outline" id="back-change-btn" style="padding:4px 10px; font-size:0.78rem;">
-                  Change
-                </button>
-              </div>
-            </div>
+            <!-- BACK SIDE BOX -->
+            <div class="id-side-box" id="back-card-box" title="Click to upload Back Side">
+              <span class="side-badge">2. Back Side</span>
 
-            <!-- Hidden inputs for Back -->
-            <input type="file" id="back-file-input" accept="image/*" style="display:none;">
-            <input type="file" id="back-camera-input" accept="image/*" capture="environment" style="display:none;">
+              <div id="back-placeholder">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin-bottom:10px;"><rect x="2" y="4" width="20" height="16" rx="2"></rect><circle cx="8" cy="12" r="2"></circle><line x1="14" y1="10" x2="18" y2="10"></line><line x1="14" y1="14" x2="18" y2="14"></line></svg>
+                <h4 style="margin:0 0 4px; font-size:0.95rem; color:var(--text-primary);">Back of ID Card / CNIC</h4>
+                <p style="margin:0 0 14px; font-size:0.78rem; color:var(--text-secondary);">Tap box, choose gallery, or snap with camera</p>
+                <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" onclick="event.stopPropagation()">
+                  <button type="button" class="btn btn-primary" id="back-browse-btn" style="padding:6px 14px; font-size:0.82rem;">
+                    📁 Gallery
+                  </button>
+                  <button type="button" class="btn btn-outline" id="back-camera-btn" style="padding:6px 14px; font-size:0.82rem; background:var(--bg-surface);">
+                    📷 Camera
+                  </button>
+                </div>
+              </div>
+
+              <div id="back-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
+                <img id="back-preview-img" class="id-side-preview" src="" alt="Back ID Preview">
+                <div style="display:flex; gap:8px; justify-content:center;">
+                  <button type="button" class="btn btn-outline" id="back-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
+                    🔄 Rotate 90&deg;
+                  </button>
+                  <button type="button" class="btn btn-outline" id="back-change-btn" style="padding:4px 10px; font-size:0.78rem;">
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              <!-- Hidden inputs for Back -->
+              <input type="file" id="back-file-input" accept="image/*" style="display:none;">
+              <input type="file" id="back-camera-input" accept="image/*" capture="environment" style="display:none;">
+            </div>
           </div>
-
         </div>
 
-        <!-- Photocopy Options -->
-        <div class="photocopy-options-panel">
+        <!-- STEP 3: Photocopy Options -->
+        <div class="step-card-panel photocopy-options-panel" id="photocopy-step-3">
+          <div class="step-section-header">
+            <span class="step-badge">Step 3</span>
+            <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Document Purpose &amp; Attestation Header (Optional)</h3>
+          </div>
           <div style="margin-bottom:14px;">
             <label for="doc-title-input" style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:6px;">
-              Document Header Note / Purpose (Optional):
+              Header Note / Stamped Purpose:
             </label>
-            <input type="text" id="doc-title-input" class="form-control" value="IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET" style="width:100%; padding:8px 12px; font-size:0.85rem; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+            <input type="text" id="doc-title-input" class="form-control" value="PAKISTAN CNIC PHOTOCOPY / VERIFICATION SHEET" style="width:100%; padding:8px 12px; font-size:0.85rem; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
             
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
               <button type="button" class="quick-pill" onclick="setDocTitle('CNIC COPY FOR BANK ACCOUNT VERIFICATION')">Bank Verification</button>
@@ -555,8 +695,12 @@
           </div>
         </div>
 
-        <!-- Action Button -->
-        <div style="text-align:center; margin:24px 0;">
+        <!-- STEP 4: Action Button & Download Results -->
+        <div class="step-card-panel" id="photocopy-step-4" style="background:transparent; border:none; padding:0; text-align:center;">
+          <div class="step-section-header" style="justify-content:center; margin-bottom:16px;">
+            <span class="step-badge">Step 4</span>
+            <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Generate &amp; Download 2-in-1 A4 Sheet</h3>
+          </div>
           <button type="button" class="btn btn-primary btn-lg" id="generate-idcard-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
             <span>Generate 2-in-1 A4 Photocopy Sheet</span> &rarr;
           </button>
@@ -597,7 +741,14 @@
       <!-- MODE 2: BIOMETRIC CNIC PHOTO MAKER SECTION -->
       <!-- ======================================================== -->
       <div id="section-photo-mode" style="display:none;">
-        <!-- Drop Zone & Direct Capture Area -->
+        <!-- STEP 1: Drop Zone & Direct Capture Area -->
+        <div class="step-card-panel" id="photo-step-1" style="background:transparent; border:none; padding:0; margin-bottom:12px;">
+          <div class="step-section-header">
+            <span class="step-badge">Step 1</span>
+            <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Upload or Snap Portrait Photo</h3>
+          </div>
+        </div>
+
         <div class="drop-zone" id="cnic-photo-drop-zone" style="cursor:pointer;" title="Click to select photo or drop here">
           <div class="drop-zone-icon">
             <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker Icon" width="54" height="54">
@@ -618,45 +769,53 @@
           <input type="file" id="cnic-photo-camera-input" accept="image/*" capture="user" style="display:none;">
         </div>
 
-        <!-- CNIC Photo Workspace -->
+        <!-- Biometric Workspace -->
         <div id="cnic-photo-workspace" style="display:none; margin-top:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-            <span style="font-weight:700; color:var(--text-primary); font-size:0.95rem;">🇵🇰 NADRA Biometric Spec (354&times;472 px @ 350 DPI)</span>
-            <button type="button" class="btn btn-outline" id="cnic-photo-change-btn" style="padding:4px 12px; font-size:0.8rem;">Change Photo</button>
-          </div>
-
-                    <!-- Global National ID Presets Bar -->
-          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:14px; text-align:left;">
-            <label style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:8px;">Select Country National ID Spec:</label>
+          <!-- STEP 2: Country Spec -->
+          <div class="step-card-panel" id="photo-step-2">
+            <div class="step-section-header">
+              <span class="step-badge">Step 2</span>
+              <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Select Country National ID Spec</h3>
+              <button type="button" class="btn btn-outline" id="cnic-photo-change-btn" style="margin-left:auto; padding:4px 12px; font-size:0.8rem;">📷 Change Photo</button>
+            </div>
             <div style="display:flex; flex-wrap:wrap; gap:8px;" id="id-country-presets-bar">
-              <button type="button" class="btn btn-outline active id-preset-btn" onclick="selectIdPreset('cnic-pk', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">
+              <button type="button" class="btn btn-outline active id-preset-btn" onclick="selectIdPreset('cnic-pk', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:700; border-color:var(--primary); background:rgba(2,132,199,0.08); color:var(--primary);">
                 <span style="background:#0284C7; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">PK</span> Pakistan CNIC (354&times;472 px)
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('pan-in', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('pan-in', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India PAN Card (213&times;213 px)
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('aadhaar-in', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('aadhaar-in', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#EA580C; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">IN</span> India Aadhaar (35&times;45 mm)
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('emirates-ae', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('emirates-ae', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#059669; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">AE</span> UAE Emirates ID (35&times;45 mm)
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('iqama-sa', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('iqama-sa', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#16A34A; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">SA</span> Saudi Iqama (40&times;60 mm)
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('us-id', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('us-id', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#2563EB; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">US</span> US Real ID / Green Card (2&times;2")
               </button>
-              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('uk-id', this)" style="padding:5px 12px; font-size:0.82rem; font-weight:600;">
+              <button type="button" class="btn btn-outline id-preset-btn" onclick="selectIdPreset('uk-id', this)" style="padding:6px 14px; font-size:0.82rem; font-weight:600;">
                 <span style="background:#DC2626; color:#fff; font-size:0.72rem; padding:1px 5px; border-radius:3px; font-weight:700; margin-right:4px;">UK</span> UK Driving Licence (35&times;45 mm)
               </button>
             </div>
+            <div id="id-active-spec-label" style="margin-top:10px; font-size:0.82rem; font-weight:700; color:var(--primary);">
+              🇵🇰 NADRA Biometric Spec (354&times;472 px @ 350 DPI / 35&times;45 mm)
+            </div>
           </div>
 
-          <!-- Background Color Selector -->
-          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:16px; text-align:left;">
+          <!-- STEP 3: Background & Align -->
+          <div class="step-card-panel" id="photo-step-3">
+            <div class="step-section-header">
+              <span class="step-badge">Step 3</span>
+              <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Studio Background &amp; Biometric Alignment</h3>
+            </div>
+
+            <!-- Background Color Selector -->
             <label style="font-weight:700; font-size:0.85rem; color:var(--text-primary); display:block; margin-bottom:8px;">Background Color:</label>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
               <button type="button" class="btn btn-outline" id="bg-blue-btn" onclick="setCnicBg('#E0F2FE')" style="padding:6px 14px; font-size:0.82rem; font-weight:700; border-color:#0284C7; color:#0284C7; background:rgba(2,132,199,0.08);">
                 🇵🇰 NADRA Light Blue (#E0F2FE)
               </button>
@@ -667,44 +826,48 @@
                 Light Grey (#F1F5F9)
               </button>
             </div>
+
+            <!-- Crop Viewport -->
+            <div class="crop-viewport-container">
+              <div class="crop-preview-box" id="cnic-preview-box">
+                <canvas id="cnic-canvas" class="crop-canvas-elem"></canvas>
+                <div class="face-guide-oval"></div>
+                <div class="biometric-center-line"></div>
+                <div class="biometric-eye-line"></div>
+              </div>
+
+              <!-- Sliders -->
+              <div class="controls-panel">
+                <div class="control-row">
+                  <label for="cnic-zoom-slider">Zoom / Scale:</label>
+                  <input type="range" id="cnic-zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+                  <span id="cnic-zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
+                </div>
+                <div class="control-row">
+                  <label for="cnic-rot-slider">Straighten / Rotate:</label>
+                  <input type="range" id="cnic-rot-slider" min="-45" max="45" step="1" value="0">
+                  <span id="cnic-rot-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">0&deg;</span>
+                </div>
+                <div class="control-row">
+                  <label for="cnic-bright-slider">Brightness:</label>
+                  <input type="range" id="cnic-bright-slider" min="60" max="140" step="1" value="100">
+                  <span id="cnic-bright-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
+                </div>
+                <div class="control-row">
+                  <label for="cnic-cont-slider">Contrast:</label>
+                  <input type="range" id="cnic-cont-slider" min="60" max="140" step="1" value="100">
+                  <span id="cnic-cont-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Crop Viewport -->
-          <div class="crop-viewport-container">
-            <div class="crop-preview-box" id="cnic-preview-box">
-              <canvas id="cnic-canvas" class="crop-canvas-elem"></canvas>
-              <div class="face-guide-oval"></div>
-              <div class="biometric-center-line"></div>
-              <div class="biometric-eye-line"></div>
+          <!-- STEP 4: Generate & Download -->
+          <div class="step-card-panel" id="photo-step-4" style="text-align:center; background:transparent; border:none; padding:0;">
+            <div class="step-section-header" style="justify-content:center; margin-bottom:16px;">
+              <span class="step-badge">Step 4</span>
+              <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Generate &amp; Download Biometric Photo</h3>
             </div>
-
-            <!-- Sliders -->
-            <div class="controls-panel">
-              <div class="control-row">
-                <label for="cnic-zoom-slider">Zoom / Scale:</label>
-                <input type="range" id="cnic-zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
-                <span id="cnic-zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
-              </div>
-              <div class="control-row">
-                <label for="cnic-rot-slider">Straighten / Rotate:</label>
-                <input type="range" id="cnic-rot-slider" min="-45" max="45" step="1" value="0">
-                <span id="cnic-rot-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">0&deg;</span>
-              </div>
-              <div class="control-row">
-                <label for="cnic-bright-slider">Brightness:</label>
-                <input type="range" id="cnic-bright-slider" min="60" max="140" step="1" value="100">
-                <span id="cnic-bright-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
-              </div>
-              <div class="control-row">
-                <label for="cnic-cont-slider">Contrast:</label>
-                <input type="range" id="cnic-cont-slider" min="60" max="140" step="1" value="100">
-                <span id="cnic-cont-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">100%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Generate Photo Button -->
-          <div style="text-align:center; margin:20px 0;">
             <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
               <span>Generate Official NADRA CNIC Photo</span> &rarr;
             </button>
@@ -717,8 +880,8 @@
             <img id="cnic-photo-preview-img" src="" alt="NADRA CNIC Photo Preview" style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);">
           </div>
           <div class="result-details">
-            <h3>Official NADRA Photo Ready!</h3>
-            <p>Strictly sized at 354&times;472 px (35&times;45mm) &amp; under 300KB for the Pak-Identity online portal.</p>
+            <h3 id="cnic-photo-result-title">Official NADRA Photo Ready!</h3>
+            <p id="cnic-photo-result-desc">Strictly sized at 354&times;472 px (35&times;45mm) &amp; under 300KB for the Pak-Identity online portal.</p>
           </div>
           <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px;">
             <button type="button" class="btn btn-primary btn-lg" id="download-cnic-single-btn">
@@ -1042,6 +1205,72 @@
     let cnicSingleBlob = null;
     let cnicSheetBlob = null;
 
+    window.selectedIdPreset = 'cnic-pk';
+    window.ID_PRESET_CONFIG = {
+      'cnic-pk': { name: 'Pakistan CNIC', w: 413, h: 531, bg: '#E0F2FE', filename: 'pak_identity_cnic_photo.jpg', desc: '🇵🇰 NADRA Biometric Spec (354×472 px @ 350 DPI / 35×45 mm)' },
+      'pan-in': { name: 'India PAN Card', w: 213, h: 213, bg: '#FFFFFF', filename: 'india_pan_card_photo.jpg', desc: '🇮🇳 India PAN Card Biometric Spec (213×213 px, ≤30 KB)' },
+      'aadhaar-in': { name: 'India Aadhaar Card', w: 413, h: 531, bg: '#FFFFFF', filename: 'india_aadhaar_photo.jpg', desc: '🇮🇳 India Aadhaar / Passport Spec (35×45 mm @ 300 DPI)' },
+      'emirates-ae': { name: 'UAE Emirates ID', w: 413, h: 531, bg: '#FFFFFF', filename: 'uae_emirates_id_photo.jpg', desc: '🇦🇪 UAE Emirates ID & Visa Spec (35×45 mm, Pure White)' },
+      'iqama-sa': { name: 'Saudi Iqama', w: 472, h: 709, bg: '#FFFFFF', filename: 'saudi_iqama_photo.jpg', desc: '🇸🇦 Saudi Iqama & Driving Licence (40×60 mm @ 300 DPI)' },
+      'us-id': { name: 'US State ID / Green Card', w: 600, h: 600, bg: '#FFFFFF', filename: 'us_id_card_photo.jpg', desc: '🇺🇸 US Driver License & Green Card (2×2 inch / 600×600 px)' },
+      'uk-id': { name: 'UK Driving Licence', w: 413, h: 531, bg: '#F1F5F9', filename: 'uk_driving_licence_photo.jpg', desc: '🇬🇧 UK Driving Licence & CitizenCard (35×45 mm, Off-White)' }
+    };
+
+    function setWizardStep(step) {
+      for (let i = 1; i <= 4; i++) {
+        const node = document.getElementById(`step-node-${i}`);
+        if (!node) continue;
+        node.classList.remove('active', 'completed');
+        if (i < step) {
+          node.classList.add('completed');
+        } else if (i === step) {
+          node.classList.add('active');
+        }
+      }
+    }
+
+    function updateStepperLabels(mode) {
+      const t1 = document.getElementById('step-text-1');
+      const t2 = document.getElementById('step-text-2');
+      const t3 = document.getElementById('step-text-3');
+      const t4 = document.getElementById('step-text-4');
+      if (mode === 'photocopy') {
+        if (t1) t1.textContent = 'Country Standard';
+        if (t2) t2.textContent = 'Upload Front & Back';
+        if (t3) t3.textContent = 'Purpose & Attestation';
+        if (t4) t4.textContent = 'Download 2-in-1 Sheet';
+        if (compiledA4Canvas) {
+          setWizardStep(4);
+        } else if (frontImgData || backImgData) {
+          setWizardStep(3);
+        } else {
+          setWizardStep(1);
+        }
+      } else {
+        if (t1) t1.textContent = 'Upload / Snap Photo';
+        if (t2) t2.textContent = 'Country Spec';
+        if (t3) t3.textContent = 'Background & Align';
+        if (t4) t4.textContent = 'Download & Print';
+        if (cnicSingleBlob) {
+          setWizardStep(4);
+        } else if (cnicPhotoImg) {
+          setWizardStep(3);
+        } else {
+          setWizardStep(1);
+        }
+      }
+    }
+
+    window.handleStepNav = function(stepNum) {
+      if (currentStudioMode === 'photocopy') {
+        const el = document.getElementById(`photocopy-step-${stepNum}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        const el = document.getElementById(`photo-step-${stepNum}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
     function initStudio() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('mode') === 'photo') {
@@ -1065,6 +1294,8 @@
       const tabPh = document.getElementById('tab-photo-btn');
       if (tabP) tabP.classList.toggle('active', mode === 'photocopy');
       if (tabPh) tabPh.classList.toggle('active', mode === 'photo');
+
+      updateStepperLabels(mode);
 
       if (mode === 'photo' && cnicPhotoImg) {
         requestAnimationFrame(() => renderCnicPreview());
@@ -1355,19 +1586,8 @@
     }
 
     // ==========================================
-    // 2. CNIC Photo Handlers
+    // 2. CNIC & ID Photo Handlers
     // ==========================================
-        window.selectedIdPreset = 'cnic-pk';
-    window.ID_PRESET_CONFIG = {
-      'cnic-pk': { name: 'Pakistan CNIC', w: 413, h: 531, bg: '#E0F2FE', filename: 'pak_identity_cnic_photo.jpg', desc: 'ðŸ‡µðŸ‡° NADRA Biometric Spec (354Ã—472 px @ 350 DPI / 35Ã—45 mm)' },
-      'pan-in': { name: 'India PAN Card', w: 213, h: 213, bg: '#FFFFFF', filename: 'india_pan_card_photo.jpg', desc: 'ðŸ‡®ðŸ‡³ India PAN Card Biometric Spec (213Ã—213 px, â‰¤30 KB)' },
-      'aadhaar-in': { name: 'India Aadhaar Card', w: 413, h: 531, bg: '#FFFFFF', filename: 'india_aadhaar_photo.jpg', desc: 'ðŸ‡®ðŸ‡³ India Aadhaar / Passport Spec (35Ã—45 mm @ 300 DPI)' },
-      'emirates-ae': { name: 'UAE Emirates ID', w: 413, h: 531, bg: '#FFFFFF', filename: 'uae_emirates_id_photo.jpg', desc: 'ðŸ‡¦ðŸ‡ª UAE Emirates ID & Visa Spec (35Ã—45 mm, Pure White)' },
-      'iqama-sa': { name: 'Saudi Iqama', w: 472, h: 709, bg: '#FFFFFF', filename: 'saudi_iqama_photo.jpg', desc: 'ðŸ‡¸ðŸ‡¦ Saudi Iqama & Driving Licence (40Ã—60 mm @ 300 DPI)' },
-      'us-id': { name: 'US State ID / Green Card', w: 600, h: 600, bg: '#FFFFFF', filename: 'us_id_card_photo.jpg', desc: 'ðŸ‡ºðŸ‡¸ US Driver License & Green Card (2Ã—2 inch / 600Ã—600 px)' },
-      'uk-id': { name: 'UK Driving Licence', w: 413, h: 531, bg: '#F1F5F9', filename: 'uk_driving_licence_photo.jpg', desc: 'ðŸ‡¬ðŸ‡§ UK Driving Licence & CitizenCard (35Ã—45 mm, Off-White)' }
-    };
-
     window.selectIdPreset = function(key, btn) {
       window.selectedIdPreset = key;
       document.querySelectorAll('.id-preset-btn').forEach(b => {
@@ -1386,9 +1606,13 @@
       const specLabel = document.getElementById('id-active-spec-label');
       if (specLabel) specLabel.textContent = cfg.desc;
       const genBtn = document.getElementById('generate-cnic-photo-btn');
-      if (genBtn) genBtn.querySelector('span').textContent = 'Generate Official ' + cfg.name + ' Photo';
+      if (genBtn) {
+        const span = genBtn.querySelector('span');
+        if (span) span.textContent = 'Generate Official ' + cfg.name + ' Photo';
+      }
       if (cfg.bg) window.setCnicBg(cfg.bg);
       renderCnicPreview();
+      if (cnicPhotoImg) setWizardStep(3);
     };
 
     window.selectCardStandard = function(country, label, btn) {
@@ -1404,7 +1628,23 @@
         btn.style.background = 'rgba(2, 132, 199, 0.08)';
         btn.style.color = 'var(--primary)';
       }
-      UIUtils.showToast('Selected ' + label + ' (85.6 Ã— 54 mm physical standard)', 'info', 2000);
+
+      // Contextually adapt default header note if user has default title
+      const titleInput = document.getElementById('doc-title-input');
+      if (titleInput && (titleInput.value.includes('PHOTOCOPY') || titleInput.value.includes('VERIFICATION SHEET'))) {
+        if (country === 'pk') titleInput.value = 'PAKISTAN CNIC PHOTOCOPY / VERIFICATION SHEET';
+        else if (country === 'in') titleInput.value = 'INDIA AADHAAR / PAN CARD PHOTOCOPY';
+        else if (country === 'ae') titleInput.value = 'UAE EMIRATES ID PHOTOCOPY';
+        else if (country === 'sa') titleInput.value = 'SAUDI IQAMA PHOTOCOPY';
+        else if (country === 'us') titleInput.value = 'US DRIVER LICENSE / REAL ID PHOTOCOPY';
+        else if (country === 'uk') titleInput.value = 'UK DRIVING LICENCE PHOTOCOPY';
+        else titleInput.value = 'IDENTITY CARD PHOTOCOPY / VERIFICATION SHEET';
+      }
+
+      if (!frontImgData && !backImgData) {
+        setWizardStep(2);
+      }
+      UIUtils.showToast('Selected ' + label + ' (85.60 × 53.98 mm physical standard)', 'info', 2000);
     };
 
     function setupCnicPhotoHandlers() {
@@ -1541,7 +1781,10 @@
       const dSingle = document.getElementById('download-cnic-single-btn');
       if (dSingle) {
         dSingle.addEventListener('click', () => {
-          if (cnicSingleBlob) const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { filename: 'national_id_photo.jpg' }; UIUtils.downloadBlob(cnicSingleBlob, cfg.filename);
+          if (cnicSingleBlob) {
+            const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { filename: 'national_id_photo.jpg' };
+            UIUtils.downloadBlob(cnicSingleBlob, cfg.filename);
+          }
         });
       }
 
@@ -1564,6 +1807,7 @@
         const ws = document.getElementById('cnic-photo-workspace');
         if (ws) ws.style.display = 'block';
 
+        setWizardStep(3);
         requestAnimationFrame(() => {
           renderCnicPreview();
           ws?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1645,12 +1889,12 @@
       if (!cnicPhotoImg) return;
       const genBtn = document.getElementById('generate-cnic-photo-btn');
       if (genBtn) genBtn.disabled = true;
-      UIUtils.showToast("Generating official NADRA 354x472 px photo...", "info");
+      UIUtils.showToast("Generating official photo in RAM...", "info");
 
       try {
         const box = document.getElementById('cnic-preview-box');
         const boxW = (box && box.clientWidth) || 280;
-        const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { w: 413, h: 531, name: 'ID Card', filename: 'id_card_photo.jpg' };
+        const cfg = (window.ID_PRESET_CONFIG && window.ID_PRESET_CONFIG[window.selectedIdPreset]) || { w: 413, h: 531, name: 'ID Card', filename: 'id_card_photo.jpg', desc: 'Compliant biometric photo' };
         const targetW = cfg.w;
         const targetH = cfg.h;
         const scaleMultiplier = targetW / boxW;
@@ -1679,11 +1923,17 @@
 
         const resultCard = document.getElementById('cnic-photo-result-card');
         const previewImg = document.getElementById('cnic-photo-preview-img');
+        const resultTitle = document.getElementById('cnic-photo-result-title');
+        const resultDesc = document.getElementById('cnic-photo-result-desc');
+
         if (previewImg) previewImg.src = singleRes.dataUrl;
+        if (resultTitle) resultTitle.textContent = `Official ${cfg.name} Photo Ready!`;
+        if (resultDesc) resultDesc.textContent = cfg.desc;
         if (resultCard) resultCard.style.display = 'block';
 
+        setWizardStep(4);
         resultCard?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        UIUtils.showToast("Official NADRA CNIC photo & 8-copy sheet ready!", "success");
+        UIUtils.showToast(`Official ${cfg.name} photo & 8-copy sheet ready!`, "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast("Error generating photo: " + err.message, "error");
