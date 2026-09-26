@@ -44,6 +44,41 @@ const IDPhoto = {
       headRatio: 0.75,
       bgRecommended: '#FFFFFF'
     },
+    'passport-pk': {
+      name: 'Pakistan Passport (35x45mm)',
+      country: 'Pakistan',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-tr': {
+      name: 'Turkey (Türkiye) Passport & Visa (50x60mm)',
+      country: 'Turkey',
+      width: 591, height: 709, dpi: 300, mmW: 50, mmH: 60,
+      headRatio: 0.72,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-my': {
+      name: 'Malaysia Passport (35x50mm)',
+      country: 'Malaysia',
+      width: 413, height: 591, dpi: 300, mmW: 35, mmH: 50,
+      headRatio: 0.72,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-sg': {
+      name: 'Singapore Passport & Visa (35x45mm)',
+      country: 'Singapore',
+      width: 413, height: 531, dpi: 300, mmW: 35, mmH: 45,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
+    'passport-az': {
+      name: 'Azerbaijan Passport & Visa (30x40mm)',
+      country: 'Azerbaijan',
+      width: 354, height: 472, dpi: 300, mmW: 30, mmH: 40,
+      headRatio: 0.75,
+      bgRecommended: '#FFFFFF'
+    },
     'cnic-pk': {
       name: 'Pakistan NADRA CNIC, NICOP & Passport (35x45mm)',
       country: 'Pakistan',
@@ -234,11 +269,11 @@ const IDPhoto = {
         const segmenter = await this.initSegmenter();
         if (segmenter) {
           const maskPromise = new Promise((resolve) => {
-            // Safety timeout: 4s max so mobile users on slow connections never hang
+            // Generous timeout: 12s max for mobile network asset download
             const timeoutId = setTimeout(() => {
-              console.warn('MediaPipe segmentation timeout; switching to fast contour matting.');
+              console.warn('MediaPipe segmentation timeout (12s); switching to fast contour matting.');
               resolve(null);
-            }, 4000);
+            }, 12000);
 
             segmenter.onResults((results) => {
               clearTimeout(timeoutId);
@@ -366,32 +401,32 @@ const IDPhoto = {
     let qHead = 0;
     let qTail = 0;
 
-    const tol = Math.max(20, tolerance || 42);
+    const tol = Math.max(18, tolerance || 38);
 
-    // Seed outer boundary pixels into flood queue
-    // Top row
+    // Seed outer boundary pixels into flood queue ONLY from top corners and top ceiling
+    // NEVER seed bottom or lower side borders where shoulders and clothing touch the edge
     for (let x = 0; x < gw; x++) {
       const idx = x;
       const pIdx = idx * 4;
-      if (bgDist(data[pIdx], data[pIdx + 1], data[pIdx + 2]) < tol * 1.5) {
+      if (bgDist(data[pIdx], data[pIdx + 1], data[pIdx + 2]) < tol * 1.4) {
         visited[idx] = 1;
         bgMap[idx] = 1;
         queue[qTail++] = idx;
       }
     }
-    // Left & Right columns down to 75% height
-    const edgeLimitY = Math.floor(gh * 0.75);
-    for (let y = 1; y < edgeLimitY; y++) {
+    // Left & Right columns down to only 45% height (head/ear level, above shoulders)
+    const sideLimitY = Math.floor(gh * 0.45);
+    for (let y = 1; y < sideLimitY; y++) {
       const idxL = y * gw;
       const pL = idxL * 4;
-      if (!visited[idxL] && bgDist(data[pL], data[pL + 1], data[pL + 2]) < tol * 1.4) {
+      if (!visited[idxL] && bgDist(data[pL], data[pL + 1], data[pL + 2]) < tol * 1.3) {
         visited[idxL] = 1;
         bgMap[idxL] = 1;
         queue[qTail++] = idxL;
       }
       const idxR = y * gw + (gw - 1);
       const pR = idxR * 4;
-      if (!visited[idxR] && bgDist(data[pR], data[pR + 1], data[pR + 2]) < tol * 1.4) {
+      if (!visited[idxR] && bgDist(data[pR], data[pR + 1], data[pR + 2]) < tol * 1.3) {
         visited[idxR] = 1;
         bgMap[idxR] = 1;
         queue[qTail++] = idxR;
@@ -419,7 +454,15 @@ const IDPhoto = {
         const nx = nIdx % gw;
         const ny = Math.floor(nIdx / gw);
 
-        // Core person protection: skin tones & center facial spine should NEVER be flooded
+        // Core person protection (anatomical structure of portraits & selfies):
+        // 1. Torso & clothing: never flood below neck/shoulders in the central body column
+        const inTorso = (ny > gh * 0.50 && nx > gw * 0.18 && nx < gw * 0.82) ||
+                        (ny > gh * 0.70 && nx > gw * 0.08 && nx < gw * 0.92);
+        if (inTorso) continue;
+
+        // 2. Central Face, Head & Hair corridor
+        const inHead = (ny > gh * 0.15 && ny < gh * 0.55 && nx > gw * 0.28 && nx < gw * 0.72);
+
         const np = nIdx * 4;
         const nr = data[np];
         const ng = data[np + 1];
@@ -427,12 +470,11 @@ const IDPhoto = {
 
         // Biometric skin tone detection
         const isSkin = (nr > 55 && ng > 35 && nb > 20 && (nr - ng) > 7 && nr > nb);
-        // Face center anchor (28% to 72% width, 18% to 62% height)
-        const inFaceBox = (nx > gw * 0.28 && nx < gw * 0.72 && ny > gh * 0.18 && ny < gh * 0.62);
+        // Dark hair detection
+        const isHair = (nr < 75 && ng < 75 && nb < 75);
 
-        if (isSkin && inFaceBox) {
-          // Protected person face feature
-          continue;
+        if ((isSkin || isHair) && inHead) {
+          continue; // Protected head/hair feature
         }
 
         const d = bgDist(nr, ng, nb);
@@ -455,30 +497,31 @@ const IDPhoto = {
       for (let x = 0; x < gw; x++) {
         const idx = y * gw + x;
         const pIdx = idx * 4;
-        const r = data[pIdx];
-        const g = data[pIdx + 1];
-        const b = data[pIdx + 2];
 
         let alpha = 255;
-        if (bgMap[idx] === 1) {
-          alpha = 0;
+        // Absolute Anatomical Safeguard: torso, collar, and shirt can NEVER be erased
+        if (y > gh * 0.48 && x > gw * 0.16 && x < gw * 0.84) {
+          alpha = 255;
+        } else if (bgMap[idx] === 1) {
+          alpha = 0; // True flooded background
         } else {
-          // If not reached by flood, check color distance to background
-          const d = bgDist(r, g, b);
-          const isSkin = (r > 55 && g > 35 && b > 20 && (r - g) > 7 && r > b);
-          const inCenter = (x > gw * 0.25 && x < gw * 0.75 && y > gh * 0.2 && y < gh * 0.85);
+          // Un-flooded pixel: ALWAYS keep person clothing, hair, and body!
+          // Only apply a subtle feathering to pixels directly bordering the flooded background
+          let nearBg = false;
+          if (x > 0 && bgMap[idx - 1] === 1) nearBg = true;
+          else if (x < gw - 1 && bgMap[idx + 1] === 1) nearBg = true;
+          else if (y > 0 && bgMap[idx - gw] === 1) nearBg = true;
+          else if (y < gh - 1 && bgMap[idx + gw] === 1) nearBg = true;
 
-          if (isSkin && inCenter) {
-            alpha = 255;
-          } else if (d < tol * 0.75) {
-            // Very close to wall color and not skin
-            alpha = 0;
-          } else if (d < tol * 1.3) {
-            // Soft transitional feather edge between wall and person
-            const ramp = (d - tol * 0.75) / (tol * 0.55);
-            alpha = Math.max(0, Math.min(255, Math.round(ramp * 255)));
+          if (nearBg && y < gh * 0.70) {
+            const r = data[pIdx];
+            const g = data[pIdx + 1];
+            const b = data[pIdx + 2];
+            const d = bgDist(r, g, b);
+            const ramp = Math.min(1.0, Math.max(0.35, d / (tol * 1.2)));
+            alpha = Math.round(ramp * 255);
           } else {
-            alpha = 255;
+            alpha = 255; // Completely solid body and clothing
           }
         }
 
@@ -506,7 +549,7 @@ const IDPhoto = {
   },
 
   // Apply a segmentation mask canvas to an image element to produce transparent cutout canvas
-  applyMaskToImage(imgElement, maskCanvas, featherPx = 2) {
+  applyMaskToImage(imgElement, maskCanvas, featherPx = 0) {
     const w = imgElement.naturalWidth || imgElement.width;
     const h = imgElement.naturalHeight || imgElement.height;
 
@@ -514,17 +557,15 @@ const IDPhoto = {
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     // 1. Draw original photo
     ctx.drawImage(imgElement, 0, 0, w, h);
 
     // 2. Mask with segmentation alpha
     ctx.globalCompositeOperation = 'destination-in';
-    if (featherPx > 0) {
-      ctx.filter = `blur(${featherPx}px)`;
-    }
     ctx.drawImage(maskCanvas, 0, 0, w, h);
-    ctx.filter = 'none';
     ctx.globalCompositeOperation = 'source-over';
 
     return canvas;
