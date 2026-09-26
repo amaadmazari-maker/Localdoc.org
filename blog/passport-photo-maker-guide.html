@@ -62,6 +62,51 @@
     .comp-table tr:hover td {
       background: rgba(2, 132, 199, 0.04);
     }
+
+    /* Floating Tool Launcher Pill */
+    .floating-calc-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      border-radius: 30px;
+      animation: floatPulse 3s infinite ease-in-out;
+    }
+    .floating-calc-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+      color: #FFFFFF !important;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 12px 20px;
+      border-radius: 30px;
+      text-decoration: none;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+    .floating-calc-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(2, 132, 199, 0.45);
+      color: #FFFFFF !important;
+    }
+    @keyframes floatPulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @media (max-width: 640px) {
+      .floating-calc-pill {
+        bottom: 16px;
+        right: 16px;
+      }
+      .floating-calc-btn {
+        padding: 9px 15px;
+        font-size: 0.82rem;
+      }
+    }
   </style>
 
   <!-- Schema.org Article & FAQPage JSON-LD -->
@@ -242,6 +287,23 @@
         <span>Updated September 2026</span>
         <span class="meta-dot"></span>
         <span>12 min read</span>
+      </div>
+
+      <!-- Featured Snippet Quick Answer Box: Global Passport Dimensions -->
+      <div class="quick-answer-card" style="background:var(--bg-surface); border:2px solid var(--primary); border-radius:14px; padding:22px 24px; margin:24px 0 28px; box-shadow:0 4px 16px rgba(2, 132, 199, 0.08);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+          <span style="background:var(--primary); color:#fff; font-size:0.75rem; font-weight:800; padding:3px 9px; border-radius:6px; text-transform:uppercase; letter-spacing:0.5px;">Quick Answer</span>
+          <h2 style="font-size:1.22rem; font-weight:800; color:var(--text-primary); margin:0;">Official Passport &amp; Visa Photo Sizes (Inches, MM &amp; Print Pixels)</h2>
+        </div>
+        <p style="font-size:0.98rem; line-height:1.7; color:var(--text-primary); margin-bottom:14px;">
+          The official US passport photo size is exactly <strong>2 &times; 2 inches</strong> (<strong>51 &times; 51 mm</strong>), measuring <strong>600 &times; 600 pixels at 300 DPI</strong> with the head covering 50% to 69% (1 to 1⅜ inches) of total photo height. The official UK, Schengen European (29 nations), and Australian photo size is <strong>35 &times; 45 mm</strong> (<strong>1.38 &times; 1.77 inches</strong>), measuring <strong>413 &times; 531 pixels at 300 DPI</strong>. For cheap DIY printing, layout 6 or 8 copies on a standard <strong>4 &times; 6 inch photo paper</strong> (1200 &times; 1800 px).
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:0.88rem; background:var(--bg-surface-2); padding:14px; border-radius:10px; border:1px solid var(--line);">
+          <div>🇺🇸 <strong>US Passport / Visa:</strong> 2 &times; 2 inches (51 &times; 51 mm / 600 &times; 600 px)</div>
+          <div>🇬🇧 🇪🇺 <strong>UK &amp; Schengen:</strong> 35 &times; 45 mm (1.38 &times; 1.77 in / 413 &times; 531 px)</div>
+          <div>🇨🇦 <strong>Canada Passport:</strong> 50 &times; 70 mm (1.97 &times; 2.76 in / 591 &times; 827 px)</div>
+          <div>🖨️ <strong>4 &times; 6" Print Sheet:</strong> 6 to 8 photos (1200 &times; 1800 px @ 300 DPI)</div>
+        </div>
       </div>
 
       <!-- Executive Summary Box -->
@@ -659,6 +721,15 @@
       </div>
     </div>
   </footer>
+
+  <!-- Floating Passport Studio Launcher -->
+  <div id="floating-pass-pill" class="floating-calc-pill">
+    <a href="../pages/passport-photo-maker.html" class="floating-calc-btn">
+      <span style="font-size:1.15rem;">📸</span>
+      <span>Make Passport Photo</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </a>
+  </div>
 
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
