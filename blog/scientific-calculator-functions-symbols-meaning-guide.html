@@ -191,11 +191,100 @@
       border: 1px solid var(--line, #E2E8F0);
       border-radius: 12px;
       padding: 18px;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+      scroll-margin-top: 90px;
+    }
+    .key-card:target {
+      border-color: var(--primary, #0284C7);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+      animation: targetHighlight 1.5s ease-out;
+    }
+    @keyframes targetHighlight {
+      0% { background: rgba(2, 132, 199, 0.08); }
+      100% { background: var(--bg-surface, #FFFFFF); }
     }
     .key-card:hover {
       border-color: var(--primary, #0284C7);
       transform: translateY(-2px);
+    }
+
+    /* Interactive Jump Pills Strip */
+    .jump-pills-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 24px;
+      align-items: center;
+    }
+    .jump-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .jump-pill:hover {
+      background: var(--bg-surface-2);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .jump-pill.highlight {
+      background: rgba(2, 132, 199, 0.08);
+      border-color: rgba(2, 132, 199, 0.3);
+      color: var(--primary);
+    }
+
+    /* Floating Simulator CTA Pill */
+    .floating-calc-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      border-radius: 30px;
+      animation: floatPulse 3s infinite ease-in-out;
+    }
+    .floating-calc-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+      color: #FFFFFF !important;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 12px 20px;
+      border-radius: 30px;
+      text-decoration: none;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+    .floating-calc-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(2, 132, 199, 0.45);
+      color: #FFFFFF !important;
+    }
+    @keyframes floatPulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @media (max-width: 640px) {
+      .floating-calc-pill {
+        bottom: 16px;
+        right: 16px;
+      }
+      .floating-calc-btn {
+        padding: 9px 15px;
+        font-size: 0.82rem;
+      }
     }
     .key-badge {
       display: inline-block;
@@ -484,6 +573,27 @@
         </svg>
       </div>
 
+      <!-- Interactive Quick-Jump Filter Strip -->
+      <div style="margin: -10px 0 24px; padding: 14px 16px; background: var(--bg-surface-2); border: 1px solid var(--line); border-radius: 12px;">
+        <div style="font-size: 0.8rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          ⚡ Jump Directly to Any Button or Symbol Meaning:
+        </div>
+        <div class="jump-pills-bar" style="margin: 0;">
+          <a href="#key-hyp" class="jump-pill highlight">🔍 [hyp] UK Year 7</a>
+          <a href="#key-mr" class="jump-pill highlight">💾 [MR / M+ / MC] Memory</a>
+          <a href="#key-powers" class="jump-pill">⚡ [x^■ / ^] Powers</a>
+          <a href="#key-sd" class="jump-pill">🔄 [S⇔D] Fractions</a>
+          <a href="#key-eng" class="jump-pill">📐 [ENG] Engineering</a>
+          <a href="#key-stats" class="jump-pill">📊 [Σ &amp; x̄] Stats</a>
+          <a href="#key-pol-rec" class="jump-pill">🧭 [Pol / Rec] Coords</a>
+          <a href="#key-sto-rcl" class="jump-pill">📦 [STO / RCL] Registers</a>
+          <a href="#key-calculus" class="jump-pill">∫ [d/dx &amp; ∫dx] Calculus</a>
+          <a href="#sec-uk-gcse" class="jump-pill" style="border-color:#0284C7; color:#0284C7;">🇬🇧 UK GCSE Casio Guide</a>
+          <a href="#sec-us-exams" class="jump-pill" style="border-color:#8B5CF6; color:#8B5CF6;">🇺🇸 US SAT / TI Guide</a>
+          <a href="#sec-symbol-matrix" class="jump-pill" style="border-color:#10B981; color:#10B981;">📋 Master Symbol Matrix</a>
+        </div>
+      </div>
+
       <!-- Section 1: Decoding the Mystery Buttons -->
       <section style="margin-top:34px;">
         <h2 style="font-size:1.6rem; color:var(--text-primary); margin-bottom:12px;">1. The Most Misunderstood Calculator Keys Explained</h2>
@@ -555,7 +665,7 @@
 
         <div class="key-grid">
           <!-- ENG -->
-          <div class="key-card">
+          <div class="key-card" id="key-eng">
             <span class="key-badge">ENG</span>
             <h3 class="key-name">Engineering Notation</h3>
             <p class="key-desc">
@@ -565,7 +675,7 @@
           </div>
 
           <!-- MR / M+ / MC -->
-          <div class="key-card">
+          <div class="key-card" id="key-mr">
             <span class="key-badge">MR / M+ / MC</span>
             <h3 class="key-name">Memory Recall &amp; Independent Accumulator</h3>
             <p class="key-desc">
@@ -575,7 +685,7 @@
           </div>
 
           <!-- Power Key -->
-          <div class="key-card">
+          <div class="key-card" id="key-powers">
             <span class="key-badge">x^■ / ^ / x^y</span>
             <h3 class="key-name">Power &amp; Universal Exponent</h3>
             <p class="key-desc">
@@ -585,7 +695,7 @@
           </div>
 
           <!-- S<=>D -->
-          <div class="key-card">
+          <div class="key-card" id="key-sd">
             <span class="key-badge">S ⇔ D</span>
             <h3 class="key-name">Standard to Decimal Toggle</h3>
             <p class="key-desc">
@@ -595,7 +705,7 @@
           </div>
 
           <!-- hyp -->
-          <div class="key-card">
+          <div class="key-card" id="key-hyp">
             <span class="key-badge">hyp</span>
             <h3 class="key-name">Hyperbolic Trigonometry</h3>
             <p class="key-desc">
@@ -605,7 +715,7 @@
           </div>
 
           <!-- Sigma & Mean -->
-          <div class="key-card">
+          <div class="key-card" id="key-stats">
             <span class="key-badge shift">Σ &amp; x̄</span>
             <h3 class="key-name">Statistical Summation &amp; Mean</h3>
             <p class="key-desc">
@@ -615,7 +725,7 @@
           </div>
 
           <!-- Pol / Rec -->
-          <div class="key-card">
+          <div class="key-card" id="key-pol-rec">
             <span class="key-badge shift">Pol( / Rec(</span>
             <h3 class="key-name">Polar & Rectangular Conversion</h3>
             <p class="key-desc">
@@ -625,7 +735,7 @@
           </div>
 
           <!-- STO / RCL -->
-          <div class="key-card">
+          <div class="key-card" id="key-sto-rcl">
             <span class="key-badge shift">STO / RCL</span>
             <h3 class="key-name">Store & Recall Memory Registers</h3>
             <p class="key-desc">
@@ -635,7 +745,7 @@
           </div>
 
           <!-- nPr / nCr -->
-          <div class="key-card">
+          <div class="key-card" id="key-npr-ncr">
             <span class="key-badge shift">nPr / nCr</span>
             <h3 class="key-name">Permutations & Combinations</h3>
             <p class="key-desc">
@@ -645,7 +755,7 @@
           </div>
 
           <!-- d/dx & Integral -->
-          <div class="key-card">
+          <div class="key-card" id="key-calculus">
             <span class="key-badge shift">d/dx & ∫dx</span>
             <h3 class="key-name">Numerical Calculus Engine</h3>
             <p class="key-desc">
@@ -655,7 +765,7 @@
           </div>
 
           <!-- Ans & PreAns -->
-          <div class="key-card">
+          <div class="key-card" id="key-ans">
             <span class="key-badge">Ans / PreAns</span>
             <h3 class="key-name">Answer History Buffers</h3>
             <p class="key-desc">
@@ -667,7 +777,7 @@
       </section>
 
       <!-- Section 1.5: UK Year 7–11 GCSE & Key Stage 3 Maths Essentials -->
-      <section style="margin-top:34px;">
+      <section style="margin-top:34px;" id="sec-uk-gcse">
         <div style="background:linear-gradient(135deg, rgba(2,132,199,0.06) 0%, rgba(59,130,246,0.02) 100%); border:1.5px solid var(--primary); border-radius:14px; padding:24px; margin-bottom:28px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -730,7 +840,7 @@
       </section>
 
       <!-- Section 1.6: US High School & College Entrance Guide (SAT / ACT / AP Math) -->
-      <section style="margin-top:24px;">
+      <section style="margin-top:24px;" id="sec-us-exams">
         <div style="background:linear-gradient(135deg, rgba(59,130,246,0.04) 0%, rgba(139,92,246,0.04) 100%); border:1.5px solid #8B5CF6; border-radius:14px; padding:24px; margin-bottom:28px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -796,7 +906,7 @@
       </section>
 
       <!-- Section 1.7: Master Symbol & Keystroke Practice Matrix -->
-      <section style="margin-top:24px;">
+      <section style="margin-top:24px;" id="sec-symbol-matrix">
         <h2 style="font-size:1.6rem; color:var(--text-primary); margin-bottom:12px;">
           1.7 The Master Symbol &amp; Keystroke Practice Matrix
         </h2>
@@ -885,6 +995,12 @@
             <li><strong style="color:var(--text-primary);">6: VECTOR:</strong> 2D and 3D vector arithmetic, dot products, cross products, and magnitude normalization.</li>
             <li><strong style="color:var(--text-primary);">7: TABLE:</strong> Generates numerical function tables $f(x)$ for graphing over a user-defined range $[start, end, step]$.</li>
           </ul>
+        </div>
+
+        <div style="margin-top:16px; padding:14px 18px; background:var(--bg-surface-2); border-left:4px solid #7C3AED; border-radius:0 10px 10px 0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:var(--text-primary);">Need Advanced Matrices, Vectors &amp; Surveying Formulas?</strong>
+          <br>
+          For programmable formulas, 3x3 matrix inversions, and surveying coordinate geometry (COGO), read our complete companion deep-dive: <a href="pro-scientific-calculator-guide.html" style="color:var(--primary); font-weight:700; text-decoration:underline;">Pro Scientific Calculator &amp; Formula Solver Guide &rarr;</a>
         </div>
       </section>
 
@@ -1096,6 +1212,15 @@
       </div>
     </div>
   </footer>
+
+  <!-- Floating Interactive Simulator Quick Launcher -->
+  <div id="floating-calc-pill" class="floating-calc-pill">
+    <a href="../pages/scientific-calculator.html" class="floating-calc-btn">
+      <span style="font-size:1.15rem;">🧮</span>
+      <span>Test in Live Simulator</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </a>
+  </div>
 
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
