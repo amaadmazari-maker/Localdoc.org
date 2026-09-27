@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -202,8 +202,8 @@
           <h3>Drop your PDF file here to sign</h3>
           <p>Or click to browse from device. Contracts, leases, and forms supported.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select PDF Document</button>
-        <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
+        <button class="btn btn-primary btn-lg" id="browse-btn" type="button" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
+        <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="if(window.handleSignPdfFile){window.handleSignPdfFile(this.files);}else if(window.handleLocalDocFileInput){window.handleLocalDocFileInput(this);}">
       </div>
 
       <!-- File Queue Item -->
@@ -575,22 +575,31 @@
     const queueSize = document.getElementById("queue-file-size");
     const signatureStudio = document.getElementById("signature-studio");
     const sigCanvas = document.getElementById("signature-pad");
-    const sigCtx = sigCanvas.getContext("2d");
+    const sigCtx = sigCanvas ? sigCanvas.getContext("2d") : null;
     const clearPadBtn = document.getElementById("clear-pad-btn");
     const signerName = document.getElementById("signer-name");
     const includeDateStamp = document.getElementById("include-date-stamp");
     const targetPageSelect = document.getElementById("target-page-select");
+    const datePreview = document.getElementById("date-preview");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
 
+    // Initialize current date preview
+    if (datePreview) {
+      const now = new Date();
+      datePreview.textContent = `Date: ${now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} (Local Time)`;
+    }
+
     // Initialize signature canvas styling
-    sigCtx.lineWidth = 2.5;
-    sigCtx.lineCap = 'round';
-    sigCtx.lineJoin = 'round';
-    sigCtx.strokeStyle = inkColor;
+    if (sigCtx) {
+      sigCtx.lineWidth = 2.5;
+      sigCtx.lineCap = 'round';
+      sigCtx.lineJoin = 'round';
+      sigCtx.strokeStyle = inkColor;
+    }
 
     // Ink color buttons
     document.querySelectorAll(".ink-color-btn").forEach(btn => {
@@ -598,11 +607,11 @@
         document.querySelectorAll(".ink-color-btn").forEach(b => b.style.borderColor = 'transparent');
         btn.style.borderColor = 'var(--primary)';
         inkColor = btn.getAttribute("data-color");
-        sigCtx.strokeStyle = inkColor;
+        if (sigCtx) sigCtx.strokeStyle = inkColor;
       });
     });
 
-    // Touch & Mouse Drawing Logic with B&eacute;zier interpolation
+    // Touch & Mouse Drawing Logic with Bezier interpolation
     function getCanvasPos(e) {
       const rect = sigCanvas.getBoundingClientRect();
       const scaleX = sigCanvas.width / rect.width;
@@ -651,144 +660,203 @@
       }
     }
 
-    sigCanvas.addEventListener("mousedown", startDraw);
-    sigCanvas.addEventListener("mousemove", moveDraw);
-    sigCanvas.addEventListener("mouseup", stopDraw);
-    sigCanvas.addEventListener("mouseleave", stopDraw);
+    if (sigCanvas) {
+      sigCanvas.addEventListener("mousedown", startDraw);
+      sigCanvas.addEventListener("mousemove", moveDraw);
+      sigCanvas.addEventListener("mouseup", stopDraw);
+      sigCanvas.addEventListener("mouseleave", stopDraw);
 
-    sigCanvas.addEventListener("touchstart", startDraw, { passive: false });
-    sigCanvas.addEventListener("touchmove", moveDraw, { passive: false });
-    sigCanvas.addEventListener("touchend", stopDraw);
+      sigCanvas.addEventListener("touchstart", startDraw, { passive: false });
+      sigCanvas.addEventListener("touchmove", moveDraw, { passive: false });
+      sigCanvas.addEventListener("touchend", stopDraw);
+    }
 
-    clearPadBtn.addEventListener("click", () => {
-      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
-      hasDrawn = false;
-    });
+    if (clearPadBtn) {
+      clearPadBtn.addEventListener("click", () => {
+        if (sigCtx && sigCanvas) {
+          sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        }
+        hasDrawn = false;
+      });
+    }
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
-        selectedFile = files[0];
-        queueName.textContent = selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
-        dropZone.style.display = "none";
-        fileQueue.style.display = "block";
-        signatureStudio.style.display = "block";
-        actionBar.style.display = "flex";
-        resultCard.style.display = "none";
+    // Core file handling function
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      const fileList = Array.from(files);
+      const pdf = fileList.find(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) || fileList[0];
+      if (!pdf) {
+        if (window.UIUtils && window.UIUtils.showToast) {
+          UIUtils.showToast("Please select a valid PDF document.", "warning");
+        }
+        return;
+      }
+      selectedFile = pdf;
+      if (queueName) queueName.textContent = selectedFile.name;
+      if (queueSize) queueSize.textContent = (window.UIUtils && UIUtils.formatBytes) ? UIUtils.formatBytes(selectedFile.size) : `${(selectedFile.size / 1024).toFixed(1)} KB`;
+      
+      if (dropZone) dropZone.style.display = "none";
+      if (fileQueue) fileQueue.style.display = "block";
+      if (signatureStudio) signatureStudio.style.display = "block";
+      if (actionBar) actionBar.style.display = "flex";
+      if (resultCard) resultCard.style.display = "none";
+
+      if (window.UIUtils && window.UIUtils.showToast) {
         UIUtils.showToast("Loaded " + selectedFile.name + " for signing", "info");
+      }
+      if (signatureStudio && signatureStudio.scrollIntoView) {
         signatureStudio.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    });
+    }
 
-    clearBtn.addEventListener("click", () => {
-      selectedFile = null;
-      resultBlob = null;
-      dropZone.style.display = "block";
-      fileQueue.style.display = "none";
-      signatureStudio.style.display = "none";
-      actionBar.style.display = "none";
-      resultCard.style.display = "none";
-      document.getElementById("workflow-progress").style.display = "none";
-    });
+    window.handleSignPdfFile = handleFiles;
 
-    processBtn.addEventListener("click", async function() {
-      if (!selectedFile) return;
+    if (fileInput) {
+      fileInput.__localdoc_handler = handleFiles;
+      fileInput.addEventListener('change', function(e) {
+        handleFiles(this.files);
+      });
+    }
 
-      try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(1, 20, "Loading document into private RAM...");
+    if (window.UIUtils && UIUtils.setupDropZone && dropZone && fileInput) {
+      UIUtils.setupDropZone(dropZone, fileInput, handleFiles);
+    }
 
-        // Ensure a signature is drawn or fallback to typed name
-        let sigDataUrl = null;
-        if (hasDrawn) {
-          sigDataUrl = sigCanvas.toDataURL("image/png");
-        } else if (signerName.value.trim().length > 0) {
-          // Generate typed cursive signature on temporary canvas
-          const tCanvas = document.createElement("canvas");
-          tCanvas.width = 400;
-          tCanvas.height = 140;
-          const tCtx = tCanvas.getContext("2d");
-          tCtx.font = "italic 38px 'Brush Script MT', 'cursive', sans-serif";
-          tCtx.fillStyle = inkColor;
-          tCtx.fillText(signerName.value.trim(), 20, 80);
-          sigDataUrl = tCanvas.toDataURL("image/png");
-        } else {
-          UIUtils.showToast("Please draw a signature or type your name first", "error");
-          processBtn.disabled = false;
-          return;
-        }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        selectedFile = null;
+        resultBlob = null;
+        if (fileInput) fileInput.value = '';
+        if (dropZone) dropZone.style.display = "block";
+        if (fileQueue) fileQueue.style.display = "none";
+        if (signatureStudio) signatureStudio.style.display = "none";
+        if (actionBar) actionBar.style.display = "none";
+        if (resultCard) resultCard.style.display = "none";
+        const wf = document.getElementById("workflow-progress");
+        if (wf) wf.style.display = "none";
+      });
+    }
 
-        UIUtils.setWorkflowStep(2, 60, "Embedding digital signature overlay...");
+    if (processBtn) {
+      processBtn.addEventListener("click", async function() {
+        if (!selectedFile) return;
 
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        try {
+          processBtn.disabled = true;
+          if (window.UIUtils && UIUtils.setWorkflowStep) {
+            UIUtils.setWorkflowStep(1, 20, "Loading document into private RAM...");
+          }
 
-        const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
-        const pages = pdfDoc.getPages();
+          // Ensure a signature is drawn or fallback to typed name
+          let sigDataUrl = null;
+          if (hasDrawn && sigCanvas) {
+            sigDataUrl = sigCanvas.toDataURL("image/png");
+          } else if (signerName && signerName.value.trim().length > 0) {
+            // Generate typed cursive signature on temporary canvas
+            const tCanvas = document.createElement("canvas");
+            tCanvas.width = 400;
+            tCanvas.height = 140;
+            const tCtx = tCanvas.getContext("2d");
+            tCtx.font = "italic 38px 'Brush Script MT', 'cursive', sans-serif";
+            tCtx.fillStyle = inkColor;
+            tCtx.fillText(signerName.value.trim(), 20, 80);
+            sigDataUrl = tCanvas.toDataURL("image/png");
+          } else {
+            if (window.UIUtils && UIUtils.showToast) {
+              UIUtils.showToast("Please draw a signature or type your name first", "error");
+            }
+            processBtn.disabled = false;
+            return;
+          }
 
-        const sigImg = await pdfDoc.embedPng(sigDataUrl);
-        const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+          if (window.UIUtils && UIUtils.setWorkflowStep) {
+            UIUtils.setWorkflowStep(2, 60, "Embedding digital signature overlay...");
+          }
 
-        const targetSetting = targetPageSelect.value;
-        let pagesToSign = [];
-        if (targetSetting === 'first') pagesToSign = [pages[0]];
-        else if (targetSetting === 'all') pagesToSign = pages;
-        else pagesToSign = [pages[pages.length - 1]];
+          const now = new Date();
+          const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        pagesToSign.forEach(page => {
-          const { width, height } = page.getSize();
-          const sigW = 140;
-          const sigH = 55;
-          const sigX = width - sigW - 50;
-          const sigY = 50;
+          const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+          const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+          const pages = pdfDoc.getPages();
 
-          page.drawImage(sigImg, {
-            x: sigX,
-            y: sigY,
-            width: sigW,
-            height: sigH
+          const sigImg = await pdfDoc.embedPng(sigDataUrl);
+          const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+
+          const targetSetting = targetPageSelect ? targetPageSelect.value : 'last';
+          let pagesToSign = [];
+          if (targetSetting === 'first') pagesToSign = [pages[0]];
+          else if (targetSetting === 'all') pagesToSign = pages;
+          else pagesToSign = [pages[pages.length - 1]];
+
+          pagesToSign.forEach(page => {
+            const { width, height } = page.getSize();
+            const sigW = 140;
+            const sigH = 55;
+            const sigX = width - sigW - 50;
+            const sigY = 50;
+
+            page.drawImage(sigImg, {
+              x: sigX,
+              y: sigY,
+              width: sigW,
+              height: sigH
+            });
+
+            if (includeDateStamp && includeDateStamp.checked) {
+              const nameVal = (signerName && signerName.value.trim()) ? ` by ${signerName.value.trim()}` : '';
+              const stampText = `Digitally Signed${nameVal} on ${dateStr}`;
+              page.drawText(stampText, {
+                x: Math.max(20, sigX - 20),
+                y: Math.max(10, sigY - 12),
+                size: 7.5,
+                font: font,
+                color: PDFLib.rgb(0.4, 0.4, 0.4)
+              });
+            }
           });
 
-          if (includeDateStamp.checked) {
-            const nameVal = signerName.value.trim() - ` by ${signerName.value.trim()}` : '';
-            const stampText = `Digitally Signed${nameVal} on ${dateStr}`;
-            page.drawText(stampText, {
-              x: sigX - 20,
-              y: sigY - 12,
-              size: 7.5,
-              font: font,
-              color: PDFLib.rgb(0.4, 0.4, 0.4)
-            });
+          if (window.UIUtils && UIUtils.setWorkflowStep) {
+            UIUtils.setWorkflowStep(3, 90, "Writing certified signed PDF...");
           }
-        });
 
-        UIUtils.setWorkflowStep(3, 90, "Writing certified signed PDF...");
+          const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+          resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
 
-        const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-        resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+          const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+          resultFilename = `${baseName}-signed.pdf`;
 
-        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-        resultFilename = `${baseName}-signed.pdf`;
+          if (window.UIUtils && UIUtils.setWorkflowStep) {
+            UIUtils.setWorkflowStep(3, 100, "Signing complete!");
+          }
+          if (resultCard) {
+            resultCard.style.display = "block";
+            if (window.UIUtils && UIUtils.renderQuickActions) {
+              UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
+            }
+          }
+          if (window.UIUtils && UIUtils.showToast) {
+            UIUtils.showToast("PDF signed and certified successfully!", "success");
+          }
 
-        UIUtils.setWorkflowStep(3, 100, "Signing complete!");
-        resultCard.style.display = "block";
-        UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
-        UIUtils.showToast("PDF signed and certified successfully!", "success");
+        } catch (err) {
+          console.error(err);
+          if (window.UIUtils && UIUtils.showToast) {
+            UIUtils.showToast(err.message || "Failed to sign PDF", "error");
+          }
+        } finally {
+          processBtn.disabled = false;
+        }
+      });
+    }
 
-      } catch (err) {
-        console.error(err);
-        UIUtils.showToast(err.message || "Failed to sign PDF", "error");
-      } finally {
-        processBtn.disabled = false;
-      }
-    });
-
-    downloadBtn.addEventListener("click", () => {
-      if (resultBlob) {
-        UIUtils.downloadBlob(resultBlob, resultFilename);
-      }
-    });
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", () => {
+        if (resultBlob && window.UIUtils && UIUtils.downloadBlob) {
+          UIUtils.downloadBlob(resultBlob, resultFilename);
+        }
+      });
+    }
   </script>
 
   <!-- Global Search Modal -->
