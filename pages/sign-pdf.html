@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign PDF &amp; Add Signature to PDF Online Free (Place &amp; Move Anywhere) | LocalDoc</title>
-  <meta name="description" content="Add signature to PDF documents online for free. Draw or type your signature, preview document pages, drag and move your signature to any exact spot, and download legally valid signed PDFs in browser RAM.">
+  <meta name="description" content="Add signature to PDF documents online for free. Draw or type signatures, choose ink colors and stroke thickness, preview document pages, drag and move your signature to any exact spot, and download legally valid signed PDFs in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/sign-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -21,7 +21,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Sign PDF &amp; Add Signature to PDF Online Free | LocalDoc">
-  <meta property="og:description" content="Draw, type, and add signatures to PDF documents. Preview pages in real-time, move your signature anywhere, and certify contracts with 100% in-browser privacy.">
+  <meta property="og:description" content="Draw, type, and add signatures to PDF documents. Preview pages in real-time, move your signature anywhere, choose ink colors and thickness, and certify contracts with 100% in-browser privacy.">
   <meta property="og:url" content="https://localdoc.org/pages/sign-pdf.html">
   <meta property="og:image" content="../assets/icons/edit-pdf.svg">
 
@@ -89,13 +89,13 @@
             "@type": "HowToStep",
             "position": 3,
             "name": "Place & Drag Signature",
-            "text": "Click 'Place Signature on Page' and freely drag the signature box onto the designated contract signature line."
+            "text": "Your signature automatically appears on the page. Drag the signature box onto your designated contract signature line."
           },
           {
             "@type": "HowToStep",
             "position": 4,
             "name": "Apply & Download Signed PDF",
-            "text": "Click 'Apply Signature & Certify PDF' to fuse the signature and certified date stamp into the document for immediate download."
+            "text": "Click 'Apply Signature & Download Signed PDF' to fuse the signature and certified date stamp into the document for immediate download."
           }
         ]
       },
@@ -107,15 +107,15 @@
             "name": "Can I move my signature to a specific area on the PDF page?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes! LocalDoc displays a real-time, high-resolution preview of your document. When you click 'Place Signature on Page', a draggable bounding box appears on the document canvas. You can drag and drop it onto any exact signature line, box, or margin."
+              "text": "Yes! LocalDoc displays a real-time, high-resolution preview of your document. As you sign, your signature appears right on the document canvas. You can freely drag and move it onto any exact signature line, box, or margin."
             }
           },
           {
             "@type": "Question",
-            "name": "How do I add a signature to a multi-page PDF?",
+            "name": "How do I change ink color and pen thickness?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use the page navigation buttons (â—„ Prev and Next â–º) to jump to any page of your document. You can place signatures, initials, text boxes, and certified date stamps on multiple different pages before downloading."
+              "text": "LocalDoc offers a dedicated stroke thickness slider (1px to 8px) and a curated legal ink palette including Black, Dark Slate, Classic Navy, Royal Blue, Contract Red, Emerald Green, and a full custom color picker."
             }
           },
           {
@@ -136,7 +136,7 @@
     /* Visual Sign & Edit Studio Layout */
     .edit-studio-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 370px 1fr;
       gap: 24px;
       align-items: start;
     }
@@ -214,11 +214,12 @@
       touch-action: none;
       user-select: none;
       z-index: 5;
+      transition: box-shadow 0.15s ease;
     }
     .visual-anno-box:hover, .visual-anno-box.active {
       border-color: #38BDF8;
-      background: rgba(56, 189, 248, 0.16);
-      box-shadow: 0 0 12px rgba(56,189,248,0.5);
+      background: rgba(56, 189, 248, 0.18);
+      box-shadow: 0 0 14px rgba(56,189,248,0.55);
     }
     .visual-anno-box .del-anno-btn {
       position: absolute;
@@ -237,6 +238,32 @@
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.4);
       z-index: 10;
+    }
+    .visual-anno-box .scale-btn-group {
+      position: absolute;
+      top: -9px;
+      left: -9px;
+      display: flex;
+      gap: 2px;
+      z-index: 10;
+    }
+    .visual-anno-box .scale-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #0284C7;
+      color: #FFF;
+      border: 1px solid #FFF;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 16px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      padding: 0;
+    }
+    .visual-anno-box .scale-btn:hover {
+      background: #0369A1;
     }
     .visual-anno-sig img {
       max-width: 100%;
@@ -269,24 +296,18 @@
       border: 2px dashed var(--line);
       border-radius: var(--radius-sm);
       background: #FFF;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       overflow: hidden;
       display: flex;
       justify-content: center;
+      position: relative;
     }
     .sig-canvas {
       width: 100%;
       max-width: 450px;
-      height: 160px;
+      height: 155px;
       cursor: crosshair;
       touch-action: none;
-    }
-    .sig-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
     }
     .sig-tab-btn {
       padding: 6px 14px;
@@ -303,6 +324,22 @@
       background: var(--primary);
       border-color: var(--primary);
       color: #FFF;
+    }
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .color-dot:hover {
+      transform: scale(1.15);
+    }
+    .color-dot.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
+      transform: scale(1.1);
     }
   </style>
 </head>
@@ -364,13 +401,13 @@
           <span>100% Client-Side RAM Signature Studio</span>
         </div>
         <h1>Sign PDF &amp; Add Signature to PDF Online Free</h1>
-        <p class="tool-desc">Draw or type your signature, preview document pages, drag and move your signature to any exact area, add certified date stamps, and sign agreements in local browser RAM. 100% private with zero cloud uploads.</p>
+        <p class="tool-desc">Draw or type your signature with custom thickness and ink colors. As you sign, your signature appears automatically on the live document preview. Move it anywhere, add certified date stamps, and download your signed PDF in seconds with zero cloud uploads.</p>
       </div>
 
       <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
       <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">How to Add Signature to PDF Online Free:</strong> Drop your PDF contract or form, draw your signature or type cursive initials, click <em>Place Signature on Page</em>, drag the signature to your exact desired spot on the live document preview, and download your signed PDF in seconds with zero cloud uploads.
+          <strong style="color:var(--text-primary);">How to Add Signature to PDF Online Free:</strong> Drop your PDF contract, draw your signature or type cursive name on the smooth pad &mdash; it automatically appears on the live document preview! Drag and move your signature to your exact designated signature line, add certified date stamps, and download your legally valid signed PDF in private browser RAM.
         </p>
       </div>
 
@@ -381,7 +418,7 @@
         </div>
         <div class="drop-zone-text">
           <h3>Drop your PDF file here to add signature</h3>
-          <p>Or click to browse from device. Contracts, agreements, leases, and forms supported.</p>
+          <p>Or click to browse from device. Contracts, agreements, leases, invoices, and forms supported.</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn" type="button" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
         <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="if(window.handleSignPdfFile){window.handleSignPdfFile(this.files);}else if(window.handleLocalDocFileInput){window.handleLocalDocFileInput(this);}">
@@ -406,9 +443,10 @@
         <div class="edit-studio-grid">
           
           <!-- Left Control Panel -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
+          <div style="display:flex; flex-direction:column; gap:18px;">
+            
             <!-- Signature Creation Box -->
-            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">1. Create Signature</h4>
                 <div style="display:flex; gap:6px;">
@@ -420,56 +458,88 @@
               <!-- Draw Mode -->
               <div id="sig-draw-pane">
                 <div class="sig-canvas-wrap">
-                  <canvas id="sig-canvas" class="sig-canvas" width="450" height="160"></canvas>
+                  <canvas id="sig-canvas" class="sig-canvas" width="450" height="155"></canvas>
                 </div>
 
-                <div class="sig-toolbar">
+                <!-- Pen Thickness Slider Bar -->
+                <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Pen Stroke Thickness:</span>
+                    <span id="pen-width-display" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:var(--primary);">2.5 px</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="range" id="pen-width-slider" min="1" max="8" value="2.5" step="0.5" style="flex:1; cursor:pointer;" aria-label="Pen stroke thickness">
+                    <div style="width:26px; height:20px; display:flex; align-items:center; justify-content:center;">
+                      <div id="pen-preview-stroke" style="width:22px; height:2.5px; background:#000000; border-radius:2px;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ink Color Selection (Expanded Palette) -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                   <div style="display:flex; align-items:center; gap:6px;">
-                    <span class="control-label" style="font-size:0.78rem;">Ink:</span>
-                    <button type="button" class="color-dot active" data-color="#000000" style="width:20px; height:20px; border-radius:50%; background:#000000; border:2px solid var(--primary); cursor:pointer;" title="Black"></button>
-                    <button type="button" class="color-dot" data-color="#1E3A8A" style="width:20px; height:20px; border-radius:50%; background:#1E3A8A; border:2px solid transparent; cursor:pointer;" title="Navy Blue"></button>
-                    <button type="button" class="color-dot" data-color="#2563EB" style="width:20px; height:20px; border-radius:50%; background:#2563EB; border:2px solid transparent; cursor:pointer;" title="Royal Blue"></button>
+                    <span class="control-label" style="font-size:0.78rem; font-weight:700;">Ink:</span>
+                    <button type="button" class="color-dot active" data-color="#000000" style="background:#000000;" title="Black"></button>
+                    <button type="button" class="color-dot" data-color="#0F172A" style="background:#0F172A;" title="Dark Slate"></button>
+                    <button type="button" class="color-dot" data-color="#1E3A8A" style="background:#1E3A8A;" title="Classic Navy"></button>
+                    <button type="button" class="color-dot" data-color="#2563EB" style="background:#2563EB;" title="Royal Blue"></button>
+                    <button type="button" class="color-dot" data-color="#DC2626" style="background:#DC2626;" title="Contract Red"></button>
+                    <button type="button" class="color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
+                    <label style="position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; border:2px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Choose Custom Color">
+                      <input type="color" id="custom-color-picker" value="#000000" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
+                      <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red); font-size:9px;"></span>
+                    </label>
                   </div>
 
-                  <div style="display:flex; align-items:center; gap:6px;">
-                    <button type="button" class="btn btn-outline" id="clear-sig-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);">Clear Pad</button>
-                  </div>
+                  <button type="button" class="btn btn-outline" id="clear-sig-btn" style="padding:4px 10px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
+                </div>
+
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+                  &#x2728; <strong>Auto-Stamps:</strong> Draw on the pad &mdash; your signature appears live on the document. Drag it anywhere!
                 </div>
               </div>
 
               <!-- Type Mode -->
               <div id="sig-type-pane" style="display:none;">
-                <div style="margin-bottom:12px;">
+                <div style="margin-bottom:10px;">
                   <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Type Your Name:</label>
                   <input type="text" id="signer-name-input" placeholder="e.g. Jane Doe" style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:0.95rem; background:var(--bg-body); color:var(--text-primary);">
                 </div>
-                <div style="border:1px dashed var(--line); border-radius:6px; padding:16px; text-align:center; background:#FFF; min-height:80px; display:flex; align-items:center; justify-content:center;">
+                <div style="border:1px dashed var(--line); border-radius:6px; padding:12px; text-align:center; background:#FFF; min-height:75px; display:flex; align-items:center; justify-content:center;">
                   <span id="typed-sig-preview" style="font-family:'Brush Script MT', cursive, sans-serif; font-size:2rem; color:#000000; font-style:italic;">Your Signature</span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+                  &#x2728; <strong>Live Sync:</strong> Type your name &mdash; cursive signature updates on the document in real time. Drag it anywhere!
                 </div>
               </div>
 
-              <button type="button" class="btn btn-primary" id="btn-place-sig" style="width:100%; margin-top:16px; font-size:0.9rem; padding:10px 14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                <span>+ Place Signature on Page</span>
+              <button type="button" class="btn btn-outline" id="btn-place-sig" style="width:100%; margin-top:14px; font-size:0.85rem; padding:8px 12px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                <span>+ Place Another Signature on Page</span>
               </button>
             </div>
 
             <!-- Annotation Stamp Tools -->
-            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
-              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:14px;">2. Add Date Seal &amp; Text</h4>
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px;">
+              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:12px;">2. Add Date &amp; Timestamp</h4>
               
-              <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; flex-direction:column; gap:9px;">
                 <button type="button" class="btn btn-outline" id="btn-add-date" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  <span>+ Add Date Seal (<span id="cur-date-display">2026-09-27</span>)</span>
+                  <span>+ Add Date Seal (<span id="cur-date-display">Sep 28, 2026</span>)</span>
+                </button>
+
+                <button type="button" class="btn btn-outline" id="btn-add-datetime" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  <span>+ Add Certified Date &amp; Time Seal</span>
                 </button>
 
                 <button type="button" class="btn btn-outline" id="btn-add-text" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
-                  <span>+ Add Text Box (Name, Initials)</span>
+                  <span>+ Add Text Box (Name, Title, Initials)</span>
                 </button>
 
-                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="width:100%; color:var(--danger); border-color:var(--danger); font-size:0.8rem; margin-top:6px;">
+                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="width:100%; color:var(--danger); border-color:var(--danger); font-size:0.8rem; margin-top:4px;">
                   Clear Current Page Items
                 </button>
               </div>
@@ -578,12 +648,12 @@
         <div class="tool-step-card">
           <div class="tool-step-num">2</div>
           <h3 class="tool-step-title">Create Signature</h3>
-          <p class="tool-step-desc">Draw your handwritten signature using a finger, mouse, or stylus on our smooth signature pad, or type your name in cursive script.</p>
+          <p class="tool-step-desc">Draw your handwritten signature using a finger, mouse, or stylus on our smooth signature pad with custom ink colors and stroke thickness, or type your name in cursive script.</p>
         </div>
         <div class="tool-step-card">
           <div class="tool-step-num">3</div>
-          <h3 class="tool-step-title">Place, Move &amp; Download</h3>
-          <p class="tool-step-desc">Click 'Place Signature on Page', drag your signature box to the exact signature line, and download your signed PDF instantly.</p>
+          <h3 class="tool-step-title">Move &amp; Download</h3>
+          <p class="tool-step-desc">Your signature appears directly on the live document preview. Drag your signature box to the exact signature line, add certified date seals, and download your signed PDF instantly.</p>
         </div>
       </div>
 
@@ -595,6 +665,7 @@
         <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
           <li><strong>Real-Time PDF.js Canvas Rendering:</strong> Decodes PDF byte streams directly into HTML5 canvas viewports, allowing users to inspect contract clauses and locate the exact signature line.</li>
           <li><strong>Interactive Pointer Coordinate Normalization:</strong> Translates screen-space drag-and-drop coordinates into native PDF bottom-left points, ensuring pixel-perfect placement regardless of screen zoom or device pixel ratio.</li>
+          <li><strong>Dual-Engine Resilience:</strong> Combines direct ISO 32000 vector stream injection with automatic PDF.js high-fidelity canvas synthesis fallback, guaranteeing 100% success on any PDF contract without parser crashes.</li>
           <li><strong>Quadratic B&eacute;zier Smoothing:</strong> The HTML5 signature canvas captures continuous pointer movements and interpolates midpoint tangents using quadratic B&eacute;zier mathematics, eliminating robotic jagged edges.</li>
           <li><strong>Absolute Confidentiality Guarantee:</strong> Traditional electronic signature platforms (DocuSign, Adobe Sign, HelloSign) store every contract, financial clause, and personal signature on remote cloud databases. LocalDoc runs 100% inside your browser's memory, ensuring zero third-party disclosure.</li>
         </ul>
@@ -670,7 +741,7 @@
         <div class="footer-col">
           <h4>Guides &amp; Knowledge</h4>
           <ul class="footer-links">
-            <li><a href="../blog/index.html" class="footer-link">45 Technical Guides</a></li>
+            <li><a href="../blog/index.html" class="footer-link">32 Technical Guides</a></li>
             <li><a href="../blog/sign-pdf-guide.html" class="footer-link">Sign PDF Guide</a></li>
             <li><a href="../blog/compress-pdf-guide.html" class="footer-link">Compress PDF Guide</a></li>
             <li><a href="../blog/scan-to-pdf-guide.html" class="footer-link">Mobile Scan Guide</a></li>
@@ -727,6 +798,7 @@
     let resultFilename = 'localdoc-signed.pdf';
     let isDrawing = false;
     let inkColor = '#000000';
+    let penWidth = 2.5;
     let hasSignatureDrawn = false;
     let signatureMode = 'draw'; // 'draw' or 'type'
 
@@ -751,6 +823,10 @@
     const sigTypePane = document.getElementById("sig-type-pane");
     const signerNameInput = document.getElementById("signer-name-input");
     const typedSigPreview = document.getElementById("typed-sig-preview");
+    const penWidthSlider = document.getElementById("pen-width-slider");
+    const penWidthDisplay = document.getElementById("pen-width-display");
+    const penPreviewStroke = document.getElementById("pen-preview-stroke");
+    const customColorPicker = document.getElementById("custom-color-picker");
     const curDateDisplay = document.getElementById("cur-date-display");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
@@ -772,20 +848,59 @@
     const btnPlaceSig = document.getElementById("btn-place-sig");
     const btnAddText = document.getElementById("btn-add-text");
     const btnAddDate = document.getElementById("btn-add-date");
+    const btnAddDateTime = document.getElementById("btn-add-datetime");
     const btnClearPageAnnos = document.getElementById("btn-clear-page-annos");
 
-    // Set today's date
+    // Format current date and time
     const now = new Date();
-    const todayStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    if (curDateDisplay) curDateDisplay.textContent = todayStr;
+    const todayDateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const todayDateTimeStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    if (curDateDisplay) curDateDisplay.textContent = todayDateStr;
 
     // Canvas drawing setup for Signature Pad
     const ctx = sigCanvas ? sigCanvas.getContext('2d') : null;
     if (ctx) {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = penWidth;
       ctx.strokeStyle = inkColor;
+    }
+
+    // Pen stroke thickness slider
+    if (penWidthSlider) {
+      penWidthSlider.addEventListener('input', () => {
+        penWidth = parseFloat(penWidthSlider.value) || 2.5;
+        if (penWidthDisplay) penWidthDisplay.textContent = penWidth.toFixed(1) + ' px';
+        if (penPreviewStroke) penPreviewStroke.style.height = penWidth + 'px';
+        if (ctx) ctx.lineWidth = penWidth;
+      });
+    }
+
+    // Color selection
+    document.querySelectorAll('.color-dot').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-dot').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        inkColor = btn.getAttribute('data-color');
+        updateActiveInk(inkColor);
+      });
+    });
+
+    if (customColorPicker) {
+      customColorPicker.addEventListener('input', () => {
+        document.querySelectorAll('.color-dot').forEach(b => b.classList.remove('active'));
+        inkColor = customColorPicker.value;
+        updateActiveInk(inkColor);
+      });
+    }
+
+    function updateActiveInk(color) {
+      if (ctx) ctx.strokeStyle = color;
+      if (penPreviewStroke) penPreviewStroke.style.background = color;
+      if (typedSigPreview) typedSigPreview.style.color = color;
+      if (signatureMode === 'type') {
+        autoUpdateSignatureOnPage();
+      }
     }
 
     // Tabs: Draw vs Type
@@ -795,6 +910,7 @@
       tabTypeBtn.classList.remove("active");
       sigDrawPane.style.display = "block";
       sigTypePane.style.display = "none";
+      if (hasSignatureDrawn) autoUpdateSignatureOnPage();
     });
 
     tabTypeBtn.addEventListener("click", () => {
@@ -803,12 +919,14 @@
       tabDrawBtn.classList.remove("active");
       sigTypePane.style.display = "block";
       sigDrawPane.style.display = "none";
+      autoUpdateSignatureOnPage();
     });
 
     if (signerNameInput) {
       signerNameInput.addEventListener("input", () => {
         const val = signerNameInput.value.trim() || 'Your Signature';
         typedSigPreview.textContent = val;
+        autoUpdateSignatureOnPage();
       });
     }
 
@@ -837,7 +955,7 @@
       ctx.beginPath();
       ctx.moveTo(coords.x, coords.y);
       ctx.strokeStyle = inkColor;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = penWidth;
     }
 
     function draw(e) {
@@ -852,6 +970,8 @@
       if (isDrawing) {
         ctx.closePath();
         isDrawing = false;
+        // AUTO-STAMP: As soon as user signs in box, signature appears live on document page!
+        autoUpdateSignatureOnPage();
       }
     }
 
@@ -870,23 +990,73 @@
       clearSigBtn.addEventListener('click', () => {
         if (ctx) ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
         hasSignatureDrawn = false;
+        // Also clear the signature annotation on the current page
+        if (pageAnnotations[currentPage]) {
+          pageAnnotations[currentPage] = pageAnnotations[currentPage].filter(a => a.type !== 'signature');
+          renderOverlayAnnotations(currentPage);
+        }
+        UIUtils.showToast("Signature pad cleared", "info");
       });
     }
 
-    // Ink color selection
-    document.querySelectorAll('.color-dot').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.color-dot').forEach(b => {
-          b.classList.remove('active');
-          b.style.borderColor = 'transparent';
-        });
-        btn.classList.add('active');
-        btn.style.borderColor = 'var(--primary)';
-        inkColor = btn.getAttribute('data-color');
-        if (ctx) ctx.strokeStyle = inkColor;
-        if (typedSigPreview) typedSigPreview.style.color = inkColor;
-      });
-    });
+    // =========================================================================
+    // Auto-Stamp Signature onto Live Document Viewport
+    // Signature automatically appears as user draws or types, and is freely draggable
+    // =========================================================================
+    function getSignatureDataUrl() {
+      if (signatureMode === 'draw') {
+        if (!hasSignatureDrawn) return null;
+        return sigCanvas.toDataURL('image/png');
+      } else {
+        const nameVal = (signerNameInput ? signerNameInput.value.trim() : '') || 'Your Signature';
+        const tCanvas = document.createElement("canvas");
+        tCanvas.width = 420;
+        tCanvas.height = 140;
+        const tCtx = tCanvas.getContext("2d");
+        tCtx.font = "italic 44px 'Brush Script MT', cursive, sans-serif";
+        tCtx.fillStyle = inkColor;
+        tCtx.fillText(nameVal, 24, 85);
+        return tCanvas.toDataURL("image/png");
+      }
+    }
+
+    function autoUpdateSignatureOnPage() {
+      if (!pdfDoc) return; // Wait until file is loaded
+      const dataUrl = getSignatureDataUrl();
+      if (!dataUrl) return;
+
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+
+      // Check if signature already exists on this page
+      let sigAnno = pageAnnotations[currentPage].find(a => a.type === 'signature');
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+
+      if (sigAnno) {
+        // Update existing signature's image in-place
+        sigAnno.dataUrl = dataUrl;
+        const el = document.getElementById(`anno-${sigAnno.id}`);
+        if (el) {
+          const img = el.querySelector('img');
+          if (img) img.src = dataUrl;
+        }
+      } else {
+        // Create new signature annotation on page (default bottom-right above margin)
+        const newAnno = {
+          id: 'sig-' + Date.now(),
+          type: 'signature',
+          x: Math.max(20, cW - 200),
+          y: Math.max(20, cH - 110),
+          width: 170,
+          height: 70,
+          containerW: cW,
+          containerH: cH,
+          dataUrl: dataUrl
+        };
+        pageAnnotations[currentPage].push(newAnno);
+        renderOverlayAnnotations(currentPage);
+      }
+    }
 
     // =========================================================================
     // PDF Rendering Engine (PDF.js)
@@ -959,7 +1129,33 @@
       });
       box.appendChild(delBtn);
 
+      // Scale buttons (+ / - size)
       if (anno.type === 'signature') {
+        const scaleGroup = document.createElement('div');
+        scaleGroup.className = 'scale-btn-group';
+
+        const minusBtn = document.createElement('button');
+        minusBtn.className = 'scale-btn';
+        minusBtn.innerHTML = '&minus;';
+        minusBtn.title = 'Make Smaller';
+        minusBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          scaleAnnotation(anno, 0.85);
+        });
+
+        const plusBtn = document.createElement('button');
+        plusBtn.className = 'scale-btn';
+        plusBtn.innerHTML = '+';
+        plusBtn.title = 'Make Larger';
+        plusBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          scaleAnnotation(anno, 1.15);
+        });
+
+        scaleGroup.appendChild(minusBtn);
+        scaleGroup.appendChild(plusBtn);
+        box.appendChild(scaleGroup);
+
         const img = document.createElement('img');
         img.src = anno.dataUrl;
         img.style.width = '100%';
@@ -969,7 +1165,7 @@
       } else if (anno.type === 'text') {
         const input = document.createElement('input');
         input.type = 'text';
-        input.value = anno.text || 'Annotation Text';
+        input.value = anno.text || 'Signer Name';
         input.addEventListener('input', (e) => {
           anno.text = e.target.value;
         });
@@ -977,7 +1173,7 @@
       } else if (anno.type === 'date') {
         const span = document.createElement('span');
         span.className = 'visual-anno-date';
-        span.innerHTML = `&#128197; Signed: ${anno.text}`;
+        span.innerHTML = `&#128197; ${anno.text}`;
         box.appendChild(span);
       }
 
@@ -987,12 +1183,22 @@
       return box;
     }
 
+    function scaleAnnotation(anno, factor) {
+      anno.width = Math.max(70, Math.min(450, Math.round(anno.width * factor)));
+      anno.height = Math.max(30, Math.min(200, Math.round(anno.height * factor)));
+      const el = document.getElementById(`anno-${anno.id}`);
+      if (el) {
+        el.style.width = anno.width + 'px';
+        el.style.height = anno.height + 'px';
+      }
+    }
+
     function makeDraggable(element, anno) {
       let isDragging = false;
       let startX, startY, initialX, initialY;
 
       element.addEventListener('pointerdown', (e) => {
-        if (e.target.classList.contains('del-anno-btn') || e.target.tagName === 'INPUT') return;
+        if (e.target.classList.contains('del-anno-btn') || e.target.classList.contains('scale-btn') || e.target.tagName === 'INPUT') return;
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
@@ -1015,6 +1221,8 @@
 
         anno.x = newX;
         anno.y = newY;
+        anno.containerW = containerW;
+        anno.containerH = containerH;
         element.style.left = newX + 'px';
         element.style.top = newY + 'px';
       });
@@ -1035,50 +1243,38 @@
       if (el) el.remove();
     }
 
-    // Place Signature Button
+    // Button to place an additional signature manually
     btnPlaceSig.addEventListener('click', () => {
-      let dataUrl = null;
-
-      if (signatureMode === 'draw') {
-        if (!hasSignatureDrawn) {
-          UIUtils.showToast("Please draw your signature on the pad first!", "info");
-          return;
-        }
-        dataUrl = sigCanvas.toDataURL('image/png');
-      } else {
-        const nameVal = signerNameInput.value.trim();
-        if (!nameVal) {
-          UIUtils.showToast("Please type your name first!", "info");
-          return;
-        }
-        const tCanvas = document.createElement("canvas");
-        tCanvas.width = 400;
-        tCanvas.height = 140;
-        const tCtx = tCanvas.getContext("2d");
-        tCtx.font = "italic 40px 'Brush Script MT', cursive, sans-serif";
-        tCtx.fillStyle = inkColor;
-        tCtx.fillText(nameVal, 20, 80);
-        dataUrl = tCanvas.toDataURL("image/png");
+      const dataUrl = getSignatureDataUrl();
+      if (!dataUrl) {
+        UIUtils.showToast("Please sign on the pad or type your name first!", "info");
+        return;
       }
+
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
 
       const anno = {
         id: 'sig-' + Date.now(),
         type: 'signature',
-        x: Math.max(20, overlayLayer.offsetWidth - 180),
-        y: Math.max(20, overlayLayer.offsetHeight - 90),
-        width: 150,
-        height: 60,
+        x: Math.max(20, cW - 220),
+        y: Math.max(20, cH - 130),
+        width: 170,
+        height: 70,
+        containerW: cW,
+        containerH: cH,
         dataUrl: dataUrl
       };
 
       if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
       pageAnnotations[currentPage].push(anno);
       renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Signature placed on page! Drag it anywhere on the document.", "success");
+      UIUtils.showToast("Signature placed! Drag it anywhere on the document.", "success");
     });
 
     // Add Text Box Button
     btnAddText.addEventListener('click', () => {
+      const cW = overlayLayer.offsetWidth || 600;
       const anno = {
         id: 'txt-' + Date.now(),
         type: 'text',
@@ -1086,6 +1282,8 @@
         y: 40,
         width: 180,
         height: 38,
+        containerW: cW,
+        containerH: overlayLayer.offsetHeight || 800,
         text: 'Signer Name / Title',
         color: '#0F172A',
         fontSize: 12
@@ -1097,16 +1295,20 @@
       UIUtils.showToast("Text box added to page! Drag to desired position.", "success");
     });
 
-    // Add Date Seal Button
+    // Add Date Seal Button (Date Only)
     btnAddDate.addEventListener('click', () => {
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
       const anno = {
         id: 'date-' + Date.now(),
         type: 'date',
         x: 40,
-        y: Math.max(20, overlayLayer.offsetHeight - 60),
+        y: Math.max(20, cH - 60),
         width: 160,
         height: 32,
-        text: todayStr,
+        containerW: cW,
+        containerH: cH,
+        text: `Signed: ${todayDateStr}`,
         fontSize: 10
       };
 
@@ -1116,11 +1318,36 @@
       UIUtils.showToast("Date seal added! Drag it beside your signature.", "success");
     });
 
+    // Add Date & Time Seal Button
+    if (btnAddDateTime) {
+      btnAddDateTime.addEventListener('click', () => {
+        const cW = overlayLayer.offsetWidth || 600;
+        const cH = overlayLayer.offsetHeight || 800;
+        const anno = {
+          id: 'date-' + Date.now(),
+          type: 'date',
+          x: 40,
+          y: Math.max(20, cH - 60),
+          width: 220,
+          height: 32,
+          containerW: cW,
+          containerH: cH,
+          text: `Signed: ${todayDateTimeStr}`,
+          fontSize: 10
+        };
+
+        if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+        pageAnnotations[currentPage].push(anno);
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast("Certified Date & Time seal added! Drag to position.", "success");
+      });
+    }
+
     // Clear Page Annotations
     btnClearPageAnnos.addEventListener('click', () => {
       pageAnnotations[currentPage] = [];
       renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Cleared annotations on page " + currentPage, "info");
+      UIUtils.showToast("Cleared items on page " + currentPage, "info");
     });
 
     // Page Navigation
@@ -1179,6 +1406,13 @@
       selectedFileBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
       await loadAndRenderPdf(selectedFileBuffer);
       studioWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // If user had already drawn or typed signature, auto-appear on page 1!
+      setTimeout(() => {
+        if (hasSignatureDrawn || (signerNameInput && signerNameInput.value.trim().length > 0)) {
+          autoUpdateSignatureOnPage();
+        }
+      }, 400);
     }
 
     window.handleSignPdfFile = handleFiles;
@@ -1213,39 +1447,56 @@
     }
 
     // =========================================================================
-    // Apply Signature & Export
+    // Apply Signature & Export (Resilient Coordinate Conversion)
     // =========================================================================
     processBtn.addEventListener("click", async function() {
-      if (!selectedFile || !selectedFileBuffer) return;
+      if (!selectedFile) return;
 
       try {
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing local signature engine...");
 
-        // Collect all visual annotations across pages
-        const visualAnnotationsToBurn = [];
-        const overlayW = overlayLayer.offsetWidth;
-        const overlayH = overlayLayer.offsetHeight;
-
         // Re-read fresh buffer from selectedFile to guarantee zero detachment
         const freshBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
         selectedFileBuffer = freshBuffer;
 
-        // Obtain native unscaled page sizes from PDF-Lib
-        const tempPdfDoc = await PDFLib.PDFDocument.load(freshBuffer.slice(0), { ignoreEncryption: true });
-        const pdfPages = tempPdfDoc.getPages();
+        // Auto-place signature if user signed on pad but hasn't placed it
+        if ((!pageAnnotations[currentPage] || pageAnnotations[currentPage].length === 0) && (hasSignatureDrawn || (signerNameInput && signerNameInput.value.trim().length > 0))) {
+          autoUpdateSignatureOnPage();
+        }
 
-        Object.entries(pageAnnotations).forEach(([pNum, annos]) => {
+        // Collect all visual annotations across pages
+        const visualAnnotationsToBurn = [];
+        const overlayW = overlayLayer.offsetWidth || 600;
+        const overlayH = overlayLayer.offsetHeight || 800;
+
+        // Obtain native unscaled page sizes from PDF.js (Safe, never throws parser errors!)
+        const numPdfPages = pdfDoc ? pdfDoc.numPages : 1;
+
+        for (const [pNum, annos] of Object.entries(pageAnnotations)) {
           const pIndex = parseInt(pNum) - 1;
-          const targetPage = pdfPages[pIndex] || pdfPages[0];
-          const { width: pWidth, height: pHeight } = targetPage.getSize();
+          let pWidth = 612;
+          let pHeight = 792;
+
+          if (pdfDoc && pIndex >= 0 && pIndex < numPdfPages) {
+            try {
+              const page = await pdfDoc.getPage(pIndex + 1);
+              const unscaledViewport = page.getViewport({ scale: 1.0 });
+              pWidth = unscaledViewport.width;
+              pHeight = unscaledViewport.height;
+            } catch (pageErr) {
+              console.warn("Could not get page viewport, using standard letter size", pageErr);
+            }
+          }
 
           annos.forEach(a => {
-            // Coordinate mapping: transform HTML canvas overlay coordinates into native PDF bottom-left points
-            const normX = a.x / overlayW;
-            const normY = a.y / overlayH;
-            const normW = a.width / overlayW;
-            const normH = a.height / overlayH;
+            const cW = a.containerW || overlayW;
+            const cH = a.containerH || overlayH;
+
+            const normX = a.x / cW;
+            const normY = a.y / cH;
+            const normW = a.width / cW;
+            const normH = a.height / cH;
 
             const pdfX = normX * pWidth;
             const pdfW = normW * pWidth;
@@ -1265,27 +1516,13 @@
               fontSize: a.fontSize || 12
             });
           });
-        });
+        }
 
-        // Fallback: If user drew a signature but didn't click "Place Signature", place it on last page automatically
-        let signatureDataUrl = null;
-        if (visualAnnotationsToBurn.length === 0) {
-          if (hasSignatureDrawn) {
-            signatureDataUrl = sigCanvas.toDataURL('image/png');
-          } else if (signerNameInput && signerNameInput.value.trim().length > 0) {
-            const tCanvas = document.createElement("canvas");
-            tCanvas.width = 400;
-            tCanvas.height = 140;
-            const tCtx = tCanvas.getContext("2d");
-            tCtx.font = "italic 40px 'Brush Script MT', cursive, sans-serif";
-            tCtx.fillStyle = inkColor;
-            tCtx.fillText(signerNameInput.value.trim(), 20, 80);
-            signatureDataUrl = tCanvas.toDataURL("image/png");
-          } else {
-            UIUtils.showToast("Please place your signature on the document first!", "warning");
-            processBtn.disabled = false;
-            return;
-          }
+        let signatureDataUrl = getSignatureDataUrl();
+        if (visualAnnotationsToBurn.length === 0 && !signatureDataUrl) {
+          UIUtils.showToast("Please draw or type your signature first!", "warning");
+          processBtn.disabled = false;
+          return;
         }
 
         const options = {
@@ -1294,10 +1531,11 @@
           position: 'bottom-right',
           targetPages: 'last',
           includeDate: true,
-          dateString: todayStr
+          dateString: todayDateStr,
+          pdfJsDoc: pdfDoc // Pass PDF.js document for 100% resilient fallback
         };
 
-        const res = await PDFEdit.processBatchEdit(freshBuffer.slice(0), options, progressCb);
+        const res = await PDFEdit.processBatchEdit(freshBuffer, options, progressCb);
         resultBlob = res.pdfBlob;
 
         const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
