@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 
 <head>
@@ -11,7 +11,7 @@
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Passport &amp; Visa Photo Maker Online (US, UAE, India, UK, Schengen, Canada, Pakistan) | LocalDoc</title>
   <meta name="description"
     content="Generate compliant passport &amp; visa photos for US (2x2&quot;), UK, Schengen, UAE Emirates ID, India PAN, Canada, Pakistan CNIC, Russia, and Korea. Includes AI background remover and printable 4x6 / A4 sheets. 100% private in browser RAM.">
@@ -386,12 +386,37 @@
       flex: 1;
     }
 
-    /* Results layout */
     .results-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
       margin-top: 18px;
+    }
+
+    @media (max-width: 768px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .control-row label {
+        min-width: 0;
+      }
+      #generate-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+      }
+      .results-grid button {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+      }
     }
   </style>
 </head>
@@ -788,7 +813,7 @@
       <!-- Step 4 Action Bar -->
       <div style="text-align:center; margin:28px 0;">
         <button type="button" class="btn btn-primary btn-lg" id="generate-btn"
-          style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
+          style="max-width:420px; width:100%; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
           <span>Generate Official Photo &amp; Print Sheets</span> &rarr;
         </button>
       </div>

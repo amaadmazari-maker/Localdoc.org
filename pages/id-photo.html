@@ -10,7 +10,7 @@
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CNIC &amp; Global ID Card Studio: Free 2-in-1 A4 Photocopy &amp; Biometric Photo Maker (300 DPI) | LocalDoc</title>
   <meta name="description" content="Free official CNIC &amp; Global ID Card Maker. Print 100% life-size 2-in-1 A4 double-sided photocopies with fraud-prevention watermarks and generate compliant 354x472 px biometric photos for NADRA Pak-Identity, PAN, Aadhaar &amp; Emirates ID. Zero uploads.">
   <meta name="keywords" content="cnic card size, nadra cnic size in inches, 2 in 1 id card photocopy on a4, pak identity photo size, nadra photo 354x472, print cnic copy front and back, pan card photocopy, emirates id photocopy, id card size in mm">
@@ -462,6 +462,35 @@
       height: auto;
       display: block;
     }
+
+    @media (max-width: 768px) {
+      .id-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .control-row label {
+        min-width: 0;
+      }
+      #generate-idcard-btn,
+      #generate-cnic-photo-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+      }
+      #idcard-result-card button,
+      #cnic-photo-result-card button {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
+        justify-content: center !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -718,7 +747,7 @@
             <span class="step-badge">Step 4</span>
             <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Generate &amp; Download 2-in-1 A4 Sheet</h3>
           </div>
-          <button type="button" class="btn btn-primary btn-lg" id="generate-idcard-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
+          <button type="button" class="btn btn-primary btn-lg" id="generate-idcard-btn" style="max-width:420px; width:100%; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
             <span>Generate 2-in-1 A4 Photocopy Sheet</span> &rarr;
           </button>
         </div>
@@ -885,7 +914,7 @@
               <span class="step-badge">Step 4</span>
               <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Generate &amp; Download Biometric Photo</h3>
             </div>
-            <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="min-width:320px; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
+            <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="max-width:420px; width:100%; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
               <span>Generate Official NADRA CNIC Photo</span> &rarr;
             </button>
           </div>
