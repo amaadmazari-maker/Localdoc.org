@@ -105,38 +105,153 @@ const PDFOrganize = {
     };
   },
 
-  // 3. Burst / Split Every Single Page to ZIP archive
+  // 3. Burst / Split Individual Pages into individual PDFs and ZIP archive
+  async splitSelectedPagesToZip(file, pageNumbers = null, onProgress = null) {
+    if (onProgress) onProgress(15, 'Reading PDF document structure into memory...');
+    const buffer = await UIUtils.readFileAsArrayBuffer(file);
+    const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const totalPages = srcDoc.getPageCount();
+
+    // Determine target 1-based page numbers
+    let pagesToExtract = [];
+    if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
+      pagesToExtract = pageNumbers
+        .map(p => parseInt(p, 10))
+        .filter(p => !isNaN(p) && p >= 1 && p <= totalPages)
+        .sort((a, b) => a - b);
+    } else {
+      for (let i = 1; i <= totalPages; i++) pagesToExtract.push(i);
+    }
+
+    if (pagesToExtract.length === 0) {
+      throw new Error('Please select at least one valid page to split.');
+    }
+
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    const pagesData = [];
+    const fileList = [];
+
+    for (let idx = 0; idx < pagesToExtract.length; idx++) {
+      const pageNum = pagesToExtract[idx];
+      const pct = 20 + Math.round(((idx + 1) / pagesToExtract.length) * 65);
+      if (onProgress) onProgress(pct, `Extracting Page ${pageNum} (${idx + 1} of ${pagesToExtract.length})...`);
+
+      const singleDoc = await PDFLib.PDFDocument.create();
+      const [copiedPage] = await singleDoc.copyPages(srcDoc, [pageNum - 1]);
+      singleDoc.addPage(copiedPage);
+
+      const singleBytes = await singleDoc.save({ useObjectStreams: true });
+      const filename = `${baseName}-page-${pageNum}.pdf`;
+      const blob = new Blob([singleBytes], { type: 'application/pdf' });
+
+      pagesData.push({
+        filename: filename,
+        bytes: singleBytes
+      });
+
+      fileList.push({
+        pageNumber: pageNum,
+        filename: filename,
+        blob: blob,
+        size: singleBytes.byteLength
+      });
+    }
+
+    if (onProgress) onProgress(90, 'Bundling all individual PDFs into 1-click ZIP archive...');
+    const ZipClass = window.MiniZip || (window.UIUtils && window.UIUtils.Zip) || LocalZip;
+    const zipBlob = ZipClass.createZip(pagesData);
+
+    return {
+      zipBlob,
+      filename: `${baseName}-individual-pages.zip`,
+      files: fileList,
+      totalPages: totalPages,
+      totalExtracted: fileList.length
+    };
+  },
+
+  // Legacy alias for full document burst
   async splitAllPagesToZip(file, onProgress = null) {
+    return this.splitSelectedPagesToZip(file, null, onProgress);
+  },
+
+  // 3b. Split Document into Equal Page Chunks or Pairs (e.g. 2, 3, 5, up to 10 pages per PDF)
+  async splitPagesToChunks(file, pageNumbers = null, chunkSize = 2, onProgress = null) {
     if (onProgress) onProgress(15, 'Reading PDF document pages...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
     const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
     const totalPages = srcDoc.getPageCount();
 
+    const cleanChunkSize = Math.max(1, Math.min(10, parseInt(chunkSize, 10) || 2));
+
+    // Determine target 1-based page numbers
+    let pagesToExtract = [];
+    if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
+      pagesToExtract = pageNumbers
+        .map(p => parseInt(p, 10))
+        .filter(p => !isNaN(p) && p >= 1 && p <= totalPages)
+        .sort((a, b) => a - b);
+    } else {
+      for (let i = 1; i <= totalPages; i++) pagesToExtract.push(i);
+    }
+
+    if (pagesToExtract.length === 0) {
+      throw new Error('Please select at least one valid page to split.');
+    }
+
+    // Partition into chunks of cleanChunkSize
+    const chunks = [];
+    for (let i = 0; i < pagesToExtract.length; i += cleanChunkSize) {
+      chunks.push(pagesToExtract.slice(i, i + cleanChunkSize));
+    }
+
     const baseName = file.name.replace(/\.[^/.]+$/, '');
     const pagesData = [];
+    const chunkList = [];
 
-    for (let i = 0; i < totalPages; i++) {
-      const pct = 20 + Math.round(((i + 1) / totalPages) * 65);
-      if (onProgress) onProgress(pct, `Extracting Page ${i + 1} of ${totalPages}...`);
+    for (let cIdx = 0; cIdx < chunks.length; cIdx++) {
+      const chunk = chunks[cIdx];
+      const pct = 20 + Math.round(((cIdx + 1) / chunks.length) * 65);
+      const rangeLabel = chunk.length === 1 ? `Page ${chunk[0]}` : `Pages ${chunk[0]}-${chunk[chunk.length - 1]}`;
+      if (onProgress) onProgress(pct, `Compiling Part ${cIdx + 1} (${rangeLabel})...`);
 
-      const singleDoc = await PDFLib.PDFDocument.create();
-      const [copiedPage] = await singleDoc.copyPages(srcDoc, [i]);
-      singleDoc.addPage(copiedPage);
+      const chunkDoc = await PDFLib.PDFDocument.create();
+      const pageIndices = chunk.map(p => p - 1);
+      const copiedPages = await chunkDoc.copyPages(srcDoc, pageIndices);
+      copiedPages.forEach(p => chunkDoc.addPage(p));
 
-      const singleBytes = await singleDoc.save();
+      const chunkBytes = await chunkDoc.save({ useObjectStreams: true });
+      const filename = chunk.length === 1
+        ? `${baseName}-part-${cIdx + 1}-page-${chunk[0]}.pdf`
+        : `${baseName}-part-${cIdx + 1}-pages-${chunk[0]}-${chunk[chunk.length - 1]}.pdf`;
+      const blob = new Blob([chunkBytes], { type: 'application/pdf' });
+
       pagesData.push({
-        filename: `${baseName}-page-${i + 1}.pdf`,
-        bytes: singleBytes
+        filename: filename,
+        bytes: chunkBytes
+      });
+
+      chunkList.push({
+        partIndex: cIdx + 1,
+        rangeLabel: rangeLabel,
+        filename: filename,
+        blob: blob,
+        size: chunkBytes.byteLength,
+        pageCount: chunk.length
       });
     }
 
-    if (onProgress) onProgress(90, 'Bundling all page PDFs into ZIP archive...');
-    const zipBlob = MiniZip.createZip(pagesData);
+    if (onProgress) onProgress(90, 'Packaging all parts into 1-click ZIP archive...');
+    const ZipClass = window.MiniZip || (window.UIUtils && window.UIUtils.Zip) || LocalZip;
+    const zipBlob = ZipClass.createZip(pagesData);
 
     return {
       zipBlob,
-      totalPages,
-      filename: `${baseName}-split-pages.zip`
+      filename: `${baseName}-split-in-${cleanChunkSize}page-chunks.zip`,
+      chunks: chunkList,
+      totalChunks: chunkList.length,
+      chunkSize: cleanChunkSize,
+      totalPages: totalPages
     };
   },
 
