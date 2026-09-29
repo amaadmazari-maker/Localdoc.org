@@ -345,6 +345,7 @@ class DocumentScanner {
       const ctx = this.canvas.getContext('2d', { alpha: false });
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
+    canvas._docType = effectiveType;
       ctx.drawImage(this.video, 0, 0, width, height);
       return this.canvas.toDataURL('image/jpeg', 0.96);
     }
@@ -357,10 +358,10 @@ class DocumentScanner {
   // =========================================================================
   static getDefaultCorners() {
     return {
-      topLeft: { x: 0.0, y: 0.0 },
-      topRight: { x: 1.0, y: 0.0 },
-      bottomRight: { x: 1.0, y: 1.0 },
-      bottomLeft: { x: 0.0, y: 1.0 }
+      topLeft: { x: 0.02, y: 0.02 },
+      topRight: { x: 0.98, y: 0.02 },
+      bottomRight: { x: 0.98, y: 0.98 },
+      bottomLeft: { x: 0.02, y: 0.98 }
     };
   }
 
@@ -371,9 +372,9 @@ class DocumentScanner {
       return this.getDefaultCorners();
     }
 
-    // Downsample for real-time edge analysis (sub-20ms)
-    const sampleW = 280;
-    const sampleH = Math.max(160, Math.round((height / width) * 280));
+    // High quality sampling resolution (360px wide) for sharp edge & boundary extraction
+    const sampleW = 360;
+    const sampleH = Math.max(200, Math.round((height / width) * sampleW));
 
     const helperCanvas = document.createElement('canvas');
     helperCanvas.width = sampleW;
@@ -391,49 +392,60 @@ class DocumentScanner {
       gray[j] = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114) | 0;
     }
 
-    // 2. Sobel Edge Gradient Magnitude
+    // 2. 3x3 Gaussian smoothing to suppress fine text lines and paper grain
+    const blurred = new Uint8Array(totalPixels);
+    for (let y = 1; y < sampleH - 1; y++) {
+      const yOff = y * sampleW;
+      for (let x = 1; x < sampleW - 1; x++) {
+        const idx = yOff + x;
+        blurred[idx] = (
+          gray[idx - sampleW - 1] + 2 * gray[idx - sampleW] + gray[idx - sampleW + 1] +
+          2 * gray[idx - 1]       + 4 * gray[idx]          + 2 * gray[idx + 1] +
+          gray[idx + sampleW - 1] + 2 * gray[idx + sampleW] + gray[idx + sampleW + 1]
+        ) >> 4;
+      }
+    }
+
+    // 3. Sobel Edge Gradient Magnitude
     const grad = new Float32Array(totalPixels);
     let maxGrad = 0;
     for (let y = 1; y < sampleH - 1; y++) {
       const yOff = y * sampleW;
       for (let x = 1; x < sampleW - 1; x++) {
         const idx = yOff + x;
-        // Horizontal Sobel
-        const gx = -gray[idx - sampleW - 1] + gray[idx - sampleW + 1]
-                   - 2 * gray[idx - 1]       + 2 * gray[idx + 1]
-                   - gray[idx + sampleW - 1] + gray[idx + sampleW + 1];
-        // Vertical Sobel
-        const gy = -gray[idx - sampleW - 1] - 2 * gray[idx - sampleW] - gray[idx - sampleW + 1]
-                   + gray[idx + sampleW - 1] + 2 * gray[idx + sampleW] + gray[idx + sampleW + 1];
-
+        const gx = -blurred[idx - sampleW - 1] + blurred[idx - sampleW + 1]
+                   - 2 * blurred[idx - 1]       + 2 * blurred[idx + 1]
+                   - blurred[idx + sampleW - 1] + blurred[idx + sampleW + 1];
+        const gy = -blurred[idx - sampleW - 1] - 2 * blurred[idx - sampleW] - blurred[idx - sampleW + 1]
+                   + blurred[idx + sampleW - 1] + 2 * blurred[idx + sampleW] + blurred[idx + sampleW + 1];
         const mag = Math.hypot(gx, gy);
         grad[idx] = mag;
         if (mag > maxGrad) maxGrad = mag;
       }
     }
 
-    if (maxGrad < 25) {
-      // Very low contrast image (e.g. digital sheet or plain paper) -> full frame
+    // If gradient is too flat across entire frame, use clean 2% inset framing
+    if (maxGrad < 28) {
       return this.getDefaultCorners();
     }
 
-    // 3. Ray-Cast Perimeter Boundary Search (Outside -> Inside)
-    // Real document pages on tables have a noticeable edge step where paper meets table.
-    const threshold = Math.max(30, maxGrad * 0.22);
+    // 4. Perimeter Ray Search inward from all 4 boundaries (up to 75% depth)
+    const threshold = Math.max(30, maxGrad * 0.20);
     const borderPoints = [];
 
-    // Scan horizontal lines (top down, bottom up)
-    for (let y = 8; y < sampleH - 8; y += 4) {
+    // Horizontal scans
+    const stepY = Math.max(3, Math.round(sampleH / 50));
+    for (let y = 6; y < sampleH - 6; y += stepY) {
       const yOff = y * sampleW;
       // Left to right
-      for (let x = 4; x < sampleW / 2; x++) {
+      for (let x = 4; x < sampleW * 0.75; x++) {
         if (grad[yOff + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
         }
       }
       // Right to left
-      for (let x = sampleW - 5; x > sampleW / 2; x--) {
+      for (let x = sampleW - 5; x > sampleW * 0.25; x--) {
         if (grad[yOff + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
@@ -441,17 +453,18 @@ class DocumentScanner {
       }
     }
 
-    // Scan vertical lines (left to right, right to left)
-    for (let x = 8; x < sampleW - 8; x += 4) {
+    // Vertical scans
+    const stepX = Math.max(3, Math.round(sampleW / 50));
+    for (let x = 6; x < sampleW - 6; x += stepX) {
       // Top to bottom
-      for (let y = 4; y < sampleH / 2; y++) {
+      for (let y = 4; y < sampleH * 0.75; y++) {
         if (grad[y * sampleW + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
         }
       }
       // Bottom to top
-      for (let y = sampleH - 5; y > sampleH / 2; y--) {
+      for (let y = sampleH - 5; y > sampleH * 0.25; y--) {
         if (grad[y * sampleW + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
@@ -459,28 +472,28 @@ class DocumentScanner {
       }
     }
 
-    if (borderPoints.length < 24) {
+    if (borderPoints.length < 20) {
       return this.getDefaultCorners();
     }
 
-    // 4. Find 4 Extremal Boundary Points (Rotated Projection Bounds)
-    let minSum = Infinity, maxSum = -Infinity;
-    let minDiff = Infinity, maxDiff = -Infinity;
-    let tl = { x: 0, y: 0 }, tr = { x: 1, y: 0 }, br = { x: 1, y: 1 }, bl = { x: 0, y: 1 };
+    // 5. Cluster & Locate 4 Robust Extremal Corners (rejecting single-point noise)
+    borderPoints.sort((a, b) => (a.x + a.y) - (b.x + b.y));
+    const tlCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
+    let tl = tlCandidates[Math.floor(tlCandidates.length / 2)];
 
-    for (let i = 0; i < borderPoints.length; i++) {
-      const p = borderPoints[i];
-      const sum = p.x + p.y;
-      const diff = p.x - p.y;
+    borderPoints.sort((a, b) => (b.x + b.y) - (a.x + a.y));
+    const brCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
+    let br = brCandidates[Math.floor(brCandidates.length / 2)];
 
-      if (sum < minSum) { minSum = sum; tl = p; }
-      if (sum > maxSum) { maxSum = sum; br = p; }
-      if (diff > maxDiff) { maxDiff = diff; tr = p; }
-      if (diff < minDiff) { minDiff = diff; bl = p; }
-    }
+    borderPoints.sort((a, b) => (b.x - b.y) - (a.x - a.y));
+    const trCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
+    let tr = trCandidates[Math.floor(trCandidates.length / 2)];
 
-    // 5. Strict Convexity & Area Validation
-    // Check area via Shoelace formula
+    borderPoints.sort((a, b) => (a.x - a.y) - (b.x - b.y));
+    const blCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
+    let bl = blCandidates[Math.floor(blCandidates.length / 2)];
+
+    // 6. Strict Convexity & Plausibility Validation
     const area = 0.5 * Math.abs(
       (tl.x * (tr.y - bl.y)) +
       (tr.x * (br.y - tl.y)) +
@@ -488,12 +501,6 @@ class DocumentScanner {
       (bl.x * (tl.y - br.y))
     );
 
-    // If area covers less than 22% of the frame or greater than 98%, default to full frame
-    if (area < 0.22 || area > 0.98) {
-      return this.getDefaultCorners();
-    }
-
-    // Verify strict convexity: cross products of consecutive edges must all have same sign
     function cross(p0, p1, p2) {
       return (p1.x - p0.x) * (p2.y - p1.y) - (p1.y - p0.y) * (p2.x - p1.x);
     }
@@ -501,41 +508,79 @@ class DocumentScanner {
     const c2 = cross(tr, br, bl);
     const c3 = cross(br, bl, tl);
     const c4 = cross(bl, tl, tr);
+    const isConvex = (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) || (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
 
-    const isAllPositive = (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0);
-    const isAllNegative = (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
-
-    if (!isAllPositive && !isAllNegative) {
-      // Non-convex / self-intersecting polygon -> fall back to full frame
-      return this.getDefaultCorners();
-    }
-
-    // Aspect ratio check
     const topW = Math.hypot(tr.x - tl.x, tr.y - tl.y);
     const botW = Math.hypot(br.x - bl.x, br.y - bl.y);
     const lH = Math.hypot(bl.x - tl.x, bl.y - tl.y);
     const rH = Math.hypot(br.x - tr.x, br.y - tr.y);
     const avgW = (topW + botW) / 2;
     const avgH = (lH + rH) / 2;
-    const ratio = avgW / avgH;
+    const ratio = avgW / Math.max(0.01, avgH);
 
-    if (ratio < 0.35 || ratio > 2.8) {
-      return this.getDefaultCorners();
+    // Support both full documents and narrow fuel/ATM slips (ratio from 0.20 to 5.0, area from 10% to 97%)
+    if (area >= 0.04 && area <= 0.98 && isConvex && ratio >= 0.18 && ratio <= 5.5) {
+      return {
+        topLeft: { x: Math.max(0.01, tl.x + 0.003), y: Math.max(0.01, tl.y + 0.003) },
+        topRight: { x: Math.min(0.99, tr.x - 0.003), y: Math.max(0.01, tr.y + 0.003) },
+        bottomRight: { x: Math.min(0.99, br.x - 0.003), y: Math.min(0.99, br.y - 0.003) },
+        bottomLeft: { x: Math.max(0.01, bl.x + 0.003), y: Math.min(0.99, bl.y - 0.003) }
+      };
     }
 
-    return {
-      topLeft: { x: Math.max(0, Math.min(0.95, tl.x)), y: Math.max(0, Math.min(0.95, tl.y)) },
-      topRight: { x: Math.max(0.05, Math.min(1, tr.x)), y: Math.max(0, Math.min(0.95, tr.y)) },
-      bottomRight: { x: Math.max(0.05, Math.min(1, br.x)), y: Math.max(0.05, Math.min(1, br.y)) },
-      bottomLeft: { x: Math.max(0, Math.min(0.95, bl.x)), y: Math.max(0.05, Math.min(1, bl.y)) }
-    };
+    return this.getDefaultCorners();
+  }
+
+
+  // =========================================================================
+  // Dual-Logic Document Classifier:
+  // Strictly separates Standard A4 Documents from Small Slips / Fuel Bills / Tickets / Receipts
+  // =========================================================================
+  static classifyDocumentType(corners, imgW, imgH) {
+    if (!corners || !imgW || !imgH) return 'a4';
+
+    const sTL = { x: (corners.topLeft ? corners.topLeft.x : 0.02) * imgW, y: (corners.topLeft ? corners.topLeft.y : 0.02) * imgH };
+    const sTR = { x: (corners.topRight ? corners.topRight.x : 0.98) * imgW, y: (corners.topRight ? corners.topRight.y : 0.02) * imgH };
+    const sBR = { x: (corners.bottomRight ? corners.bottomRight.x : 0.98) * imgW, y: (corners.bottomRight ? corners.bottomRight.y : 0.98) * imgH };
+    const sBL = { x: (corners.bottomLeft ? corners.bottomLeft.x : 0.02) * imgW, y: (corners.bottomLeft ? corners.bottomLeft.y : 0.98) * imgH };
+
+    const topW = Math.hypot(sTR.x - sTL.x, sTR.y - sTL.y);
+    const bottomW = Math.hypot(sBR.x - sBL.x, sBR.y - sBL.y);
+    const avgW = (topW + bottomW) / 2;
+
+    const leftH = Math.hypot(sBL.x - sTL.x, sBL.y - sTL.y);
+    const rightH = Math.hypot(sBR.x - sTR.x, sBR.y - sTR.y);
+    const avgH = (leftH + rightH) / 2;
+
+    if (avgH <= 0 || avgW <= 0) return 'a4';
+
+    const naturalRatio = avgW / avgH; // width / height
+
+    // Calculate relative quad area within total camera frame
+    const quadArea = 0.5 * Math.abs(
+      (corners.topLeft.x * (corners.topRight.y - corners.bottomLeft.y)) +
+      (corners.topRight.x * (corners.bottomRight.y - corners.topLeft.y)) +
+      (corners.bottomRight.x * (corners.bottomLeft.y - corners.topRight.y)) +
+      (corners.bottomLeft.x * (corners.topLeft.y - corners.bottomRight.y))
+    );
+
+    // LOGIC 1: Standard A4 Document (close to A4 aspect ratio 0.62-0.82 portrait or 1.22-1.62 landscape AND area >= 0.30)
+    const isCloseToA4Ratio = (naturalRatio >= 0.62 && naturalRatio <= 0.82) || (naturalRatio >= 1.22 && naturalRatio <= 1.62);
+
+    if (isCloseToA4Ratio && quadArea >= 0.30) {
+      return 'a4';
+    }
+
+    // LOGIC 2: Small Slip / Fuel Bill / Ticket / Card / Receipt
+    return 'slip';
   }
 
   // =========================================================================
   // 5. True 4-Point Projective Homography (Zero Distortion on Tilted/Folded Pages)
-  // Mathematically maps quadrilateral to flat rectangle with straight perspective lines.
+  // Dual-Logic: Normalizes A4 documents to exact A4 aspect ratio, while preserving
+  // natural proportions for small slips, receipts, and fuel tickets.
   // =========================================================================
-  static warpDocument(sourceImg, corners, targetW = 0, targetH = 0) {
+  static warpDocument(sourceImg, corners, targetW = 0, targetH = 0, docType = null) {
     const origW = sourceImg.naturalWidth || sourceImg.videoWidth || sourceImg.width;
     const origH = sourceImg.naturalHeight || sourceImg.videoHeight || sourceImg.height;
 
@@ -548,29 +593,21 @@ class DocumentScanner {
 
     const c = corners || this.getDefaultCorners();
     const tl = {
-      x: (c.topLeft && typeof c.topLeft.x === 'number') ? c.topLeft.x : 0,
-      y: (c.topLeft && typeof c.topLeft.y === 'number') ? c.topLeft.y : 0
+      x: (c.topLeft && typeof c.topLeft.x === 'number') ? c.topLeft.x : 0.02,
+      y: (c.topLeft && typeof c.topLeft.y === 'number') ? c.topLeft.y : 0.02
     };
     const tr = {
-      x: (c.topRight && typeof c.topRight.x === 'number') ? c.topRight.x : 1,
-      y: (c.topRight && typeof c.topRight.y === 'number') ? c.topRight.y : 0
+      x: (c.topRight && typeof c.topRight.x === 'number') ? c.topRight.x : 0.98,
+      y: (c.topRight && typeof c.topRight.y === 'number') ? c.topRight.y : 0.02
     };
     const br = {
-      x: (c.bottomRight && typeof c.bottomRight.x === 'number') ? c.bottomRight.x : 1,
-      y: (c.bottomRight && typeof c.bottomRight.y === 'number') ? c.bottomRight.y : 1
+      x: (c.bottomRight && typeof c.bottomRight.x === 'number') ? c.bottomRight.x : 0.98,
+      y: (c.bottomRight && typeof c.bottomRight.y === 'number') ? c.bottomRight.y : 0.98
     };
     const bl = {
-      x: (c.bottomLeft && typeof c.bottomLeft.x === 'number') ? c.bottomLeft.x : 0,
-      y: (c.bottomLeft && typeof c.bottomLeft.y === 'number') ? c.bottomLeft.y : 1
+      x: (c.bottomLeft && typeof c.bottomLeft.x === 'number') ? c.bottomLeft.x : 0.02,
+      y: (c.bottomLeft && typeof c.bottomLeft.y === 'number') ? c.bottomLeft.y : 0.98
     };
-
-    // Check if corners are full-frame (within 1.5% margin)
-    const isFullFrame = (
-      Math.abs(tl.x) < 0.015 && Math.abs(tl.y) < 0.015 &&
-      Math.abs(tr.x - 1) < 0.015 && Math.abs(tr.y) < 0.015 &&
-      Math.abs(br.x - 1) < 0.015 && Math.abs(br.y - 1) < 0.015 &&
-      Math.abs(bl.x) < 0.015 && Math.abs(bl.y - 1) < 0.015
-    );
 
     // Calculate natural target width and height using Euclidean distances
     const sTL = { x: tl.x * origW, y: tl.y * origH };
@@ -589,9 +626,33 @@ class DocumentScanner {
     let destW = targetW || Math.round(maxW);
     let destH = targetH || Math.round(maxH);
 
-    // Preserve 300 DPI clarity up to 2480x3508 (Standard A4 @ 300 DPI)
-    destW = Math.max(400, Math.min(2480, destW));
-    destH = Math.max(400, Math.min(3508, destH));
+    const effectiveType = docType || this.classifyDocumentType(c, origW, origH);
+
+    // STRICT DUAL LOGIC (DO NOT MIX):
+    // LOGIC 1: Standard A4 Document -> Square & scale to exact mathematical A4 aspect ratio (1 : 1.4142)
+    // LOGIC 2: Small Slip / Fuel Bill / Ticket / Card / Receipt -> PRESERVE EXACT NATURAL PROPORTIONS! NEVER stretch to A4.
+    if (!targetW && !targetH && maxH > 0 && maxW > 0) {
+      if (effectiveType === 'a4') {
+        const naturalRatio = maxW / maxH;
+        if (naturalRatio >= 1.0) {
+          // Standard Landscape A4
+          destH = Math.max(600, Math.min(2480, Math.round(maxH)));
+          destW = Math.round(destH * 1.41421356);
+        } else {
+          // Standard Portrait A4
+          destW = Math.max(600, Math.min(2480, Math.round(maxW)));
+          destH = Math.round(destW * 1.41421356);
+        }
+      } else {
+        // Small slip / fuel receipt / ticket: keep natural un-stretched dimensions
+        destW = Math.max(300, Math.min(2480, Math.round(maxW)));
+        destH = Math.max(300, Math.min(3508, Math.round(maxH)));
+      }
+    }
+
+    // Bounded resolution for optimal memory & 300 DPI clarity
+    destW = Math.max(300, Math.min(2480, destW));
+    destH = Math.max(300, Math.min(3508, destH));
 
     const canvas = document.createElement('canvas');
     canvas.width = destW;
@@ -599,12 +660,6 @@ class DocumentScanner {
     const ctx = canvas.getContext('2d', { alpha: false });
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-
-    // Direct 1:1 draw if full-frame (100% native quality, zero overhead, zero distortion)
-    if (isFullFrame) {
-      ctx.drawImage(sourceImg, 0, 0, destW, destH);
-      return canvas;
-    }
 
     // True 4-Point Projective Homography with WebGL
     const webglCanvas = this.renderProjectiveWebGL(sourceImg, tl, tr, br, bl, destW, destH);
@@ -618,7 +673,7 @@ class DocumentScanner {
     return canvas;
   }
 
-  // Compute 3x3 Projective Homography Matrix mapping unit square [0,1]^2 to source quad (x0,y0)-(x3,y3)
+    // Compute 3x3 Projective Homography Matrix mapping unit square [0,1]^2 to source quad (x0,y0)-(x3,y3)
   static computeHomography(p0, p1, p2, p3) {
     const x0 = p0.x, y0 = p0.y;
     const x1 = p1.x, y1 = p1.y;
@@ -833,8 +888,9 @@ class DocumentScanner {
   // =========================================================================
   static processImage(imgElement, filter = 'natural', rotation = 0, corners = null, options = {}) {
     let sourceCanvas;
+    const docType = options.docType || null;
     if (corners) {
-      sourceCanvas = DocumentScanner.warpDocument(imgElement, corners);
+      sourceCanvas = DocumentScanner.warpDocument(imgElement, corners, 0, 0, docType);
     } else {
       sourceCanvas = document.createElement('canvas');
       const w = imgElement.naturalWidth || imgElement.videoWidth || imgElement.width;
@@ -876,9 +932,9 @@ class DocumentScanner {
 
     switch (filter) {
       case 'natural': {
-        // Balanced Natural Enhancement:
-        // Gently equalizes shadows and sharpens text readability without blowing out whites,
-        // washing out skin tones, or forcing harsh high-contrast bleaching.
+        // Balanced Natural Enhancement with Fold & Crease Shadow Leveling:
+        // Dual-radius integral background estimation flattens large room illumination gradients
+        // AND local fold/crease shadows, producing clean paper white while anchoring dark ink.
         const lum = new Float32Array(totalPixels);
         for (let i = 0, j = 0; i < len; i += 4, j++) {
           lum[j] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
@@ -897,27 +953,38 @@ class DocumentScanner {
           }
         }
 
-        // Broad radius for natural illumination balancing
-        const radius = Math.max(30, Math.round(Math.min(imgW, imgH) / 10));
+        // Dual scale background: large radius for illumination falloff + small radius for crease valley leveling
+        const radiusLarge = Math.max(28, Math.round(Math.min(imgW, imgH) / 10));
+        const radiusSmall = Math.max(12, Math.round(Math.min(imgW, imgH) / 24));
 
         for (let y = 0; y < imgH; y++) {
-          const y0 = Math.max(0, y - radius);
-          const y1 = Math.min(imgH - 1, y + radius);
-          const intRow1 = (y1 + 1) * intW;
-          const intRow0 = y0 * intW;
-          const hSpan = y1 - y0 + 1;
+          const y0L = Math.max(0, y - radiusLarge);
+          const y1L = Math.min(imgH - 1, y + radiusLarge);
+          const intRow1L = (y1L + 1) * intW;
+          const intRow0L = y0L * intW;
+          const hSpanL = y1L - y0L + 1;
+
+          const y0S = Math.max(0, y - radiusSmall);
+          const y1S = Math.min(imgH - 1, y + radiusSmall);
+          const intRow1S = (y1S + 1) * intW;
+          const intRow0S = y0S * intW;
+          const hSpanS = y1S - y0S + 1;
 
           for (let x = 0; x < imgW; x++) {
-            const x0 = Math.max(0, x - radius);
-            const x1 = Math.min(imgW - 1, x + radius);
-            const area = (x1 - x0 + 1) * hSpan;
+            const x0L = Math.max(0, x - radiusLarge);
+            const x1L = Math.min(imgW - 1, x + radiusLarge);
+            const areaL = (x1L - x0L + 1) * hSpanL;
+            const sumL = integral[intRow1L + (x1L + 1)] - integral[intRow0L + (x1L + 1)] - integral[intRow1L + x0L] + integral[intRow0L + x0L];
+            const bgLarge = sumL / areaL;
 
-            const sum = integral[intRow1 + (x1 + 1)]
-                      - integral[intRow0 + (x1 + 1)]
-                      - integral[intRow1 + x0]
-                      + integral[intRow0 + x0];
+            const x0S = Math.max(0, x - radiusSmall);
+            const x1S = Math.min(imgW - 1, x + radiusSmall);
+            const areaS = (x1S - x0S + 1) * hSpanS;
+            const sumS = integral[intRow1S + (x1S + 1)] - integral[intRow0S + (x1S + 1)] - integral[intRow1S + x0S] + integral[intRow0S + x0S];
+            const bgSmall = sumS / areaS;
 
-            const localBg = Math.max(45, sum / area);
+            const localBg = Math.max(40, 0.65 * bgLarge + 0.35 * bgSmall);
+
             const pIdx = y * imgW + x;
             const pLum = lum[pIdx];
             const idx = pIdx * 4;
@@ -928,27 +995,30 @@ class DocumentScanner {
 
             const ratio = pLum / localBg;
 
-            // Gentle natural curve
+            // Smooth tone curve with fold & crease shadow flattening:
             let targetLum;
-            if (ratio >= 0.95) {
-              const t = Math.min(1, (ratio - 0.95) / 0.05);
-              targetLum = 230 + 12 * (3 * t * t - 2 * t * t * t);
-            } else if (ratio < 0.80) {
-              targetLum = Math.pow(ratio / 0.80, 1.15) * 195;
+            if (ratio >= 0.90) {
+              // Smooth transition to pure clean paper white 255
+              const t = Math.min(1, (ratio - 0.90) / 0.10);
+              targetLum = 238 + 17 * (3 * t * t - 2 * t * t * t);
+            } else if (ratio < 0.76) {
+              // Rich dark ink
+              targetLum = Math.pow(ratio / 0.76, 1.25) * 190;
             } else {
-              const t = (ratio - 0.80) / 0.15;
-              targetLum = 195 + (230 - 195) * t;
+              // Smooth midtone gradient
+              const t = (ratio - 0.76) / 0.14;
+              targetLum = 190 + (238 - 190) * t;
             }
 
-            const gain = Math.max(0.85, Math.min(1.4, targetLum / Math.max(pLum, 1)));
+            const gain = Math.max(0.85, Math.min(1.45, targetLum / Math.max(pLum, 1)));
             const maxC = Math.max(r, g, b);
             const minC = Math.min(r, g, b);
             const chroma = maxC - minC;
 
             if (chroma > 12) {
-              let nr = (r - pLum) * 1.05 + pLum * gain;
-              let ng = (g - pLum) * 1.05 + pLum * gain;
-              let nb = (b - pLum) * 1.05 + pLum * gain;
+              let nr = (r - pLum) * 1.08 + pLum * gain;
+              let ng = (g - pLum) * 1.08 + pLum * gain;
+              let nb = (b - pLum) * 1.08 + pLum * gain;
               data[idx] = Math.min(255, Math.max(0, Math.round(nr)));
               data[idx + 1] = Math.min(255, Math.max(0, Math.round(ng)));
               data[idx + 2] = Math.min(255, Math.max(0, Math.round(nb)));
@@ -1196,16 +1266,67 @@ class DocumentScanner {
       const pageAspect = pageWidth / pageHeight;
 
       let drawW, drawH, drawX, drawY;
-      if (imgAspect > pageAspect) {
+
+      // STRICT DUAL LOGIC FOR A4 PDF EXPORT:
+      // Determine document type: explicit pageData.docType, or auto-classification
+      const docType = pageData.docType || (
+        ((imgAspect >= 0.62 && imgAspect <= 0.82) || (imgAspect >= 1.22 && imgAspect <= 1.62)) ? 'a4' : 'slip'
+      );
+
+      // LOGIC 1: Standard A4 Document (close to A4)
+      // Drawn full bleed A4 without borders
+      if (docType === 'a4') {
         drawW = pageWidth;
-        drawH = drawW / imgAspect;
-        drawX = 0;
-        drawY = (pageHeight - drawH) / 2;
-      } else {
         drawH = pageHeight;
-        drawW = drawH * imgAspect;
-        drawX = (pageWidth - drawW) / 2;
+        drawX = 0;
         drawY = 0;
+      }
+      // LOGIC 2: Small Slip / Fuel Bill / Ticket / Card / Receipt
+      // Managed ON A4: NEVER stretched wide to A4! Centered on A4 page at natural readable slip proportions:
+      else {
+        if (imgAspect <= 0.65) {
+          // Narrow vertical slip / fuel bill / supermarket roll / POS slip:
+          const targetW = pageWidth * 0.54; // Natural receipt width on A4 page
+          const maxAvailH = pageHeight * 0.88;
+          let w = targetW;
+          let h = w / imgAspect;
+          if (h > maxAvailH) {
+            h = maxAvailH;
+            w = h * imgAspect;
+          }
+          drawW = w;
+          drawH = h;
+          drawX = (pageWidth - drawW) / 2;
+          drawY = (pageHeight - drawH) / 2;
+        } else if (imgAspect >= 1.45) {
+          // Wide horizontal ticket / boarding pass / voucher:
+          const targetW = pageWidth * 0.80;
+          const maxAvailH = pageHeight * 0.65;
+          let w = targetW;
+          let h = w / imgAspect;
+          if (h > maxAvailH) {
+            h = maxAvailH;
+            w = h * imgAspect;
+          }
+          drawW = w;
+          drawH = h;
+          drawX = (pageWidth - drawW) / 2;
+          drawY = (pageHeight - drawH) / 2;
+        } else {
+          // Compact square-ish slip / ID card / parking stub:
+          const targetW = pageWidth * 0.62;
+          const maxAvailH = pageHeight * 0.80;
+          let w = targetW;
+          let h = w / imgAspect;
+          if (h > maxAvailH) {
+            h = maxAvailH;
+            w = h * imgAspect;
+          }
+          drawW = w;
+          drawH = h;
+          drawX = (pageWidth - drawW) / 2;
+          drawY = (pageHeight - drawH) / 2;
+        }
       }
 
       page.drawImage(imageEmbed, {

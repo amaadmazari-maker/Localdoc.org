@@ -1218,7 +1218,7 @@
         </div>
         <span style="font-size:0.92rem; font-weight:800;" data-i18n="scan_quick_gallery">Gallery &amp; Files</span>
       </div>
-      <input type="file" id="home-import-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;" onchange="handleHomeFileImport(event)">
+      <input type="file" id="home-import-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;">
     </div>
 
     <!-- Recents Section Header -->
@@ -1381,7 +1381,7 @@
         <button type="button" class="cs-cam-hud-btn" onclick="triggerGalleryImport()" title="Import from Photos/Gallery">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
-        <input type="file" id="cam-gallery-file-input" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;" onchange="handleCamGalleryUpload(event)">
+        <input type="file" id="cam-gallery-file-input" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;">
 
         <!-- Large Double Ring Shutter -->
         <button type="button" class="cs-cam-shutter-btn" onclick="executeShutterSnap()" aria-label="Capture Scan">
@@ -1587,9 +1587,14 @@
           <button type="button" class="cs-thumb-arrow-btn" onclick="goToNextSinglePage()" title="Next Page" style="width:30px; height:30px; font-size:0.9rem;">&#9658;</button>
         </div>
 
-        <button type="button" class="btn btn-outline btn-sm" onclick="deleteActiveDocPage()" style="color:#EF4444; border-color:rgba(239, 68, 68, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
-          <span>&#128465;</span> <span>Delete</span>
-        </button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" id="single-doc-type-toggle" class="btn btn-outline btn-sm" onclick="toggleActiveDocPageType()" title="Click to toggle between Standard A4 Document and Small Slip / Receipt layout" style="color:#38BDF8; border-color:rgba(56, 189, 248, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+            <span id="single-doc-type-icon">&#128196;</span> <span id="single-doc-type-text">Document (A4)</span>
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="deleteActiveDocPage()" style="color:#EF4444; border-color:rgba(239, 68, 68, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+            <span>&#128465;</span> <span>Delete</span>
+          </button>
+        </div>
       </div>
 
       <!-- Active Document Stage (Full Height Page View) -->
@@ -1597,7 +1602,7 @@
         <img id="doc-active-page-img" src="" alt="Active Document Page">
       </div>
 
-      <!-- Exactly 3 Core Tools Bar (Crop, Filter, Rotate) as Requested in Review Video -->
+      <!-- Interactive Core Tools Bar (Crop, Filter Studio, Rotate, Retake) -->
       <div class="cs-single-bottom-bar">
         <!-- 1. Crop & Edges (Interactive 4 Corners with Loupe) -->
         <button type="button" class="cs-single-tool-btn primary" onclick="reCropActivePage()" title="Adjust 4 corners and perspective">
@@ -1605,16 +1610,22 @@
           <span>Crop &amp; Edges</span>
         </button>
 
-        <!-- 2. Filter (Cycle Magic Color / B&W / Grayscale / Original) -->
-        <button type="button" class="cs-single-tool-btn" onclick="cycleActiveDocPageFilter()" title="Switch color enhancement filter">
+        <!-- 2. Filter Studio (Interactive Previews) -->
+        <button type="button" class="cs-single-tool-btn" onclick="openFilterScreenForActivePage()" title="Open interactive Filter Studio (Natural Clear, Magic White, B&W, Grayscale)">
           <span>&#127912;</span>
-          <span id="single-active-filter-text">Filter (Magic Color)</span>
+          <span id="single-active-filter-text">Filter Studio</span>
         </button>
 
         <!-- 3. Rotate 90&deg; -->
         <button type="button" class="cs-single-tool-btn" onclick="rotateActiveDocPage()" title="Rotate 90 degrees clockwise">
           <span style="font-size:1.25rem;">&#128260;</span>
           <span>Rotate 90&deg;</span>
+        </button>
+
+        <!-- 4. Retake / Replace Page -->
+        <button type="button" class="cs-single-tool-btn" onclick="promptReplaceActivePage()" title="Retake or reselect photo for this page">
+          <span style="font-size:1.25rem;">&#128247;</span>
+          <span>Retake Page</span>
         </button>
       </div>
     </div>
@@ -1712,6 +1723,36 @@
       </button>
     </div>
   </div>
+
+  <!-- Replace / Retake Page Modal -->
+  <div class="cs-share-modal" id="cs-replace-modal" style="display:none;">
+    <div class="cs-share-card">
+      <div class="cs-share-head">
+        <div>
+          <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#F8FAFC;">Replace / Retake Page</h3>
+          <p id="cs-replace-subtitle" style="margin:4px 0 0; font-size:0.82rem; color:#94A3B8;">Select new image for Page 1</p>
+        </div>
+        <button type="button" class="cs-cam-hud-btn" onclick="closeReplaceModal()" title="Close" style="width:34px; height:34px;">&#10005;</button>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+        <div class="cs-quick-tool-card" onclick="triggerReplaceWithCamera()" style="padding:18px 12px; border:1px solid var(--line); background:var(--bg-surface);">
+          <div class="cs-tool-icon-circle" style="background:var(--cs-teal); color:#FFF; width:44px; height:44px; margin-bottom:10px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </div>
+          <span style="font-weight:800; font-size:0.9rem; color:var(--text-primary);">Camera Snap</span>
+          <span style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Retake with Camera</span>
+        </div>
+        <div class="cs-quick-tool-card" onclick="triggerReplaceWithGallery()" style="padding:18px 12px; border:1px solid var(--line); background:var(--bg-surface);">
+          <div class="cs-tool-icon-circle" style="background:rgba(59, 130, 246, 0.15); color:#3B82F6; width:44px; height:44px; margin-bottom:10px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
+          <span style="font-weight:800; font-size:0.9rem; color:var(--text-primary);">Gallery / Files</span>
+          <span style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Reselect image file</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="replace-page-file-input" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" style="display:none;">
 
   <!-- Rename Document Modal (Exact CamScanner Popup from Video) -->
   <div class="cs-rename-modal" id="cs-rename-modal">
@@ -2907,6 +2948,94 @@
           UIUtils.showToast("Page removed.", "info");
         }
       }
+    }
+
+    // --- Interactive Page Refinement, Replacement & Dual-Logic Handlers ---
+    let replacingPageIndex = -1;
+
+    function promptReplacePage(idx) {
+      if (idx < 0 || idx >= docPages.length) return;
+      replacingPageIndex = idx;
+      const sub = document.getElementById("cs-replace-subtitle");
+      if (sub) sub.textContent = `Select replacement photo or scan for Page ${idx + 1}`;
+      const modal = document.getElementById("cs-replace-modal");
+      if (modal) modal.style.display = "flex";
+    }
+
+    function promptReplaceActivePage() {
+      promptReplacePage(currentViewingPageIndex);
+    }
+
+    function closeReplaceModal() {
+      const modal = document.getElementById("cs-replace-modal");
+      if (modal) modal.style.display = "none";
+      replacingPageIndex = -1;
+    }
+
+    function triggerReplaceWithCamera() {
+      const modal = document.getElementById("cs-replace-modal");
+      if (modal) modal.style.display = "none";
+      openFullscreenCamera();
+    }
+
+    function triggerReplaceWithGallery() {
+      const modal = document.getElementById("cs-replace-modal");
+      if (modal) modal.style.display = "none";
+      const input = document.getElementById("replace-page-file-input");
+      if (input) {
+        input.value = "";
+        input.click();
+      }
+    }
+
+    function openFilterScreenForPage(idx) {
+      if (idx < 0 || idx >= docPages.length) return;
+      currentViewingPageIndex = idx;
+      const page = docPages[idx];
+      if (!page) return;
+
+      stagingPage = {
+        rawImg: page.rawImg,
+        corners: page.corners || DocumentScanner.getDefaultCorners(),
+        docType: page.docType || 'a4',
+        rotation: page.rotation || 0,
+        filter: page.filter || 'natural'
+      };
+      stagingIsEditingIndex = idx;
+      rawWarpedData = null;
+      openFilterScreen();
+    }
+
+    function openFilterScreenForActivePage() {
+      openFilterScreenForPage(currentViewingPageIndex);
+    }
+
+    async function toggleDocPageTypeAt(idx) {
+      const page = docPages[idx];
+      if (!page) return;
+      page.docType = (page.docType === 'slip') ? 'a4' : 'slip';
+      showProcessing("Updating layout...");
+      try {
+        const raw = page.rawImg;
+        if (raw) {
+          const processed = DocumentScanner.processImage(raw, page.filter || 'natural', page.rotation || 0, page.corners, { docType: page.docType });
+          page.processedDataUrl = processed;
+        }
+        await autoSaveDocumentToDB();
+        renderWorkspacePages();
+        if (currentViewingPageIndex === idx) {
+          renderDocPageViewer();
+        }
+        UIUtils.showToast(page.docType === 'slip' ? "&#129534; Page set to Small Slip / Receipt (natural proportions)" : "&#128196; Page set to Standard A4 Document", "info");
+      } catch (e) {
+        console.error("Toggle doc type error:", e);
+      } finally {
+        hideProcessing();
+      }
+    }
+
+    function toggleActiveDocPageType() {
+      toggleDocPageTypeAt(currentViewingPageIndex);
     }
 
     // --- Single View: Full Height Page Inspector & 3 Core Tools ---
