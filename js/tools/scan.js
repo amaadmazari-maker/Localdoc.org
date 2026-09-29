@@ -831,7 +831,7 @@ class DocumentScanner {
   // =========================================================================
   // 6. World-Class CamScanner Filters: Adaptive Shadow Removal & Laser-Sharp Ink
   // =========================================================================
-  static processImage(imgElement, filter = 'magic-color', rotation = 0, corners = null, options = {}) {
+  static processImage(imgElement, filter = 'natural', rotation = 0, corners = null, options = {}) {
     let sourceCanvas;
     if (corners) {
       sourceCanvas = DocumentScanner.warpDocument(imgElement, corners);
@@ -875,6 +875,93 @@ class DocumentScanner {
     const contrastAdjust = options.contrast || 0;
 
     switch (filter) {
+      case 'natural': {
+        // Balanced Natural Enhancement:
+        // Gently equalizes shadows and sharpens text readability without blowing out whites,
+        // washing out skin tones, or forcing harsh high-contrast bleaching.
+        const lum = new Float32Array(totalPixels);
+        for (let i = 0, j = 0; i < len; i += 4, j++) {
+          lum[j] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+        }
+
+        const intW = imgW + 1;
+        const integral = new Float64Array(intW * (imgH + 1));
+        for (let y = 0; y < imgH; y++) {
+          let rowSum = 0;
+          const yOff = y * imgW;
+          const intOff = (y + 1) * intW;
+          const prevOff = y * intW;
+          for (let x = 0; x < imgW; x++) {
+            rowSum += lum[yOff + x];
+            integral[intOff + x + 1] = integral[prevOff + x + 1] + rowSum;
+          }
+        }
+
+        // Broad radius for natural illumination balancing
+        const radius = Math.max(30, Math.round(Math.min(imgW, imgH) / 10));
+
+        for (let y = 0; y < imgH; y++) {
+          const y0 = Math.max(0, y - radius);
+          const y1 = Math.min(imgH - 1, y + radius);
+          const intRow1 = (y1 + 1) * intW;
+          const intRow0 = y0 * intW;
+          const hSpan = y1 - y0 + 1;
+
+          for (let x = 0; x < imgW; x++) {
+            const x0 = Math.max(0, x - radius);
+            const x1 = Math.min(imgW - 1, x + radius);
+            const area = (x1 - x0 + 1) * hSpan;
+
+            const sum = integral[intRow1 + (x1 + 1)]
+                      - integral[intRow0 + (x1 + 1)]
+                      - integral[intRow1 + x0]
+                      + integral[intRow0 + x0];
+
+            const localBg = Math.max(45, sum / area);
+            const pIdx = y * imgW + x;
+            const pLum = lum[pIdx];
+            const idx = pIdx * 4;
+
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+
+            const ratio = pLum / localBg;
+
+            // Gentle natural curve
+            let targetLum;
+            if (ratio >= 0.95) {
+              const t = Math.min(1, (ratio - 0.95) / 0.05);
+              targetLum = 230 + 12 * (3 * t * t - 2 * t * t * t);
+            } else if (ratio < 0.80) {
+              targetLum = Math.pow(ratio / 0.80, 1.15) * 195;
+            } else {
+              const t = (ratio - 0.80) / 0.15;
+              targetLum = 195 + (230 - 195) * t;
+            }
+
+            const gain = Math.max(0.85, Math.min(1.4, targetLum / Math.max(pLum, 1)));
+            const maxC = Math.max(r, g, b);
+            const minC = Math.min(r, g, b);
+            const chroma = maxC - minC;
+
+            if (chroma > 12) {
+              let nr = (r - pLum) * 1.05 + pLum * gain;
+              let ng = (g - pLum) * 1.05 + pLum * gain;
+              let nb = (b - pLum) * 1.05 + pLum * gain;
+              data[idx] = Math.min(255, Math.max(0, Math.round(nr)));
+              data[idx + 1] = Math.min(255, Math.max(0, Math.round(ng)));
+              data[idx + 2] = Math.min(255, Math.max(0, Math.round(nb)));
+            } else {
+              const val = Math.min(255, Math.max(0, Math.round(targetLum)));
+              data[idx] = val;
+              data[idx + 1] = val;
+              data[idx + 2] = val;
+            }
+          }
+        }
+        break;
+      }
       case 'magic-color': {
         // CamScanner Signature Magic Color: Smooth Illumination Equalization + Vivid Ink & Color
         const lum = new Float32Array(totalPixels);

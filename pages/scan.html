@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -1465,23 +1465,26 @@
     <div class="cs-filter-bottombar">
       <!-- Filter Carousel with Live Miniature Preview Pills -->
       <div class="cs-filter-scroll">
-        <button type="button" class="cs-filter-pill-btn active" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
-          <span>&#10024; Magic Pro</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
-          <span>&#128161; Lighten</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="no-shadow" onclick="applyEnhanceFilter('no-shadow')">
-          <span>&#9728;&#65039; No Shadow</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
-          <span>&#128196; B&W</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="grayscale" onclick="applyEnhanceFilter('grayscale')">
-          <span>&#127787;&#65039; Grayscale</span>
+        <button type="button" class="cs-filter-pill-btn active" data-filter="natural" onclick="applyEnhanceFilter('natural')">
+          <span>🌿 Natural Clear</span>
         </button>
         <button type="button" class="cs-filter-pill-btn" data-filter="original" onclick="applyEnhanceFilter('original')">
-          <span>&#128247; Original</span>
+          <span>📷 Original</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
+          <span>✨ Magic White</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="no-shadow" onclick="applyEnhanceFilter('no-shadow')">
+          <span>☀️ No Shadow</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
+          <span>📄 Crisp B&W</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="grayscale" onclick="applyEnhanceFilter('grayscale')">
+          <span>🌫️ Grayscale</span>
+        </button>
+        <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
+          <span>💡 Lighten</span>
         </button>
       </div>
 
@@ -1845,7 +1848,7 @@
           id: p.id,
           rawImg: img,
           corners: p.corners || DocumentScanner.getDefaultCorners(),
-          filter: p.filter || 'magic-color',
+          filter: p.filter || 'natural',
           rotation: p.rotation || 0,
           processedDataUrl: p.processedDataUrl
         });
@@ -2004,7 +2007,7 @@
           rawImg: rawImg,
           corners: corners,
           rotation: 0,
-          filter: 'magic-color'
+          filter: 'natural'
         };
         stagingIsEditingIndex = -1;
 
@@ -2028,7 +2031,7 @@
           const corners = DocumentScanner.getDefaultCorners();
 
           if (dataUrls.length === 1 && camMode === 'single') {
-            stagingPage = { rawImg: rawImg, corners: corners, rotation: 0, filter: 'magic-color' };
+            stagingPage = { rawImg: rawImg, corners: corners, rotation: 0, filter: 'natural' };
             stagingIsEditingIndex = -1;
             fullscreenCam.style.display = "none";
             scanner.stopCamera();
@@ -2036,12 +2039,12 @@
             return;
           }
 
-          const processed = DocumentScanner.processImage(rawImg, 'magic-color', 0, corners);
+          const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners);
           docPages.push({
             id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
             rawImg: rawImg,
             corners: corners,
-            filter: 'magic-color',
+            filter: 'natural',
             rotation: 0,
             processedDataUrl: processed
           });
@@ -2116,7 +2119,7 @@
           rawImg: rawImg,
           corners: corners,
           rotation: 0,
-          filter: 'magic-color'
+          filter: 'natural'
         };
         stagingIsEditingIndex = -1;
 
@@ -2176,11 +2179,11 @@
       const dataUrl = await UIUtils.readFileAsDataURL(file);
       const img = await UIUtils.loadImage(dataUrl);
       const corners = DocumentScanner.getDefaultCorners();
-      const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners);
+      const processed = DocumentScanner.processImage(img, 'natural', 0, corners);
       return {
         rawImg: img,
         corners: corners,
-        filter: 'magic-color',
+        filter: 'natural',
         rotation: 0,
         processedDataUrl: processed
       };
@@ -2215,7 +2218,7 @@
             rawImg: pageData.rawImg,
             corners: pageData.corners,
             rotation: 0,
-            filter: 'magic-color'
+            filter: 'natural'
           };
           stagingIsEditingIndex = -1;
           hideProcessing();
@@ -2516,7 +2519,7 @@
     }
 
     function renderFilterPreview() {
-      const filterKey = stagingPage.filter || 'magic-color';
+      const filterKey = stagingPage.filter || 'natural';
       currentEnhancedData = DocumentScanner.processImage(
         stagingPage.rawImg,
         filterKey,
@@ -2691,7 +2694,7 @@
       let html = '';
       docPages.forEach((p, idx) => {
         const isActive = idx === currentViewingPageIndex  ?  'active' : '';
-        const filterName = filterLabels[p.filter || 'magic-color'] || 'Magic Color';
+        const filterName = filterLabels[p.filter || 'natural'] || 'Natural Clear';
         html += `
           <div class="cs-page-tile ${isActive}" draggable="true" data-index="${idx}" id="cs-tile-${idx}">
             <div class="cs-page-tile-header">
@@ -2781,12 +2784,16 @@
       setWorkspaceViewMode('single');
     }
 
-    const availableFilters = ['magic-color', 'bw', 'grayscale', 'original'];
+    const availableFilters = ['natural', 'original', 'magic-color', 'no-shadow', 'clean-bw', 'grayscale', 'lighten'];
     const filterLabels = {
-      'magic-color': 'Magic Color',
-      'bw': 'B&W Clean',
+      'natural': 'Natural Clear',
+      'original': 'Original Color',
+      'magic-color': 'Magic White',
+      'no-shadow': 'No Shadow',
+      'clean-bw': 'Crisp B&W',
+      'bw': 'Crisp B&W',
       'grayscale': 'Grayscale',
-      'original': 'Original Color'
+      'lighten': 'Lighten'
     };
 
     async function rotateDocPageAt(idx) {
@@ -2808,7 +2815,7 @@
       
       page.processedDataUrl = DocumentScanner.processImage(
         page.rawImg,
-        page.filter || 'magic-color',
+        page.filter || 'natural',
         page.rotation,
         page.corners
       );
@@ -2835,7 +2842,7 @@
         hideProcessing();
       }
 
-      const currentFilter = page.filter || 'magic-color';
+      const currentFilter = page.filter || 'natural';
       const nextIndex = (availableFilters.indexOf(currentFilter) + 1) % availableFilters.length;
       page.filter = availableFilters[nextIndex];
 
@@ -2879,7 +2886,7 @@
         rawImg: rawImg,
         corners: page.corners || DocumentScanner.getDefaultCorners(),
         rotation: page.rotation || 0,
-        filter: page.filter || 'magic-color'
+        filter: page.filter || 'natural'
       };
       stagingIsEditingIndex = idx;
       rawWarpedData = null;
@@ -2913,7 +2920,7 @@
         docPageImg.src = page.processedDataUrl;
         const filterTextEl = document.getElementById("single-active-filter-text");
         if (filterTextEl) {
-          filterTextEl.textContent = `Filter (${filterLabels[page.filter || 'magic-color'] || 'Magic Color'})`;
+          filterTextEl.textContent = `Filter (${filterLabels[page.filter || 'natural'] || 'Natural Clear'})`;
         }
       }
 
