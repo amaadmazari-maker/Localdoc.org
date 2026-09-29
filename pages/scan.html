@@ -1889,6 +1889,7 @@
           id: p.id,
           rawImg: img,
           corners: p.corners || DocumentScanner.getDefaultCorners(),
+          docType: p.docType || 'a4',
           filter: p.filter || 'natural',
           rotation: p.rotation || 0,
           processedDataUrl: p.processedDataUrl
@@ -1897,6 +1898,8 @@
 
       currentViewingPageIndex = 0;
       openDocumentWorkspaceView();
+      renderWorkspacePages();
+      renderDocPageViewer();
     }
 
     async function deleteDocItem(id) {
@@ -1959,7 +1962,7 @@
         updateCamStackBadge();
         UIUtils.showToast("Camera active. Align paper document.", "success");
       } catch (err) {
-        alert("Camera access error: " + err.message);
+        UIUtils.showToast("Camera error: " + err.message + " — You can select files from gallery instead.", "warning");
         closeFullscreenCamera();
       }
     }
@@ -2153,19 +2156,64 @@
 
         const rawImg = await UIUtils.loadImage(rawDataUrl);
 
-        // Auto edge detection with normalized aspect ratio
+        // Auto edge detection with dual logic classification
         const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+        const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
+        const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners, { docType });
 
-        stagingPage = {
+        // If replacing a specific page
+        if (replacingPageIndex >= 0 && replacingPageIndex < docPages.length) {
+          docPages[replacingPageIndex] = {
+            id: docPages[replacingPageIndex].id || ('p_' + Date.now()),
+            rawImg: rawImg,
+            corners: corners,
+            docType: docType,
+            rotation: 0,
+            filter: 'natural',
+            processedDataUrl: processed
+          };
+          const targetIdx = replacingPageIndex;
+          replacingPageIndex = -1;
+          hideProcessing();
+          fullscreenCam.style.display = "none";
+          if (scanner) scanner.stopCamera();
+          await autoSaveDocumentToDB();
+          openDocumentWorkspaceView();
+          renderWorkspacePages();
+          renderDocPageViewer();
+          UIUtils.showToast(`&#10003; Page ${targetIdx + 1} retaken & updated!`, "success");
+          return;
+        }
+
+        const newPageObj = {
+          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           rawImg: rawImg,
           corners: corners,
+          docType: docType,
           rotation: 0,
-          filter: 'natural'
+          filter: 'natural',
+          processedDataUrl: processed
         };
-        stagingIsEditingIndex = -1;
 
-        hideProcessing();
-        openCropScreen();
+        docPages.push(newPageObj);
+        await autoSaveDocumentToDB();
+        updateCamStackBadge();
+
+        if (camMode === 'single') {
+          hideProcessing();
+          fullscreenCam.style.display = "none";
+          if (scanner) scanner.stopCamera();
+          currentViewingPageIndex = docPages.length - 1;
+          workspaceViewMode = 'single';
+          openDocumentWorkspaceView();
+          renderWorkspacePages();
+          renderDocPageViewer();
+          UIUtils.showToast("&#10003; Document scanned & enhanced! Review or adjust below.", "success");
+        } else {
+          hideProcessing();
+          renderWorkspacePages();
+          UIUtils.showToast(`&#10003; Page ${docPages.length} captured! Snap next page or tap stack.`, "success");
+        }
       } catch (err) {
         hideProcessing();
         console.error(err);
@@ -2219,11 +2267,13 @@
     async function renderImageFileToPage(file) {
       const dataUrl = await UIUtils.readFileAsDataURL(file);
       const img = await UIUtils.loadImage(dataUrl);
-      const corners = DocumentScanner.getDefaultCorners();
-      const processed = DocumentScanner.processImage(img, 'natural', 0, corners);
+      const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+      const docType = DocumentScanner.classifyDocumentType(corners, img.naturalWidth, img.naturalHeight);
+      const processed = DocumentScanner.processImage(img, 'natural', 0, corners, { docType });
       return {
         rawImg: img,
         corners: corners,
+        docType: docType,
         filter: 'natural',
         rotation: 0,
         processedDataUrl: processed
@@ -2236,49 +2286,60 @@
     }
     window.handleCamGalleryUpload = handleCamGalleryUpload;
 
+    let isImportingFiles = false;
+
     async function handleHomeFileImport(e) {
+      if (isImportingFiles) return;
       const fileList = e && e.target ? e.target.files : (e && e.files ? e.files : e);
       const files = Array.from(fileList || []);
       if (files.length === 0) return;
 
-      setTimeout(() => {
-        const i1 = document.getElementById("home-import-files");
-        if (i1) i1.value = "";
-        const i2 = document.getElementById("cam-gallery-file-input");
-        if (i2) i2.value = "";
-      }, 350);
+      isImportingFiles = true;
 
-      const isCamActive = fullscreenCam && fullscreenCam.style.display === "flex";
+      const i1 = document.getElementById("home-import-files");
+      if (i1) i1.value = "";
+      const i2 = document.getElementById("cam-gallery-file-input");
+      if (i2) i2.value = "";
+      const i3 = document.getElementById("replace-page-file-input");
+      if (i3) i3.value = "";
 
-      // If single image and currently inside camera single mode:
-      if (files.length === 1 && (!files[0].type.includes('pdf') && !files[0].name.toLowerCase().endsWith('.pdf')) && isCamActive && camMode === 'single') {
+      // Check if user is replacing a specific page
+      if (replacingPageIndex >= 0 && replacingPageIndex < docPages.length && files.length > 0) {
+        showProcessing(`Replacing Page ${replacingPageIndex + 1}...`);
         try {
-          showProcessing("Scanning document edges...");
-          const pageData = await renderImageFileToPage(files[0]);
-          stagingPage = {
-            rawImg: pageData.rawImg,
-            corners: pageData.corners,
-            rotation: 0,
-            filter: 'natural'
+          const file = files[0];
+          const pageData = await renderImageFileToPage(file);
+          const oldId = docPages[replacingPageIndex].id || ('p_' + Date.now());
+          docPages[replacingPageIndex] = {
+            id: oldId,
+            ...pageData
           };
-          stagingIsEditingIndex = -1;
+          const targetIdx = replacingPageIndex;
+          replacingPageIndex = -1;
           hideProcessing();
-          openCropScreen();
-          return;
+          await autoSaveDocumentToDB();
+          openDocumentWorkspaceView();
+          renderWorkspacePages();
+          renderDocPageViewer();
+          UIUtils.showToast(`&#10003; Page ${targetIdx + 1} replaced successfully!`, "success");
         } catch (err) {
           hideProcessing();
-          UIUtils.showToast("Could not process image: " + err.message, "danger");
-          return;
+          replacingPageIndex = -1;
+          UIUtils.showToast("Replace failed: " + err.message, "danger");
+        } finally {
+          isImportingFiles = false;
         }
+        return;
       }
 
-      showProcessing(`Importing ${files.length} file(s)...`);
+      showProcessing(`Processing & auto-enhancing ${files.length} file(s)...`);
       try {
         let countAdded = 0;
         for (const file of files) {
           if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
             const pages = await renderPdfFileToPages(file);
             for (const p of pages) {
+              p.docType = p.docType || 'a4';
               docPages.push(p);
               countAdded++;
             }
@@ -2298,19 +2359,33 @@
           return;
         }
 
+        if (scanner) scanner.stopCamera();
+        if (fullscreenCam) fullscreenCam.style.display = "none";
+
         updateCamStackBadge();
-        if (isCamActive) {
-          fullscreenCam.style.display = "none";
-          if (scanner) scanner.stopCamera();
-        }
         await autoSaveDocumentToDB();
         openDocumentWorkspaceView();
         renderWorkspacePages();
-        UIUtils.showToast(`Imported ${countAdded} page(s) successfully!`, "success");
+
+        if (countAdded === 1) {
+          currentViewingPageIndex = docPages.length - 1;
+          setWorkspaceViewMode('single');
+          renderDocPageViewer();
+        }
+
+        UIUtils.showToast(`&#10003; Imported & enhanced ${countAdded} page(s) successfully!`, "success");
       } catch (err) {
         hideProcessing();
         console.error("Import error:", err);
         UIUtils.showToast("Import failed: " + err.message, "danger");
+      } finally {
+        isImportingFiles = false;
+        const in1 = document.getElementById("home-import-files");
+        if (in1) in1.value = "";
+        const in2 = document.getElementById("cam-gallery-file-input");
+        if (in2) in2.value = "";
+        const in3 = document.getElementById("replace-page-file-input");
+        if (in3) in3.value = "";
       }
     }
     window.handleHomeFileImport = handleHomeFileImport;
@@ -2706,6 +2781,9 @@
     function openDocumentWorkspaceView() {
       if (docPages.length === 0) return;
 
+      if (scanner) scanner.stopCamera();
+      if (fullscreenCam) fullscreenCam.style.display = "none";
+
       docWorkspace.style.display = "flex";
       setWorkspaceViewMode(workspaceViewMode || 'grid');
     }
@@ -2858,7 +2936,8 @@
         page.rawImg,
         page.filter || 'natural',
         page.rotation,
-        page.corners
+        page.corners,
+        { docType: page.docType }
       );
       hideProcessing();
 
@@ -2894,7 +2973,8 @@
         page.rawImg,
         page.filter,
         page.rotation || 0,
-        page.corners
+        page.corners,
+        { docType: page.docType }
       );
       hideProcessing();
 
@@ -3212,6 +3292,7 @@
         pages: docPages.map(p => ({
           id: p.id,
           corners: p.corners,
+          docType: p.docType || 'a4',
           filter: p.filter,
           rotation: p.rotation,
           rawDataUrl: p.rawDataUrl || p.processedDataUrl,
@@ -3409,6 +3490,10 @@
       const camInput = document.getElementById("cam-gallery-file-input");
       if (camInput) {
         camInput.addEventListener("change", (e) => handleHomeFileImport(e));
+      }
+      const replaceInput = document.getElementById("replace-page-file-input");
+      if (replaceInput) {
+        replaceInput.addEventListener("change", (e) => handleHomeFileImport(e));
       }
       window.addEventListener("dragover", (e) => e.preventDefault());
       window.addEventListener("drop", (e) => {

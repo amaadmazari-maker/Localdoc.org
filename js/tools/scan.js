@@ -242,6 +242,9 @@ class DocumentScanner {
 
   // Start Camera Stream with full hardware 4K / 1080p capabilities
   async startCamera(facingMode = 'environment') {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Camera access is not supported by your browser or requires HTTPS.');
+    }
     if (this.stream) this.stopCamera();
 
     const constraints = {
@@ -1239,7 +1242,7 @@ class DocumentScanner {
 
     for (let i = 0; i < pagesArray.length; i++) {
       const pageData = pagesArray[i];
-      const dataUrl = pageData.processedDataUrl || pageData.dataUrl;
+      const dataUrl = typeof pageData === "string" ? pageData : (pageData.processedDataUrl || pageData.dataUrl);
       if (!dataUrl) continue;
 
       const base64Data = dataUrl.split(',')[1];
@@ -1248,6 +1251,22 @@ class DocumentScanner {
       let imageEmbed;
       if (dataUrl.startsWith('data:image/png')) {
         imageEmbed = await pdfDoc.embedPng(imageBytes);
+      } else if (dataUrl.startsWith('data:image/webp')) {
+        // Safe conversion of WebP dataUrl to standard JPEG for PDF-Lib compatibility
+        try {
+          const helperCanvas = document.createElement('canvas');
+          const helperImg = await UIUtils.loadImage(dataUrl);
+          helperCanvas.width = helperImg.width;
+          helperCanvas.height = helperImg.height;
+          const hCtx = helperCanvas.getContext('2d');
+          hCtx.drawImage(helperImg, 0, 0);
+          const jpegUrl = helperCanvas.toDataURL('image/jpeg', 0.95);
+          const jpegBytes = Uint8Array.from(atob(jpegUrl.split(',')[1]), c => c.charCodeAt(0));
+          imageEmbed = await pdfDoc.embedJpg(jpegBytes);
+        } catch (webpErr) {
+          console.warn('WebP conversion fallback to JPG embed:', webpErr);
+          imageEmbed = await pdfDoc.embedJpg(imageBytes);
+        }
       } else {
         imageEmbed = await pdfDoc.embedJpg(imageBytes);
       }
