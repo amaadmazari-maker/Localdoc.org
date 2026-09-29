@@ -361,10 +361,10 @@ class DocumentScanner {
   // =========================================================================
   static getDefaultCorners() {
     return {
-      topLeft: { x: 0.02, y: 0.02 },
-      topRight: { x: 0.98, y: 0.02 },
-      bottomRight: { x: 0.98, y: 0.98 },
-      bottomLeft: { x: 0.02, y: 0.98 }
+      topLeft: { x: 0.008, y: 0.008 },
+      topRight: { x: 0.992, y: 0.008 },
+      bottomRight: { x: 0.992, y: 0.992 },
+      bottomLeft: { x: 0.008, y: 0.992 }
     };
   }
 
@@ -432,8 +432,8 @@ class DocumentScanner {
       return this.getDefaultCorners();
     }
 
-    // 4. Perimeter Ray Search inward from all 4 boundaries (up to 75% depth)
-    const threshold = Math.max(30, maxGrad * 0.20);
+    // 4. Perimeter Ray Search inward from all 4 boundaries (sensitive threshold to catch outer paper boundary)
+    const threshold = Math.max(10, Math.min(20, maxGrad * 0.10));
     const borderPoints = [];
 
     // Horizontal scans
@@ -441,14 +441,14 @@ class DocumentScanner {
     for (let y = 6; y < sampleH - 6; y += stepY) {
       const yOff = y * sampleW;
       // Left to right
-      for (let x = 4; x < sampleW * 0.75; x++) {
+      for (let x = 3; x < sampleW * 0.75; x++) {
         if (grad[yOff + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
         }
       }
       // Right to left
-      for (let x = sampleW - 5; x > sampleW * 0.25; x--) {
+      for (let x = sampleW - 4; x > sampleW * 0.25; x--) {
         if (grad[yOff + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
@@ -460,14 +460,14 @@ class DocumentScanner {
     const stepX = Math.max(3, Math.round(sampleW / 50));
     for (let x = 6; x < sampleW - 6; x += stepX) {
       // Top to bottom
-      for (let y = 4; y < sampleH * 0.75; y++) {
+      for (let y = 3; y < sampleH * 0.75; y++) {
         if (grad[y * sampleW + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
         }
       }
       // Bottom to top
-      for (let y = sampleH - 5; y > sampleH * 0.25; y--) {
+      for (let y = sampleH - 4; y > sampleH * 0.25; y--) {
         if (grad[y * sampleW + x] >= threshold) {
           borderPoints.push({ x: x / sampleW, y: y / sampleH });
           break;
@@ -479,22 +479,18 @@ class DocumentScanner {
       return this.getDefaultCorners();
     }
 
-    // 5. Cluster & Locate 4 Robust Extremal Corners (rejecting single-point noise)
+    // 5. Cluster & Locate 4 Outermost Corner Points (never pull inward into text)
     borderPoints.sort((a, b) => (a.x + a.y) - (b.x + b.y));
-    const tlCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
-    let tl = tlCandidates[Math.floor(tlCandidates.length / 2)];
+    let tl = borderPoints[0];
 
     borderPoints.sort((a, b) => (b.x + b.y) - (a.x + a.y));
-    const brCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
-    let br = brCandidates[Math.floor(brCandidates.length / 2)];
+    let br = borderPoints[0];
 
     borderPoints.sort((a, b) => (b.x - b.y) - (a.x - a.y));
-    const trCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
-    let tr = trCandidates[Math.floor(trCandidates.length / 2)];
+    let tr = borderPoints[0];
 
     borderPoints.sort((a, b) => (a.x - a.y) - (b.x - b.y));
-    const blCandidates = borderPoints.slice(0, Math.min(5, Math.ceil(borderPoints.length * 0.1)));
-    let bl = blCandidates[Math.floor(blCandidates.length / 2)];
+    let bl = borderPoints[0];
 
     // 6. Strict Convexity & Plausibility Validation
     const area = 0.5 * Math.abs(
@@ -521,13 +517,38 @@ class DocumentScanner {
     const avgH = (lH + rH) / 2;
     const ratio = avgW / Math.max(0.01, avgH);
 
-    // Support both full documents and narrow fuel/ATM slips (ratio from 0.20 to 5.0, area from 10% to 97%)
+    // Support both full documents and narrow fuel/ATM slips
     if (area >= 0.04 && area <= 0.98 && isConvex && ratio >= 0.18 && ratio <= 5.5) {
+      // If document occupies most of the photo frame (> 72%), or is close to any image border (< 3.5%),
+      // snap to full safe frame so 0% of content, headers, or margins are ever cut!
+      const minEdgeDist = Math.min(tl.x, tl.y, 1 - tr.x, tr.y, 1 - br.x, 1 - br.y, bl.x, 1 - bl.y);
+      if (area >= 0.72 || minEdgeDist < 0.035) {
+        return this.getDefaultCorners();
+      }
+
+      // Generous Outward Safety Breathing Room Expansion:
+      // Expands all 4 corners OUTWARD with a compound 5.5% proportional breathing room
+      // PLUS minimum 1.6% absolute frame padding away from document center.
+      // This strictly guarantees that headers, dates, page numbers, signatures, and stamps are NEVER cut off!
+      const cx = (tl.x + tr.x + br.x + bl.x) / 4;
+      const cy = (tl.y + tr.y + br.y + bl.y) / 4;
+
+      function expandCorner(p) {
+        const dx = p.x - cx;
+        const dy = p.y - cy;
+        const padX = Math.sign(dx || 1) * Math.max(0.016, Math.abs(dx) * 0.055);
+        const padY = Math.sign(dy || 1) * Math.max(0.016, Math.abs(dy) * 0.055);
+        return {
+          x: Math.max(0.006, Math.min(0.994, p.x + padX)),
+          y: Math.max(0.006, Math.min(0.994, p.y + padY))
+        };
+      }
+
       return {
-        topLeft: { x: Math.max(0.01, tl.x + 0.003), y: Math.max(0.01, tl.y + 0.003) },
-        topRight: { x: Math.min(0.99, tr.x - 0.003), y: Math.max(0.01, tr.y + 0.003) },
-        bottomRight: { x: Math.min(0.99, br.x - 0.003), y: Math.min(0.99, br.y - 0.003) },
-        bottomLeft: { x: Math.max(0.01, bl.x + 0.003), y: Math.min(0.99, bl.y - 0.003) }
+        topLeft: expandCorner(tl),
+        topRight: expandCorner(tr),
+        bottomRight: expandCorner(br),
+        bottomLeft: expandCorner(bl)
       };
     }
 
@@ -596,20 +617,20 @@ class DocumentScanner {
 
     const c = corners || this.getDefaultCorners();
     const tl = {
-      x: (c.topLeft && typeof c.topLeft.x === 'number') ? c.topLeft.x : 0.02,
-      y: (c.topLeft && typeof c.topLeft.y === 'number') ? c.topLeft.y : 0.02
+      x: (c.topLeft && typeof c.topLeft.x === 'number') ? c.topLeft.x : 0.008,
+      y: (c.topLeft && typeof c.topLeft.y === 'number') ? c.topLeft.y : 0.008
     };
     const tr = {
-      x: (c.topRight && typeof c.topRight.x === 'number') ? c.topRight.x : 0.98,
-      y: (c.topRight && typeof c.topRight.y === 'number') ? c.topRight.y : 0.02
+      x: (c.topRight && typeof c.topRight.x === 'number') ? c.topRight.x : 0.992,
+      y: (c.topRight && typeof c.topRight.y === 'number') ? c.topRight.y : 0.008
     };
     const br = {
-      x: (c.bottomRight && typeof c.bottomRight.x === 'number') ? c.bottomRight.x : 0.98,
-      y: (c.bottomRight && typeof c.bottomRight.y === 'number') ? c.bottomRight.y : 0.98
+      x: (c.bottomRight && typeof c.bottomRight.x === 'number') ? c.bottomRight.x : 0.992,
+      y: (c.bottomRight && typeof c.bottomRight.y === 'number') ? c.bottomRight.y : 0.992
     };
     const bl = {
-      x: (c.bottomLeft && typeof c.bottomLeft.x === 'number') ? c.bottomLeft.x : 0.02,
-      y: (c.bottomLeft && typeof c.bottomLeft.y === 'number') ? c.bottomLeft.y : 0.98
+      x: (c.bottomLeft && typeof c.bottomLeft.x === 'number') ? c.bottomLeft.x : 0.008,
+      y: (c.bottomLeft && typeof c.bottomLeft.y === 'number') ? c.bottomLeft.y : 0.992
     };
 
     // Calculate natural target width and height using Euclidean distances
@@ -935,14 +956,34 @@ class DocumentScanner {
 
     switch (filter) {
       case 'natural': {
-        // Balanced Natural Enhancement with Fold & Crease Shadow Leveling:
-        // Dual-radius integral background estimation flattens large room illumination gradients
-        // AND local fold/crease shadows, producing clean paper white while anchoring dark ink.
+        // Faithful Natural Document Enhancement:
+        // 1. Equalizes illumination shadows across the document uniformly across R, G, B channels
+        //    (strictly preserving 100% of authentic color saturation, hues, and tint).
+        // 2. Colored documents, bank payment receipts, pastel vouchers, watermarks, colored stamps,
+        //    and bank logos retain their authentic color scheme without over-brightening or bleaching.
+        // 3. True neutral white paper smoothly normalizes to clean paper white.
+        // 4. Dark text & signatures are gently anchored for laser-sharp readability.
         const lum = new Float32Array(totalPixels);
+        let paperChromaSum = 0;
+        let paperPixelCount = 0;
+        const sampleStep = Math.max(1, Math.floor(totalPixels / 20000));
+
         for (let i = 0, j = 0; i < len; i += 4, j++) {
-          lum[j] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          const l = r * 0.299 + g * 0.587 + b * 0.114;
+          lum[j] = l;
+          if (j % sampleStep === 0 && l > 120) {
+            const c = Math.max(r, g, b) - Math.min(r, g, b);
+            paperChromaSum += c;
+            paperPixelCount++;
+          }
         }
 
+        // Detect if document is colored paper stock (e.g. green deposit slip, yellow invoice, blue receipt, pink voucher)
+        const avgPaperChroma = paperPixelCount > 0 ? (paperChromaSum / paperPixelCount) : 0;
+        const docIsColored = (avgPaperChroma >= 7.5);
+
+        // 2D Integral Image for fast dual-radius background estimation
         const intW = imgW + 1;
         const integral = new Float64Array(intW * (imgH + 1));
         for (let y = 0; y < imgH; y++) {
@@ -956,9 +997,31 @@ class DocumentScanner {
           }
         }
 
-        // Dual scale background: large radius for illumination falloff + small radius for crease valley leveling
+        // Dual scale background: large radius for illumination falloff + small radius for crease shadow leveling
         const radiusLarge = Math.max(28, Math.round(Math.min(imgW, imgH) / 10));
         const radiusSmall = Math.max(12, Math.round(Math.min(imgW, imgH) / 24));
+
+        // Sample document reference illumination (90th percentile of local background)
+        const bgSamples = [];
+        const sampleGridX = Math.max(8, Math.round(imgW / 20));
+        const sampleGridY = Math.max(8, Math.round(imgH / 20));
+        for (let sy = Math.floor(sampleGridY / 2); sy < imgH; sy += sampleGridY) {
+          const y0L = Math.max(0, sy - radiusLarge);
+          const y1L = Math.min(imgH - 1, sy + radiusLarge);
+          const intRow1L = (y1L + 1) * intW;
+          const intRow0L = y0L * intW;
+          const hSpanL = y1L - y0L + 1;
+          for (let sx = Math.floor(sampleGridX / 2); sx < imgW; sx += sampleGridX) {
+            const x0L = Math.max(0, sx - radiusLarge);
+            const x1L = Math.min(imgW - 1, sx + radiusLarge);
+            const areaL = (x1L - x0L + 1) * hSpanL;
+            const sumL = integral[intRow1L + (x1L + 1)] - integral[intRow0L + (x1L + 1)] - integral[intRow1L + x0L] + integral[intRow0L + x0L];
+            bgSamples.push(sumL / areaL);
+          }
+        }
+        bgSamples.sort((a, b) => a - b);
+        const p90Idx = Math.min(bgSamples.length - 1, Math.floor(bgSamples.length * 0.90));
+        const maxBg = Math.max(160, bgSamples[p90Idx] || 220);
 
         for (let y = 0; y < imgH; y++) {
           const y0L = Math.max(0, y - radiusLarge);
@@ -986,7 +1049,7 @@ class DocumentScanner {
             const sumS = integral[intRow1S + (x1S + 1)] - integral[intRow0S + (x1S + 1)] - integral[intRow1S + x0S] + integral[intRow0S + x0S];
             const bgSmall = sumS / areaS;
 
-            const localBg = Math.max(40, 0.65 * bgLarge + 0.35 * bgSmall);
+            const localBg = Math.max(35, 0.65 * bgLarge + 0.35 * bgSmall);
 
             const pIdx = y * imgW + x;
             const pLum = lum[pIdx];
@@ -996,41 +1059,48 @@ class DocumentScanner {
             const g = data[idx + 1];
             const b = data[idx + 2];
 
-            const ratio = pLum / localBg;
-
-            // Smooth tone curve with fold & crease shadow flattening:
-            let targetLum;
-            if (ratio >= 0.90) {
-              // Smooth transition to pure clean paper white 255
-              const t = Math.min(1, (ratio - 0.90) / 0.10);
-              targetLum = 238 + 17 * (3 * t * t - 2 * t * t * t);
-            } else if (ratio < 0.76) {
-              // Rich dark ink
-              targetLum = Math.pow(ratio / 0.76, 1.25) * 190;
-            } else {
-              // Smooth midtone gradient
-              const t = (ratio - 0.76) / 0.14;
-              targetLum = 190 + (238 - 190) * t;
-            }
-
-            const gain = Math.max(0.85, Math.min(1.45, targetLum / Math.max(pLum, 1)));
             const maxC = Math.max(r, g, b);
             const minC = Math.min(r, g, b);
             const chroma = maxC - minC;
 
-            if (chroma > 12) {
-              let nr = (r - pLum) * 1.08 + pLum * gain;
-              let ng = (g - pLum) * 1.08 + pLum * gain;
-              let nb = (b - pLum) * 1.08 + pLum * gain;
-              data[idx] = Math.min(255, Math.max(0, Math.round(nr)));
-              data[idx + 1] = Math.min(255, Math.max(0, Math.round(ng)));
-              data[idx + 2] = Math.min(255, Math.max(0, Math.round(nb)));
-            } else {
-              const val = Math.min(255, Math.max(0, Math.round(targetLum)));
-              data[idx] = val;
-              data[idx + 1] = val;
-              data[idx + 2] = val;
+            // 1. Equalize shadow non-uniformity across document
+            // Lifts shadows from hands, phones, and uneven room lighting WITHOUT altering colors
+            const shadowDeficit = maxBg / localBg;
+            const lift = Math.pow(Math.max(1.0, Math.min(1.26, shadowDeficit)), 0.65);
+
+            let nr = r * lift;
+            let ng = g * lift;
+            let nb = b * lift;
+
+            // 2. Paper White Normalization - STRICTLY for neutral white paper
+            // Colored receipts, bank deposit slips, pastel vouchers, watermarks, colored stamps,
+            // and colored letterhead logos retain 100% of their authentic color scheme!
+            if (!docIsColored && chroma <= 8 && pLum >= 0.88 * localBg) {
+              const ratio = pLum / localBg;
+              const t = Math.min(1.0, Math.max(0.0, (ratio - 0.88) / 0.12));
+              const smoothT = t * t * (3 - 2 * t);
+              const targetW = 246 + 9 * smoothT;
+              const curVal = (nr + ng + nb) / 3;
+              const finalVal = curVal + (targetW - curVal) * smoothT;
+              data[idx] = Math.min(255, Math.round(finalVal));
+              data[idx + 1] = Math.min(255, Math.round(finalVal));
+              data[idx + 2] = Math.min(255, Math.round(finalVal));
+              continue;
             }
+
+            // 3. Crisp Ink Anchoring for dark text / writing (pLum < 125)
+            // Gently anchors ink for sharp readability without touching colored graphics
+            if (pLum < 125) {
+              const darkRatio = pLum / 125;
+              const inkFactor = Math.pow(Math.max(0.05, darkRatio), 0.12);
+              nr *= inkFactor;
+              ng *= inkFactor;
+              nb *= inkFactor;
+            }
+
+            data[idx] = Math.min(255, Math.max(0, Math.round(nr)));
+            data[idx + 1] = Math.min(255, Math.max(0, Math.round(ng)));
+            data[idx + 2] = Math.min(255, Math.max(0, Math.round(nb)));
           }
         }
         break;
@@ -1107,11 +1177,11 @@ class DocumentScanner {
             const minC = Math.min(r, g, b);
             const chroma = maxC - minC;
 
-            if (chroma > 14) {
+            if (chroma > 12) {
               // Color element: preserve RGB chromaticity while normalizing paper lighting
-              const gain = targetLum / Math.max(pLum, 1);
-              // Subtle saturation boost for official stamps & photos
-              const satBoost = 1.2;
+              const gain = Math.min(1.15, Math.max(0.88, targetLum / Math.max(pLum, 1)));
+              // Natural subtle saturation boost for official stamps & photos (avoids neon glow)
+              const satBoost = 1.06;
               let nr = (r - pLum) * satBoost + pLum * gain;
               let ng = (g - pLum) * satBoost + pLum * gain;
               let nb = (b - pLum) * satBoost + pLum * gain;

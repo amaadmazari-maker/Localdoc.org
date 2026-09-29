@@ -2072,10 +2072,11 @@
       for (const dataUrl of dataUrls) {
         try {
           const rawImg = await UIUtils.loadImage(dataUrl);
-          const corners = DocumentScanner.getDefaultCorners();
+          const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+          const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
 
           if (dataUrls.length === 1 && camMode === 'single') {
-            stagingPage = { rawImg: rawImg, corners: corners, rotation: 0, filter: 'natural' };
+            stagingPage = { rawImg: rawImg, corners: corners, docType: docType, rotation: 0, filter: 'natural' };
             stagingIsEditingIndex = -1;
             fullscreenCam.style.display = "none";
             scanner.stopCamera();
@@ -2083,11 +2084,12 @@
             return;
           }
 
-          const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners);
+          const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners, { docType });
           docPages.push({
             id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
             rawImg: rawImg,
             corners: corners,
+            docType: docType,
             filter: 'natural',
             rotation: 0,
             processedDataUrl: processed
@@ -2640,7 +2642,8 @@
         stagingPage.rawImg,
         filterKey,
         stagingPage.rotation || 0,
-        stagingPage.corners
+        stagingPage.corners,
+        { docType: stagingPage.docType }
       );
 
       // Also compute raw unenhanced for the "Hold to Compare" button
@@ -2649,7 +2652,8 @@
           stagingPage.rawImg,
           'original',
           stagingPage.rotation || 0,
-          stagingPage.corners
+          stagingPage.corners,
+          { docType: stagingPage.docType }
         );
       }
 
