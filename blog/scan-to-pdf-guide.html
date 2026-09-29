@@ -11,8 +11,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>How to Scan Documents to PDF with Your Phone (CamScanner Web Benchmark Guide) | LocalDoc</title>
-  <meta name="description" content="Technical guide on turning your smartphone into a 300 DPI document scanner in browser RAM. Learn how homography perspective warping and Sauvola binarization process 5 pages in 740ms.">
+  <title>How to Scan Documents to PDF: Balanced Enhancement & Filter Studio Guide | LocalDoc</title>
+  <meta name="description" content="Scan documents to PDF online with phone camera. Features natural balanced auto-enhancement, interactive 4-mode Filter Studio, perspective correction, and 100% offline RAM privacy.">
   <link rel="canonical" href="https://localdoc.org/blog/scan-to-pdf-guide.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -130,6 +130,22 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "Position the paper near natural window daylight and photograph from a slight 20-degree angle rather than holding the phone directly above. LocalDoc's projective homography engine automatically un-warps the angled capture back into a flat, true 90-degree rectangular A4 sheet."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does LocalDoc's balanced auto-enhancement differ from harsh scanner filters?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Traditional mobile scanner filters often over-brighten captures, washing out faint pencil strokes, yellow highlights, and delicate signatures into a bleached white void. LocalDoc performs intelligent histogram white-point normalization that removes background murkiness while anchoring dark ink, maintaining natural contrast without blinding brightness."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What filters are available in the interactive Filter Studio?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocalDoc provides 5 real-time filter presets: Auto-Enhanced Color (balanced contrast and shadow removal), Magic Color (vivid ink separation for receipts and flyers), Clean B&W (Sauvola adaptive binarization for contracts), Clean Grayscale (smooth tonal gradients for technical schematics), and Original (unaltered camera frame)."
             }
           },
           {
@@ -263,6 +279,75 @@
           <li><strong>Sauvola Adaptive Binarization (Magic Pro Filter):</strong> Unlike global thresholding that washes out faint text under hand shadows, Sauvola thresholding calculates a localized dynamic threshold $T(x,y) = m(x,y) \cdot [1 + k \cdot (\frac{s(x,y)}{R} - 1)]$ across a sliding $32 \times 32$ pixel window, stripping shadows while preserving delicate pencil strokes.</li>
         </ol>
       </div>
+
+      
+      <!-- Balanced Auto-Enhancement & Filter Studio Deep Dive -->
+      <h2>4. Balanced Natural Auto-Enhancement &amp; The Interactive Filter Studio</h2>
+      <p>
+        A frequent issue with traditional mobile scanning apps is <strong>harsh, over-brightened filtering</strong>. Standard thresholding algorithms often over-saturate images, bleaching out light blue ballpoint ink, faint pencil sketches, and colored watermarks into an illegible white blur.
+      </p>
+      <p>
+        LocalDoc solves this with a <strong>two-stage adaptive enhancement pipeline</strong>:
+      </p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin:20px 0;">
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); border-radius:10px; padding:18px;">
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">⚖️ Stage 1: Balanced Auto-Enhancement</h4>
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
+            Upon taking or importing a snapshot, LocalDoc automatically analyzes the luminance histogram. It stretches the dynamic range to brighten muddy shadows and normalize the paper white point <em>without</em> blowing out mid-tones or clipping high-frequency ink strokes.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--accent-emerald); border-radius:10px; padding:18px;">
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">🎨 Stage 2: Interactive Filter Studio</h4>
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
+            Rather than locking you into one irreversible filter, LocalDoc displays live thumbnail previews of 5 distinct rendering presets so you can choose the ideal optical look for your document.
+          </p>
+        </div>
+      </div>
+
+      <table class="comp-table" style="margin:20px 0;">
+        <thead>
+          <tr>
+            <th>Filter Preset</th>
+            <th>Algorithm Type</th>
+            <th>Best Used For</th>
+            <th>Visual Characteristic</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Auto-Enhanced Color</strong></td>
+            <td>Luminance normalization + unsharp mask</td>
+            <td>Color contracts, IDs, passports, receipts</td>
+            <td>Natural paper white, vivid colored ink, zero blowout</td>
+          </tr>
+          <tr>
+            <td><strong>Magic Color</strong></td>
+            <td>Vibrant chroma stretch + high-contrast curve</td>
+            <td>Marketing flyers, brochures, utility bills</td>
+            <td>High contrast, punchy text, bold saturation</td>
+          </tr>
+          <tr>
+            <td><strong>Clean B&amp;W</strong></td>
+            <td>Sauvola adaptive dynamic binarization</td>
+            <td>Handwritten notes, black ink forms, legal briefs</td>
+            <td>Pure monochrome ($0$ or $255$), zero shadow artifacts</td>
+          </tr>
+          <tr>
+            <td><strong>Clean Grayscale</strong></td>
+            <td>High-dynamic-range monochromatic mapping</td>
+            <td>Pencil sketches, shaded tables, schematics</td>
+            <td>Smooth 256-tone gradient, sharp legible text</td>
+          </tr>
+          <tr>
+            <td><strong>Original</strong></td>
+            <td>Passthrough unaltered bitmap</td>
+            <td>Artwork, historical photos, raw evidence</td>
+            <td>Exact camera sensor data without modification</td>
+          </tr>
+        </tbody>
+      </table>
 
       <!-- Section 3 -->
       <h2>3. Empirical Benchmark: 5-Page Handwritten Lecture Notebook</h2>
