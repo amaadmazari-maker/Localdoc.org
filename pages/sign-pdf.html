@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <!-- Google tag (gtag.js) -->
@@ -134,15 +134,31 @@
 
   <style>
     /* Visual Sign & Edit Studio Layout */
+    #edit-studio-wrap {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
     .edit-studio-grid {
       display: grid;
-      grid-template-columns: 370px 1fr;
+      grid-template-columns: 370px minmax(0, 1fr);
       gap: 24px;
       align-items: start;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .edit-studio-grid > * {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     @media (max-width: 960px) {
       .edit-studio-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
       }
     }
     @media (max-width: 768px) {
@@ -154,7 +170,7 @@
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
-        padding: 10px;
+        padding: 8px 10px;
       }
       .pdf-nav-bar > div {
         width: 100%;
@@ -163,6 +179,7 @@
       .pdf-viewport-scroller {
         padding: 6px;
         max-height: 480px;
+        justify-content: flex-start;
       }
       .sig-canvas-wrap {
         width: 100%;
@@ -175,7 +192,7 @@
         aspect-ratio: 450 / 155;
       }
       #action-bar {
-        padding: 0 12px;
+        padding: 0;
       }
       #process-btn {
         width: 100% !important;
@@ -185,6 +202,15 @@
         font-size: 0.95rem !important;
       }
     }
+    @media (max-width: 480px) {
+      .edit-studio-grid > div > div {
+        padding: 12px !important;
+      }
+      .color-dot {
+        width: 20px;
+        height: 20px;
+      }
+    }
     .pdf-preview-pane {
       background: #0B1120;
       border: 1px solid var(--line);
@@ -192,8 +218,13 @@
       padding: 16px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       min-height: 480px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .pdf-nav-bar {
       width: 100%;
@@ -207,17 +238,23 @@
       border-radius: 8px;
       margin-bottom: 14px;
       color: #F8FAFC;
+      box-sizing: border-box;
     }
     .pdf-viewport-scroller {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       max-height: 640px;
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       display: flex;
       justify-content: center;
       padding: 12px;
       background: #060A12;
       border-radius: 8px;
       border: 1px solid #334155;
+      box-sizing: border-box;
     }
     .pdf-page-container {
       position: relative;
@@ -380,6 +417,14 @@
       border-color: var(--primary);
       box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
       transform: scale(1.1);
+    }
+    .tool-comparison-table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -1109,6 +1154,16 @@
         totalPages = pdfDoc.numPages;
         currentPage = 1;
         totalPagesSpan.textContent = totalPages;
+
+        if (window.innerWidth <= 768) {
+          const availWidth = Math.max(260, window.innerWidth - 64);
+          currentScale = Math.min(1.0, Math.max(0.45, parseFloat((availWidth / 612).toFixed(2))));
+          if (zoomLevelSpan) zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
+        } else {
+          currentScale = 1.15;
+          if (zoomLevelSpan) zoomLevelSpan.textContent = '115%';
+        }
+
         await renderVisualPage(currentPage);
       } catch (err) {
         console.error("PDF preview error:", err);
@@ -1116,24 +1171,42 @@
       }
     }
 
+    let currentRenderTask = null;
+
     async function renderVisualPage(pageNumber) {
       if (!pdfDoc) return;
       curPageSpan.textContent = pageNumber;
       btnPrev.disabled = pageNumber <= 1;
       btnNext.disabled = pageNumber >= totalPages;
 
-      const page = await pdfDoc.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: currentScale });
+      if (currentRenderTask) {
+        try {
+          currentRenderTask.cancel();
+        } catch (e) {}
+        currentRenderTask = null;
+      }
 
-      renderCanvas.width = viewport.width;
-      renderCanvas.height = viewport.height;
-      pageContainer.style.width = viewport.width + 'px';
-      pageContainer.style.height = viewport.height + 'px';
+      try {
+        const page = await pdfDoc.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: currentScale });
 
-      const renderCtx = renderCanvas.getContext('2d');
-      await page.render({ canvasContext: renderCtx, viewport: viewport }).promise;
+        renderCanvas.width = viewport.width;
+        renderCanvas.height = viewport.height;
+        pageContainer.style.width = viewport.width + 'px';
+        pageContainer.style.height = viewport.height + 'px';
 
-      renderOverlayAnnotations(pageNumber);
+        const renderCtx = renderCanvas.getContext('2d');
+        currentRenderTask = page.render({ canvasContext: renderCtx, viewport: viewport });
+        await currentRenderTask.promise;
+        currentRenderTask = null;
+
+        renderOverlayAnnotations(pageNumber);
+      } catch (err) {
+        if (err && err.name === 'RenderingCancelledException') {
+          return;
+        }
+        console.error("renderVisualPage error:", err);
+      }
     }
 
     // =========================================================================
