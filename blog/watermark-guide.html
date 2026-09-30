@@ -36,16 +36,296 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "How to Add Security Watermarks to Confidential PDF Documents in RAM",
-    "author": { "@type": "Person", "name": "Amaad Mazari" },
-    "datePublished": "2026-08-28",
-    "publisher": { "@type": "Organization", "name": "LocalDoc" },
-    "description": "Comprehensive engineering analysis of PDF Extended Graphics State (/ExtGState), alpha compositing, transformation matrices, and zero-upload vector watermarking."
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Watermark PDF Documents",
+          "item": "https://localdoc.org/blog/watermark-guide.html"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "How to Add Security Watermarks to Confidential PDF Documents in RAM",
+      "description": "Stamp semi-transparent diagonal vector watermarks across PDF pages in local browser RAM using ExtGState alpha compositing without cloud uploads.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Systems Architect",
+        "url": "https://localdoc.org/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/favicon.svg"
+        }
+      },
+      "datePublished": "2026-08-28",
+      "dateModified": "2026-09-30"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Add Vector Watermarks to PDF Documents",
+      "description": "Step-by-step instructions to stamp semi-transparent diagonal watermarks onto confidential PDF pages using browser memory and WebAssembly.",
+      "totalTime": "PT1M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc In-Browser PDF Watermarker"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Load Confidential PDF into In-Memory Stamping Studio",
+          "text": "Navigate to the LocalDoc Watermark Tool and drop your PDF document. The file buffer is isolated within browser RAM with zero bytes uploaded to remote servers.",
+          "image": "https://localdoc.org/assets/images/guides/watermark-step1-load-confidential-pdf.webp",
+          "url": "https://localdoc.org/blog/watermark-guide.html#step-1-load-confidential-pdf"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Enter Security Text or Select Pre-Configured Preset",
+          "text": "Type custom security text (e.g., CONFIDENTIAL — INVESTOR COPY) or choose one-click presets like DRAFT, COPY, or DO NOT DISTRIBUTE, and pick an accent color.",
+          "image": "https://localdoc.org/assets/images/guides/watermark-step2-customize-text-presets.webp",
+          "url": "https://localdoc.org/blog/watermark-guide.html#step-2-customize-text-presets"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Calibrate 45° Diagonal Angle & 30% Alpha Opacity",
+          "text": "Set the orientation angle to -45° diagonal for full canvas coverage and adjust the opacity slider to 30% alpha for optimal ExtGState text blending.",
+          "image": "https://localdoc.org/assets/images/guides/watermark-step3-adjust-angle-opacity.webp",
+          "url": "https://localdoc.org/blog/watermark-guide.html#step-3-adjust-angle-opacity"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Verify Readability on Interactive Live Document Mockup",
+          "text": "Inspect the rendered live document preview across multiple slides to confirm underlying financial tables, charts, and legal text remain 100% readable and copyable.",
+          "image": "https://localdoc.org/assets/images/guides/watermark-step4-live-preview-inspection.webp",
+          "url": "https://localdoc.org/blog/watermark-guide.html#step-4-live-preview-inspection"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Inject ExtGState Stream Operators & Download Secured PDF",
+          "text": "Click 'Apply Watermark & Save'. The WebAssembly engine injects native /ExtGState graphics states into page streams in 140ms and downloads your secured PDF.",
+          "image": "https://localdoc.org/assets/images/guides/watermark-step5-download-watermarked-pdf.webp",
+          "url": "https://localdoc.org/blog/watermark-guide.html#step-5-download-watermarked-pdf"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does adding a watermark increase the PDF file size significantly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Because LocalDoc injects pure vector text stream operators rather than flattening pages into raster images, each page adds only about 500 bytes of text instructions. A 36-page document grows by less than 20 KB."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can readers select and copy the text underneath the watermark?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The underlying text streams remain completely unmodified. Readers can highlight paragraphs, select tables, and search for terms with Ctrl+F normally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I apply watermarks to specific page ranges?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. LocalDoc allows you to stamp all pages, exclude the title page, or specify custom page intervals to maintain professional document presentation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this tool work completely offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All vector injection routines and font metric computations run inside client-side WebAssembly cached via our Service Worker. You can watermark confidential files on an offline machine with zero internet connection."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -257,14 +537,112 @@
         The entire operation completed in exactly <strong>140 milliseconds</strong> inside local browser RAM on a standard laptop. The resulting PDF measured <strong>28.42 MB</strong> (an imperceptible payload increase of just 18 KB across the entire 36-page document). Text selection and searchability remained 100% functional, vector graphics suffered zero resolution loss, and zero bytes were uploaded to any remote server.
       </p>
 
-      <h2>6. Step-by-Step Guide: How to Watermark PDFs Locally</h2>
-      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Open Watermark Studio:</strong> Navigate to the LocalDoc <a href="../pages/watermark.html" style="color:var(--primary); font-weight:700;">Add Watermark Workspace</a>.</li>
-        <li><strong>Load Your PDF File:</strong> Drag and drop your document. The file buffer is isolated within browser RAM.</li>
-        <li><strong>Customize Watermark Text:</strong> Enter your custom text. Adjust font size, color, and opacity (30% recommended).</li>
-        <li><strong>Select Layout & Angle:</strong> Choose diagonal 45&deg; orientation for optimal coverage or horizontal stamping.</li>
-        <li><strong>Apply and Download:</strong> Click <strong>Apply Watermark</strong> to inject vector operators across all pages. Download your secured PDF.</li>
-      </ol>
+      <h2>6. Visual Step-by-Step Guide: How to Watermark PDFs Locally</h2>
+      <p>
+        Follow this 5-step visual walkthrough to apply forensic diagonal watermarks across confidential investor presentations, contracts, or audit drafts in local browser RAM:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-load-confidential-pdf">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Load Confidential PDF into In-Memory Stamping Studio</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Navigate to the <a href="../pages/watermark.html">LocalDoc Watermark PDF Tool</a>. Select or drag your confidential fundraising presentation or legal agreement into the workspace. The file buffer parses in 140 milliseconds inside volatile memory with zero bytes uploaded to remote servers.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/watermark-step1-load-confidential-pdf.webp" alt="Load confidential PDF document into LocalDoc watermark studio" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:22%; left:18%; width:64%; height:62%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:62%;">❶ Select PDF Document</div>
+            <div class="walkthrough-pin" style="top:65%; left:36%;">❷ 36 Widescreen Slides in RAM</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Memory Isolation: 36 slides loaded into volatile RAM with zero bytes uploaded.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-customize-text-presets">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Enter Security Text or Select Pre-Configured Preset</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Type custom forensic attribution text (such as <code>CONFIDENTIAL &mdash; INVESTOR COPY</code>) or select from one-click presets like <em>CONFIDENTIAL</em>, <em>DRAFT</em>, or <em>DO NOT DISTRIBUTE</em>. Pick your stamp color (Red, Gray, or Blue).
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/watermark-step2-customize-text-presets.webp" alt="Customize security watermark text and select quick presets" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:24%; left:6%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:28%; left:12%;">❶ Custom Security Text</div>
+            <div class="walkthrough-pin" style="top:52%; left:14%;">❷ Quick Presets Bar</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Forensic Attribution: Traceable stamps discourage unauthorized forwarding.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-adjust-angle-opacity">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Calibrate 45° Diagonal Angle & 30% Alpha Opacity</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Select <strong>-45° (Diagonal)</strong> orientation for complete corner-to-corner visual protection across landscape slides. Calibrate the opacity slider to <strong>30% alpha</strong> to ensure underlying financial charts and text remain 100% legible.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/watermark-step3-adjust-angle-opacity.webp" alt="Calibrate diagonal angle and 30% alpha opacity level" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-amber" style="top:42%; left:6%; width:44%; height:20%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:28%;">❶ -45° Diagonal Angle</div>
+            <div class="walkthrough-pin" style="top:46%; left:22%;">❷ ExtGState 30% Alpha</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Extended Graphics State: /ExtGState /ca 0.30 blends text without bitmap flattening.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-live-preview-inspection">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">Verify Readability on Interactive Live Document Mockup</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Review the live document canvas across multiple slides. Verify that title slides, capitalization tables, and system architecture schematics are visibly protected while all numbers, headings, and vectors remain razor-sharp.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/watermark-step4-live-preview-inspection.webp" alt="Verify watermark readability across interactive multi-slide preview" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:18%; left:36%; width:28%; height:76%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:22%; left:42%;">❶ Multi-Slide Inspection</div>
+            <div class="walkthrough-pin" style="top:80%; left:68%;">❷ 100% Vector Retained</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Visual Clarity: Underlying cap tables and charts remain 100% readable and searchable.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-download-watermarked-pdf">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Inject ExtGState Stream Operators & Download Secured PDF</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Click <strong>Apply Watermark &amp; Save</strong>. The WebAssembly engine injects native <code>/ExtGState</code> alpha dictionaries into every page content stream in 140 milliseconds. Click <strong>Download Watermarked PDF</strong> to save your secured presentation.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/watermark-step5-download-watermarked-pdf.webp" alt="Download watermarked PDF document with instant execution metrics" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:22%; width:56%; height:62%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:62%;">❶ 36 Slides Stamped in 140ms</div>
+            <div class="walkthrough-pin" style="top:64%; left:36%;">❷ Download Watermarked PDF</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Negligible Overhead: File grows by just 18 KB of clean vector instructions.</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <h2>7. Honest Technical Boundaries of Vector Watermarking</h2>
       <p>
