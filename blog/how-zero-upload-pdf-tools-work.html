@@ -35,31 +35,290 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "How Zero-Upload PDF Tools Work: The WebAssembly Sandbox Guide",
-    "description": "Comprehensive engineering deep dive into zero-upload client-side document processing, WebAssembly linear memory sandboxes, Web Workers, and local PDF manipulation.",
-    "author": {
-      "@type": "Person",
-      "name": "Amaad Mazari",
-      "jobTitle": "Lead Document Architect",
-      "url": "https://localdoc.org/about.html"
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How Zero-Upload PDF Tools Work",
+          "item": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html"
+        }
+      ]
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": "LocalDoc",
-      "url": "https://localdoc.org",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://localdoc.org/assets/icons/brand-logo.svg"
-      }
+    {
+      "@type": "TechArticle",
+      "headline": "How Zero-Upload PDF Tools Work Internally — WebAssembly & Client RAM Architecture",
+      "description": "Comprehensive engineering deep dive into zero-upload client-side document processing, WebAssembly linear memory sandboxes, Web Workers, and local PDF manipulation.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Document Architect",
+        "url": "https://localdoc.org/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "url": "https://localdoc.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+        }
+      },
+      "datePublished": "2026-08-22T08:00:00+00:00",
+      "dateModified": "2026-09-30T00:00:00+00:00",
+      "mainEntityOfPage": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html"
     },
-    "datePublished": "2026-08-22",
-    "dateModified": "2026-09-14",
-    "mainEntityOfPage": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html"
-  }
+    {
+      "@type": "HowTo",
+      "name": "How to Verify In-Browser Zero-Upload WebAssembly Processing",
+      "description": "Step-by-step technical guide to verifying that document files are processed entirely in local device RAM using WebAssembly with zero network uplink.",
+      "totalTime": "PT1M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "Web Browser with Developer Tools (Chrome, Edge, Firefox, Safari)"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Open Browser Network Inspector",
+          "text": "Open Chrome DevTools with F12 or Ctrl+Shift+I. Navigate to the Network tab and verify zero outbound network requests are initiated.",
+          "image": "https://localdoc.org/assets/images/guides/wasm-step1-open-network-inspector.webp",
+          "url": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html#step-1-open-network-inspector"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Load Document into ArrayBuffer Memory",
+          "text": "Select or drag your file into LocalDoc. The HTML5 FileReader API ingests bytes directly into a volatile ArrayBuffer in client RAM without sending multipart form data.",
+          "image": "https://localdoc.org/assets/images/guides/wasm-step2-load-file-arraybuffer.webp",
+          "url": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html#step-2-load-file-arraybuffer"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Execute WebAssembly Linear Heap Sandbox",
+          "text": "The WebAssembly binary module compiles inside a dedicated background Web Worker thread, sandboxed within contiguous linear memory without OS hooks.",
+          "image": "https://localdoc.org/assets/images/guides/wasm-step3-wasm-linear-heap-sandbox.webp",
+          "url": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html#step-3-wasm-linear-heap-sandbox"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Process via Hardware-Accelerated Canvas",
+          "text": "Document pages are decompressed and rasterized via local HTML5 Canvas and WebGL shaders, achieving 60 FPS preview rendering locally.",
+          "image": "https://localdoc.org/assets/images/guides/wasm-step4-canvas-gpu-transformation.webp",
+          "url": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html#step-4-canvas-gpu-transformation"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Generate Local Blob URL & Detach Memory",
+          "text": "The output file is constructed as an in-memory Blob and delivered via URL.createObjectURL. Temporary byte buffers are detached and collected by garbage collection.",
+          "image": "https://localdoc.org/assets/images/guides/wasm-step5-download-blob-memory-disposal.webp",
+          "url": "https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html#step-5-download-blob-memory-disposal"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How can I be certain no data leaves my browser?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can independently verify zero data transmission using your browser's built-in developer tools. Press F12 (or Cmd+Option+I on Mac), switch to the Network tab, check 'Disable cache', and perform any document operation. You will observe that zero bytes of payload data are transmitted across the network during processing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can WebAssembly access files stored on my hard drive without permission?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. WebAssembly executes within a secure, capability-based sandbox enforced by the host browser. Wasm modules have no native access to the operating system filesystem, kernel, or connected peripherals. A Wasm module can only interact with files that you explicitly supply through the browser's standard file input dialog or drag-and-drop events."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do some online tools require server uploads if client-side processing is possible?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Legacy web applications rely on server-side rendering pipelines built before the widespread adoption of WebAssembly, Web Workers, and modern JavaScript TypedArrays. Migrating legacy server codebases to client-side WebAssembly requires rewriting or recompiling core libraries into portable Wasm modules."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -170,7 +429,118 @@
         <span class="blog-diagram-caption">Figure 1: Isolated In-Memory Data Pipeline � Zero Disk or Network Ingress</span>
       </div>
 
-      <h2>3. WebAssembly Linear Memory & Security Sandboxing</h2>
+      <!-- Visual Step-by-Step Walkthrough -->
+      <section style="margin: 36px 0;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary);">3. Visual Walkthrough: How the In-Browser Zero-Upload Pipeline Executes Step-by-Step</h2>
+        <p style="color:var(--text-secondary); line-height:1.7;">
+          To understand how LocalDoc achieves complete air-gapped security, examine the five internal stages of client-side execution, from DevTools network monitoring to automated memory disposal:
+        </p>
+
+        <div class="walkthrough-container">
+          <!-- STEP 1 -->
+          <div class="walkthrough-step-card" id="step-1-open-network-inspector">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 1</span>
+              <h3 class="walkthrough-step-title">Verify Air-Gapped Network Silence (F12 DevTools)</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Open the browser Developer Tools (<code>F12</code> or <code>Ctrl+Shift+I</code>) and select the <strong>Network</strong> tab. Check <em>Disable cache</em>. When LocalDoc runs, the network waterfall remains completely silent with <strong>0 B transferred</strong>, confirming zero server communication.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/wasm-step1-open-network-inspector.webp" alt="Verify zero upload network silence in browser DevTools" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-blue" style="top:58%; left:8%; width:84%; height:34%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:12%;">❶ Network Tab Active</div>
+              <div class="walkthrough-pin" style="top:78%; left:50%;">❷ 0 B Transferred (Silent Uplink)</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Zero Uplink: Browser network monitor confirms 0 HTTP packets leave device.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="walkthrough-step-card" id="step-2-load-file-arraybuffer">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 2</span>
+              <h3 class="walkthrough-step-title">Load Document into In-Memory ArrayBuffer</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              When a document is dropped into LocalDoc, the browser's native <code>FileReader.readAsArrayBuffer()</code> loads the file's raw binary stream straight into volatile RAM without touching disk or making cloud API calls.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/wasm-step2-load-file-arraybuffer.webp" alt="Load file into local browser ArrayBuffer memory" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-emerald" style="top:58%; left:8%; width:84%; height:34%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:12%;">❶ FileReader API</div>
+              <div class="walkthrough-pin" style="top:78%; left:52%;">❷ 100% Volatile RAM Ingestion</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Direct Memory Pipe: Bytes are read into RAM without temporary disk caching.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="walkthrough-step-card" id="step-3-wasm-linear-heap-sandbox">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 3</span>
+              <h3 class="walkthrough-step-title">Execute Inside WebAssembly Linear Heap Sandbox</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              The compiled WebAssembly binary instantiates an isolated <code>WebAssembly.Memory</code> block in a dedicated Web Worker thread. Compressed FlateDecode streams are inflated at near-native C++ speeds within protected heap boundaries.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/wasm-step3-wasm-linear-heap-sandbox.webp" alt="Execute parsing in isolated WebAssembly linear memory sandbox" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-amber" style="top:58%; left:8%; width:84%; height:34%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:12%;">❶ Wasm Binary Engine</div>
+              <div class="walkthrough-pin" style="top:78%; left:50%;">❷ Dedicated Web Worker Thread</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Sandboxed Heap: Strictly isolated runtime has zero access to host OS or registry.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="walkthrough-step-card" id="step-4-canvas-gpu-transformation">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 4</span>
+              <h3 class="walkthrough-step-title">Hardware-Accelerated Canvas & Vector Transformation</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Vector glyphs and embedded raster objects are drawn directly to an HTML5 <code>OffscreenCanvas</code> using GPU hardware acceleration. Rendering occurs at smooth 60 FPS without UI freezes or external rendering queues.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/wasm-step4-canvas-gpu-transformation.webp" alt="Render and transform document vectors via HTML5 Canvas and WebGL" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-blue" style="top:58%; left:8%; width:84%; height:34%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:12%;">❶ GPU Canvas Pipeline</div>
+              <div class="walkthrough-pin" style="top:78%; left:52%;">❷ 60 FPS Sub-Second Rendering</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Client GPU Power: Hardware rasterizer completes page layout in sub-second speeds.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="walkthrough-step-card" id="step-5-download-blob-memory-disposal">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 5</span>
+              <h3 class="walkthrough-step-title">Generate Local Blob URL & Detach Working Memory</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              The processed document is packaged into an in-memory <code>Blob</code> and downloaded via <code>URL.createObjectURL()</code>. Working memory pointers are immediately zeroed out, allowing the browser's garbage collector to flush RAM clean.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/wasm-step5-download-blob-memory-disposal.webp" alt="Download client-side Blob and release memory back to operating system" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-emerald" style="top:58%; left:8%; width:84%; height:34%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:12%;">❶ Instant Blob Download</div>
+              <div class="walkthrough-pin" style="top:78%; left:50%;">❷ Complete Memory Flush (0 Residue)</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Zero Data Remnants: Pointers are unlinked and volatile RAM is restored to the OS.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <h2>4. WebAssembly Linear Memory & Security Sandboxing</h2>
       <p>
         Security is fundamental to WebAssembly's sandboxed design. Unlike desktop executables (.exe or .app) that possess broad operating system file system access, WebAssembly executes within a strictly bounded <strong>Linear Memory Sandbox</strong>:
       </p>
@@ -180,7 +550,7 @@
         <li><strong>No Direct Network Capabilities:</strong> WebAssembly cannot instantiate network connections independently. Any outbound communication requires explicit JavaScript APIs (e.g. <code>fetch</code>), which LocalDoc's processing pipeline does not invoke.</li>
       </ul>
 
-      <h2>4. Real-World Engineering Benchmark: 50-Page CAD Architectural Blueprint Bundle</h2>
+      <h2>5. Real-World Engineering Benchmark: 50-Page CAD Architectural Blueprint Bundle</h2>
       <p>
         To evaluate real-world throughput, our engineering team benchmarked LocalDoc's client-side parsing pipeline against a complex technical document:
       </p>
@@ -195,7 +565,7 @@
         </ul>
       </div>
 
-      <h2>5. Architecture Comparison: Client-Side Wasm vs Legacy Cloud</h2>
+      <h2>6. Architecture Comparison: Client-Side Wasm vs Legacy Cloud</h2>
       <table class="spec-table">
         <thead>
           <tr>
@@ -233,7 +603,7 @@
         </tbody>
       </table>
 
-      <h2>6. Honest Technical Limitations of WebAssembly in Browsers</h2>
+      <h2>7. Honest Technical Limitations of WebAssembly in Browsers</h2>
       <p>
         While WebAssembly enables unprecedented client-side capability, browser environments impose real engineering constraints:
       </p>
@@ -275,7 +645,7 @@
         </div>
       </div>
 
-      <h2>7. Frequently Asked Questions</h2>
+      <h2>8. Frequently Asked Questions</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
         <h4 style="margin:0 0 6px; color:var(--text-primary);">How can I be certain no data leaves my browser&ndash;</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
