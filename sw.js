@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v33-ocr-walkthroughs';
+const CACHE_NAME = 'localdoc-v34-passport-walkthroughs';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -94,7 +94,12 @@ const ASSETS_TO_CACHE = [
   '/assets/images/guides/ocr-step2-filter.webp',
   '/assets/images/guides/ocr-step3-language.webp',
   '/assets/images/guides/ocr-step4-inference.webp',
-  '/assets/images/guides/ocr-step5-export.webp'
+  '/assets/images/guides/ocr-step5-export.webp',
+  '/assets/images/guides/passport-step1-upload.webp',
+  '/assets/images/guides/passport-step2-country-color.webp',
+  '/assets/images/guides/passport-step3-biometric-align.webp',
+  '/assets/images/guides/passport-step4-ai-eraser.webp',
+  '/assets/images/guides/passport-step5-print-sheet.webp'
 ];
 
 self.addEventListener('install', (event) => {
