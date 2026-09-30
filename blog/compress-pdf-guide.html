@@ -37,82 +37,136 @@
   </script>
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Master Guides",
-            "item": "https://localdoc.org/blog/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "How to Compress PDF Files Without Losing Text Quality (Client-Side Benchmark Guide)",
-            "item": "https://localdoc.org/blog/compress-pdf-guide.html"
-          }
-        ]
-      },
-      {
-        "@type": "Article",
-        "headline": "How to Compress PDF Files Without Losing Text Quality (Benchmark Guide)",
-        "description": "Technical guide explaining how in-browser WebAssembly compression preserves vector typography while reducing 48 MB files to 4.6 MB.",
-        "author": {
-          "@type": "Person",
-          "name": "Amaad Mazari",
-          "jobTitle": "Founder & Security Architect",
-          "url": "https://localdoc.org/about.html"
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
         },
-        "publisher": {
-          "@type": "Organization",
-          "name": "LocalDoc",
-          "url": "https://localdoc.org/"
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
         },
-        "datePublished": "2026-08-15",
-        "dateModified": "2026-09-14",
-        "mainEntityOfPage": "https://localdoc.org/blog/compress-pdf-guide.html"
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Compress PDF Files Without Losing Text Quality (Client-Side Benchmark Guide)",
+          "item": "https://localdoc.org/blog/compress-pdf-guide.html"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "How to Compress PDF Files Without Losing Text Quality (Benchmark Guide)",
+      "description": "Technical guide explaining how in-browser WebAssembly compression preserves vector typography while reducing 48 MB files to 4.6 MB.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Founder & Security Architect",
+        "url": "https://localdoc.org/about.html"
       },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does PDF compression make text blurry or unreadable?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. In LocalDoc, vector typography and font glyphs are compressed losslessly with FlateDecode. Vector text remains mathematically sharp at infinite zoom. Only embedded high-resolution raster images are downsampled."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How much can a typical PDF file size be reduced?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "For scanned contracts with 300 DPI photos, compression achieves reductions between 65% and 92%. In our benchmark, a 48.2 MB municipal lease was reduced to 4.62 MB."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are files uploaded to any server during compression?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Never. LocalDoc executes entirely in browser memory (RAM) via WebAssembly. Zero bytes leave your physical computer."
-            }
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "url": "https://localdoc.org/"
+      },
+      "datePublished": "2026-08-15",
+      "dateModified": "2026-09-14",
+      "mainEntityOfPage": "https://localdoc.org/blog/compress-pdf-guide.html"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Compress PDF Files Without Losing Text Quality",
+      "description": "Technical guide showing how in-browser WebAssembly compression, FlateDecode, and bicubic downsampling reduce massive scanned documents by up to 92% in client RAM.",
+      "totalTime": "PT1M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc In-Browser PDF Compressor"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Select or Drop PDF into RAM Workspace",
+          "text": "Choose or drag your PDF document into the LocalDoc upload zone. The file is loaded into browser memory as an isolated byte stream without uploading bytes to remote cloud servers.",
+          "image": "https://localdoc.org/assets/images/guides/compress-step1-select-pdf.webp",
+          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-1-select-pdf"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Select Optimization Profile & Target Limits",
+          "text": "Choose 'Recommended (Balanced Quality 150 DPI)' for standard portals or 'Extreme (72 DPI)' for tight email limits. Optional strict presets allow targeting exact sizes like <= 200 KB or <= 5 MB.",
+          "image": "https://localdoc.org/assets/images/guides/compress-step2-tier-selection.webp",
+          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-2-tier-selection"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "In-Memory WASM FlateDecode & Bicubic Downsampling",
+          "text": "The WebAssembly engine applies lossless FlateDecode compression to vector typography, downsamples 300 DPI scanned seals, and strips dead metadata in 1,120ms.",
+          "image": "https://localdoc.org/assets/images/guides/compress-step3-downsampling-hud.webp",
+          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-3-downsampling-hud"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Inspect 400% Zoom Quality Comparison",
+          "text": "Verify side-by-side that vector font curves remain razor sharp under 400% magnification and notary stamps remain clear while saving over 90% of file weight.",
+          "image": "https://localdoc.org/assets/images/guides/compress-step4-quality-comparison.webp",
+          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-4-quality-comparison"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Download Optimized PDF with Zero Cloud Latency",
+          "text": "Click 'Download Compressed PDF' to save your file directly from device RAM to your local storage, ready for immediate email attachment or court portal submission.",
+          "image": "https://localdoc.org/assets/images/guides/compress-step5-download-compressed.webp",
+          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-5-download-compressed"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does PDF compression make text blurry or unreadable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. In LocalDoc, vector typography and font glyphs are compressed losslessly with FlateDecode. Vector text remains mathematically sharp at infinite zoom. Only embedded high-resolution raster images are downsampled."
           }
-        ]
-      }
-    ]
-  }
+        },
+        {
+          "@type": "Question",
+          "name": "How much can a typical PDF file size be reduced?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For scanned contracts with 300 DPI photos, compression achieves reductions between 65% and 92%. In our benchmark, a 48.2 MB municipal lease was reduced to 4.62 MB."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are files uploaded to any server during compression?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. LocalDoc executes entirely in browser memory (RAM) via WebAssembly. Zero bytes leave your physical computer."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
 
   <style>
@@ -150,6 +204,152 @@
       padding: 24px;
       margin: 28px 0;
       text-align: center;
+    }
+
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-purple {
+      border-color: #A855F7;
+      box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
+      animation: pulsePurple 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulsePurple {
+      0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
     }
   </style>
 </head>
@@ -355,14 +555,111 @@
         </div>
       </section>
 
-      <section style="margin-top:36px;">
-        <h2>Step-by-Step: How I Recommend Compressing Your Documents</h2>
-        <ol style="margin-left:20px; line-height:1.8;">
-          <li><strong>Drop Your File:</strong> Open <a href="../pages/compress-pdf.html">LocalDoc Compress PDF</a>. Drag your file onto the dropzone or select it from your local disk. It loads straight into your browser's RAM.</li>
-          <li><strong>Select Your Compression Tier:</strong> For court portals, visa submissions, and general email attachments, pick <em>Recommended (150 DPI)</em>. If you intend to print physical copies on an office laser printer, choose <em>Archival (220 DPI)</em>.</li>
-          <li><strong>Run the In-Browser Engine:</strong> Click <em>Compress PDF</em>. The WebAssembly thread parses the document tree, resamples image rasters, and recompresses stream dictionaries entirely in your device memory.</li>
-          <li><strong>Review the Savings and Download:</strong> Check the exact byte reduction displayed on your screen. Click <em>Download Compressed PDF</em> to save your optimized document instantly�with zero wait time and zero data transmitted over the internet.</li>
-        </ol>
+      <section style="margin-top:40px;">
+        <h2>Visual Step-by-Step Guide: How to Compress PDF Documents in Local RAM</h2>
+        <p>
+          Follow this 5-step visual walkthrough to shrink massive scanned leases, legal filings, and business records while retaining vector text sharpness and notary seal clarity:
+        </p>
+
+        <div class="walkthrough-container">
+          <!-- STEP 1 -->
+          <div class="walkthrough-step-card" id="step-1-select-pdf">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 1</span>
+              <h3 class="walkthrough-step-title">Select or Drop PDF into RAM Workspace</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Navigate to the <a href="../pages/compress-pdf.html">LocalDoc Compress PDF Tool</a>. Drag your multi-page document into the active dropzone, or click <strong>Select PDF Document(s)</strong>. Your file buffer is parsed into client-side RAM with zero cloud uploads or queue delays.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/compress-step1-select-pdf.webp" alt="Select or drop PDF document into LocalDoc compressor" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:64%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:62%; left:38%;">❶ Select PDF Document(s)</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Zero Upload Security: Files are loaded into isolated browser memory buffers. Unlimited file sizes.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="walkthrough-step-card" id="step-2-tier-selection">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 2</span>
+              <h3 class="walkthrough-step-title">Select Optimization Profile &amp; Portal Limits</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Choose your compression level: <strong>Recommended (150 DPI)</strong> for a balanced 60–90% reduction, or <strong>Extreme (72 DPI)</strong> for minimal file size. If submitting to a government or exam portal, choose a strict target limit such as <strong>&le; 5 MB</strong> or <strong>&le; 200 KB</strong>.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/compress-step2-tier-selection.webp" alt="Select compression tier and target portal limit" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-emerald" style="top:22%; left:36%; width:28%; height:28%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:25%; left:39%;">❶ Recommended (150 DPI)</div>
+              <div class="walkthrough-pin" style="top:58%; left:62%;">❷ &le; 5 MB Portal Target</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Lossless Typography: Vector font descriptions are preserved across all profiles.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="walkthrough-step-card" id="step-3-downsampling-hud">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 3</span>
+              <h3 class="walkthrough-step-title">In-Memory WASM FlateDecode &amp; Bicubic Downsampling</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Click <strong>Compress PDF Now</strong>. LocalDoc's WebAssembly core executes in your browser, applying lossless <code>FlateDecode</code> to text commands, downsampling 300 DPI rasters to 150 DPI via bicubic DCT interpolation, and pruning 4.2 MB of dead metadata in 1,120ms.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/compress-step3-downsampling-hud.webp" alt="In-memory WebAssembly stream downsampling and compression HUD" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:62%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:26%; left:62%;">❶ Resampling 300 DPI &rarr; 150 DPI</div>
+              <div class="walkthrough-pin" style="top:74%; left:22%;">❷ 1,120ms Execution Speed</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Defragmented Streams: Linearized cross-reference tables eliminate byte redundancies.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="walkthrough-step-card" id="step-4-quality-comparison">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 4</span>
+              <h3 class="walkthrough-step-title">Inspect 400% Zoom Quality Comparison</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Inspect the high-resolution comparison loupe. Notice that while file weight drops by <strong>90.4%</strong> (from 48.2 MB down to 4.62 MB), vector fonts retain pristine mathematical edges at 400% zoom and official notary stamps remain fully legible.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/compress-step4-quality-comparison.webp" alt="Side-by-side 400% zoom comparison between original and compressed PDF" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-purple" style="top:14%; left:51%; width:46%; height:76%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:20%; left:54%;">❶ -90.4% Shaved</div>
+              <div class="walkthrough-pin" style="top:78%; left:72%;">❷ Crisp Vector Curves</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Sharp Typography: Text is not converted to raster pixels, preventing fuzzy characters on retina screens.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="walkthrough-step-card" id="step-5-download-compressed">
+            <div class="walkthrough-step-header">
+              <span class="walkthrough-step-badge">Step 5</span>
+              <h3 class="walkthrough-step-title">Download Optimized PDF with Zero Cloud Latency</h3>
+            </div>
+            <p class="walkthrough-step-desc">
+              Click <strong>Download Compressed PDF</strong> to save your optimized document directly from client RAM to your downloads folder. Your document is 100% ready for electronic filing, email gateways with 5 MB caps, and long-term secure archival.
+            </p>
+            <div class="walkthrough-visual-frame">
+              <img src="../assets/images/guides/compress-step5-download-compressed.webp" alt="Download compressed PDF result card with verified savings" width="1280" height="720" loading="lazy">
+              <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:24%; width:52%; height:58%;" aria-hidden="true"></div>
+              <div class="walkthrough-pin" style="top:58%; left:36%;">❶ Download Compressed PDF</div>
+              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+                <span>✦ Client-Side Blob: Exported instantly from browser RAM without file size caps or server queues.</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TESTED BY VERIFICATION BLOCK -->
