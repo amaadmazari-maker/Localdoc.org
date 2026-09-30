@@ -35,15 +35,137 @@
   <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
-  <script type="application/ld+json">
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "How to Extract Text from Images & Receipts with Neural WebAssembly OCR",
-    "author": { "@type": "Person", "name": "Amaad Mazari" },
-    "datePublished": "2026-08-28",
-    "publisher": { "@type": "Organization", "name": "LocalDoc" },
-    "description": "Comprehensive engineering guide to client-side neural optical character recognition, Sauvola adaptive thresholding, and privacy-preserving receipt parsing in browser memory."
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Master Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "How to Extract Text from Images & Receipts with Neural WebAssembly OCR",
+            "item": "https://localdoc.org/blog/image-to-text-guide.html"
+          }
+        ]
+      },
+      {
+        "@type": "TechArticle",
+        "headline": "How to Extract Text from Images & Receipts with Neural WebAssembly OCR",
+        "description": "Comprehensive engineering guide to client-side neural optical character recognition, Sauvola adaptive thresholding, and privacy-preserving receipt parsing in browser memory.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Systems Architect",
+          "url": "https://localdoc.org/about.html"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "url": "https://localdoc.org",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-08-28T10:00:00+00:00",
+        "dateModified": "2026-09-30T10:00:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/image-to-text-guide.html"
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Extract Text from Images & Receipts Privately in Browser RAM",
+        "description": "Step-by-step visual tutorial to transcribe smartphone photos, pharmacy receipts, and book scans into editable text using client-side WebAssembly OCR.",
+        "image": "https://localdoc.org/assets/images/guides/ocr-step4-inference.webp",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Import Document Photo or Scanned Receipt",
+            "text": "Drag and drop your image file into the OCR Studio. Bitmaps are buffered in local browser memory without network transit.",
+            "image": "https://localdoc.org/assets/images/guides/ocr-step1-upload.webp"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Configure Sauvola Adaptive Binarization Pre-Filter",
+            "text": "Select High-Contrast B&W to strip hand shadows and normalize faded thermal paper contrast across a local sliding kernel.",
+            "image": "https://localdoc.org/assets/images/guides/ocr-step2-filter.webp"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Select Language Dictionary & LSTM Vocabulary",
+            "text": "Choose the target language model (English Latin, Spanish, French, German) to initialize quantized neural weights.",
+            "image": "https://localdoc.org/assets/images/guides/ocr-step3-language.webp"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Execute In-Browser Neural Extraction via WebAssembly",
+            "text": "Run multi-threaded recurrent neural network inference inside isolated Web Workers with SIMD vector acceleration.",
+            "image": "https://localdoc.org/assets/images/guides/ocr-step4-inference.webp"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Review Transcribed Text, Find & Replace, and Export Word/TXT",
+            "text": "Inspect transcribed lines with confidence tallies, repair typos with live Find & Replace, and download as plain text (.txt) or Word (.docx).",
+            "image": "https://localdoc.org/assets/images/guides/ocr-step5-export.webp"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does LocalDoc store or view my uploaded receipt images?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Never. LocalDoc contains no backend processing servers. All image decoding, Sauvola pre-processing, and neural network inference occur 100% inside your browser tab memory. When you close the tab, all image buffers are wiped from RAM."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I extract text from PDF files directly using this tool?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. If you have a scanned PDF with non-selectable text, you can import it into LocalDoc. The engine renders each PDF page into a high-resolution canvas bitmap in local memory, extracts the characters, and allows you to copy or download the text."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why do receipt numbers sometimes get misread as letters?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Thermal dot-matrix printers print numbers with small gaps between ink dots. When an image is slightly blurry or out of focus, the neural network may confuse a digit 8 with letter B, or digit 0 with letter D. Flattening crumpled receipts and using good lighting minimizes these errors."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this OCR tool work without an internet connection?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Thanks to our Progressive Web App (PWA) architecture and Service Worker caching, once the WebAssembly binary and trained neural language model are cached on your device, you can disconnect from Wi-Fi completely and extract text entirely offline."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -227,14 +349,195 @@
         The extraction pipeline finished in <strong>1,620 milliseconds</strong> inside browser RAM on an off-the-shelf laptop. Across 428 total line items, dates, and currency values, the engine achieved a <strong>98.4% character accuracy rate</strong> (only 7 numeric characters required correction due to deep creases). The output text payload measured <strong>4.8 KB</strong> of structured text ready for spreadsheet export. Zero network bytes left the machine.
       </p>
 
-      <h2>6. Step-by-Step Guide: How to Extract Text Locally</h2>
-      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Open the OCR Studio:</strong> Navigate to the LocalDoc <a href="../pages/image-to-text.html" style="color:var(--primary); font-weight:700;">Image to Text OCR Workspace</a>. The Wasm worker initializes in memory.</li>
-        <li><strong>Import Photos or Scans:</strong> Drag your images (JPEG, PNG, WebP) into the dropzone. Photos remain strictly in your browser tab's RAM buffer.</li>
-        <li><strong>Select Language Model:</strong> Choose the target language dictionary (English Latin, Spanish, German, French) to optimize the LSTM vocabulary.</li>
-        <li><strong>Execute Neural Extraction:</strong> Click <strong>Extract Text</strong>. The worker binarizes the canvas and performs neural inference in under 2 seconds.</li>
-        <li><strong>Review & Export:</strong> Inspect recognized paragraphs with confidence scores. Click <strong>Copy Text</strong> or export directly to TXT or DOCX.</li>
-      </ol>
+            <!-- Section 6: Visual Step-by-Step Walkthrough -->
+      <h2>6. Comprehensive Step-by-Step Visual Walkthrough: How to Extract Text Locally</h2>
+      <p>
+        Extracting text from thermal receipts, invoices, and book pages without privacy leaks follows a streamlined five-step neural pipeline. Follow this visual walkthrough to transcribe images into clean, editable text right inside your web browser:
+      </p>
+
+      <!-- STEP 1 -->
+      <div class="walkthrough-step-card">
+        <div class="walkthrough-step-header">
+          <span class="walkthrough-step-badge">Step 1 of 5</span>
+          <h3>Import Document Photo or Scanned Receipt</h3>
+        </div>
+        <p class="walkthrough-step-desc">
+          Navigate to the <a href="../pages/image-to-text.html">LocalDoc Image to Text OCR Workspace</a>. Drag and drop your camera photos, thermal receipts, or book scans into the drop zone, or click <em>&ldquo;Select Image Files&rdquo;</em>. Bitmaps are buffered in volatile browser RAM with <strong>zero network transit</strong>.
+        </p>
+
+        <div class="annotated-viewport">
+          <img src="../assets/images/guides/ocr-step1-upload.webp" alt="Image to Text OCR Studio Ingestion Drop Zone" loading="lazy" width="900" height="506">
+          
+          <div class="annotation-box pulse-blue" style="top: 25%; left: 16%; width: 68%; height: 60%;">
+            <span class="annotation-pin pin-blue">1</span>
+            <div class="annotation-tooltip tooltip-top">
+              <strong>Drag &amp; Drop Ingestion Zone</strong>
+              <span>JPEG &bull; PNG &bull; WebP Snapshot Ingestion</span>
+            </div>
+          </div>
+
+          <div class="annotation-box pulse-emerald" style="top: 2%; left: 63%; width: 33%; height: 8%;">
+            <span class="annotation-pin pin-emerald">2</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>100% In-RAM Execution</strong>
+              <span>Zero Server Transmission &bull; HIPAA &amp; NDA Compliant</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-step-tip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span><strong>Confidentiality First:</strong> Prescriptions and medical bills never leave your local device, eliminating third-party cloud data broker exposure.</span>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="walkthrough-step-card">
+        <div class="walkthrough-step-header">
+          <span class="walkthrough-step-badge">Step 2 of 5</span>
+          <h3>Configure Sauvola Adaptive Binarization Pre-Filter</h3>
+        </div>
+        <p class="walkthrough-step-desc">
+          Thermal paper receipts frequently suffer from uneven room lighting and hand shadows. Select <strong>&ldquo;High-Contrast B&amp;W (Sauvola Adaptive)&rdquo;</strong> in the pre-filter menu. The engine computes sliding $31 	imes 31$ pixel threshold kernels to strip dark shadows while preserving delicate 8-point thermal dot-matrix characters.
+        </p>
+
+        <div class="annotated-viewport">
+          <img src="../assets/images/guides/ocr-step2-filter.webp" alt="Sauvola Adaptive Binarization Filter Comparison on Receipt Paper" loading="lazy" width="900" height="506">
+          
+          <div class="annotation-box pulse-emerald" style="top: 6%; left: 58%; width: 38%; height: 9%;">
+            <span class="annotation-pin pin-emerald">1</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>Sauvola Adaptive Kernel</strong>
+              <span>Dynamic Window Threshold &bull; Rescues Faded Ink</span>
+            </div>
+          </div>
+
+          <div class="annotation-box pulse-blue" style="top: 22%; left: 52%; width: 44%; height: 72%;">
+            <span class="annotation-pin pin-blue">2</span>
+            <div class="annotation-tooltip tooltip-top">
+              <strong>Shadow-Stripped Pure Binary</strong>
+              <span>100% Monochrome Output &bull; Crisp Glyph Edges</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-step-tip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          <span><strong>Sauvola Advantage:</strong> Global Otsu thresholding turns shadows into black blobs. Sauvola adapts to localized variance, isolating characters flawlessly.</span>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="walkthrough-step-card">
+        <div class="walkthrough-step-header">
+          <span class="walkthrough-step-badge">Step 3 of 5</span>
+          <h3>Select Language Dictionary &amp; LSTM Vocabulary</h3>
+        </div>
+        <p class="walkthrough-step-desc">
+          Select your target document language in the control bar. LocalDoc dynamically loads integer-quantized neural weights and linguistic dictionaries (English, Spanish, French, German, Italian) into an isolated Web Worker, optimizing beam search scoring for domain-specific syntax.
+        </p>
+
+        <div class="annotated-viewport">
+          <img src="../assets/images/guides/ocr-step3-language.webp" alt="LSTM Neural Language Model and Vocabulary Selection Stage" loading="lazy" width="900" height="506">
+          
+          <div class="annotation-box pulse-blue" style="top: 31%; left: 16%; width: 32%; height: 18%;">
+            <span class="annotation-pin pin-blue">1</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>Language Dictionary Selector</strong>
+              <span>English Latin &bull; Spanish &bull; French &bull; German &bull; Italian</span>
+            </div>
+          </div>
+
+          <div class="annotation-box pulse-emerald" style="top: 31%; left: 52%; width: 32%; height: 18%;">
+            <span class="annotation-pin pin-emerald">2</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>WASM SIMD Acceleration</strong>
+              <span>Vectorized Neural Inference &bull; Dedicated Worker Thread</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-step-tip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span><strong>Fast Caching:</strong> Language dictionaries (~4 MB) are cached locally in your browser's CacheStorage, enabling lightning-fast offline startup.</span>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="walkthrough-step-card">
+        <div class="walkthrough-step-header">
+          <span class="walkthrough-step-badge">Step 4 of 5</span>
+          <h3>Execute In-Browser Neural Extraction via WebAssembly</h3>
+        </div>
+        <p class="walkthrough-step-desc">
+          Click <strong>&ldquo;Extract Text via Neural OCR&rdquo;</strong>. The background Web Worker runs line-based recurrent LSTM inference without locking the main UI thread. Track real-time decoding metrics, line baselines, and statistical confidence scores in the live HUD.
+        </p>
+
+        <div class="annotated-viewport">
+          <img src="../assets/images/guides/ocr-step4-inference.webp" alt="Real-Time Neural Extraction HUD with LSTM Decoding Progress" loading="lazy" width="900" height="506">
+          
+          <div class="annotation-box pulse-blue" style="top: 48%; left: 16%; width: 68%; height: 8%;">
+            <span class="annotation-pin pin-blue">1</span>
+            <div class="annotation-tooltip tooltip-top">
+              <strong>Live Neural Progress HUD</strong>
+              <span>Line Baseline Decoding &bull; 84% Completed</span>
+            </div>
+          </div>
+
+          <div class="annotation-box pulse-emerald" style="top: 66%; left: 16%; width: 68%; height: 18%;">
+            <span class="annotation-pin pin-emerald">2</span>
+            <div class="annotation-tooltip tooltip-top">
+              <strong>Inference Telemetry</strong>
+              <span>98.7% LSTM Confidence &bull; 1.24s Latency &bull; 0 KB Egress</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-step-tip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+          <span><strong>Zero Scroll Lag:</strong> Heavy tensor convolutions run in an offscreen Web Worker, guaranteeing responsive 60 FPS scrolling while OCR compiles.</span>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="walkthrough-step-card">
+        <div class="walkthrough-step-header">
+          <span class="walkthrough-step-badge">Step 5 of 5</span>
+          <h3>Review Transcribed Text, Find &amp; Replace, and Export Word/TXT</h3>
+        </div>
+        <p class="walkthrough-step-desc">
+          Review transcribed text in the live monospace editor. Use the integrated <strong>Find &amp; Replace</strong> bar to auto-repair ambiguous characters on wrinkled folds. Click <strong>&ldquo;Copy to Clipboard&rdquo;</strong>, download plain text (<code>.txt</code>), or export directly to a structured Microsoft Word document (<code>.docx</code>).
+        </p>
+
+        <div class="annotated-viewport">
+          <img src="../assets/images/guides/ocr-step5-export.webp" alt="Transcribed OCR Text Result Card with Find and Replace Bar" loading="lazy" width="900" height="506">
+          
+          <div class="annotation-box pulse-emerald" style="top: 14%; left: 16%; width: 68%; height: 10%;">
+            <span class="annotation-pin pin-emerald">1</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>Interactive Find &amp; Replace Bar</strong>
+              <span>Batch Typo Repair &bull; Instant Text Correction</span>
+            </div>
+          </div>
+
+          <div class="annotation-box pulse-blue" style="top: 1%; left: 58%; width: 40%; height: 8%;">
+            <span class="annotation-pin pin-blue">2</span>
+            <div class="annotation-tooltip tooltip-bottom">
+              <strong>Export Suite</strong>
+              <span>Copy Clipboard &bull; Download TXT &bull; Download Word (.docx)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-step-tip">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span><strong>Downstream Workflow:</strong> Extracted receipts can be organized, combined with signed contracts in our <a href="sign-pdf-guide.html">Sign PDF Studio</a>, or compressed for email.</span>
+        </div>
+
+        <div class="walkthrough-action-bar">
+          <a href="../pages/image-to-text.html" class="walkthrough-action-btn">Launch Image to Text OCR Free Now &rarr;</a>
+        </div>
+      </div>
 
       <h2>7. Honest Technical Boundaries of Client-Side Neural OCR</h2>
       <p>
