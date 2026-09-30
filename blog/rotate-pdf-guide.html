@@ -31,24 +31,275 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "How to Rotate PDF Pages Permanently (90, 180, 270 Degrees)",
-    "description": "Permanently fix sideways and upside-down PDF pages by mutating the /Rotate dictionary key in browser RAM. Zero quality loss, zero file size inflation.",
-    "author": {
-      "@type": "Person",
-      "name": "Amaad Mazari",
-      "jobTitle": "Lead Document Architect",
-      "url": "https://localdoc.org/about.html"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "LocalDoc",
-      "logo": { "@type": "ImageObject", "url": "https://localdoc.org/assets/icons/favicon.svg" }
-    },
-    "datePublished": "2026-08-31",
-    "dateModified": "2026-09-14"
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Master Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "How to Rotate PDF Pages Permanently",
+            "item": "https://localdoc.org/blog/rotate-pdf-guide.html"
+          }
+        ]
+      },
+      {
+        "@type": "Article",
+        "headline": "How to Rotate PDF Pages Permanently (90, 180, 270 Degrees)",
+        "description": "Permanently fix sideways and upside-down PDF pages by mutating the /Rotate dictionary key in browser RAM. Zero quality loss, zero file size inflation.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Document Architect",
+          "url": "https://localdoc.org/about.html"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": { "@type": "ImageObject", "url": "https://localdoc.org/assets/icons/favicon.svg" }
+        },
+        "datePublished": "2026-08-31",
+        "dateModified": "2026-09-14"
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Rotate PDF Pages Permanently",
+        "description": "Step-by-step instructions to permanently correct sideways or upside-down PDF pages by updating dictionary rotation metadata in browser RAM.",
+        "totalTime": "PT1M",
+        "tool": [
+          {
+            "@type": "HowToTool",
+            "name": "LocalDoc In-Browser PDF Rotator"
+          }
+        ],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Select or Drop Misoriented PDF into RAM Workspace",
+            "text": "Choose or drag your PDF document into LocalDoc Rotate Studio. The document tree is parsed into browser RAM with zero cloud latency and zero server transmission.",
+            "image": "https://localdoc.org/assets/images/guides/rotate-step1-select-document.webp",
+            "url": "https://localdoc.org/blog/rotate-pdf-guide.html#step-1-select-document"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Apply Bulk 90-Degree, 180-Degree, or Duplex Filters",
+            "text": "Use the Bulk Actions Bar to rotate all pages by 90° clockwise/counter-clockwise, or click Even Pages (Duplex Fix) to instantly flip upside-down automatic feeder scans.",
+            "image": "https://localdoc.org/assets/images/guides/rotate-step2-bulk-actions.webp",
+            "url": "https://localdoc.org/blog/rotate-pdf-guide.html#step-2-bulk-actions"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Fine-Tune Individual Exhibit Orientations in Grid",
+            "text": "Inspect live thumbnail cards and use individual rotate controls on wide landscape exhibits or blueprints while leaving portrait sheets unaltered.",
+            "image": "https://localdoc.org/assets/images/guides/rotate-step3-individual-page-grid.webp",
+            "url": "https://localdoc.org/blog/rotate-pdf-guide.html#step-3-individual-page-grid"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "In-Memory WASM /Rotate Metadata Key Mutation",
+            "text": "The WebAssembly core mutates page dictionary /Rotate tags (0, 90, 180, 270) directly in memory in 65ms, preserving vector font curves with 0.00 KB file inflation.",
+            "image": "https://localdoc.org/assets/images/guides/rotate-step4-wasm-rotate-hud.webp",
+            "url": "https://localdoc.org/blog/rotate-pdf-guide.html#step-4-wasm-rotate-hud"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Download Permanently Upright PDF Document",
+            "text": "Click 'Download Rotated PDF' to save your permanently oriented document directly to local storage, guaranteed upright across all mobile, desktop, and print readers.",
+            "image": "https://localdoc.org/assets/images/guides/rotate-step5-download-rotated.webp",
+            "url": "https://localdoc.org/blog/rotate-pdf-guide.html#step-5-download-rotated"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why did my PDF rotate back when I opened it on my phone?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "That occurs when using temporary Rotate View in desktop viewers. LocalDoc permanently alters the internal /Rotate dictionary key so it opens correctly on every smartphone, tablet, and operating system."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does rotating a PDF cause any quality loss on scanned photos or drawings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "None whatsoever. Because LocalDoc modifies only the orientation metadata scalar rather than re-encoding image pixels, your file retains 100% of its original resolution and vector typography."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -238,13 +489,110 @@
         </tbody>
       </table>
 
-      <h2>5. Step-by-Step Guide: How to Permanently Rotate PDF Pages</h2>
-      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Open Rotation Workspace:</strong> Drag your document into the LocalDoc <a href="../pages/rotate-pdf.html" style="color:var(--primary); font-weight:700;">Rotate PDF workspace</a>. High-speed visual thumbnails render immediately in memory.</li>
-        <li><strong>Select Target Orientation:</strong> Use the global <strong>Rotate All</strong> button to turn every page by 90�, 180�, or 270�, or hover over individual page thumbnails to rotate specific sideways exhibits.</li>
-        <li><strong>Batch Duplex Fix:</strong> If an automatic document feeder scanned all back pages upside-down, select the even-pages filter to correct all inverted sheets simultaneously.</li>
-        <li><strong>Click Save & Download:</strong> The client-side WebAssembly engine updates the dictionary rotation scalar and produces your clean, permanently oriented PDF in under 100 milliseconds.</li>
-      </ol>
+      <h2>5. Visual Step-by-Step Guide: How to Rotate PDF Pages Permanently</h2>
+      <p>
+        Follow this 5-step visual walkthrough to permanently fix inverted duplex back-pages, sideways landscape exhibits, or upside-down contracts in browser RAM:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-select-document">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Load Misoriented PDF into RAM Workspace</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Navigate to the <a href="../pages/rotate-pdf.html">LocalDoc Rotate PDF Tool</a>. Drag your multi-page loan binder or scan packet into the active dropzone, or click <strong>Select PDF Document</strong>. The document tree is parsed into browser RAM with zero cloud latency and zero server uploads.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/rotate-step1-select-document.webp" alt="Select or drop misoriented PDF document into LocalDoc rotator" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:64%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:62%; left:38%;">❶ Select PDF Document</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Permanent Byte Fixing: Rewrites the /Rotate key so orientations stick forever across all devices.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-bulk-actions">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Apply Bulk 90-Degree, 180-Degree, or Duplex Filters</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Use the <strong>Bulk Actions Bar</strong> to rotate all pages simultaneously by 90° clockwise/counter-clockwise, or click <strong>Even Pages (180° Flip)</strong> to fix inverted feeder scans in one click without affecting front-facing odd pages.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/rotate-step2-bulk-actions.webp" alt="Bulk rotation toolbar showing 90-degree and duplex feeder inverted filters" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:58%; left:62%; width:24%; height:20%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:38%; left:48%;">❶ Rotate All 90° CW</div>
+            <div class="walkthrough-pin" style="top:62%; left:66%;">❷ Even Pages (Duplex Fix)</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Duplex Feeder Optimization: Inverted scanner backsides fixed in one click without altering cover pages.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-individual-page-grid">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Fine-Tune Individual Exhibit Orientations in Grid</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Review your document in the interactive visual grid. Click individual rotate buttons (<code>⟳</code>, <code>⟲</code>) on specific landscape financial schedules or blueprints to align them perfectly while keeping remaining pages in portrait orientation.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/rotate-step3-individual-page-grid.webp" alt="Interactive thumbnail page grid showing individual page rotate controls" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-amber" style="top:22%; left:27%; width:22%; height:72%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:29%;">❶ +90° CW (Exhibit B)</div>
+            <div class="walkthrough-pin" style="top:78%; left:38%;">❷ Rotate Control</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Live Visual Feedback: CSS hardware acceleration provides instant rendering of rotated angles.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-wasm-rotate-hud">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">In-Memory WASM /Rotate Metadata Key Mutation</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Click <strong>Apply Rotations &amp; Save PDF</strong>. LocalDoc's WebAssembly core mutates page dictionary <code>/Rotate</code> scalar keys (0, 90, 180, 270) directly in RAM in 65 milliseconds. Zero image pixels are decompressed or re-encoded, guaranteeing exactly 0.00 KB file size inflation.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/rotate-step4-wasm-rotate-hud.webp" alt="In-memory WebAssembly /Rotate key serialization and execution monitor HUD" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:62%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:62%;">❶ /Rotate Key Serialization</div>
+            <div class="walkthrough-pin" style="top:74%; left:22%;">❷ 65ms Local Execution</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Verbatim Stream Preservation: No lossy JPEG compression artifacts introduced to vector logos or seals.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-download-rotated">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Download Permanently Upright PDF Document</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Click <strong>Download Rotated PDF</strong> to save your corrected binder directly from device RAM. The orientation fix is permanently compiled into the ISO 32000-1 binary, ensuring every page opens upright across all iPhone, Android, Adobe Acrobat, and laser printer drivers.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/rotate-step5-download-rotated.webp" alt="Download permanently rotated PDF result card" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:24%; width:52%; height:58%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:58%; left:36%;">❶ Download Rotated PDF</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Universally Permanent: Opens properly in Adobe Acrobat, mobile Mail, and web browsers without reverting.</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <h2>6. Honest Technical Limitations of In-Browser PDF Rotation</h2>
       <p>
