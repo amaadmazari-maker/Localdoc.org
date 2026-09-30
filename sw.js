@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v30-visual-walkthroughs';
+const CACHE_NAME = 'localdoc-v31-scan-walkthroughs';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -79,7 +79,12 @@ const ASSETS_TO_CACHE = [
   '/assets/images/guides/sign-step2-signature-pad.webp',
   '/assets/images/guides/sign-step3-drag-position.webp',
   '/assets/images/guides/sign-step4-date-seal.webp',
-  '/assets/images/guides/sign-step5-download.webp'
+  '/assets/images/guides/sign-step5-download.webp',
+  '/assets/images/guides/scan-step1-camera.webp',
+  '/assets/images/guides/scan-step2-4corner-crop.webp',
+  '/assets/images/guides/scan-step3-filters.webp',
+  '/assets/images/guides/scan-step4-multipage.webp',
+  '/assets/images/guides/scan-step5-export.webp'
 ];
 
 self.addEventListener('install', (event) => {
