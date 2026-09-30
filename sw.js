@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v28-camscanner-homography-hd';
+const CACHE_NAME = 'localdoc-v29-motion-lottie-vector-3d';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -21,6 +21,8 @@ const ASSETS_TO_CACHE = [
   '/js/core/ui-utils.js',
   '/js/core/seo.js',
   '/js/core/pwa-register.js',
+  '/js/core/motion.js',
+  '/js/lib/lottie.min.js',
   '/js/lib/pdf-lib.min.js',
   '/js/lib/pdf.min.js',
   '/js/lib/pdf.worker.min.js',
@@ -68,7 +70,11 @@ const ASSETS_TO_CACHE = [
   '/pages/organize-pdf.html',
   '/assets/icons/favicon.svg',
   '/assets/icons/brand-logo.svg',
-  '/assets/icons/zero-upload-badge.svg'
+  '/assets/icons/zero-upload-badge.svg',
+  '/assets/images/vault-3d.webp',
+  '/assets/images/camscanner-hud-3d.webp',
+  '/assets/images/biometrics-passport-3d.webp',
+  '/assets/images/calculator-oled-3d.webp'
 ];
 
 self.addEventListener('install', (event) => {
