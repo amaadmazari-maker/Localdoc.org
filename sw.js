@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v29-motion-lottie-vector-3d';
+const CACHE_NAME = 'localdoc-v30-visual-walkthroughs';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -74,7 +74,12 @@ const ASSETS_TO_CACHE = [
   '/assets/images/vault-3d.webp',
   '/assets/images/camscanner-hud-3d.webp',
   '/assets/images/biometrics-passport-3d.webp',
-  '/assets/images/calculator-oled-3d.webp'
+  '/assets/images/calculator-oled-3d.webp',
+  '/assets/images/guides/sign-step1-upload.webp',
+  '/assets/images/guides/sign-step2-signature-pad.webp',
+  '/assets/images/guides/sign-step3-drag-position.webp',
+  '/assets/images/guides/sign-step4-date-seal.webp',
+  '/assets/images/guides/sign-step5-download.webp'
 ];
 
 self.addEventListener('install', (event) => {

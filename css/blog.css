@@ -446,3 +446,240 @@
   color: var(--text-secondary);
   line-height: 1.5;
 }
+
+/* ==================== VISUAL WALKTHROUGH & ANNOTATED SCREENSHOTS ==================== */
+.walkthrough-step-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  margin: 36px 0;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.walkthrough-step-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.walkthrough-step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.walkthrough-step-badge {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+.walkthrough-step-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.walkthrough-step-desc {
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+/* Annotated Media Viewport */
+.annotated-viewport {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: #0B1120;
+  margin: 18px 0;
+}
+.annotated-viewport img {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+
+/* Callout Overlays & Highlighting */
+.annotation-box {
+  position: absolute;
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.annotation-box.pulse-red {
+  border: 2px dashed #EF4444;
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2), 0 0 20px rgba(239, 68, 68, 0.4);
+  animation: pulseRedCallout 2.5s infinite ease-in-out;
+}
+.annotation-box.pulse-blue {
+  border: 2px dashed #0284C7;
+  background: rgba(2, 132, 199, 0.12);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2), 0 0 20px rgba(2, 132, 199, 0.4);
+  animation: pulseBlueCallout 2.5s infinite ease-in-out;
+}
+.annotation-box.pulse-emerald {
+  border: 2px dashed #10B981;
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 0 20px rgba(16, 185, 129, 0.4);
+  animation: pulseEmeraldCallout 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseRedCallout {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25), 0 0 14px rgba(239, 68, 68, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.4), 0 0 26px rgba(239, 68, 68, 0.65);
+  }
+}
+
+@keyframes pulseBlueCallout {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), 0 0 14px rgba(2, 132, 199, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(2, 132, 199, 0.4), 0 0 26px rgba(2, 132, 199, 0.65);
+  }
+}
+
+@keyframes pulseEmeraldCallout {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25), 0 0 14px rgba(16, 185, 129, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.4), 0 0 26px rgba(16, 185, 129, 0.65);
+  }
+}
+
+/* Numbered Pins */
+.annotation-pin {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 5;
+}
+.annotation-pin.pin-red {
+  background: #EF4444;
+  top: -14px;
+  left: -14px;
+}
+.annotation-pin.pin-blue {
+  background: #0284C7;
+  top: -14px;
+  left: -14px;
+}
+.annotation-pin.pin-emerald {
+  background: #10B981;
+  top: -14px;
+  left: -14px;
+}
+
+/* Contextual Tooltip Popover */
+.annotation-tooltip {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.94);
+  color: #FFFFFF;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+.annotation-tooltip strong {
+  color: #38BDF8;
+  font-size: 0.85rem;
+}
+.annotation-tooltip.tooltip-bottom {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.annotation-tooltip.tooltip-top {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.annotation-tooltip.tooltip-left {
+  top: 50%;
+  right: calc(100% + 10px);
+  transform: translateY(-50%);
+}
+.annotation-tooltip.tooltip-right {
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+}
+
+@media (max-width: 640px) {
+  .annotation-tooltip {
+    display: none; /* Hide tooltips on small mobile to avoid viewport overflow, pins remain */
+  }
+}
+
+/* Pro Tip Callout inside Step Card */
+.walkthrough-step-tip {
+  background: var(--bg-body);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+.walkthrough-step-tip svg {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.walkthrough-action-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+.walkthrough-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+.walkthrough-action-btn:hover {
+  gap: 12px;
+  color: var(--primary-hover);
+}
+
