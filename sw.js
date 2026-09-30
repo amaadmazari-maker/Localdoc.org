@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v53-calckeys-walkthroughs';
+const CACHE_NAME = 'localdoc-v54-ukgcse-walkthroughs';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
