@@ -36,16 +36,290 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "PDF Redaction & Data Sanitization: Why Black Boxes Fail and How to Redact Properly",
-    "author": { "@type": "Person", "name": "Amaad Mazari" },
-    "datePublished": "2026-09-04",
-    "publisher": { "@type": "Organization", "name": "LocalDoc" },
-    "description": "Comprehensive security analysis on irreversible document sanitization, font glyph removal, and PDF metadata cleansing."
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF Redaction & Data Sanitization Guide",
+          "item": "https://localdoc.org/blog/document-security-redaction-best-practices.html"
+        }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "PDF Redaction & Data Sanitization: Why Black Boxes Fail & How to Redact Properly",
+      "description": "Comprehensive cybersecurity analysis of irreversible document sanitization, font glyph removal, dual-layer OCR scrubbing, and local in-browser PDF security.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Systems Architect",
+        "url": "https://localdoc.org/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "url": "https://localdoc.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+        }
+      },
+      "datePublished": "2026-09-04T08:00:00+00:00",
+      "dateModified": "2026-09-30T00:00:00+00:00",
+      "mainEntityOfPage": "https://localdoc.org/blog/document-security-redaction-best-practices.html"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Irreversibly Redact and Sanitize Sensitive PDF Documents",
+      "description": "Step-by-step cryptographic protocol for permanently destroying underlying text tokens, scrubbing invisible OCR layers, and sanitizing metadata in browser memory.",
+      "totalTime": "PT1M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc Edit & Sanitize PDF Studio"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Load Confidential Document into Local RAM",
+          "text": "Open LocalDoc Studio and load your sensitive legal or financial PDF into client-side volatile memory with zero server uploads.",
+          "image": "https://localdoc.org/assets/images/guides/redact-step1-load-confidential-document.webp",
+          "url": "https://localdoc.org/blog/document-security-redaction-best-practices.html#step-1-load-confidential-document"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Highlight Sensitive Content & Map Coordinates",
+          "text": "Select personal identifying information (SSNs, banking details, trade secrets). The engine maps bounding coordinates directly to PostScript font stream tokens.",
+          "image": "https://localdoc.org/assets/images/guides/redact-step2-select-sensitive-text-zones.webp",
+          "url": "https://localdoc.org/blog/document-security-redaction-best-practices.html#step-2-select-sensitive-text-zones"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Execute Vector Stream Purge",
+          "text": "The engine permanently deletes Tj and TJ text operators from the content stream and replaces them with solid vector polygons.",
+          "image": "https://localdoc.org/assets/images/guides/redact-step3-execute-vector-stream-purge.webp",
+          "url": "https://localdoc.org/blog/document-security-redaction-best-practices.html#step-3-execute-vector-stream-purge"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Scrub Hidden Metadata & OCR Ghost Layers",
+          "text": "Strip invisible OCR text coordinates behind scanned paper and purge serialized XMP metadata packets, document authors, and change logs.",
+          "image": "https://localdoc.org/assets/images/guides/redact-step4-scrub-metadata-ocr-layers.webp",
+          "url": "https://localdoc.org/blog/document-security-redaction-best-practices.html#step-4-scrub-metadata-ocr-layers"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Re-Serialize Clean Binary & Download",
+          "text": "Rebuild the cross-reference table (XREF) from scratch to eliminate incremental append trails and download your sanitized, tamper-evident PDF.",
+          "image": "https://localdoc.org/assets/images/guides/redact-step5-reserialize-download-sanitized-pdf.webp",
+          "url": "https://localdoc.org/blog/document-security-redaction-best-practices.html#step-5-reserialize-download-sanitized-pdf"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why do black boxes fail to protect sensitive information in PDFs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Placing a black shape over text simply draws a dark rectangle at a higher visual layer (Z-index). The underlying character bytes remain intact within the PostScript stream, allowing anyone to select, copy (Ctrl+C), or search the confidential text."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the dual-layer scanned document trap?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Scanned PDFs consist of two layers: a visible picture of the paper and an invisible OCR text layer underneath. Blacking out the pixels on the picture leaves the invisible OCR text completely intact and extractable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can redacted text be recovered after using LocalDoc?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc performs irreversible byte-level sanitization: the actual character tokens (Tj/TJ) are excised from the PostScript stream, font glyph tables are stripped, and the XREF table is rebuilt from scratch. The deleted data physically ceases to exist in the output file."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #EF4444;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #EF4444;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #EF4444;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -231,14 +505,112 @@
         The entire process completed in <strong>310 milliseconds</strong> inside browser RAM on an off-the-shelf laptop. The resulting sanitized PDF measured <strong>11.80 MB</strong> (a 600 KB reduction achieved by stripping orphaned metadata and unused font subsets). Verification confirmed zero text search matches, zero clipboard extraction, and total ISO 32000-1 compliance with zero network transmission.
       </p>
 
-      <h2>7. Step-by-Step Protocol for Irreversible PDF Sanitization</h2>
-      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Load File in Local Memory:</strong> Open the LocalDoc <a href="../pages/edit-pdf.html" style="color:var(--primary); font-weight:700;">Edit & Sanitize PDF Studio</a> into a client-side WebAssembly buffer.</li>
-        <li><strong>Select Sensitive Content:</strong> Highlight names, figures, or account numbers. Coordinates map to character tokens in the font tables.</li>
-        <li><strong>Execute Vector Stream Purge:</strong> The engine removes the character byte tokens and inserts opaque vector shapes.</li>
-        <li><strong>Scrub Metadata:</strong> Enable metadata sanitization to wipe document author and embedded XMP packets.</li>
-        <li><strong>Re-Serialize and Save:</strong> The PDF is rewritten from scratch to eliminate incremental append trails. Download your sanitized file.</li>
-      </ol>
+      <h2>7. Visual Step-by-Step Protocol for Irreversible PDF Sanitization</h2>
+      <p style="color:var(--text-secondary); line-height:1.7;">
+        Follow this 5-step visual walkthrough to execute true cryptographic byte-level redaction, excise PostScript text streams, neutralize invisible OCR ghost layers, and rebuild clean cross-reference tables in local browser RAM:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-load-confidential-document">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Load Confidential Document into Local RAM</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Open the LocalDoc Studio and load your sensitive legal brief or medical record into browser memory. The document streams directly into volatile RAM with zero bytes uploaded to remote servers.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/redact-step1-load-confidential-document.webp" alt="Load confidential document into LocalDoc browser RAM buffer" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:12%; right:4%; width:44%; height:68%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Document Ingested in RAM</div>
+            <div class="walkthrough-pin" style="top:66%; right:10%;">❷ 0 B Transferred to Network</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Air-Gapped Security: Confidential records never touch third-party cloud infrastructure.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-select-sensitive-text-zones">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Highlight Sensitive Content & Map Coordinates</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Select personal identifying information (names, Social Security numbers, banking details, trade secrets). The engine maps visual bounding boxes directly to internal character tokens in the typography tables.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/redact-step2-select-sensitive-text-zones.webp" alt="Select sensitive text zones and map to PostScript character tokens" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-amber" style="top:26%; right:4%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Sensitive Zones Mapped</div>
+            <div class="walkthrough-pin" style="top:32%; right:8%;">❷ 42 Token Coordinates Bounded</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Precise Target Mapping: Identifies exact byte locations in PostScript stream.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-execute-vector-stream-purge">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Execute Irreversible Vector Stream Excision</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            The sanitization engine excises the actual <code>Tj</code> and <code>TJ</code> character byte tokens from the PostScript stream, replacing them with solid vector shapes. Text selection and clipboard copying are permanently destroyed.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/redact-step3-execute-vector-stream-purge.webp" alt="Permanently purge vector text tokens from PDF PostScript stream" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:26%; right:4%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Text Tokens Excised</div>
+            <div class="walkthrough-pin" style="top:32%; right:8%;">❷ True Byte-Level Destruction</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Irreversible Deletion: Characters physically cease to exist in binary payload.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-scrub-metadata-ocr-layers">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">Scrub Hidden Metadata & Dual-Layer OCR Ghosts</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Scanned documents often hide invisible vector OCR layers beneath paper images. The engine purges these hidden text layers and scrubs embedded XMP packages, revision histories, and author metadata.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/redact-step4-scrub-metadata-ocr-layers.webp" alt="Scrub invisible OCR ghost text and embedded XMP metadata packages" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:40%; right:4%; width:44%; height:30%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ OCR Ghosts Purged</div>
+            <div class="walkthrough-pin" style="top:52%; right:8%;">❷ XMP Metadata Cleaned</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Multi-Layer Scrubbing: Eliminates invisible text coordinates and document author leaks.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-reserialize-download-sanitized-pdf">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Re-Serialize Clean Binary & Download Sanitized PDF</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            To prevent recovery from incremental save trails, the engine completely reconstructs the cross-reference (XREF) table and serializes a clean binary. Download your cryptographically sanitized PDF.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/redact-step5-reserialize-download-sanitized-pdf.webp" alt="Rebuild clean cross-reference table and download sanitized PDF" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:12%; right:4%; width:44%; height:68%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Clean XREF Rebuilt</div>
+            <div class="walkthrough-pin" style="top:74%; right:8%;">❷ Download Sanitized File</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Court-Admissible: Zero incremental save residue, tamper-evident and audit-certified.</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <h2>8. Honest Technical Limitations of In-Browser Redaction</h2>
       <p>
