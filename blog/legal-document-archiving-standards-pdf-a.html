@@ -36,16 +36,290 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "PDF/A Archiving Standards: How to Preserve Legal Contracts for Decades",
-    "author": { "@type": "Person", "name": "Amaad Mazari" },
-    "datePublished": "2026-09-04",
-    "publisher": { "@type": "Organization", "name": "LocalDoc" },
-    "description": "Comprehensive legal engineering guide on ISO 19005 conformance, self-contained font definitions, and digital signatures."
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF/A Legal Archiving Standards",
+          "item": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html"
+        }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "PDF/A Archiving Standards: How to Preserve Legal Contracts for Decades",
+      "description": "Comprehensive legal engineering guide on ISO 19005 conformance, self-contained font definitions, ICC color profiles, and long-term digital preservation in local browser RAM.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Systems Architect",
+        "url": "https://localdoc.org/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "url": "https://localdoc.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+        }
+      },
+      "datePublished": "2026-09-04T08:00:00+00:00",
+      "dateModified": "2026-09-30T00:00:00+00:00",
+      "mainEntityOfPage": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Prepare and Convert Documents to ISO PDF/A Archival Standard",
+      "description": "Step-by-step technical tutorial on preparing legal agreements, deeds, and bonds for ISO 19005 long-term preservation without cloud data exposure.",
+      "totalTime": "PT1M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc PDF Normalization Studio"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Load Contract into Normalization Studio",
+          "text": "Open LocalDoc Studio and load your legal agreement into client-side browser RAM for pre-audit inspection.",
+          "image": "https://localdoc.org/assets/images/guides/pdfa-step1-load-contract-workspace.webp",
+          "url": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html#step-1-load-contract-workspace"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Audit & Embed Vector Font Descriptors",
+          "text": "Inspect all font programs used in headings, body copy, and signature blocks. Ensure full CIDFont glyph subsets are physically embedded into the document stream.",
+          "image": "https://localdoc.org/assets/images/guides/pdfa-step2-audit-font-embedding.webp",
+          "url": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html#step-2-audit-font-embedding"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Sanitize Dynamic Code & JavaScript Actions",
+          "text": "Strip prohibited dynamic elements including interactive form calculator scripts, audio/video streams, and external URL actions.",
+          "image": "https://localdoc.org/assets/images/guides/pdfa-step3-sanitize-javascript-actions.webp",
+          "url": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html#step-3-sanitize-javascript-actions"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Verify Device-Independent ICC Color Profile",
+          "text": "Inject an ISO-compliant OutputIntent dictionary with standard sRGB IEC61966-2.1 ICC color space to prevent monitor color variances.",
+          "image": "https://localdoc.org/assets/images/guides/pdfa-step4-verify-icc-color-profile.webp",
+          "url": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html#step-4-verify-icc-color-profile"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Compile & Export ISO 19005-2 PDF/A Archive",
+          "text": "Validate compliance via veraPDF assertion rules, serialize standardized ISO 16684-1 XMP metadata, and export your tamper-evident PDF/A archive.",
+          "image": "https://localdoc.org/assets/images/guides/pdfa-step5-compile-download-pdfa-archive.webp",
+          "url": "https://localdoc.org/blog/legal-document-archiving-standards-pdf-a.html#step-5-compile-download-pdfa-archive"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between PDF and PDF/A?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Standard PDF allows external font references, dynamic JavaScript, and proprietary encryption—all of which can fail when opened decades later. PDF/A (ISO 19005) enforces strict self-containment: every font glyph, vector outline, and color profile must be physically embedded inside the file, guaranteeing identical rendering forever."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is PDF/A-2b preferred over PDF/A-1b for modern legal contracts?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDF/A-1b is based on legacy PDF 1.4 and strictly prohibits transparency, requiring flattening of drop shadows, signature watermarks, and highlights. PDF/A-2b is based on PDF 1.7 and natively supports alpha transparency, vector watermarks, and JPEG 2000 compression while maintaining 100% visual preservation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can encrypted or password-protected files be converted to PDF/A?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. ISO 19005 explicitly prohibits encryption and password protection because encryption keys, algorithms, and DRM authentication servers can be lost over a 50-year horizon, making archives unrecoverable. Documents must be in cleartext before PDF/A compilation."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -242,14 +516,112 @@
         The entire normalization process completed in <strong>620 milliseconds</strong> inside browser memory on an off-the-shelf laptop. The resulting PDF/A file measured <strong>24.20 MB</strong> (a 37% payload reduction achieved by removing redundant streams and unreferenced object dictionaries). Validation with industry-standard veraPDF compliance engines confirmed 100% pass rates across all PDF/A-2b rule assertions. Zero bytes left the local workstation.
       </p>
 
-      <h2>6. Step-by-Step Guide: How to Prepare Documents for PDF/A Archiving</h2>
-      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Open LocalDoc Studio:</strong> Load your legal contracts into the LocalDoc <a href="../pages/edit-pdf.html" style="color:var(--primary); font-weight:700;">PDF Normalization Workspace</a> in local browser RAM.</li>
-        <li><strong>Audit Font Descriptors:</strong> Ensure all font programs used in headings, body paragraphs, and signature blocks are marked for full embedding.</li>
-        <li><strong>Sanitize Dynamic Content:</strong> Strip out all active JavaScript form fields, automated date calculators, and embedded media clips.</li>
-        <li><strong>Ensure Unencrypted Storage:</strong> Verify documents are stored in unencrypted, cleartext format so future archival readers can parse all object streams without credential dependencies.</li>
-        <li><strong>Compile and Save:</strong> Export your ISO-compliant PDF/A document. Archive the file on write-once media or redundant offline storage.</li>
-      </ol>
+      <h2>6. Visual Step-by-Step Walkthrough: How to Prepare Documents for PDF/A Archiving</h2>
+      <p style="color:var(--text-secondary); line-height:1.7;">
+        Follow this 5-step visual walkthrough to audit font programs, neutralize dynamic scripts, inject standardized ICC profiles, and compile fully compliant ISO 19005-2 PDF/A archives in client RAM:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-load-contract-workspace">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Load Legal Contract into LocalDoc Studio</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Open the LocalDoc Studio and load your corporate agreement or deed into browser RAM. The pre-audit engine immediately scans font dictionaries, stream filters, and object catalogues without uploading data.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdfa-step1-load-contract-workspace.webp" alt="Load legal contract into LocalDoc browser RAM workspace" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:12%; right:4%; width:44%; height:68%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Document Loaded in RAM</div>
+            <div class="walkthrough-pin" style="top:66%; right:10%;">❷ Pre-Audit Conformance Scanner</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Air-Gapped Ingestion: Confidential legal terms remain strictly inside browser memory.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-audit-font-embedding">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Audit & Embed Vector Font Descriptors</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Ensure every font used in body text and signature blocks is physically embedded. The engine compiles complete CIDFont glyph outlines to eliminate missing-font substitution boxes across future operating systems.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdfa-step2-audit-font-embedding.webp" alt="Audit and embed vector font glyphs for PDF/A conformance" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:26%; right:4%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ Font Embedding Verified</div>
+            <div class="walkthrough-pin" style="top:32%; right:8%;">❷ Complete Glyph Subsets Embedded</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Self-Contained Typography: Prevents catastrophic tofu glyph box degradation.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-sanitize-javascript-actions">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Sanitize Dynamic Code & JavaScript Actions</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            ISO 19005 strictly forbids executable code. The engine strips interactive calculation scripts, automated form actions, and external URL handlers, ensuring the archive is safe from software obsolescence.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdfa-step3-sanitize-javascript-actions.webp" alt="Sanitize dynamic JavaScript and executable actions from PDF" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-amber" style="top:40%; right:4%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ JavaScript Purged</div>
+            <div class="walkthrough-pin" style="top:46%; right:8%;">❷ Dynamic Scripts Neutralized</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Archival Security: Prevents script execution vulnerabilities over decades.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-verify-icc-color-profile">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">Verify Device-Independent ICC Color Profile</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Convert device-dependent CMYK and RGB color spaces into an ISO standard <code>OutputIntent</code> dictionary. An embedded sRGB IEC61966-2.1 ICC profile guarantees colors render consistently on any future display.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdfa-step4-verify-icc-color-profile.webp" alt="Inject sRGB ICC color profile into PDF OutputIntent dictionary" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:54%; right:4%; width:44%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ OutputIntent Injected</div>
+            <div class="walkthrough-pin" style="top:60%; right:8%;">❷ sRGB IEC61966-2.1 Calibrated</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Color Consistency: Eliminates color drift across different monitor calibrations.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-compile-download-pdfa-archive">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Compile & Export ISO 19005-2 PDF/A Archive</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            The validator runs 100+ automated veraPDF assertion checks, injects serialized ISO 16684-1 XMP metadata, and exports a pristine, tamper-evident PDF/A-2b archive ready for multi-decade institutional storage.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdfa-step5-compile-download-pdfa-archive.webp" alt="Compile and download ISO 19005-2 compliant PDF/A archive" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:12%; right:4%; width:44%; height:68%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:18%; right:14%;">❶ ISO 19005-2 Validated</div>
+            <div class="walkthrough-pin" style="top:74%; right:8%;">❷ 100% veraPDF Compliant</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Court-Admissible: Tamper-evident, self-contained archive certified for long-term storage.</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <h2>7. Honest Technical Boundaries of In-Browser PDF/A Normalization</h2>
       <p>
