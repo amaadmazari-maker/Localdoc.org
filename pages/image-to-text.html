@@ -389,28 +389,42 @@
 
       <!-- Section 2: Deep Technical Architecture -->
       <section class="tool-guide-section">
-        <h2>Technical Architecture: LSTM Neural Networks via WebAssembly</h2>
-        <p>Traditional web-based OCR tools transmit your sensitive images, invoices, and personal identification to remote cloud clusters (such as Google Cloud Vision API or AWS Textract), exposing private financial and personal details to third-party data pipelines. LocalDoc is fundamentally architected to perform 100% of image normalization and optical character parsing inside your local browser memory space.</p>
+        <h2>Technical Architecture: LSTM Neural Networks &amp; Client-Side WebAssembly OCR</h2>
+        <p>Traditional web-based OCR tools transmit your sensitive invoices, medical records, and personal identification to remote cloud clusters (such as Google Cloud Vision API or AWS Textract), exposing private financial and personal details to third-party data pipelines. LocalDoc is fundamentally engineered to perform 100% of image normalization, binarization, and optical character parsing inside your local browser memory space without emitting a single network packet.</p>
+
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress In-Memory Neural OCR Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
 
         <div class="tool-tech-grid">
           <div class="tool-tech-card">
-            <h3>Canvas Binarization &amp; Otsu Thresholding</h3>
-            <p>Before neural inference begins, the image is rendered onto an off-screen HTML5 Canvas. Each pixel is transformed into 8-bit grayscale luminance using the formula <code>Y = 0.299R + 0.587G + 0.114B</code>. An automated Otsu thresholding algorithm analyzes the histogram variance to divide foreground ink from background paper, eliminating lighting gradients and page discoloration.</p>
+            <h3>Canvas Binarization &amp; Otsu Discriminant Analysis</h3>
+            <p>Before neural inference begins, the image is rendered onto an off-screen HTML5 Canvas. Each pixel is transformed into 8-bit grayscale luminance using the ITU-R BT.601 standard: <code>Y = 0.299R + 0.587G + 0.114B</code>. An automated Otsu thresholding algorithm evaluates the 256-bin grayscale histogram, calculating inter-class variance &sigma;<sub>b</sub><sup>2</sup>(t) = &omega;<sub>0</sub>(t)&omega;<sub>1</sub>(t)[&mu;<sub>0</sub>(t) &minus; &mu;<sub>1</sub>(t)]<sup>2</sup> to determine the optimal binarization threshold <em>t*</em>. This cleanly isolates foreground ink glyphs from background paper noise, shadows, and scanner paper tint.</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>Compiled WASM LSTM Pipeline</h3>
-            <p>Character classification runs via an optimized C++ Tesseract engine compiled directly to WebAssembly (WASM). LocalDoc utilizes a bidirectional Long Short-Term Memory (LSTM) recurrent neural network that evaluates character contextual sequences, recognizing ligatures, diacritics, punctuation, and multi-line paragraph wraps with high statistical fidelity.</p>
+            <h3>Compiled WASM SIMD &amp; Bidirectional LSTM</h3>
+            <p>Character classification runs via an optimized C++ Tesseract engine compiled directly to WebAssembly (WASM) with SIMD vector acceleration. LocalDoc utilizes a bidirectional Long Short-Term Memory (LSTM) recurrent neural network that processes horizontal line slices without brittle character-level pre-segmentation. Forward and backward recurrent hidden state passes evaluate sequential typographical context, recognizing complex ligatures, accented glyphs, mathematical symbols, and multi-line paragraph wraps with high statistical fidelity.</p>
+          </div>
+
+          <div class="tool-tech-card">
+            <h3>CTC Decoding &amp; Word Confidence Metrics</h3>
+            <p>The network applies Connectionist Temporal Classification (CTC) decoding to align continuous frame activations with target character sequences. Each recognized word is accompanied by a normalized confidence score (0.0&ndash;1.0) and precise bounding box spatial coordinates (<code>x0, y0, x1, y1</code>). This spatial layout model enables the engine to preserve indentation, column gutters, and hard line breaks rather than dumping unstructured text.</p>
+          </div>
+
+          <div class="tool-tech-card">
+            <h3>In-Memory OpenXML (.docx) Synthesis</h3>
+            <p>When exporting to Microsoft Word, the engine does not merely concatenate plain text strings. An in-memory OpenXML compiler generates genuine ISO/IEC 29500 packages (<code>word/document.xml</code>, <code>word/styles.xml</code>, <code>[Content_Types].xml</code>) directly inside a compressed PKZip stream in client RAM. The resulting .docx file opens natively in Word, Google Docs, Apple Pages, and LibreOffice with proper typographic runs and paragraph hierarchies.</p>
           </div>
 
           <div class="tool-tech-card">
             <h3>Off-Thread Web Worker Isolation</h3>
-            <p>Intensive neural matrix convolutions are offloaded to an isolated background Web Worker. This isolates the CPU compute cycle from your browser's primary UI thread, preventing frame drops, scroll stutter, or browser freeze dialogs while processing 12-megapixel document scans.</p>
+            <p>Intensive neural matrix convolutions and floating-point dot products are offloaded to an isolated background Web Worker. This isolates CPU-heavy compute cycles from the main browser UI thread, completely eliminating frame drops, scroll stutter, or "Page Unresponsive" dialogs while transcribing multi-megapixel document scans.</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>Zero-Leak Client Memory Lifecycle</h3>
-            <p>Image bitmaps, canvas contexts, and intermediate inference buffers are scoped strictly within ephemeral JavaScript memory closures. Once you clear the workspace or close the browser tab, the memory is instantly reclaimed by browser garbage collection without leaving disk artifacts.</p>
+            <h3>Zero-Leak Client Memory Lifecycle &amp; Canvas Bounds</h3>
+            <p>Image bitmaps, canvas contexts, and intermediate inference buffers are allocated within ephemeral JavaScript closures and detached typed arrays (<code>ArrayBuffer</code>). While desktop Chrome and Edge support up to 4 GB linear memory per worker, mobile WebKit (iOS Safari) restricts single canvas buffers to 16.7 megapixels (4096 &times; 4096 px). LocalDoc automatically computes aspect-preserved bounds to prevent mobile memory eviction. Once your session ends, garbage collection reclaims 100% of memory with zero persistent disk footprint.</p>
           </div>
         </div>
       </section>
@@ -531,9 +545,9 @@
       <h3 class="related-tools-title">Related Document Tools</h3>
       <div class="related-tools-grid">
         <a href="scan.html" class="related-tool-card">
-          <img src="../assets/icons/scan.svg" alt="CamScanner Studio">
+          <img src="../assets/icons/scan.svg" alt="Document Scanner Studio">
           <div>
-            <h4>CamScanner Studio</h4>
+            <h4>Document Scanner Studio</h4>
             <p>Live camera scanner & ID cards</p>
           </div>
         </a>

@@ -354,7 +354,7 @@
 
       <ul class="nav-links">
         <li><a href="../index.html" class="nav-link">All Tools</a></li>
-        <li><a href="scan.html" class="nav-link">CamScanner</a></li>
+        <li><a href="scan.html" class="nav-link">Document Scanner</a></li>
         <li><a href="document-reader.html" class="nav-link active">Document Reader</a></li>
         <li><a href="../blog/index.html" class="nav-link">Blog</a></li>
         <li><a href="../about.html" class="nav-link">About</a></li>
@@ -455,28 +455,42 @@
 
         <!-- Section 2: Deep Technical Architecture -->
         <section class="tool-guide-section">
-          <h2>Technical Architecture: In-Memory Multi-Engine Document Parsing</h2>
-          <p>Traditional web-based document viewers require uploading your proprietary files to remote cloud servers (such as Google Docs Viewer or Microsoft Office Online), where documents are cached on third-party servers. LocalDoc embeds specialized parsing engines directly into client-side JavaScript:</p>
+          <h2>Technical Architecture: Multi-Engine Client-Side Document Parsing &amp; Sandboxing</h2>
+          <p>Traditional web-based document viewers require transmitting your confidential contracts, medical scans, and company spreadsheets to remote cloud servers (such as Google Docs Viewer or Microsoft Office Online), where documents are cached and processed on third-party server farms. LocalDoc embeds specialized, sandboxed client-side parsers directly into your browser runtime:</p>
+
+          <div style="margin: 24px 0;">
+            <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress Document Reader Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+          </div>
 
           <div class="tool-tech-grid">
             <div class="tool-tech-card">
-              <h3>Mozilla PDF.js Vector Pipeline</h3>
-              <p>PDF documents are parsed using Mozilla's open-source PDF.js engine. Raw byte arrays are decoded into typographic font glyphs, vector clipping paths, and bitmap images rendered onto high-resolution HTML5 Canvases with device-pixel-ratio scaling for retina displays.</p>
+              <h3>Mozilla PDF.js Vector Engine &amp; Font Decoders</h3>
+              <p>PDF documents are parsed using Mozilla's open-source PDF.js engine. Raw byte streams are unpacked into indirect object graphs, resolving cross-reference (<code>xref</code>) tables, embedded CMap character tables, and TrueType / CFF font glyph outlines. Vector paths and typography are rasterized onto an HTML5 Canvas scaled to your screen's exact hardware device pixel ratio (<code>window.devicePixelRatio</code>), ensuring crystal-clear sharpness on high-DPI retina screens.</p>
             </div>
 
             <div class="tool-tech-card">
               <h3>Mammoth.js DOCX Semantic Compilation</h3>
-              <p>Microsoft Word <code>.docx</code> files are unzipped in memory to access the internal <code>word/document.xml</code> package. Mammoth compiles raw XML styles into semantic HTML elements (headings, paragraphs, bullet lists, tables), preserving document typography without security vulnerabilities.</p>
+              <p>Microsoft Word <code>.docx</code> archives are uncompressed in memory using pure JavaScript PKZip decoders. The engine parses the internal <code>word/document.xml</code> OpenXML package, mapping runs (<code>&lt;w:r&gt;</code>), paragraph properties (<code>&lt;w:pPr&gt;</code>), tables (<code>&lt;w:tbl&gt;</code>), and numbering hierarchies into sanitized semantic HTML5 elements (<code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;table&gt;</code>) without executing untrusted external scripts.</p>
             </div>
 
             <div class="tool-tech-card">
               <h3>SheetJS In-Memory Spreadsheet Engine</h3>
-              <p>Excel workbooks (<code>.xlsx</code> and <code>.csv</code>) are decompressed and parsed cell-by-cell into typed matrix tables. LocalDoc generates dynamic interactive spreadsheet tabs matching the original workbook's sheet hierarchy, supporting thousands of rows with zero latency.</p>
+              <p>Excel workbooks (<code>.xlsx</code>, <code>.xls</code>, and <code>.csv</code>) are parsed cell-by-cell into a structured memory matrix. LocalDoc constructs dynamic sheet tabs matching the original workbook's sheet hierarchy, supporting thousands of rows with zero latency. Number format masks, accounting currency symbols, and date serial numbers are correctly formatted for instant viewing.</p>
+            </div>
+
+            <div class="tool-tech-card">
+              <h3>Page Virtualization &amp; Canvas Memory Reclamation</h3>
+              <p>To prevent browser memory bloat when viewing 500+ page technical manuals or large blueprints, LocalDoc implements viewport page virtualization. Only visible and adjacent pages are rendered into active memory. When pages scroll out of view, canvas memory buffers are wiped (<code>canvas.width = 0; canvas.height = 0</code>) and temporary blob URLs are immediately revoked via <code>URL.revokeObjectURL()</code>, keeping browser heap usage strictly bounded.</p>
+            </div>
+
+            <div class="tool-tech-card">
+              <h3>DOM Containment &amp; XSS Sandboxing</h3>
+              <p>All rendered document markup is isolated using strict CSS layout containment (<code>contain: content</code>) and rigorous DOM sanitization. Inline script execution is blocked, preventing malicious macros, embedded tracking pixels, or cross-site scripting (XSS) vectors often present in weaponized corporate attachments.</p>
             </div>
 
             <div class="tool-tech-card">
               <h3>Zero Cloud Transmissions &amp; PWA Offline Cache</h3>
-              <p>All parsers run within local browser memory closures. After initial download, our Progressive Web App (PWA) service worker caches all parsing libraries, allowing you to open and view sensitive documents while completely disconnected from the internet.</p>
+              <p>Every parser runs entirely within local browser closures. After your initial page visit, our Progressive Web App (PWA) service worker caches all parser engines locally. You can open and inspect confidential documents on an airplane, in high-security facilities, or during subway commutes with zero cellular or Wi-Fi connectivity.</p>
             </div>
           </div>
         </section>
@@ -587,9 +601,9 @@
           <h3 class="related-tools-title">Related Document Tools</h3>
           <div class="related-tools-grid">
             <a href="scan.html" class="related-tool-card">
-              <img src="../assets/icons/scan.svg" alt="CamScanner Studio" width="40" height="40">
+              <img src="../assets/icons/scan.svg" alt="Document Scanner Studio" width="40" height="40">
               <div>
-                <h4>CamScanner Studio</h4>
+                <h4>Document Scanner Studio</h4>
                 <p>Live camera capture &amp; edge detection</p>
               </div>
             </a>
