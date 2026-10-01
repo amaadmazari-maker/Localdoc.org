@@ -128,7 +128,15 @@
             "name": "What are the ICP file size and background requirements for UAE residence visas?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The background must be pure white. The digital image file size must be strictly between 15 KB and 200 KB in JPEG format. Both ears should be visible if possible, and glasses must not produce any flash reflection."
+              "text": "The background must be pure white (#FFFFFF). The digital image file size must be strictly between 15 KB and 200 KB in JPEG format. Both ears should be visible if possible, and glasses must not produce any flash reflection."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why did the ICP or GDRFA portal reject my photo file size?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The UAE ICP portal automatically rejects files smaller than 15 KB (insufficient biometric resolution) and files larger than 200 KB. LocalDoc's binary search JPEG compressor optimizes your portrait to comfortably sit within the 60 KB to 120 KB range."
             }
           },
           {
@@ -136,7 +144,23 @@
             "name": "Can women wear a hijab and men wear a ghutra in the Emirates ID photo?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, religious headwear such as a hijab or traditional Emirati national dress (Kandura and Ghutra) is permitted provided the entire facial oval from chin to forehead remains clearly visible."
+              "text": "Yes, religious headwear such as a hijab or traditional Emirati national dress (Kandura and Ghutra) is permitted provided the entire facial oval from chin to forehead remains clearly visible without cast shadows."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print a 2-in-1 photocopy of my physical Emirates ID card front and back?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Use our companion National ID Card Studio to align both the front and back of your physical Emirates ID onto a single A4 sheet for bank account opening, Ejari tenancy contracts, and telecom registrations."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my biometric photo uploaded to any external server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. LocalDoc processes all photo resizing, background flattening, and compression entirely in client-side browser RAM. No images or biometric data are transmitted to any cloud server."
             }
           }
         ]
@@ -505,6 +529,24 @@
         </div>
       </div>
 
+      <!-- Deep Technical Architecture: UAE ICP Biometrics & Pure White BG Pipeline -->
+      <div class="tool-tech-card">
+        <h2>Technical Architecture: UAE ICP Biometric Conformance &amp; Pure White Vector Flattening</h2>
+        <p>The UAE Federal Authority for Identity, Citizenship, Customs and Port Security (ICP) operates one of the world's most advanced automated biometric border control and smart services ecosystems. Digital photos submitted via the ICP mobile app or GDRFA web portal undergo automated algorithmic pre-validation before reaching human case officers. LocalDoc implements a deterministic biometric alignment pipeline in client memory:</p>
+
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory UAE ICP Biometric Photo Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>ICP 35 &times; 45 mm Biometric Aspect Geometry:</strong> Under ICP circular regulations, the applicant's face must occupy 70% to 80% of total vertical canvas height (crown of head to lower jaw baseline between 32 mm and 36 mm). LocalDoc locks this exact aspect ratio in client canvas memory, generating <code>413 &times; 531 pixels</code> at 300 DPI for standard applications and <code>827 &times; 1063 pixels</code> at 600 DPI for high-definition consular archives.</li>
+          <li><strong>Pure White (#FFFFFF) Color Flattening &amp; Shadow Rejection:</strong> ICP automated gate scanners immediately reject portraits with off-white, yellowish, or shadowed backgrounds. LocalDoc executes client-side segmentation and background flattening that replaces all ambient backdrop pixels with pure white (#FFFFFF), eliminating wall textures, phone shadows, and color casts while preserving fine facial contours.</li>
+          <li><strong>Strict 15 KB to 200 KB File Size Clamping:</strong> The ICP upload portal enforces rigid byte validation: files under 15 KB are rejected for inadequate biometric resolution, and files exceeding 200 KB trigger upload size errors. LocalDoc's monotonic binary search JPEG compressor converges on the 60&ndash;120 KB sweet spot, guaranteeing instant portal acceptance.</li>
+          <li><strong>Cultural &amp; Religious Garment Conformance:</strong> Emirati national dress (Kandura and Ghutra) and traditional hijabs are fully supported under ICP guidelines, provided the full facial oval from chin tip to forehead and both cheek contours are fully visible without shadows.</li>
+          <li><strong>Private In-Memory Biometric Isolation:</strong> Residency documents, entry visas, and national identity photos contain permanent biometric identifiers. LocalDoc processes every photo inside volatile browser RAM. No images are uploaded to any server, preventing identity cloning and corporate data collection.</li>
+        </ul>
+      </div>
+
       <!-- FAQs -->
       <h2>Frequently Asked Questions About Emirates ID Photos</h2>
       <div class="faq-accordion-box">
@@ -518,14 +560,35 @@
         <details class="faq-accordion-item">
           <summary>Why did the ICP website reject my photo file size?</summary>
           <div class="faq-accordion-answer">
-            <p>The UAE ICP portal rejects photos that are under 15 KB (too low quality for facial recognition) or over 200 KB (too heavy for database storage). LocalDoc balances the file strictly within the safe 30 KB to 100 KB bracket.</p>
+            <p>The UAE ICP portal automatically rejects files smaller than 15 KB (insufficient biometric resolution) and files larger than 200 KB. LocalDoc balances the file strictly within the safe 60 KB to 120 KB bracket, preventing upload failure.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>Can I print a 2-in-1 photocopy of my Emirates ID card front and back?</summary>
+          <summary>Can women wear a hijab and men wear a ghutra in the Emirates ID photo?</summary>
+          <div class="faq-accordion-answer">
+            <p>Yes, religious headwear such as a hijab or traditional Emirati national dress (Kandura and Ghutra) is permitted provided the entire facial oval from chin to forehead remains clearly visible without cast shadows.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>Can I print a 2-in-1 photocopy of my physical Emirates ID card front and back?</summary>
           <div class="faq-accordion-answer">
             <p>Yes. Use our companion <a href="id-photo.html">National ID Card Studio</a> to align the front and back of your physical Emirates ID onto a single A4 page for bank verification, Ejari tenancy contracts, and telecom registrations.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>What are the photo dimensions for Saudi Iqama and Dubai GDRFA visas?</summary>
+          <div class="faq-accordion-answer">
+            <p>Dubai GDRFA residency visas use standard 35 &times; 45 mm on white background. Saudi Arabia Iqama cards require 40 &times; 60 mm (472 &times; 709 px) under 100 KB, and Saudi Umrah/Hajj visas use 2 &times; 2 inches (51 &times; 51 mm) under 100 KB.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>Is my photo uploaded to any external server?</summary>
+          <div class="faq-accordion-answer">
+            <p>No. LocalDoc runs 100% inside your browser's private volatile RAM using HTML5 Canvas. Your personal portrait and identity files are never transmitted to any cloud server or stored in any database.</p>
           </div>
         </details>
       </div>

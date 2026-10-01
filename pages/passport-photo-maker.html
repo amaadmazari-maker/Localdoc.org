@@ -100,18 +100,42 @@
           },
           {
             "@type": "Question",
-            "name": "What is the exact photo and signature size for an Indian PAN card online?",
+            "name": "What is the difference between US 2x2 inch and UK/Schengen 35x45 mm passport photos?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "For Indian PAN card applications on NSDL and UTIITSL portals, photos must be exactly 213 x 213 pixels at 300 DPI and under 30 KB. Signatures must be 400 x 200 pixels and under 12 KB in JPEG format."
+              "text": "US passport photos are square (2x2 inches / 51x51 mm) with a head height ratio between 50% and 69% on pure white background. UK HMPO and European Schengen photos are rectangular (35x45 mm) with head height occupying 70% to 80% (32 to 36 mm) on light gray or off-white background."
             }
           },
           {
             "@type": "Question",
-            "name": "What are the photo dimensions for Russian and South Korean passports?",
+            "name": "Can I wear eyeglasses or sunglasses in an official passport photo?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Russian passports require 35x45 mm with the applicant's face occupying 70% to 80% (30-32 mm) of the total height on a light background. South Korean passports and Alien Registration Cards (ARC) also require 35x45 mm with a 32-36 mm head height on pure white background."
+              "text": "No. Eyeglasses of any kind (prescription glasses, reading glasses, or sunglasses) are prohibited under US Department of State and international ICAO regulations to eliminate flash glare and unobstructed eye landmark detection."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are religious head coverings such as hijabs or turbans permitted in passport photos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Religious headwear (such as a hijab, turban, or yarmulke) is permitted provided the entire facial oval from the bottom of the chin to the top of the forehead and both facial edges remain clearly visible without shadows."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I print a 4x6 inch passport photo sheet at a pharmacy or local print shop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Download the high-resolution 4x6 inch photographic sheet from LocalDoc and order a standard 4x6 inch photo print at any local pharmacy (Walgreens, CVS, Boots) or standard photo printer for pennies. Then cut along the fine scissors guidelines."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does LocalDoc ensure my portrait and biometric data remain private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LocalDoc executes neural segmentation and image cropping entirely within your browser memory using WebAssembly and HTML5 Canvas. Zero photos are sent to any remote server or stored in any database."
             }
           }
         ]
@@ -697,12 +721,8 @@
             <a href="id-photo.html" style="font-weight:700; color:var(--primary); text-decoration:underline;">
               Open CNIC &amp; Global ID Card Studio &rarr;
             </a>
-          </div>4')">
-          <h4>📐 3&times;4 cm</h4>
-          <p>30&times;40mm (ID Photo)</p>
+          </div>
         </div>
-      </div>
-      </div>
 
       <!-- Step 3: Background Color & Face Fit -->
       <div
@@ -1021,6 +1041,24 @@
         </table>
       </div>
 
+      <!-- Deep Technical Architecture: ICAO 9303 Biometrics & Print Geometry -->
+      <div class="tool-tech-card">
+        <h2>Technical Architecture: ICAO 9303 Compliant Biometric Alignment &amp; In-Memory Print Synthesis</h2>
+        <p>Commercial passport photo kiosks and studios charge significant fees for basic cropping and background replacement. LocalDoc provides an automated, deterministic biometric processing pipeline built on international civil aviation standards, executing entirely within your browser's sandboxed memory:</p>
+
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory Biometric Passport Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>ICAO Doc 9303 Biometric Ratio Adherence:</strong> International Machine Readable Travel Documents (MRTD) mandate that the applicant's facial image must occupy between 70% and 80% (32 mm to 36 mm) of the vertical height on 35 &times; 45 mm photos, and 50% to 69% (1 to 1.375 inches) on US 2 &times; 2 inch photos. LocalDoc overlays dynamic canvas vector guidelines calibrated to these precise mathematical ratios to ensure 100% compliance with automated e-Gates and consular scanners.</li>
+          <li><strong>Client-Side Neural Semantic Segmentation (MediaPipe in WebAssembly):</strong> To isolate the subject from complex indoor backgrounds without server roundtrips, LocalDoc uses an in-browser neural segmentation model running over WebAssembly. The model generates a 32-bit floating-point alpha mask in local RAM, allowing instant replacement with pure white (#FFFFFF), off-white (#F1F5F9), or NADRA light blue (#E0F2FE) while preserving delicate hair boundaries.</li>
+          <li><strong>300 DPI Multi-Photo Print Grid Synthesis:</strong> For physical printing at commercial print shops (4 &times; 6 inch or A4 photographic paper), LocalDoc synthesizes a 300 DPI composite raster (<code>1800 &times; 1200 pixels</code> for 4 &times; 6 in). The layout engine centers 6 to 8 photos with equidistant inter-photo gutters and 1-pixel scissor cutting guides, allowing users to print 6 official passport photos on a standard 10&cent; 4&times;6 photo print.</li>
+          <li><strong>Zero Compression Artifacts on Biometric Landmarks:</strong> Lossy compression near the nasal bridge, pupils, or mouth corners can trigger algorithmic rejection by facial recognition systems. LocalDoc generates the single photo export using high-fidelity bicubic interpolation and sub-sampling calibrated to meet strict portal ceilings (e.g. US DS-160 &le; 240 KB, UK HMPO &le; 10 MB, UAE ICP &le; 200 KB) without introducing ringing or blocking artifacts.</li>
+          <li><strong>Absolute Biometric Privacy:</strong> Your face is a permanent biometric identifier. Unlike cloud-based photo generators that ingest and store customer portraits on remote servers, LocalDoc's memory architecture processes every pixel locally in volatile RAM and purges canvas buffers immediately when navigating away.</li>
+        </ul>
+      </div>
+
       <!-- FAQs -->
       <h2>Frequently Asked Questions About Passport Photos</h2>
       <div class="faq-accordion-box">
@@ -1042,11 +1080,32 @@
         </details>
 
         <details class="faq-accordion-item">
+          <summary>What is the difference between US 2x2 inch and UK/Schengen 35x45 mm passport photos?</summary>
+          <div class="faq-accordion-answer">
+            <p>US passport photos are square (2 &times; 2 inches / 51 &times; 51 mm) with a head height ratio between 50% and 69% on a pure white background. UK HMPO and European Schengen photos are rectangular (35 &times; 45 mm) with head height occupying 70% to 80% (32 to 36 mm) on a light gray or off-white background.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>Are religious head coverings such as hijabs or turbans permitted in passport photos?</summary>
+          <div class="faq-accordion-answer">
+            <p>Yes. Religious headwear (such as a hijab, turban, or yarmulke) is permitted provided the entire facial oval from the bottom of the chin to the top of the forehead and both facial edges remain clearly visible without cast shadows.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
           <summary>How do I print the 4x6 inch sheet at a local pharmacy or print shop?</summary>
           <div class="faq-accordion-answer">
             <p>Download the 4x6" Sheet (.jpg) and order a standard 4x6 inch photographic print at any local pharmacy
               (Walgreens, CVS, Boots) or standard photo printer for pennies. Then cut along the fine scissors
               guidelines.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>How does LocalDoc ensure my portrait and biometric data remain private?</summary>
+          <div class="faq-accordion-answer">
+            <p>LocalDoc executes neural segmentation and image cropping entirely within your browser memory using WebAssembly and HTML5 Canvas. Zero photos are sent to any remote server or stored in any database.</p>
           </div>
         </details>
       </div>

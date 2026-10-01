@@ -1092,6 +1092,24 @@
         </div>
       </div>
 
+      <!-- Deep Technical Architecture: In-Memory Coordinate Geometry & Biometrics -->
+      <div class="tool-tech-card" style="margin: 28px 0;">
+        <h2>Technical Architecture: In-Memory Biometric Geometry &amp; 300 DPI Canvas Projection</h2>
+        <p>National identity verification systems and immigration border portals enforce strict dimensional tolerances. Uploading government ID cards or raw selfie portraits to remote cloud converters exposes citizens to identity theft, credential stuffing, and unvetted database harvesting. LocalDoc performs all pixel resampling, aspect ratio clamping, and 300 DPI composite layout assembly entirely inside client browser memory:</p>
+
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory Biometric ID Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>ISO/IEC 7810 ID-1 Physical Coordinate Math:</strong> Standard government identity cards measure 85.60 &times; 53.98 mm (3.370 &times; 2.125 inches) with a 3.18 mm corner radius. At professional 300 DPI print fidelity, LocalDoc maps these physical dimensions to exactly <code>1011 &times; 638 pixels</code> (<code>width = (85.60 / 25.4) &times; 300</code>). This ensures barcode scanners, MRZ optical readers, and bank tellers scan the printed output without scaling distortion.</li>
+          <li><strong>2-in-1 A4 Sheet Layout &amp; Attestation Buffer:</strong> To synthesize a legal photocopy sheet, LocalDoc allocates an off-screen HTML5 Canvas sized to international A4 dimensions at 300 DPI (<code>2480 &times; 3508 pixels</code>). The front and back card images are positioned symmetrically along the vertical axis with exact margins, leaving an uncropped 600-pixel lower margin dedicated to bank attestation stamps, officer signatures, and thumb impressions.</li>
+          <li><strong>ICAO 9303 Biometric Portrait Geometry:</strong> For passport and visa photos, the engine enforces international civil aviation standards (ICAO Doc 9303). The head height from the bottom of the chin to the crown must occupy between 70% and 80% of the total frame height (31&ndash;36 mm on a 45 mm frame), with eye height positioned between 56% and 69% from the bottom edge.</li>
+          <li><strong>High-Fidelity Canvas Bicubic Downsampling:</strong> High-megapixel smartphone photos (12 MP to 48 MP) are downsampled through multi-step canvas scaling buffers, preventing spatial moir&eacute; patterns, pixel stepping, and edge distortion on microprinted ID text and biometric facial contours.</li>
+          <li><strong>Strict Client-Side Memory Isolation:</strong> All photo cropping, binarization, and PDF sheet synthesis run in isolated JavaScript closures. When your download completes, temporary object URLs are revoked via <code>URL.revokeObjectURL()</code>, ensuring sensitive biographical information is instantly wiped from RAM without persistent disk traces.</li>
+        </ul>
+      </div>
+
       <div class="tool-steps-grid">
         <div class="tool-step-card">
           <div class="tool-step-num">1</div>
