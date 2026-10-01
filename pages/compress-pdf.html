@@ -110,18 +110,18 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "Does compressing a PDF degrade text quality or make it blurry?",
+            "name": "Does compressing a PDF degrade text sharpness or break searchable text?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. LocalDoc preserves vector text and font glyphs losslessly. Text is rendered using mathematical vector coordinates that maintain 100% sharpness regardless of compression level."
+              "text": "No. Text in compliant PDF documents is stored as mathematical Bézier vector instructions and embedded font glyph subsets, not raster pixels. Our compression engine selectively downsamples raster image dictionaries (/Subtype /Image) while leaving text streams, font tables (TrueType / CFF), and underlying invisible OCR search layers intact."
             }
           },
           {
             "@type": "Question",
-            "name": "Why did my PDF file size barely decrease after compression?",
+            "name": "Why did my PDF size barely drop (or drop by less than 5%)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "If your PDF consists entirely of vector text, monochromatic lines, or was previously optimized, there are few redundant raster bitmaps to downsample. High-resolution scanned documents typically achieve 70% to 85% reductions."
+              "text": "PDF compression relies on eliminating redundancy. If your source document was generated from modern vector software (like a compiled LaTeX thesis, raw source code printout, or financial spreadsheet) without embedded high-res photos, there are virtually no raster pixels to downsample. Recompressing cannot magically remove necessary structural bytes without corrupting content."
             }
           },
           {
@@ -208,8 +208,8 @@
 
       <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
       <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
-        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">Drop your PDF into LocalDoc, pick your compression level or exact KB target, and click Compress:</strong> Drop your PDF into LocalDoc, pick your compression level or exact KB target, and click Compress. WebAssembly stream defragmentation reduces file size in browser RAM with zero server uploads.
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.65;">
+          <strong style="color:var(--text-primary);">How client-side PDF compression works in LocalDoc:</strong> Select your PDF, choose a target DPI tier (72, 150, or 200 DPI) or exact KB ceiling (&le; 200 KB), and click Compress. The in-browser WebAssembly engine re-indexes cross-reference streams and re-quantizes embedded raster bitmaps directly in your device's private memory heap &mdash; shrinking file size by up to 80% without transmitting a single byte to an external cloud server.
         </p>
       </div>
 
@@ -407,15 +407,20 @@
       <!-- 4. Deep Technical Architecture (ISO 32000-1 & FlateDecode) -->
       <div class="tool-tech-card">
         <h2>In-Depth Technical Architecture: How LocalDoc Compresses PDFs in RAM</h2>
-        <p>Portable Document Format (PDF) files standardized under <strong>ISO 32000-1</strong> contain diverse content streams, including vector paths, TrueType/OpenType font descriptors, metadata dictionaries, and embedded raster bitmap objects. In conventional office software, PDF exports regularly introduce severe data redundancy: uncompressed object streams, duplicate color space palettes, high-resolution 600 DPI print-intent assets, and unused font character maps.</p>
+        <p>Portable Document Format (PDF) specifications under <strong>ISO 32000-1</strong> dictate an indirect object graph indexed by a cross-reference table (<code>xref</code>) or cross-reference stream (introduced in PDF 1.5). Most desktop exporters (Microsoft Word, Adobe InDesign, scanner drivers) introduce massive data overhead: uncompressed content streams, unreferenced object revisions, duplicate <code>/ICCBased</code> color profile packets, and high-frequency 600 DPI raster artwork where 150 DPI would be optically indistinguishable.</p>
         
-        <p>LocalDoc leverages WebAssembly and optimized JavaScript binary parsers to inspect each cross-reference table (XRef table) and indirect object dictionary without transmitting a single byte across the network. Here is the technical breakdown of our optimization pipeline:</p>
+        <p>LocalDoc uses a sandboxed WebAssembly execution thread and typed array binary parsers (<code>Uint8Array</code>) to traverse the document tree entirely within your browser's private V8 memory heap. Not a single packet leaves your machine. Here is the exact low-level pipeline:</p>
 
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Raster Stream Resampling (DCTDecode & FlateDecode):</strong> High-resolution embedded photographs and scanned artwork are isolated from content streams. Depending on your chosen compression preset, bitmaps are downsampled to target resolutions (72 DPI for web/email or 150 DPI for archival display) and re-encoded using progressive DCT compression parameters.</li>
-          <li><strong>Orphaned Stream & Metadata Garbage Collection:</strong> Multi-revision PDF files accumulate orphaned versions, private application tags (such as Adobe Illustrator or CorelDraw metadata), and redundant XML packets. LocalDoc strips unreferenced objects and rebuilds a streamlined XRef table.</li>
-          <li><strong>Stream Defragmentation:</strong> Text elements, vector drawing paths, and shading patterns are compressed using RFC 1951 Deflate algorithms. Redundant whitespace and carriage returns in object definition bodies are completely eliminated.</li>
-          <li><strong>Zero-Upload Memory Isolation:</strong> All calculations execute in a sandboxed client thread. Data buffers are allocated as typed arrays (<code>Uint8Array</code>) and exported via ephemeral object URLs (<code>blob:</code> URI), which are garbage collected as soon as the session closes.</li>
+        <div style="margin: 20px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress Client Memory Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>DCT Stream Re-Quantization &amp; Color Space Guarding:</strong> Embedded raster bitmaps (<code>/Subtype /Image</code>) are isolated from content dictionaries. For continuous-tone JPEG streams (<code>/DCTDecode</code>), we re-quantize the 8&times;8 Discrete Cosine Transform high-frequency matrix coefficients. Crucially, we inspect the color space descriptor: <code>/DeviceRGB</code> and <code>/DeviceCMYK</code> channels are preserved with their respective gamma curves to prevent muddy, desaturated print-proof shifts on official contracts.</li>
+          <li><strong>Lossless Vector Font &amp; Glyph Outline Preservation:</strong> Vector typography is never rasterized. Embedded TrueType (<code>/FontFile2</code>) and Compact Font Format CFF (<code>/FontFile3</code>) streams contain cubic Bézier coordinate instructions. LocalDoc strips unreferenced character glyphs from the font subset dictionary while leaving text geometry mathematically crisp at infinite zoom.</li>
+          <li><strong>Object Stream De-duplication &amp; Garbage Collection:</strong> Documents edited across multiple software revisions frequently leave dangling unreferenced objects (orphaned revisions, thumbnail caches, and legacy Adobe Illustrator application metadata). LocalDoc performs mark-and-sweep object garbage collection, re-packs loose indirect dictionaries into compressed object streams (<code>/ObjStm</code>), and regenerates a contiguous binary <code>/XRef</code> stream.</li>
+          <li><strong>Deflate Stream Recompression (RFC 1951):</strong> Content stream operators (<code>cm</code> coordinate matrices, <code>BT...ET</code> text blocks, and vector clipping paths) are re-deflated using maximum window search bounds, squeezing redundant whitespace and carriage returns out of structural bodies.</li>
+          <li><strong>Hardware Memory Safety &amp; Browser Heap Bounds:</strong> Processing massive documents inside client RAM is governed by device memory ceilings. While 64-bit desktop Chrome and Edge allocate up to 2&ndash;4 GB per tab, iOS Safari aggressively throttles single-page canvas buffers at approximately 1.2 GB to 1.5 GB. If you are compressing an oversized architectural CAD export (&gt; 400 MB) on an iPad or iPhone, we recommend splitting the document into smaller page bundles first to prevent the browser engine from terminating the tab.</li>
         </ul>
       </div>
 
@@ -466,16 +471,16 @@
       <h2>Common Practical Questions & Technical Guidance</h2>
       <div class="faq-accordion-box">
         <details class="faq-accordion-item" open>
-          <summary>Does compressing a PDF degrade text quality or make it blurry?</summary>
+          <summary>Does compressing a PDF degrade text sharpness or break searchable text?</summary>
           <div class="faq-accordion-answer">
-            <p>No. LocalDoc preserves vector text and font glyphs losslessly. Text in PDFs is rendered using mathematical vector coordinates, which do not lose sharpness regardless of compression level. Only embedded bitmap images (like scanned pages or photos) are optimized according to the selected DPI preset.</p>
+            <p>No. Text in compliant PDF documents is stored as mathematical Bézier vector instructions and embedded font glyph subsets, not raster pixels. Our compression engine selectively downsamples raster image dictionaries (<code>/Subtype /Image</code>) while leaving text streams, font tables (TrueType / CFF), and underlying invisible OCR search layers intact. You can zoom to 800% and text will remain razor sharp.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>Why did my PDF file size barely decrease after compression?</summary>
+          <summary>Why did my PDF size barely drop (or drop by less than 5%)?</summary>
           <div class="faq-accordion-answer">
-            <p>If your PDF is already composed purely of vector text, monochromatic lines, or was previously compressed with modern Flate/DCT algorithms, there is little redundant bitmap data left to strip. For documents consisting primarily of high-resolution camera scans, size reductions typically exceed 70% to 85%.</p>
+            <p>PDF compression relies on eliminating redundancy. If your source document was generated from modern vector software (like a compiled LaTeX thesis, raw source code printout, or financial spreadsheet) without embedded high-res photos, there are virtually no raster pixels to downsample. Furthermore, if your PDF was already optimized using JBIG2 monochrome encoding or tight Flate dictionaries, recompressing cannot magically remove necessary structural bytes without corrupting content.</p>
           </div>
         </details>
 

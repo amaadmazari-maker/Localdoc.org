@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 480" width="100%" height="100%" style="background: #0B1120; border-radius: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="gradPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="gradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38BDF8"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#EF4444"/>
+    </marker>
+  </defs>
+
+  <!-- Background Grid -->
+  <rect width="920" height="480" fill="url(#grid)" rx="16"/>
+  <rect x="1" y="1" width="918" height="478" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" rx="15"/>
+
+  <!-- Title Badge & Header -->
+  <g transform="translate(36, 30)">
+    <rect x="0" y="0" width="168" height="24" rx="12" fill="rgba(16, 185, 129, 0.15)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1"/>
+    <circle cx="12" cy="12" r="4" fill="#10B981"/>
+    <text x="24" y="16" fill="#34D399" font-size="11" font-weight="700" letter-spacing="0.5">LOCAL RAM ISOLATION</text>
+    
+    <text x="0" y="46" fill="#F8FAFC" font-size="18" font-weight="800">Zero-Egress Client Memory Architecture</text>
+    <text x="0" y="64" fill="#94A3B8" font-size="12">Hardware RAM allocation pipeline vs. Remote Cloud Transmission</text>
+  </g>
+
+  <!-- Outer Safe Sandbox Boundary: Device Local RAM -->
+  <rect x="36" y="110" width="580" height="330" rx="14" fill="url(#gradDark)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="54" y="134" fill="#38BDF8" font-size="11" font-weight="700" letter-spacing="1">CLIENT HOST SANDBOX (BROWSER PROCESS / V8 HEAP)</text>
+
+  <!-- Stage 1: Document Ingestion -->
+  <g transform="translate(60, 155)">
+    <rect width="140" height="100" rx="10" fill="#1E293B" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    <rect x="14" y="14" width="28" height="28" rx="6" fill="rgba(56, 189, 248, 0.15)"/>
+    <text x="22" y="33" fill="#38BDF8" font-size="16">📄</text>
+    <text x="14" y="60" fill="#F8FAFC" font-size="13" font-weight="700">Input Document</text>
+    <text x="14" y="76" fill="#94A3B8" font-size="10">Local File / Camera</text>
+    <text x="14" y="89" fill="#64748B" font-size="9" font-family="monospace">FileReader API</text>
+  </g>
+
+  <!-- Flow 1 to 2 -->
+  <path d="M 200 205 L 235 205" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+  <text x="202" y="198" fill="#94A3B8" font-size="9" font-family="monospace">0.1ms</text>
+
+  <!-- Stage 2: Memory Buffer -->
+  <g transform="translate(245, 155)">
+    <rect width="160" height="100" rx="10" fill="#1E293B" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1"/>
+    <rect x="14" y="14" width="28" height="28" rx="6" fill="rgba(16, 185, 129, 0.15)"/>
+    <text x="20" y="33" fill="#10B981" font-size="14">🔒</text>
+    <text x="14" y="60" fill="#F8FAFC" font-size="13" font-weight="700">ArrayBuffer</text>
+    <text x="14" y="76" fill="#34D399" font-size="10">Ephemeral Uint8Array</text>
+    <text x="14" y="89" fill="#64748B" font-size="9" font-family="monospace">Isolated in RAM</text>
+  </g>
+
+  <!-- Flow 2 to 3 -->
+  <path d="M 405 205 L 440 205" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+  <text x="408" y="198" fill="#94A3B8" font-size="9" font-family="monospace">Zero-Copy</text>
+
+  <!-- Stage 3: WebAssembly & Canvas Core Engine -->
+  <g transform="translate(450, 155)">
+    <rect width="145" height="100" rx="10" fill="#1E293B" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1"/>
+    <rect x="14" y="14" width="28" height="28" rx="6" fill="rgba(168, 85, 247, 0.15)"/>
+    <text x="21" y="33" fill="#C084FC" font-size="14">⚙️</text>
+    <text x="14" y="60" fill="#F8FAFC" font-size="13" font-weight="700">Wasm / Canvas</text>
+    <text x="14" y="76" fill="#C084FC" font-size="10">Client Worker Loop</text>
+    <text x="14" y="89" fill="#64748B" font-size="9" font-family="monospace">SIMD / Hardware</text>
+  </g>
+
+  <!-- Loop back to Blob & Export (Stage 4) -->
+  <path d="M 522 255 L 522 305 L 340 305" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)" fill="none"/>
+  <text x="350" y="322" fill="#34D399" font-size="10" font-weight="600">Local Stream Reconstruction</text>
+
+  <!-- Stage 4: Output Blob -->
+  <g transform="translate(170, 275)">
+    <rect width="160" height="75" rx="10" fill="#1E293B" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1.5"/>
+    <text x="14" y="28" fill="#34D399" font-size="12" font-weight="700">Secure Blob URL</text>
+    <text x="14" y="46" fill="#F8FAFC" font-size="11">blob:https://localdoc.org/...</text>
+    <text x="14" y="62" fill="#94A3B8" font-size="9">Revoked via URL.revokeObjectURL()</text>
+  </g>
+
+  <!-- Flow to Local Storage Download -->
+  <path d="M 170 312 L 115 312 L 115 370" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)" fill="none"/>
+
+  <!-- Direct Save -->
+  <g transform="translate(60, 375)">
+    <rect width="160" height="50" rx="8" fill="rgba(16, 185, 129, 0.15)" stroke="#10B981" stroke-width="1"/>
+    <text x="14" y="24" fill="#34D399" font-size="11" font-weight="700">⬇️ Save to Local Disk</text>
+    <text x="14" y="40" fill="#F8FAFC" font-size="10">Native OS File System (0 Network)</text>
+  </g>
+
+  <!-- Right Side: The Network Boundary (Blocked) -->
+  <g transform="translate(640, 110)">
+    <rect width="245" height="330" rx="14" fill="#111827" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1"/>
+    
+    <!-- Red Alert Header -->
+    <rect x="16" y="16" width="213" height="32" rx="6" fill="rgba(239, 68, 68, 0.12)" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1"/>
+    <text x="30" y="36" fill="#EF4444" font-size="11" font-weight="700">🚫 EXTERNAL CLOUD EGRESS</text>
+
+    <!-- Blocked Cloud Details -->
+    <text x="16" y="76" fill="#F8FAFC" font-size="13" font-weight="700">Conventional Cloud SaaS</text>
+    <text x="16" y="94" fill="#94A3B8" font-size="11">Typical online PDF / scanner sites</text>
+    <text x="16" y="108" fill="#94A3B8" font-size="11">upload your files over WAN:</text>
+
+    <g transform="translate(16, 122)">
+      <rect width="213" height="42" rx="6" fill="#1F2937" stroke="rgba(255,255,255,0.06)"/>
+      <text x="12" y="18" fill="#E2E8F0" font-size="11" font-weight="600">Remote AWS / S3 Ingestion</text>
+      <text x="12" y="32" fill="#EF4444" font-size="10">⚠️ Third-party server logging risk</text>
+    </g>
+
+    <g transform="translate(16, 172)">
+      <rect width="213" height="42" rx="6" fill="#1F2937" stroke="rgba(255,255,255,0.06)"/>
+      <text x="12" y="18" fill="#E2E8F0" font-size="11" font-weight="600">Remote Ghostscript / Python</text>
+      <text x="12" y="32" fill="#EF4444" font-size="10">⏱️ Server network latency queue</text>
+    </g>
+
+    <!-- LocalDoc Protection Barrier -->
+    <g transform="translate(16, 226)">
+      <rect width="213" height="88" rx="8" fill="rgba(16, 185, 129, 0.08)" stroke="rgba(16, 185, 129, 0.25)"/>
+      <text x="12" y="20" fill="#34D399" font-size="11" font-weight="700">🛡️ LocalDoc CSP Guarantee:</text>
+      <text x="12" y="38" fill="#E2E8F0" font-size="10">• 0 bytes egress transmission</text>
+      <text x="12" y="53" fill="#E2E8F0" font-size="10">• Isolated browser V8 memory</text>
+      <text x="12" y="68" fill="#E2E8F0" font-size="10">• Ephemeral blob garbage collection</text>
+      <text x="12" y="83" fill="#E2E8F0" font-size="10">• Full PWA offline execution</text>
+    </g>
+  </g>
+
+  <!-- Red Blocked Barrier Connection -->
+  <path d="M 325 155 L 325 130 L 640 130" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+  <circle cx="635" cy="130" r="10" fill="#EF4444"/>
+  <text x="630" y="134" fill="#FFFFFF" font-size="12" font-weight="900">&times;</text>
+</svg>
