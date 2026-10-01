@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>CamScanner Online Free &mdash; Scan to PDF in Browser | LocalDoc</title>
-  <meta name="description" content="Free CamScanner web tool: Scan documents, receipts, and IDs with phone camera. Auto 4-corner crop, shadow removal, and 300 DPI A4 PDF export in local RAM.">
+  <title>Document Scanner Online Free &mdash; CamScanner Alternative | LocalDoc</title>
+  <meta name="description" content="Free client-side document scanner & CamScanner alternative. Digitize contracts, receipts, and IDs into crisp 300 DPI PDFs using 8-DOF homography and adaptive thresholding in RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0D9488">
@@ -28,14 +28,136 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="CamScanner Online Free &mdash; Scan to PDF in Browser | LocalDoc">
-  <meta property="og:description" content="Scan paperwork, receipts, contracts, and study notes with 4-corner auto edge detection, shadow removal, and instant in-browser PDF reader viewing. 100% private in browser RAM.">
+  <meta property="og:title" content="Document Scanner Online Free &mdash; CamScanner Alternative | LocalDoc">
+  <meta property="og:description" content="Digitize paperwork, receipts, contracts, and IDs into laser-sharp 300 DPI PDFs. 8-DOF homography edge rectification and adaptive shadow removal in local RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/scan.html">
   <meta property="og:image" content="https://localdoc.org/assets/images/scan-3d.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CamScanner Online Free &mdash; Scan to PDF in Browser | LocalDoc">
-  <meta name="twitter:description" content="Free CamScanner web tool: Scan documents, receipts, and IDs with phone camera. Auto 4-corner crop, shadow removal, and 300 DPI A4 PDF export in local RAM.">
+  <meta name="twitter:title" content="Document Scanner Online Free &mdash; CamScanner Alternative | LocalDoc">
+  <meta name="twitter:description" content="Free client-side document scanner & CamScanner alternative. Digitize contracts, receipts, and IDs into crisp 300 DPI PDFs using 8-DOF homography and adaptive thresholding in RAM.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/scan-3d.webp">
+
+  <!-- Structured JSON-LD Schema (Breadcrumbs, SoftwareApp, HowTo, FAQ) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Tools",
+            "item": "https://localdoc.org/#tools-grid"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Document Scanner",
+            "item": "https://localdoc.org/pages/scan.html"
+          }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "LocalDoc PDF Camera Studio",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Client-side document scanner and CamScanner alternative with 4-corner homography perspective correction, adaptive shadow removal, and zero server uploads."
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Scan Documents, Receipts & IDs to PDF in Your Browser",
+        "description": "Step-by-step guide to digitizing paper documents into clean 300 DPI PDFs using client-side computer vision in device RAM.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Capture or Import",
+            "text": "Click the camera button to launch your device lens, or drag and drop existing image files from your computer or phone gallery."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pinpoint Document Boundaries",
+            "text": "Drag the 4 corner handles to match the outer paper edges. The magnifying loupe shows exact sub-pixel positioning."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Choose Document Filter",
+            "text": "Select Magic Color (for contracts with color stamps and signatures), Black & White (for high-contrast document binarization), or Grayscale."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Batch Multi-Page Workflows",
+            "text": "Click Add Page to capture multiple pages sequentially into an organized document reel."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Export 300 DPI PDF",
+            "text": "Click Download PDF to assemble a clean, compact, watermark-free PDF ready for emailing or portal submission."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does this scanner add any watermarks to exported PDF files?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. LocalDoc exports 100% clean, watermark-free PDFs and JPEGs suitable for legal contracts, court submissions, and university applications."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the perspective correction work without cloud servers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The tool uses an 8-Degree-of-Freedom (8-DOF) Projective Homography algorithm running directly on your CPU/GPU via HTML5 Canvas and typed arrays. By tracking 4 corner pins, it solves the 3x3 transformation matrix to rectify tilted angles into a flat rectangular plane in milliseconds."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I scan both sides of a National Identity Card (CNIC / Driver's License)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Capture the front and back sides sequentially, and export as a single multi-page PDF or use our dedicated CNIC & ID Card Studio tool to align both sides on a single A4 photocopy sheet."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What lighting conditions produce the highest quality scans?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For sharpest OCR text and clean binarization, place documents on a flat, contrasting surface under balanced overhead lighting. Avoid strong point-source lighting that casts harsh phone shadows."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my scanned document uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Never. All image buffers, pixel transformations, and PDF compilations execute 100% inside your client device's browser memory. Zero bytes leave your machine."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1343,80 +1465,102 @@
         </a>
       </div>
     </section>
-    <!-- Comprehensive CamScanner Web Engineering & Usage Documentation -->
+    <!-- Comprehensive PDF Camera Studio Engineering & Usage Documentation -->
     <section class="cs-documentation-section" style="max-width:980px; margin:48px auto 20px; padding:0 16px;">
       <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:18px; padding:36px; box-shadow:var(--shadow-sm);">
-        <div class="tool-workspace-badge" style="background:rgba(13, 148, 136, 0.12); color:var(--cs-teal); border-color:rgba(13, 148, 136, 0.3); margin-bottom:12px;">CamScanner Web Architecture &amp; Guide</div>
-        <h2 style="font-size:1.85rem; font-weight:900; color:var(--text-primary); margin-bottom:12px; letter-spacing:-0.02em;">How to Scan Documents, Receipts &amp; IDs to PDF in Your Browser</h2>
+        <div class="tool-workspace-badge" style="background:rgba(13, 148, 136, 0.12); color:var(--cs-teal); border-color:rgba(13, 148, 136, 0.3); margin-bottom:12px;">Computer Vision Pipeline &amp; Architecture</div>
+        <h2 style="font-size:1.85rem; font-weight:900; color:var(--text-primary); margin-bottom:12px; letter-spacing:-0.02em;">How LocalDoc Rectifies &amp; Scans Documents in Device RAM</h2>
         <p style="font-size:1.02rem; color:var(--text-secondary); line-height:1.65; margin-bottom:28px;">
-          LocalDoc CamScanner Web provides an enterprise-grade mobile document scanning studio that operates 100% inside your client-side browser memory. Whether you need to digitize signed legal contracts, tax receipts, classroom study notes, or government identity cards, our WebAssembly pipeline delivers crystal-clear 300 DPI A4 PDFs without requiring app installations, subscriptions, or cloud uploads.
+          LocalDoc Document Scanner provides an in-browser computer vision studio engineered as an open, private alternative to closed commercial scanning apps. Whether you are digitizing multi-page signed legal contracts, tax receipts, or handwritten study notes, our client-side matrix algorithms rectify lens tilt, eliminate non-uniform lighting gradients, and export crisp 300 DPI A4 PDFs &mdash; with zero bytes transmitted to remote servers.
         </p>
+
+        <!-- Technical Architecture Card with Diagram -->
+        <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:32px;">
+          <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">Computer Vision Pipeline: Homography &amp; Adaptive Filtering</h3>
+          <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.7; margin-bottom:16px;">
+            When you photograph a flat document at an oblique angle, the rectangular page is projected as an irregular quadrilateral due to perspective distortion. LocalDoc applies an <strong>8-Degree-of-Freedom (8-DOF) Projective Homography</strong> transformation:
+          </p>
+
+          <div style="margin: 18px 0 22px;">
+            <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress Client Memory Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+          </div>
+
+          <ul style="margin: 0 0 16px 20px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.75;">
+            <li><strong>Perspective Rectification ($H$ Matrix):</strong> By tracking the 4 corner coordinates $(x_i, y_i)$, the engine solves a system of 8 linear equations via Gaussian elimination, yielding the $3\times3$ transformation matrix $H$. The warped quadrilateral is backward-mapped onto an orthogonal A4 coordinate grid using bilinear pixel interpolation, eliminating keystoning without pixel loss.</li>
+            <li><strong>Adaptive Gaussian Binarization:</strong> Smartphone cameras inevitably cast hand shadows and register ambient tungsten/LED color casts. Rather than applying a naive global threshold (which turns shadowed text pitch black), our pipeline calculates a local sliding window mean $\mu_W(x,y)$ with Gaussian weighting. Pixels darker than their immediate background neighborhood are isolated as crisp ink strokes, while the paper background is normalized to clean white.</li>
+            <li><strong>Hardware Sensor Realities &amp; Optical Limits:</strong> Real-world caveat: software perspective correction cannot reconstruct pixels lost to severe camera motion blur or low-light sensor noise (high ISO grain). For optimal OCR legibility and legal archiving, hold your camera parallel to the document under diffuse, direct lighting.</li>
+          </ul>
+        </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px; margin-bottom:36px;">
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:20px;">
             <div style="font-size:1.5rem; margin-bottom:8px;">🎯 4-Corner Homography Crop</div>
             <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-              Automatically detects document contours on textured surfaces. Interactive corner handles allow manual micro-adjustments with real-time perspective quadrilateral warping back to a flat rectangular plane.
+              Precision quadrilateral warping maps arbitrary camera angles back to a true rectangular A4 or US Letter plane. Micro-adjustment handles enable sub-pixel corner alignment with loupe magnification.
             </p>
           </div>
 
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:20px;">
-            <div style="font-size:1.5rem; margin-bottom:8px;">✨ Magic Color &amp; Shadow Removal</div>
+            <div style="font-size:1.5rem; margin-bottom:8px;">✨ Adaptive Shadow Removal</div>
             <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-              Advanced pixel-level adaptive thresholding algorithms strip smartphone hand shadows, correct ambient yellow lighting, and boost text contrast to laser-printer clarity in black &amp; white or vibrant color.
+              Local neighborhood thresholding eliminates mobile hand shadows and desk glare without clipping high-frequency pen strokes, signatures, or official notary stamps.
             </p>
           </div>
 
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:20px;">
-            <div style="font-size:1.5rem; margin-bottom:8px;">🔒 100% Local RAM Privacy</div>
+            <div style="font-size:1.5rem; margin-bottom:8px;">🔒 In-Memory Canvas Sandbox</div>
             <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-              Unlike commercial scanning apps that transmit your sensitive financial receipts and passports to remote cloud servers, LocalDoc processes every single pixel locally on your CPU/GPU with zero network egress.
+              All canvas image manipulations run in your browser thread. No image buffers are saved to remote disks or harvested for advertising training sets.
             </p>
           </div>
         </div>
 
         <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">5 Steps to Perfect Digital Scans</h3>
         <ol style="margin-left:20px; line-height:1.8; color:var(--text-secondary); font-size:0.95rem; margin-bottom:32px;">
-          <li><strong>Capture or Import:</strong> Click the floating camera button to launch your device camera, or drag and drop existing photos from your desktop or gallery.</li>
-          <li><strong>Adjust Perspective Corners:</strong> Move the 4 circular corner pins to align precisely with the paper boundaries of your contract or book page.</li>
-          <li><strong>Apply Enhancement Filter:</strong> Select from <em>Magic Color</em> (optimized for colored charts and stamps), <em>Black &amp; White</em> (sharp text binarization), or <em>Grayscale</em>.</li>
-          <li><strong>Batch Multi-Page Documents:</strong> Click "Add Page" to capture multiple pages sequentially and reorder them intuitively.</li>
-          <li><strong>Export Pristine PDF:</strong> Click "Download PDF" to instantly compile a standards-compliant, compact 300 DPI A4 document ready for emailing or portal submission.</li>
+          <li><strong>Capture or Import:</strong> Click the camera button to launch your device lens, or drag and drop existing image files from your computer or phone gallery.</li>
+          <li><strong>Pinpoint Document Boundaries:</strong> Drag the 4 corner handles to match the outer paper edges. The magnifying loupe shows exact sub-pixel positioning.</li>
+          <li><strong>Choose Document Filter:</strong> Select <em>Magic Color</em> (for contracts with color stamps and signatures), <em>Black &amp; White</em> (for high-contrast document binarization), or <em>Grayscale</em>.</li>
+          <li><strong>Batch Multi-Page Workflows:</strong> Click "Add Page" to capture multiple pages sequentially into an organized document reel.</li>
+          <li><strong>Export 300 DPI PDF:</strong> Click "Download PDF" to assemble a clean, compact, watermark-free PDF ready for emailing or portal submission.</li>
         </ol>
 
-        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">CamScanner Web vs. Traditional Cloud Scanners</h3>
-        <div style="overflow-x:auto; margin-bottom:32px;">
+        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">LocalDoc vs. Proprietary Cloud Scanning Apps</h3>
+        <div style="overflow-x:auto; margin-bottom:24px;">
           <table style="width:100%; border-collapse:collapse; font-size:0.88rem; text-align:left;">
             <thead>
               <tr style="border-bottom:2px solid var(--line); background:var(--bg-body);">
-                <th style="padding:12px; font-weight:800; color:var(--text-primary);">Feature / Standard</th>
-                <th style="padding:12px; font-weight:800; color:var(--primary);">LocalDoc CamScanner Web</th>
-                <th style="padding:12px; font-weight:800; color:var(--text-muted);">Traditional Cloud Scanning Apps</th>
+                <th style="padding:12px; font-weight:800; color:var(--text-primary);">Engineering Metric</th>
+                <th style="padding:12px; font-weight:800; color:var(--primary);">LocalDoc Camera Studio</th>
+                <th style="padding:12px; font-weight:800; color:var(--text-muted);">Commercial Cloud Scanning Apps</th>
               </tr>
             </thead>
             <tbody>
               <tr style="border-bottom:1px solid var(--line);">
-                <td style="padding:12px; font-weight:700;">Data Privacy &amp; Server Transmission</td>
-                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">0 Bytes (100% In-Browser Memory)</td>
-                <td style="padding:12px; color:var(--text-secondary);">Uploaded to remote server databases</td>
+                <td style="padding:12px; font-weight:700;">Data Privacy &amp; Transmission</td>
+                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">0 Bytes (Runs 100% in Browser Memory)</td>
+                <td style="padding:12px; color:var(--text-secondary);">Uploaded to proprietary server databases</td>
               </tr>
               <tr style="border-bottom:1px solid var(--line);">
-                <td style="padding:12px; font-weight:700;">PDF Watermarks &amp; Branding</td>
-                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">Zero Watermarks (100% Clean)</td>
-                <td style="padding:12px; color:var(--text-secondary);">Enforces footer watermarks on free tier</td>
+                <td style="padding:12px; font-weight:700;">Document Watermarks</td>
+                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">Zero Watermarks (Clean for Official Use)</td>
+                <td style="padding:12px; color:var(--text-secondary);">Stamps promotional watermarks on free tier</td>
               </tr>
               <tr style="border-bottom:1px solid var(--line);">
-                <td style="padding:12px; font-weight:700;">Page Limit Restrictions</td>
-                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">Unlimited Pages (Hardware RAM bound)</td>
-                <td style="padding:12px; color:var(--text-secondary);">Strict limits without monthly subscription</td>
+                <td style="padding:12px; font-weight:700;">Page Volume Limits</td>
+                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">Unlimited (Hardware RAM bound)</td>
+                <td style="padding:12px; color:var(--text-secondary);">Strict limits unless paying subscription</td>
               </tr>
               <tr style="border-bottom:1px solid var(--line);">
-                <td style="padding:12px; font-weight:700;">Account &amp; Registration</td>
-                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">No Sign-up / Anonymous Access</td>
-                <td style="padding:12px; color:var(--text-secondary);">Mandatory email / phone registration</td>
+                <td style="padding:12px; font-weight:700;">Account Requirements</td>
+                <td style="padding:12px; color:var(--cs-teal); font-weight:700;">Zero Sign-up (Direct Browser Utility)</td>
+                <td style="padding:12px; color:var(--text-secondary);">Mandatory email or phone registration</td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:28px; line-height:1.5; padding:10px 14px; background:var(--bg-body); border-radius:8px; border:1px solid var(--line);">
+          * CamScanner is a registered trademark of INTSIG Information Co., Ltd. LocalDoc is an independent web application and is not affiliated with, sponsored by, or endorsed by INTSIG.
         </div>
 
         <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">Frequently Asked Questions</h3>
@@ -1424,14 +1568,35 @@
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
             <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Does this scanner add any watermarks to exported PDF files?</h4>
             <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
-              No. LocalDoc believes official legal documents, job applications, and university assignments should never be marred by promotional watermarks. All PDF and JPEG exports are 100% clean and professional.
+              No. LocalDoc exports 100% clean, watermark-free PDFs and JPEGs suitable for legal contracts, court submissions, and university applications.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">How does the perspective correction work without cloud servers?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              The tool uses an 8-Degree-of-Freedom (8-DOF) Projective Homography algorithm running directly on your CPU/GPU via HTML5 Canvas and typed arrays. By tracking 4 corner pins, it solves the 3x3 transformation matrix to rectify tilted angles into a flat rectangular plane in milliseconds.
             </p>
           </div>
 
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
             <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Can I scan both sides of my National Identity Card (CNIC / Driver License)?</h4>
             <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
-              Yes. Use the built-in "ID Card Mode" to scan the front and back sides separately. The tool will automatically align both sides neatly onto a single standardized A4 photocopy layout ready for government portal submission.
+              Yes. Capture the front and back sides sequentially, and export as a single multi-page PDF or use our companion <a href="cnic-photo-maker.html" style="color:var(--primary); font-weight:600;">CNIC &amp; ID Card Studio</a> to align both sides automatically onto a single standardized A4 photocopy sheet.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">What lighting conditions produce the highest quality digital scans?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              For sharpest OCR text and clean binarization, place documents on a flat, contrasting surface under balanced ambient lighting. Avoid holding your smartphone directly between a single point-source ceiling lamp and the paper, which casts strong dark hand shadows.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Is my scanned document uploaded to any remote server or AI database?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              Never. All image buffers, pixel transformations, and PDF compilations execute 100% inside your client device's browser memory via sandboxed WebAssembly and HTML5 Canvas. Zero bytes leave your machine.
             </p>
           </div>
         </div>
