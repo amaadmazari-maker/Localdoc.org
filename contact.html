@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Contact LocalDoc Support & Inquiries | LocalDoc</title>
-  <meta name="description" content="Get in touch with the LocalDoc engineering and support team for tool feedback, feature requests, bug reports, or technical questions.">
+  <title>Contact LocalDoc — Support & Feedback</title>
+  <meta name="description" content="Get help with LocalDoc PDF tools, document scanner, or ID photo maker. Email us at support@localdoc.org. We respond to all queries within 24 hours.">
   <link rel="canonical" href="https://localdoc.org/contact.html">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -68,6 +68,7 @@
   </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="reading-progress"></div>
 
   <header class="site-header">
@@ -113,7 +114,7 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:40px; padding-bottom:70px;">
+  <main id="main-content" class="container" style="padding-top:40px; padding-bottom:70px;">
     <!-- Semantic Breadcrumbs -->
     <nav aria-label="Breadcrumb" class="breadcrumb-nav" style="margin-bottom:20px; font-size:0.85rem; color:var(--text-muted);">
       <ol style="list-style:none; padding:0; margin:0; display:flex; gap:8px; align-items:center;">
@@ -148,40 +149,71 @@
       </div>
 
       <!-- Contact Form -->
-      <form id="contact-form" onsubmit="event.preventDefault(); UIUtils.showToast('Thank you! Your message has been received. Our team will respond shortly.', 'success'); document.getElementById('contact-form').reset();" style="display:flex; flex-direction:column; gap:20px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:28px; box-shadow:var(--shadow-sm);">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <!-- Contact Form -->
+      <form id="contact-form" action="mailto:support@localdoc.org" method="post" enctype="text/plain" onsubmit="handleContactSubmit(event);" style="display:flex; flex-direction:column; gap:20px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:28px; box-shadow:var(--shadow-sm);">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
           <div>
-            <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Your Full Name</label>
-            <input type="text" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="e.g. John Doe">
+            <label for="contact-name" style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Your Full Name</label>
+            <input type="text" id="contact-name" name="name" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="e.g. Alex Morgan">
           </div>
           <div>
-            <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Your Email Address</label>
-            <input type="email" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="you@example.com">
+            <label for="contact-email" style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Your Email Address</label>
+            <input type="email" id="contact-email" name="email" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="alex@example.com">
           </div>
         </div>
 
         <div>
-          <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Inquiry Category</label>
-          <select required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem; cursor:pointer;">
-            <option value="feedback">Tool Feedback / Feature Request</option>
-            <option value="bug">Report a Bug / Tool Crash</option>
-            <option value="security">Security & Privacy Inquiry</option>
-            <option value="general">General Question</option>
+          <label for="contact-category" style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Inquiry Category</label>
+          <select id="contact-category" name="category" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem; cursor:pointer;">
+            <option value="Tool Feedback / Feature Request">Tool Feedback / Feature Request</option>
+            <option value="Bug Report / Tool Crash">Report a Bug / Tool Crash</option>
+            <option value="Security & Privacy Inquiry">Security & Privacy Inquiry</option>
+            <option value="General Question">General Question</option>
           </select>
         </div>
 
         <div>
-          <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Subject</label>
-          <input type="text" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="Brief summary of your inquiry">
+          <label for="contact-subject" style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Subject</label>
+          <input type="text" id="contact-subject" name="subject" required style="width:100%; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem;" placeholder="Brief summary of your inquiry">
         </div>
 
         <div>
-          <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Message Details</label>
-          <textarea rows="5" required style="width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem; line-height:1.5;" placeholder="Please describe your question or feedback in detail..."></textarea>
+          <label for="contact-message" style="display:block; font-weight:700; margin-bottom:8px; font-size:0.88rem; color:var(--text-primary);">Message Details</label>
+          <textarea id="contact-message" name="message" rows="5" required style="width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); font-size:0.92rem; line-height:1.5;" placeholder="Please describe your question or feedback in detail..."></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" style="align-self:flex-start;">Submit Inquiry &rarr;</button>
+        <div id="contact-status-box" style="display:none; padding:14px 18px; border-radius:var(--radius-sm); background:var(--accent-emerald-subtle, #ecfdf5); border:1px solid var(--accent-emerald, #059669); color:var(--text-primary); font-size:0.9rem; line-height:1.5;"></div>
+
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary btn-lg" style="align-self:flex-start;">Submit Inquiry &rarr;</button>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Direct email: <a href="mailto:support@localdoc.org" style="color:var(--primary); font-weight:600;">support@localdoc.org</a></span>
+        </div>
       </form>
+
+      <script>
+        function handleContactSubmit(e) {
+          e.preventDefault();
+          const name = document.getElementById('contact-name').value.trim();
+          const email = document.getElementById('contact-email').value.trim();
+          const category = document.getElementById('contact-category').value;
+          const subject = document.getElementById('contact-subject').value.trim();
+          const message = document.getElementById('contact-message').value.trim();
+
+          const fullSubject = `[LocalDoc ${category}] ${subject}`;
+          const bodyText = `Name: ${name}\nEmail: ${email}\nCategory: ${category}\n\nMessage:\n${message}\n\n---\nSent via localdoc.org Contact Form`;
+          const mailtoUrl = `mailto:support@localdoc.org?subject=${encodeURIComponent(fullSubject)}&body=${encodeURIComponent(bodyText)}`;
+
+          const statusBox = document.getElementById('contact-status-box');
+          statusBox.style.display = 'block';
+          statusBox.innerHTML = `<strong>Thank you, ${name}!</strong> Your inquiry has been formatted. If your email application did not open automatically, <a href="#" onclick="window.location.href=mailtoUrl; return false;" style="color:var(--primary); font-weight:700; text-decoration:underline;">click here to open in your email client</a>, or send directly to <strong>support@localdoc.org</strong>.`;
+
+          if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+            UIUtils.showToast('Opening email client for dispatch...', 'success');
+          }
+
+          window.location.href = mailtoUrl;
+        }
+      </script>
           <!-- Frequently Asked Support Questions -->
       <section style="margin-top:48px; border-top:1px solid var(--line); padding-top:36px;">
         <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:20px; color:var(--text-primary);">Frequently Asked Inquiries</h2>
@@ -197,7 +229,7 @@
           <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;">
             <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:8px; color:var(--text-primary);">Can I use LocalDoc for enterprise, legal, or commercial document processing?</h3>
             <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-              Yes. Law firms, healthcare clinics, accounting practices, and surveyors frequently use LocalDoc because our zero-upload architecture satisfies stringent GDPR, HIPAA, and client-confidentiality compliance standards without requiring third-party data processing agreements (DPAs).
+              Yes. Law firms, healthcare clinics, accounting practices, and surveyors frequently use LocalDoc because our zero-upload architecture satisfies stringent GDPR, privacy regulation, and client-confidentiality compliance standards without requiring third-party data processing agreements (DPAs).
             </p>
           </div>
 
@@ -214,6 +246,49 @@
               Submit your request using the form above or email us at <strong>support@localdoc.org</strong>. For open-source contributions, feature suggestions, or vulnerability disclosures, you can also engage directly on our GitHub repository.
             </p>
           </div>
+        </div>
+      </section>
+      <!-- Extended Support Guide -->
+      <section style="margin-top:48px; border-top:1px solid var(--line); padding-top:36px;">
+        <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:8px; color:var(--text-primary);">How to Write an Effective Bug Report</h2>
+        <p style="color:var(--text-secondary); font-size:0.93rem; line-height:1.6; margin-bottom:20px;">A clear bug report helps us fix issues faster. When reporting a problem with any LocalDoc tool, please include the following information:</p>
+        <ol style="color:var(--text-secondary); font-size:0.92rem; line-height:2; padding-left:22px; margin-bottom:28px;">
+          <li><strong style="color:var(--text-primary);">Which tool is affected</strong> — e.g. Compress PDF, CNIC Photo Maker, Document Scanner.</li>
+          <li><strong style="color:var(--text-primary);">Your browser and version</strong> — e.g. Chrome 126 on Windows 11, or Safari 17 on iPhone 15.</li>
+          <li><strong style="color:var(--text-primary);">File type and approximate size</strong> — e.g. a 4MB DOCX file. Do not attach actual documents.</li>
+          <li><strong style="color:var(--text-primary);">What you expected to happen</strong> — the result you were trying to achieve.</li>
+          <li><strong style="color:var(--text-primary);">What actually happened</strong> — the error message, crash, or unexpected behaviour observed.</li>
+          <li><strong style="color:var(--text-primary);">Steps to reproduce</strong> — a numbered sequence of actions that reliably triggers the bug.</li>
+        </ol>
+        <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:8px; color:var(--text-primary);">Submitting a Feature Request</h2>
+        <p style="color:var(--text-secondary); font-size:0.93rem; line-height:1.6; margin-bottom:16px;">We welcome community-driven tool suggestions. To give your request the best chance of being implemented, please describe:</p>
+        <ul style="color:var(--text-secondary); font-size:0.92rem; line-height:1.9; padding-left:22px; margin-bottom:28px;">
+          <li>The <strong style="color:var(--text-primary);">document or file type</strong> you want to work with (PDF, DOCX, image, etc.).</li>
+          <li>The <strong style="color:var(--text-primary);">specific operation</strong> you want to perform, such as removing blank pages or OCR for Urdu text.</li>
+          <li>Your <strong style="color:var(--text-primary);">use case</strong> — why you need this feature and how frequently you would use it.</li>
+          <li>Whether a <strong style="color:var(--text-primary);">client-side, zero-upload implementation</strong> is important to your workflow.</li>
+        </ul>
+        <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:12px; color:var(--text-primary);">Support Scope &amp; Response Times</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:28px;">
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px;">
+            <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:6px;">Bug Reports</div>
+            <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.5; margin:0;">Acknowledged within 24 business hours. Critical crashes patched within 48 to 72 hours of reproduction confirmation.</p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px;">
+            <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:6px;">Feature Requests</div>
+            <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.5; margin:0;">Logged and reviewed monthly. Popular requests with strong use cases are prioritised for upcoming releases.</p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px;">
+            <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:6px;">Security Issues</div>
+            <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.5; margin:0;">Email security@localdoc.org directly. We follow responsible disclosure and respond within 12 hours.</p>
+          </div>
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px;">
+            <div style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:6px;">General Questions</div>
+            <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.5; margin:0;">Check our <a href="faq.html" style="color:var(--primary);">FAQ page</a> first — most common questions are answered there in detail.</p>
+          </div>
+        </div>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); border-radius:var(--radius-sm); padding:16px 20px;">
+          <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin:0;"><strong style="color:var(--text-primary);">Privacy Note:</strong> All contact messages are handled privately by the LocalDoc team. We never share your email address or inquiry details with third parties. Please do not attach sensitive documents to support emails.</p>
         </div>
       </section>
     </article>

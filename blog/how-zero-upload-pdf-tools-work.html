@@ -19,21 +19,21 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>How Zero-Upload PDF Tools Work Internally &mdash; WebAssembly & Client RAM Architecture | LocalDoc</title>
-  <meta name="description" content="An in-depth technical explanation of how WebAssembly, Web Workers, and HTML5 Canvas enable complex document processing in local browser RAM without server uploads.">
+  <title>How Zero-Upload PDF Tools Work — Privacy Explained</title>
+  <meta name="description" content="Discover how browser-based PDF tools process files locally using WebAssembly. Your files never leave your device — learn how it works.">
   <link rel="canonical" href="https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   
   <meta property="og:type" content="article">
-  <meta property="og:title" content="How Zero-Upload PDF Tools Work: The Engineering Behind LocalDoc">
-  <meta property="og:description" content="Deep dive into client-side WebAssembly compilation, Web Workers multi-threading, and volatile memory disposal.">
+  <meta property="og:title" content="How Zero-Upload PDF Tools Work — Privacy Explained">
+  <meta property="og:description" content="Discover how browser-based PDF tools process files locally using WebAssembly. Your files never leave your device — learn how it works.">
   <meta property="og:url" content="https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html">
   <meta property="og:site_name" content="LocalDoc">
   <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How Zero-Upload PDF Tools Work Internally &mdash; WebAssembly & Client RAM Architecture | LocalDoc">
-  <meta name="twitter:description" content="An in-depth technical explanation of how WebAssembly, Web Workers, and HTML5 Canvas enable complex document processing in local browser RAM without server uploads.">
+  <meta name="twitter:title" content="How Zero-Upload PDF Tools Work — Privacy Explained">
+  <meta name="twitter:description" content="Discover how browser-based PDF tools process files locally using WebAssembly. Your files never leave your device — learn how it works.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
 
 
@@ -333,6 +333,7 @@
 
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="reading-progress"></div>
 
   <header class="site-header">
@@ -368,7 +369,7 @@
     </div>
   </header>
 
-  <main class="container" style="padding-top:30px; padding-bottom:70px;">
+  <main id="main-content" class="container" style="padding-top:30px; padding-bottom:70px;">
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <a href="../index.html">Home</a>
       <span class="breadcrumb-sep">&gt;</span>
@@ -445,7 +446,7 @@
       <section style="margin: 36px 0;">
         <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary);">3. Visual Walkthrough: How the In-Browser Zero-Upload Pipeline Executes Step-by-Step</h2>
         <p style="color:var(--text-secondary); line-height:1.7;">
-          To understand how LocalDoc achieves complete air-gapped security, examine the five internal stages of client-side execution, from DevTools network monitoring to automated memory disposal:
+          To understand how LocalDoc achieves complete fully offline environmentssecurity, examine the five internal stages of client-side execution, from DevTools network monitoring to automated memory disposal:
         </p>
 
         <div class="walkthrough-container">
@@ -453,7 +454,7 @@
           <div class="walkthrough-step-card" id="step-1-open-network-inspector">
             <div class="walkthrough-step-header">
               <span class="walkthrough-step-badge">Step 1</span>
-              <h3 class="walkthrough-step-title">Verify Air-Gapped Network Silence (F12 DevTools)</h3>
+              <h3 class="walkthrough-step-title">Verify fully offline environmentsNetwork Silence (F12 DevTools)</h3>
             </div>
             <p class="walkthrough-step-desc">
               Open the browser Developer Tools (<code>F12</code> or <code>Ctrl+Shift+I</code>) and select the <strong>Network</strong> tab. Check <em>Disable cache</em>. When LocalDoc runs, the network waterfall remains completely silent with <strong>0 B transferred</strong>, confirming zero server communication.
@@ -635,7 +636,7 @@
           </div>
         </div>
         <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin:0 0 14px;">
-          "LocalDoc's architecture represents a paradigm shift: converting your web browser from a passive viewing client into a secure, air-gapped document processing engine. In our benchmarks parsing a 34.6 MB CAD blueprint packet, WebAssembly delivered 890 ms processing latency with zero bytes transmitted over the network."
+          "LocalDoc's architecture represents a paradigm shift: converting your web browser from a passive viewing client into a secure, fully offline document processing engine. In our benchmarks parsing a 34.6 MB CAD blueprint packet, WebAssembly delivered 890 ms processing latency with zero bytes transmitted over the network."
         </p>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; font-family:'JetBrains Mono', monospace; font-size:0.82rem;">
           <div style="background:var(--bg-body); padding:10px; border-radius:8px; border:1px solid var(--line);">
@@ -721,9 +722,9 @@
             <p class="text-slate-300 mb-4 leading-relaxed">
                 WebAssembly (WASM) enables near-native binary execution speed inside modern web browsers (Chrome, Edge, Firefox, Safari). Heavy mathematical processing &mdash; such as neural network OCR character recognition in Tesseract.js or binary stream compression in pdf-lib &mdash; runs on multi-threaded Web Workers without freezing the user interface.
             </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">Guaranteed Air-Gapped Operation</h3>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Guaranteed fully offline environmentsOperation</h3>
             <p class="text-slate-300 leading-relaxed">
-                LocalDoc represents the gold standard in privacy-first utility architecture. Because all logic resides in static HTML, CSS, and client-side JavaScript, the entire application functions flawlessly on air-gapped computers, secure military networks, and confidential corporate intranets without an active internet connection.
+                LocalDoc represents the gold standard in privacy-first utility architecture. Because all logic resides in static HTML, CSS, and client-side JavaScript, the entire application functions flawlessly on fully offline environmentscomputers, secure military networks, and confidential corporate intranets without an active internet connection.
             </p>
         </section>
         <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
@@ -741,7 +742,7 @@
             </p>
             <h3 class="text-lg font-bold text-emerald-400 mb-2">3. Enterprise Compliance &amp; Zero-Retention Guarantee</h3>
             <p class="text-slate-300 leading-relaxed">
-                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, HIPAA, and GDPR standards.
+                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, privacy regulation, and GDPR standards.
             </p>
         </section>
 </article>

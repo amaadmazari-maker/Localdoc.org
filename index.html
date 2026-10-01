@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>LocalDoc &mdash; Free Client-Side Document &amp; PDF Tools</title>
-  <meta name="description" content="100% zero-upload client-side document and PDF platform. Convert, merge, compress, edit, scan, and calculate privately in your browser with zero file uploads.">
-  <meta name="keywords" content="pdf tools online, zero upload pdf, compress pdf, merge pdf, pdf to word, pdf to powerpoint, document reader online, scientific calculator online, photo resizer kb reducer, passport photo online, client side document tools, free pdf editor, camscanner online">
+  <title>LocalDoc — Free Zero-Upload Document & PDF Tools</title>
+  <meta name="description" content="100% client-side PDF tools: convert, compress, merge, edit, scan, and calculate. Runs privately in your browser RAM. Zero uploads, zero daily limits.">
+  <meta name="keywords" content="pdf tools online, zero upload pdf, compress pdf, merge pdf, pdf to word, pdf to powerpoint, document reader online, scientific calculator online, photo resizer kb reducer, passport photo online, client side document tools, free pdf editor, LocalDoc Scanner online">
   <link rel="canonical" href="https://localdoc.org/">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -113,6 +113,7 @@
   </script>
 </head>
 <body class="has-bottom-nav">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="reading-progress"></div>
 
   <!-- Header -->
@@ -216,7 +217,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <!-- Flagship Bold Brand Hero (Zero-Upload Client Architecture) -->
     <section class="hero-aurora-wrap">
       <div class="hero-aurora-bg"></div>
@@ -252,7 +253,7 @@
           </div>
           <button class="hero-browse-pill" id="home-browse-btn" type="button" data-i18n="browse_btn">Browse File</button>
           <input type="file" id="home-file-input" style="display:none;">
-          <a href="pages/scan.html" class="hero-camscanner-btn" title="Open PDF Camera Studio">
+          <a href="pages/scan.html" class="hero-LocalDoc Scanner-btn" title="Open PDF Camera Studio">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             <span data-i18n="tool_pdfcamera_title">PDF Camera Studio</span>
           </a>
@@ -276,7 +277,7 @@
       <!-- Real-Time Interactive Tool & Guide Search -->
       <div class="homepage-search-wrap">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="search" id="home-tool-search" class="homepage-search-input" placeholder="Search All Tools &amp; guides (e.g. PDF to Word, CamScanner, Passport Photo, PAN Card, Calculator)..." aria-label="Quick search tools and guides">
+        <input type="search" id="home-tool-search" class="homepage-search-input" placeholder="Search All Tools &amp; guides (e.g. PDF to Word, LocalDoc Scanner, Passport Photo, PAN Card, Calculator)..." aria-label="Quick search tools and guides">
       </div>
 
       <!-- Multi-Category Filter Bar (iLovePDF Style Rounded Pills) -->
@@ -628,7 +629,7 @@
           </p>
           <div style="margin-top:14px; display:flex; gap:8px; align-items:center;">
             <span class="radar-dot" style="width:8px; height:8px; border-radius:50%; background:#10B981; display:inline-block;"></span>
-            <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">100% Air-Gapped Privacy</span>
+            <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">100% Offline via PWA &mdash; No Internet Required</span>
           </div>
         </div>
 
@@ -836,7 +837,7 @@
     const routerSize = document.getElementById('router-file-size');
     const routerActions = document.getElementById('router-actions');
 
-    if (homeDrop) {
+    if (homeDrop && typeof UIUtils !== 'undefined') {
       UIUtils.setupDropZone(homeDrop, homeInput, (files) => {
         if (files.length > 0) {
           const file = files[0];

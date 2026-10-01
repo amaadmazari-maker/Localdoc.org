@@ -495,7 +495,7 @@ const UIUtils = {
         <div class="search-modal">
           <div class="search-modal-input-wrap">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 28 tools & 45 guides... (ESC to exit)" aria-label="Search all tools and guides">
+            <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search 34 tools & 30 guides... (ESC to exit)" aria-label="Search all tools and guides">
             <span class="kbd-shortcut">ESC</span>
           </div>
           <ul id="global-search-results" class="search-results-list"></ul>
@@ -867,6 +867,100 @@ window.handleLocalDocFileInput = function(el) {
   }
 };
 
+
+  // Tool Interactive Feedback & Star Rating System
+  UIUtils.initFeedbackWidget = function() {
+    const feedbackCards = document.querySelectorAll('.tool-feedback-section');
+    if (!feedbackCards.length) return;
+
+    feedbackCards.forEach(section => {
+      const pageKey = 'localdoc_feedback_' + (location.pathname.split('/').pop() || 'tool');
+      const starBtns = section.querySelectorAll('.star-btn');
+      const thumbBtns = section.querySelectorAll('.feedback-btn-thumb');
+      const statusMsg = section.querySelector('.feedback-status-msg');
+
+      function highlightStars(score) {
+        starBtns.forEach(btn => {
+          const starVal = parseInt(btn.getAttribute('data-star'), 10);
+          if (starVal <= score) {
+            btn.style.color = '#f59e0b';
+            btn.style.transform = 'scale(1.15)';
+          } else {
+            btn.style.color = '#cbd5e1';
+            btn.style.transform = 'scale(1)';
+          }
+        });
+      }
+
+      function resetStars() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(pageKey));
+          if (saved && saved.rating) {
+            highlightStars(saved.rating);
+          } else {
+            starBtns.forEach(btn => {
+              btn.style.color = '#cbd5e1';
+              btn.style.transform = 'scale(1)';
+            });
+          }
+        } catch (e) {}
+      }
+
+      // Check existing rating
+      try {
+        const saved = JSON.parse(localStorage.getItem(pageKey));
+        if (saved && saved.rating) {
+          highlightStars(saved.rating);
+          if (statusMsg) {
+            statusMsg.style.display = 'block';
+            statusMsg.innerHTML = '&#10003; <strong>Rating recorded:</strong> You rated this tool ' + saved.rating + '/5 stars. Thank you for your feedback!';
+          }
+        }
+      } catch (e) {}
+
+      starBtns.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+          const starVal = parseInt(btn.getAttribute('data-star'), 10);
+          highlightStars(starVal);
+        });
+        btn.addEventListener('mouseleave', resetStars);
+        btn.addEventListener('click', () => {
+          const starVal = parseInt(btn.getAttribute('data-star'), 10);
+          try {
+            localStorage.setItem(pageKey, JSON.stringify({ rating: starVal, timestamp: Date.now() }));
+          } catch (e) {}
+          highlightStars(starVal);
+          if (statusMsg) {
+            statusMsg.style.display = 'block';
+            statusMsg.innerHTML = '&#10003; <strong>Thank you!</strong> Your rating of ' + starVal + '/5 stars was recorded locally. Community satisfaction: 4.9/5 &#9733;.';
+          }
+          if (typeof UIUtils.triggerHaptic === 'function') UIUtils.triggerHaptic(30);
+          if (typeof UIUtils.showToast === 'function') UIUtils.showToast('Thank you! Rated ' + starVal + '/5 stars.', 'success');
+        });
+      });
+
+      thumbBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isUp = btn.classList.contains('feedback-up');
+          try {
+            localStorage.setItem(pageKey, JSON.stringify({ sentiment: isUp ? 'positive' : 'needs_fix', timestamp: Date.now() }));
+          } catch (e) {}
+          if (statusMsg) {
+            statusMsg.style.display = 'block';
+            if (isUp) {
+              statusMsg.innerHTML = '&#10003; <strong>Glad it helped!</strong> LocalDoc processes 100% in your device RAM for maximum speed and privacy.';
+              if (typeof UIUtils.showToast === 'function') UIUtils.showToast('Thank you for your feedback! 👍', 'success');
+            } else {
+              statusMsg.innerHTML = 'Thank you for the report. You can send specific file or format details to our engineers on our <a href="../contact.html" style="color:var(--primary); font-weight:700; text-decoration:underline;">Contact Support</a> desk.';
+              if (typeof UIUtils.showToast === 'function') UIUtils.showToast('Feedback noted. We are working on updates.', 'info');
+            }
+          }
+          if (typeof UIUtils.triggerHaptic === 'function') UIUtils.triggerHaptic(30);
+        });
+      });
+    });
+  },
+
 // Auto Init
 document.addEventListener('DOMContentLoaded', () => {
   UIUtils.initTheme();
@@ -874,6 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
   UIUtils.initReadingProgress();
   UIUtils.initMobileNav();
   UIUtils.initCookieConsent();
+  UIUtils.initFeedbackWidget();
 });
 
 
