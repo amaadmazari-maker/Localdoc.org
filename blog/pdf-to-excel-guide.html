@@ -1,14 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>How to Extract PDF Tables & Statements to Excel (.xlsx) (Benchmark Guide) | LocalDoc</title>
@@ -23,7 +31,12 @@
   <meta property="og:title" content="Extract Tables & Statements from PDF to Excel (.xlsx) | LocalDoc">
   <meta property="og:description" content="Convert complex PDF bank statements into structured Excel spreadsheets with active formula support. 100% in-browser RAM, zero server uploads.">
   <meta property="og:url" content="https://localdoc.org/blog/pdf-to-excel-guide.html">
-  <meta property="og:image" content="../assets/icons/pdf-to-excel.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Extract PDF Tables & Statements to Excel (.xlsx) (Benchmark Guide) | LocalDoc">
+  <meta name="twitter:description" content="Technical guide on extracting PDF bank statements, ledgers, and tabular data to Microsoft Excel (.xlsx) in browser RAM. Learn how SheetJS and vertical ray casting convert 486 rows in 860ms.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -644,22 +657,22 @@
       <h2>6. Frequently Asked Questions</h2>
       <div class="faq-accordion">
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Is it safe to convert sensitive bank statements and tax filings&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Is it safe to convert sensitive bank statements and tax filings?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes, absolutely. LocalDoc was engineered specifically for sensitive accounting records. Zero bytes are uploaded to any server; all parsing happens inside your browser's private RAM. When you close the browser window, all financial data vanishes from memory.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Will cell formulas (like SUM or AVERAGE) work in the exported file&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Will cell formulas (like SUM or AVERAGE) work in the exported file?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Because numbers are stripped of currency glyphs and stored as native IEEE 754 floats, you can immediately write standard formulas like <code>=SUM(E2:E487)</code> without getting <code>#VALUE!</code> errors.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert password-protected bank statement PDFs&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert password-protected bank statement PDFs?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. If your financial statement is locked with a birth date or account password, unlock it first using our client-side <a href="../pages/protect-pdf.html">Unlock PDF</a> tool before converting it to XLSX.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I open the exported spreadsheet in Google Sheets or Apple Numbers&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I open the exported spreadsheet in Google Sheets or Apple Numbers?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc exports strict Microsoft OpenXML (.xlsx) files that are 100% compatible with Microsoft Excel 2016–2026, Office 365, Google Sheets, Apple Numbers, and LibreOffice Calc.</p>
         </div>
       </div>
@@ -732,7 +745,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. Zero cloud uploads.</p>
+          <p>A high-precision client-side document processing platform. Zero cloud uploads.</p>
         </div>
         <div class="footer-col">
           <h4>Popular Tools</h4>

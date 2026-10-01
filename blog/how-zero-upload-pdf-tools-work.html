@@ -1,18 +1,25 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>How Zero-Upload PDF Tools Work Internally � WebAssembly & Client RAM Architecture | LocalDoc</title>
+  <title>How Zero-Upload PDF Tools Work Internally &mdash; WebAssembly & Client RAM Architecture | LocalDoc</title>
   <meta name="description" content="An in-depth technical explanation of how WebAssembly, Web Workers, and HTML5 Canvas enable complex document processing in local browser RAM without server uploads.">
   <link rel="canonical" href="https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html">
   <link rel="manifest" href="../manifest.json">
@@ -23,7 +30,12 @@
   <meta property="og:description" content="Deep dive into client-side WebAssembly compilation, Web Workers multi-threading, and volatile memory disposal.">
   <meta property="og:url" content="https://localdoc.org/blog/how-zero-upload-pdf-tools-work.html">
   <meta property="og:site_name" content="LocalDoc">
-  <meta property="og:image" content="https://localdoc.org/assets/icons/favicon.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How Zero-Upload PDF Tools Work Internally &mdash; WebAssembly & Client RAM Architecture | LocalDoc">
+  <meta name="twitter:description" content="An in-depth technical explanation of how WebAssembly, Web Workers, and HTML5 Canvas enable complex document processing in local browser RAM without server uploads.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -403,7 +415,7 @@
       <ul>
         <li><strong>XREF Offset Table Reconstruction:</strong> The engine scans the trailer dictionary to build an in-memory spatial index of every indirect object, vector path, and embedded image dictionary without touching disk storage.</li>
         <li><strong>High-Speed FlateDecode Decompression:</strong> Compressed stream objects are inflated in volatile RAM using compiled zlib WebAssembly routines, eliminating disk I/O bottlenecks and preventing memory fragmentation.</li>
-        <li><strong>Graphic State Operator Tokenization:</strong> PDF operators�such as <code>BT</code> (Begin Text), <code>Tf</code> (Font Selection), and <code>cm</code> (Transformation Matrix)�are tokenized into an abstract syntax tree within the Wasm heap.</li>
+        <li><strong>Graphic State Operator Tokenization:</strong> PDF operators &mdash; such as <code>BT</code> (Begin Text), <code>Tf</code> (Font Selection), and <code>cm</code> (Transformation Matrix) &mdash; are tokenized into an abstract syntax tree within the Wasm heap.</li>
         <li><strong>Deterministic Memory Disposal:</strong> Once transformations are complete, byte pointers are explicitly detached. The browser's native garbage collector immediately unlinks the buffers, releasing physical RAM back to the operating system.</li>
       </ul>
 
@@ -426,7 +438,7 @@
           <text x="585" y="80" text-anchor="middle" font-weight="700" fill="#0F172A" font-size="14">Output Blob</text>
           <text x="585" y="102" text-anchor="middle" fill="#64748B" font-size="11">URL.createObjectURL</text>
         </svg>
-        <span class="blog-diagram-caption">Figure 1: Isolated In-Memory Data Pipeline � Zero Disk or Network Ingress</span>
+        <span class="blog-diagram-caption">Figure 1: Isolated In-Memory Data Pipeline &mdash; Zero Disk or Network Ingress</span>
       </div>
 
       <!-- Visual Step-by-Step Walkthrough -->
@@ -587,7 +599,7 @@
           </tr>
           <tr>
             <td><strong>Processing Latency</strong></td>
-            <td>Network transit (20s�2 mins) + server queue</td>
+            <td>Network transit (20s &ndash; 2 mins) + server queue</td>
             <td><strong>Instantaneous (Sub-second local RAM execution)</strong></td>
           </tr>
           <tr>
@@ -647,25 +659,25 @@
 
       <h2>8. Frequently Asked Questions</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">How can I be certain no data leaves my browser&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">How can I be certain no data leaves my browser?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           You can independently verify network traffic using Chrome or Firefox Developer Tools (F12 > Network tab) or by enabling Airplane Mode. LocalDoc continues to function completely without an internet connection.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this technology work on mobile phones and tablets&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this technology work on mobile phones and tablets?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          Yes. All modern mobile browsers�including Safari on iOS and Chrome on Android�support WebAssembly, Web Workers, and HTML5 Canvas with native hardware acceleration.
+          Yes. All modern mobile browsers &mdash; including Safari on iOS and Chrome on Android &mdash; support WebAssembly, Web Workers, and HTML5 Canvas with native hardware acceleration.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Why didn't websites work this way ten years ago&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Why didn't websites work this way ten years ago?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           A decade ago, browsers lacked WebAssembly and multi-threaded Web Workers. Processing complex documents in pure interpreted JavaScript was too slow and froze user interfaces. Recent browser runtime advancements made client-side processing viable.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">What happens if I close my browser tab during conversion&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">What happens if I close my browser tab during conversion?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           Because documents reside strictly in volatile RAM, closing the browser tab immediately unlinks all memory pointers. The operating system reclaims the memory heap without leaving temporary files on disk.
         </p>
@@ -707,7 +719,7 @@
             </p>
             <h3 class="text-lg font-bold text-emerald-400 mb-2">Compiling Native C/C++ and Rust Libraries to WebAssembly</h3>
             <p class="text-slate-300 mb-4 leading-relaxed">
-                WebAssembly (WASM) enables near-native binary execution speed inside modern web browsers (Chrome, Edge, Firefox, Safari). Heavy mathematical processing�such as neural network OCR character recognition in Tesseract.js or binary stream compression in pdf-lib�runs on multi-threaded Web Workers without freezing the user interface.
+                WebAssembly (WASM) enables near-native binary execution speed inside modern web browsers (Chrome, Edge, Firefox, Safari). Heavy mathematical processing &mdash; such as neural network OCR character recognition in Tesseract.js or binary stream compression in pdf-lib &mdash; runs on multi-threaded Web Workers without freezing the user interface.
             </p>
             <h3 class="text-lg font-bold text-emerald-400 mb-2">Guaranteed Air-Gapped Operation</h3>
             <p class="text-slate-300 leading-relaxed">
@@ -741,7 +753,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p data-i18n="footer_desc">The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p data-i18n="footer_desc">A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>

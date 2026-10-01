@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Image to Text OCR Studio (Extract Text from Photos & Scans) | LocalDoc</title>
@@ -24,7 +31,12 @@
   <meta property="og:title" content="Image to Text OCR Studio &mdash; 100% Zero-Upload | LocalDoc">
   <meta property="og:description" content="Extract editable text from document photos and receipts in browser RAM. 100% private.">
   <meta property="og:url" content="https://localdoc.org/pages/image-to-text.html">
-  <meta property="og:image" content="../assets/icons/image-to-text.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image to Text OCR Studio (Extract Text from Photos & Scans) | LocalDoc">
+  <meta name="twitter:description" content="Extract editable text from images, receipts, and book scans using local Tesseract WebAssembly. Copy text, download TXT, or export to Word (.docx) in RAM.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -455,14 +467,14 @@
 
         <div class="faq-accordion-box">
           <details class="faq-item" open>
-            <summary class="faq-question">Why did the first OCR scan take a few extra seconds to start&ndash;</summary>
+            <summary class="faq-question">Why did the first OCR scan take a few extra seconds to start?</summary>
             <div class="faq-answer">
               <p>During your very first session, the browser loads the lightweight Tesseract WebAssembly engine and optical language dictionary into temporary cache (~4 MB). Once loaded, the engine is persisted in your browser's IndexedDB storage cache, allowing all subsequent text extractions to run near-instantaneously without re-fetching network resources&mdash;even when completely offline.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">How can I maximize OCR accuracy on photos taken with a smartphone camera&ndash;</summary>
+            <summary class="faq-question">How can I maximize OCR accuracy on photos taken with a smartphone camera?</summary>
             <div class="faq-answer">
               <p>Three simple photo techniques will dramatically boost text recognition accuracy:
               <br>1. <strong>Maintain perpendicular alignment:</strong> Hold your phone parallel to the paper surface to avoid perspective keystoning.
@@ -472,28 +484,28 @@
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Can LocalDoc recognize handwritten notes or cursive calligraphy&ndash;</summary>
+            <summary class="faq-question">Can LocalDoc recognize handwritten notes or cursive calligraphy?</summary>
             <div class="faq-answer">
               <p>The standard English neural model is calibrated for printed, typeset, and mechanical typography (books, contracts, thermal receipts, newspaper print, invoices). While neat block-printed handwriting often yields readable results, freehand cursive scripts have significantly lower confidence scores. We recommend using printed or typed originals for production workflows.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Are my sensitive financial receipts or medical scans transmitted to any third party&ndash;</summary>
+            <summary class="faq-question">Are my sensitive financial receipts or medical scans transmitted to any third party?</summary>
             <div class="faq-answer">
               <p>Never. LocalDoc contains zero tracking telemetry or backend upload handlers on processing pages. You can verify this independently at any time: open your browser's Developer Tools (F12), navigate to the <em>Network</em> tab, and click <em>Extract Text</em>. You will observe exactly zero outgoing POST or PUT requests containing image binary payloads.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">How do I extract tabular data into Excel instead of plain text&ndash;</summary>
+            <summary class="faq-question">How do I extract tabular data into Excel instead of plain text?</summary>
             <div class="faq-answer">
               <p>If your scanned image contains a structured financial spreadsheet or data table, download the extracted text and verify column boundaries, or convert your scan into a PDF and use our dedicated <a href="pdf-to-excel.html">PDF to Excel Converter</a>, which uses spatial clustering algorithms to assemble true Microsoft Excel <code>.xlsx</code> worksheets with preserved cell borders.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">What is the maximum image resolution or file size supported&ndash;</summary>
+            <summary class="faq-question">What is the maximum image resolution or file size supported?</summary>
             <div class="faq-answer">
               <p>Because processing occurs within your device's physical memory, LocalDoc easily processes 20+ megapixel photos and files up to 50 MB. For best processing speed without sacrificing character accuracy, an image resolution of 300 DPI (approximately 2480 &times; 3508 pixels for a standard A4 page) represents the optimal balance of speed and precision.</p>
             </div>
@@ -556,7 +568,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p>A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>

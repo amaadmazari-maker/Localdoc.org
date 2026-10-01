@@ -1,6 +1,6 @@
 /**
  * LocalDoc.org — Pro Scientific Calculator & Solver Engine (js/tools/calculator.js)
- * Full Casio FX / Google Scientific caliber math engine.
+ * Pro Scientific & Programmable Math Engine.
  * 100% Client-Side RAM Execution. Works completely offline.
  */
 

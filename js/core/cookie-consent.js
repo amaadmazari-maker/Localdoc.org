@@ -24,6 +24,15 @@
       } catch (e) {
         // Fallback or private browsing
       }
+      if (typeof window.gtag === 'function') {
+        const state = value === 'accepted' ? 'granted' : 'denied';
+        window.gtag('consent', 'update', {
+          'analytics_storage': state,
+          'ad_storage': state,
+          'ad_user_data': state,
+          'ad_personalization': state
+        });
+      }
       this.hideBanner();
     },
 

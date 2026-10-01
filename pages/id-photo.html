@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CNIC &amp; Global ID Card Studio: Free 2-in-1 A4 Photocopy &amp; Biometric Photo Maker (300 DPI) | LocalDoc</title>
-  <meta name="description" content="Free official CNIC &amp; Global ID Card Maker. Print 100% life-size 2-in-1 A4 double-sided photocopies with fraud-prevention watermarks and generate compliant 354x472 px biometric photos for NADRA Pak-Identity, PAN, Aadhaar &amp; Emirates ID. Zero uploads.">
+  <title>Universal ID &amp; Passport Photo Maker: 300 DPI Biometric Crop &amp; Print Sheet | LocalDoc</title>
+  <meta name="description" content="Create compliant biometric ID photos for US Passport &amp; Visa (2x2 in), UK &amp; Schengen (35x45 mm), UAE Emirates ID, India PAN Card, and international licenses. 100% private in-browser cropping.">
   <meta name="keywords" content="cnic card size, nadra cnic size in inches, 2 in 1 id card photocopy on a4, pak identity photo size, nadra photo 354x472, print cnic copy front and back, pan card photocopy, emirates id photocopy, id card size in mm">
   <link rel="canonical" href="https://localdoc.org/pages/id-photo.html">
   <link rel="manifest" href="../manifest.json">
@@ -21,10 +29,15 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="CNIC &amp; Global ID Card Studio: 2-in-1 A4 Photocopy &amp; Biometric Photo Maker">
-  <meta property="og:description" content="Official Pakistan NADRA CNIC &amp; Global National ID Studio. Generate true-scale 2-in-1 A4 photocopy sheets with attestation stamps and 354x472 px biometric photos in browser RAM.">
+  <meta property="og:title" content="Universal ID &amp; Passport Photo Maker: 300 DPI Biometric Crop &amp; Print Sheet">
+  <meta property="og:description" content="Generate true-scale biometric ID and passport photos (35x45 mm, 2x2 in, 50x50 mm) for global visas, driving licenses, and work permits in local browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/id-photo.html">
-  <meta property="og:image" content="../assets/icons/cnic-photo-maker.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/biometrics-passport-3d.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Universal ID & Passport Photo Maker: 300 DPI Biometric Crop & Print Sheet | LocalDoc">
+  <meta name="twitter:description" content="Create compliant biometric ID photos for US Passport &amp; Visa (2x2 in), UK &amp; Schengen (35x45 mm), UAE Emirates ID, India PAN Card, and international licenses. 100% private in-browser cropping.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/biometrics-passport-3d.webp">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +69,7 @@
           {
             "@type": "ListItem",
             "position": 3,
-            "name": "CNIC & ID Card Studio",
+            "name": "Universal ID & Passport Photo Maker",
             "item": "https://localdoc.org/pages/id-photo.html"
           }
         ]
@@ -549,7 +562,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% In-Browser CNIC &amp; ID Studio</span>
         </div>
-        <h1>CNIC &amp; Global ID Card Studio</h1>
+        <h1>Universal ID &amp; Passport Photo Studio</h1>
         <p class="tool-desc">Create 100% life-size 2-in-1 A4 photocopy sheets or generate official biometric photos for Pakistan CNIC, India PAN/Aadhaar, UAE Emirates ID, Saudi Iqama, US Driver License, and UK ID cards in local browser RAM.</p>
       </div>
 
@@ -915,7 +928,7 @@
               <h3 style="margin:0; font-size:1rem; color:var(--text-primary);">Generate &amp; Download Biometric Photo</h3>
             </div>
             <button type="button" class="btn btn-primary btn-lg" id="generate-cnic-photo-btn" style="max-width:420px; width:100%; font-size:1.05rem; padding:14px 28px; box-shadow:0 4px 14px rgba(2,132,199,0.3);">
-              <span>Generate Official NADRA CNIC Photo</span> &rarr;
+              <span>Generate International ID CNIC Photo</span> &rarr;
             </button>
           </div>
         </div>
@@ -926,7 +939,7 @@
             <img id="cnic-photo-preview-img" src="" alt="NADRA CNIC Photo Preview" style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);">
           </div>
           <div class="result-details">
-            <h3 id="cnic-photo-result-title">Official NADRA Photo Ready!</h3>
+            <h3 id="cnic-photo-result-title">International ID Photo Ready!</h3>
             <p id="cnic-photo-result-desc">Strictly sized at 354&times;472 px (35&times;45mm) &amp; under 300KB for the Pak-Identity online portal.</p>
           </div>
           <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px;">
@@ -1108,7 +1121,7 @@
         </details>
 
         <details class="faq-accordion-item">
-          <summary>What are the official NADRA CNIC photo requirements?</summary>
+          <summary>What are the international ID CNIC photo requirements?</summary>
           <div class="faq-accordion-answer">
             <p>NADRA Pak-Identity requires photos to be exactly <strong>354 &times; 472 pixels</strong> (35 &times; 45 mm) at 350 DPI, portrait orientation, strictly under 300 KB in JPEG format, with a plain light blue (#E0F2FE) or pure white background, looking directly at the camera with a neutral expression.</p>
           </div>

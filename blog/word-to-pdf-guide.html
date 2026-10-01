@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>How to Convert Word (DOCX) to Vector PDF in Local RAM Without Office | LocalDoc</title>
@@ -21,10 +28,15 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
-  <meta property="og:title" content="In-Browser Word to PDF Conversion: Parsing OpenXML in Local RAM � LocalDoc">
+  <meta property="og:title" content="In-Browser Word to PDF Conversion: Parsing OpenXML in Local RAM &mdash; LocalDoc">
   <meta property="og:description" content="Technical guide to in-memory DOCX unpacking, XML DOM style cascading, and client-side vector PDF compilation.">
   <meta property="og:url" content="https://localdoc.org/blog/word-to-pdf-guide.html">
-  <meta property="og:image" content="../assets/icons/word-to-pdf.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Convert Word (DOCX) to Vector PDF in Local RAM Without Office | LocalDoc">
+  <meta name="twitter:description" content="Convert Microsoft Word DOCX files into standardized vector PDFs entirely in browser RAM without cloud uploads, Microsoft Office, or LibreOffice.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -665,25 +677,25 @@
 
       <h2>8. Frequently Asked Questions</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert older .doc binary Word files&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert older .doc binary Word files?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           LocalDoc is optimized specifically for modern XML-based <code>.docx</code> formats (Word 2007 and newer). Legacy binary <code>.doc</code> files use proprietary compound document formats that are not XML-based. We recommend saving older files as <code>.docx</code> in Word or LibreOffice before converting.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does converting Word to PDF preserve hyperlinks and bookmarks&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does converting Word to PDF preserve hyperlinks and bookmarks?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           Yes. Hyperlinks defined in <code>word/_rels/document.xml.rels</code> are converted into standard PDF annotation link dictionaries (<code>/Subtype /Link</code>), allowing readers to click URLs directly within the generated PDF.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are track changes and comments included in the converted PDF&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are track changes and comments included in the converted PDF?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           By default, LocalDoc renders the clean "final" version of the document, stripping markup annotations to ensure confidential internal drafting discussions are not exposed in the exported file.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           Yes. The OpenXML decompression library, font metric engine, and PDF compiler are cached in your browser via our Progressive Web App Service Worker. You can convert Word documents to PDF on an airplane or without Wi-Fi.
         </p>
@@ -726,7 +738,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p data-i18n="footer_desc">The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p data-i18n="footer_desc">A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>

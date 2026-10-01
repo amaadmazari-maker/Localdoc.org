@@ -1,14 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Scientific Calculator Online &mdash; Pro Math &amp; Solver | LocalDoc</title>
@@ -17,10 +25,16 @@
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#1E293B">
 
-  <!-- Open Graph -->
+  <!-- Open Graph & Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Scientific Calculator Online &mdash; Pro Math &amp; Solver | LocalDoc">
-  <meta property="og:description" content="Casio fx-5800P & fx-3650P II style programmable scientific calculator with native 4-line LCD program runner, Base-N HEX/BIN/OCT, d/dx calculus, fractions, and memory variables.">
+  <meta property="og:description" content="Pro-5800 programmable scientific calculator with native 4-line LCD program runner, Base-N HEX/BIN/OCT, d/dx calculus, fractions, and memory variables.">
+  <meta property="og:url" content="https://localdoc.org/pages/scientific-calculator.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/calculator-oled-3d.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scientific Calculator Online &mdash; Pro Math &amp; Solver | LocalDoc">
+  <meta name="twitter:description" content="Pro-5800 programmable scientific calculator with 4-line LCD display, calculus, matrices, and memory history.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/calculator-oled-3d.webp">
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -1086,16 +1100,21 @@
 
   <main class="calc-app-wrap">
     
-    <!-- Authentic Casio fx-5800P Super-FX Plus Handheld Calculator -->
+    <div style="text-align:center; margin:0 0 16px;">
+      <h1 style="font-size:1.45rem; font-weight:800; color:var(--text-primary); margin:0 0 4px;">Programmable Scientific Calculator</h1>
+      <p style="font-size:0.8rem; color:var(--text-secondary); margin:0;">Pro-5800 Advanced AST Math Engine &bull; Independent Simulation Utility</p>
+    </div>
+    
+    <!-- Pro-5800 Programmable Handheld Calculator -->
     <div class="fx-calculator" id="fx-calc-chassis">
       
       <!-- Signature Metallic Silver Bezel Header Plate -->
       <div class="fx-silver-plate">
         <div class="fx-plate-top">
-          <span class="fx-casio-logo">CASIO</span>
-          <span class="fx-model-name">fx-5800P</span>
+          <span class="fx-casio-logo">PRO-5800</span>
+          <span class="fx-model-name">SCIENTIFIC</span>
         </div>
-        <div class="fx-plate-sub">SUPER-FX PLUS</div>
+        <div class="fx-plate-sub">ADVANCED AST MATH ENGINE</div>
 
         <!-- Authentic 4-Line Dot-Matrix LCD Screen -->
         <div class="fx-lcd-bezel">
@@ -1430,7 +1449,7 @@
         <!-- Matrix Action Buttons -->
         <div class="fx-solver-actions">
           <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-mat-det">det(A)</button>
-          <button type="button" class="fx-solver-btn" id="btn-mat-inv">Inverse A&#8315;�</button>
+          <button type="button" class="fx-solver-btn" id="btn-mat-inv">Inverse A&#8315;&#185;</button>
           <button type="button" class="fx-solver-btn" id="btn-mat-trans">Transpose A<sup>T</sup></button>
           <button type="button" class="fx-solver-btn" id="btn-mat-trace">Trace tr(A)</button>
           <button type="button" class="fx-solver-btn" id="btn-mat-mul" style="display:none;">A &times; B</button>
@@ -1598,7 +1617,7 @@
 
       <!-- Section 2: Deep Technical Architecture -->
       <section class="tool-guide-section">
-        <h2>Technical Architecture: Casio BASIC AST Interpreter &amp; Numeric Precision</h2>
+        <h2>Technical Architecture: Programmable BASIC AST Interpreter &amp; Numeric Precision</h2>
         <p>Unlike basic online calculators that merely pass strings into JavaScript's imprecise <code>eval()</code> function, LocalDoc features a purpose-built tokenizer, recursive-descent expression parser, and abstract syntax tree (AST) execution engine:</p>
 
         <div class="tool-tech-grid">
@@ -1609,12 +1628,12 @@
 
           <div class="tool-tech-card">
             <h3>4-Line Dot-Matrix LCD Emulation</h3>
-            <p>The virtual display accurately replicates the hardware fx-5800P 4-line display: Line 1 indicates current expression history, Line 2 handles live cursor editing with blinking block caret, Line 3 manages interactive variable prompts (<code>A&ndash;</code>), and Line 4 displays right-aligned numeric answers.</p>
+            <p>The virtual display accurately replicates the hardware fx-5800P 4-line display: Line 1 indicates current expression history, Line 2 handles live cursor editing with blinking block caret, Line 3 manages interactive variable prompts (<code>A?</code>), and Line 4 displays right-aligned numeric answers.</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>Casio BASIC Programming Interpreter</h3>
-            <p>The program engine parses authentic Casio command syntax: variable prompts (<code>&ndash;&rarr;A</code>), conditional branches (<code>cond=&gt;act</code>), expression assignment (<code>expr&rarr;D</code>), and output pauses (<code>&#9698;</code>). All programs execute safely within a sandboxed interpreter loop preventing infinite freezes.</p>
+            <h3>Programmable BASIC Command Interpreter</h3>
+            <p>The program engine parses standard programmable calculator syntax: variable prompts (<code>?&rarr;A</code>), conditional branches (<code>cond=&gt;act</code>), expression assignment (<code>expr&rarr;D</code>), and output pauses (<code>&#9698;</code>). All programs execute safely within a sandboxed interpreter loop preventing infinite freezes.</p>
           </div>
 
           <div class="tool-tech-card">
@@ -1626,7 +1645,7 @@
 
       <!-- Section 3: Performance & Feature Comparison Table -->
       <section class="tool-guide-section">
-        <h2>LocalDoc fx-5800P Emulator vs Standard Calculators</h2>
+        <h2>LocalDoc Pro-5800 vs Standard Online Calculators</h2>
         <p>Comparing our full programmable engineering tool against typical operating system and web calculators:</p>
 
         <div class="tool-comparison-table-wrap">
@@ -1648,7 +1667,7 @@
               </tr>
               <tr>
                 <td><strong>Custom Casio BASIC Programs</strong></td>
-                <td><span class="table-badge badge-green">Yes (P1-P4 Slots, &ndash;, &rarr;, &#9698;)</span></td>
+                <td><span class="table-badge badge-green">Yes (P1-P4 Slots, ?, &rarr;, &#9698;)</span></td>
                 <td><span class="table-badge badge-red">No Programming Support</span></td>
                 <td><span class="table-badge badge-red">No Program Support</span></td>
               </tr>
@@ -1682,42 +1701,42 @@
 
         <div class="faq-accordion-box">
           <details class="faq-item" open>
-            <summary class="faq-question">How do I toggle angle measurements between Degrees, Radians, and Gradians&ndash;</summary>
+            <summary class="faq-question">How do I toggle angle measurements between Degrees, Radians, and Gradians?</summary>
             <div class="faq-answer">
               <p>Press <strong>SHIFT</strong> then <strong>MODE</strong> to access the setup menu. Press <strong>1</strong> for Deg (&deg;), <strong>2</strong> for Rad (radians), or <strong>3</strong> for Gra (gradians). The active mode flag (<code>D</code>, <code>R</code>, or <code>G</code>) will illuminate on the top status row of the LCD display.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">How do I run and edit the built-in surveying inverse program&ndash;</summary>
+            <summary class="faq-question">How do I run and edit the built-in surveying inverse program?</summary>
             <div class="faq-answer">
-              <p>Press the <strong>FILE (Prog)</strong> key on the upper keypad. Press <strong>4</strong> to launch <code>SURVEY-INV</code>. The screen prompts for <code>N1&ndash;</code>, <code>E1&ndash;</code>, <code>N2&ndash;</code>, and <code>E2&ndash;</code>. Enter each coordinate followed by <strong>EXE</strong>. The calculator outputs the precise horizontal distance, followed by the whole-circle azimuth bearing in degrees, minutes, and seconds (DMS).</p>
+              <p>Press the <strong>FILE (Prog)</strong> key on the upper keypad. Press <strong>4</strong> to launch <code>SURVEY-INV</code>. The screen prompts for <code>N1?</code>, <code>E1?</code>, <code>N2?</code>, and <code>E2?</code>. Enter each coordinate followed by <strong>EXE</strong>. The calculator outputs the precise horizontal distance, followed by the whole-circle azimuth bearing in degrees, minutes, and seconds (DMS).</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Does this calculator support hexadecimal and binary calculations&ndash;</summary>
+            <summary class="faq-question">Does this calculator support hexadecimal and binary calculations?</summary>
             <div class="faq-answer">
               <p>Yes. Press <strong>MODE</strong>, then select <strong>Base-N</strong>. Use the direct keys <strong>DEC (x&sup2;)</strong>, <strong>HEX (log)</strong>, <strong>BIN (ln)</strong>, and <strong>OCT (x<sup>y</sup>)</strong> to instantly toggle display bases. Numbers entered are parsed in the active radix, allowing seamless bitwise operations.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Are my saved programs and calculation reel saved when I close the browser&ndash;</summary>
+            <summary class="faq-question">Are my saved programs and calculation reel saved when I close the browser?</summary>
             <div class="faq-answer">
               <p>Yes. All four program slots (P1 through P4), the 26 memory registers (A&ndash;Z), and the calculation tape history are automatically serialized into your browser's persistent localStorage. They will remain available whenever you return to the site.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Can I use physical keyboard keys to enter expressions quickly&ndash;</summary>
+            <summary class="faq-question">Can I use physical keyboard keys to enter expressions quickly?</summary>
             <div class="faq-answer">
               <p>Yes. The calculator supports full desktop keyboard input: numbers <code>0-9</code>, decimal point <code>.</code>, operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, parenthesis <code>(</code> and <code>)</code>, <code>Enter</code> for EXE, and <code>Backspace</code> for DEL.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary class="faq-question">Is this emulator compliant for university examinations and engineering tests&ndash;</summary>
+            <summary class="faq-question">Is this emulator compliant for university examinations and engineering tests?</summary>
             <div class="faq-answer">
               <p>The mathematical algorithms follow official Casio fx-5800P firmware logic for numerical calculus and algebraic hierarchy. While physical hardware is typically required inside physical test halls, this online tool is ideal for homework verification, field survey preparation, and engineering practice.</p>
             </div>
@@ -1865,7 +1884,13 @@
       </div>
       <a href="../blog/pro-scientific-calculator-guide.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
     </div>
-</main>
+
+      <!-- Legal Trademark Disclaimer -->
+      <div style="margin:28px 0; padding:16px 20px; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:12px; font-size:0.82rem; color:var(--text-muted); line-height:1.6;">
+        <strong>Trademark &amp; Non-Affiliation Notice:</strong> LocalDoc Pro-5800 is an independent educational web application and mathematical simulator. Casio, fx-5800P, fx-991EX, fx-83GTX, and related product names are registered trademarks of Casio Computer Co., Ltd. LocalDoc is not affiliated with, sponsored by, authorized by, or endorsed by Casio Computer Co., Ltd. References to calculator models are made strictly for comparative and educational identification under nominative fair use.
+      </div>
+
+  </main>
 
     <!-- Footer -->
   <footer class="site-footer">
@@ -1873,7 +1898,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p>A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>
@@ -3467,10 +3492,10 @@
             [-A[1][0] / det, A[0][0] / det]
           ];
           matResult.innerHTML = `
-            <span class="fx-step-badge">Inverse A&#8315;�:</span><br>
+            <span class="fx-step-badge">Inverse A&#8315;&#185;:</span><br>
             det(A) = ${det}<br>
-            A&#8315;� = (1 / ${det}) &times; [ [${A[1][1]}, ${-A[0][1]}], [${-A[1][0]}, ${A[0][0]}] ]<br>
-            A&#8315;� =<br>&nbsp;&nbsp;${formatMat(inv)}
+            A&#8315;&#185; = (1 / ${det}) &times; [ [${A[1][1]}, ${-A[0][1]}], [${-A[1][0]}, ${A[0][0]}] ]<br>
+            A&#8315;&#185; =<br>&nbsp;&nbsp;${formatMat(inv)}
           `;
         } else {
           const a = A[0][0], b = A[0][1], c = A[0][2];
@@ -3502,9 +3527,9 @@
           ];
           const inv = adj.map(row => row.map(v => v / det));
           matResult.innerHTML = `
-            <span class="fx-step-badge">Inverse A&#8315;�:</span><br>
+            <span class="fx-step-badge">Inverse A&#8315;&#185;:</span><br>
             det(A) = ${det}<br>
-            A&#8315;� = Adj(A) / det(A) =<br>&nbsp;&nbsp;${formatMat(inv)}
+            A&#8315;&#185; = Adj(A) / det(A) =<br>&nbsp;&nbsp;${formatMat(inv)}
           `;
         }
       });
@@ -3691,7 +3716,7 @@
               <span class="fx-step-badge">Quadratic Solution (2 Real Distinct Roots):</span><br>
               Discriminant ? = b&sup2; - 4ac = (${b})&sup2; - 4(${a})(${c}) = <strong>${delta}</strong> (&gt; 0)<br>
               Parabola Vertex: (h, k) = (<strong>${vertexX.toFixed(4)}</strong>, <strong>${vertexY.toFixed(4)}</strong>)<br>
-              Root x1� = (-b + &radic;?)/(2a) = <strong>${x1.toFixed(5)}</strong><br>
+              Root x1 &mdash; = (-b + &radic;?)/(2a) = <strong>${x1.toFixed(5)}</strong><br>
               Root x2 = (-b - &radic;?)/(2a) = <strong>${x2.toFixed(5)}</strong>
             `;
           } else if (delta === 0) {
@@ -3708,7 +3733,7 @@
               <span class="fx-step-badge">Quadratic Solution (Complex Conjugate Roots):</span><br>
               Discriminant ? = b&sup2; - 4ac = <strong>${delta}</strong> (&lt; 0)<br>
               Parabola Vertex: (h, k) = (<strong>${vertexX.toFixed(4)}</strong>, <strong>${vertexY.toFixed(4)}</strong>)<br>
-              Root x1� = <strong>${realPart.toFixed(5)} + ${Math.abs(imagPart).toFixed(5)}i</strong><br>
+              Root x1 &mdash; = <strong>${realPart.toFixed(5)} + ${Math.abs(imagPart).toFixed(5)}i</strong><br>
               Root x2 = <strong>${realPart.toFixed(5)} - ${Math.abs(imagPart).toFixed(5)}i</strong>
             `;
           }
@@ -3731,7 +3756,7 @@
             polyResult.innerHTML = `
               <span class="fx-step-badge">Cubic Solution (1 Real, 2 Complex Roots):</span><br>
               Cardano Discriminant D = <strong>${discriminant.toFixed(5)}</strong><br>
-              Root x1� (Real) = <strong>${x1.toFixed(5)}</strong><br>
+              Root x1 &mdash; (Real) = <strong>${x1.toFixed(5)}</strong><br>
               Root x2 (Complex) = <strong>${realPart.toFixed(5)} + ${Math.abs(imagPart).toFixed(5)}i</strong><br>
               Root x3 (Complex) = <strong>${realPart.toFixed(5)} - ${Math.abs(imagPart).toFixed(5)}i</strong>
             `;
@@ -3742,7 +3767,7 @@
             const x2 = -u + shift;
             polyResult.innerHTML = `
               <span class="fx-step-badge">Cubic Solution (Multiple Real Roots):</span><br>
-              Root x1� = <strong>${x1.toFixed(5)}</strong><br>
+              Root x1 &mdash; = <strong>${x1.toFixed(5)}</strong><br>
               Root x2 = Root x3 = <strong>${x2.toFixed(5)}</strong>
             `;
           } else {
@@ -3755,7 +3780,7 @@
             polyResult.innerHTML = `
               <span class="fx-step-badge">Cubic Solution (3 Distinct Real Roots):</span><br>
               Cardano Discriminant D = <strong>${discriminant.toFixed(5)}</strong> (&lt; 0)<br>
-              Root x1� = <strong>${x1.toFixed(5)}</strong><br>
+              Root x1 &mdash; = <strong>${x1.toFixed(5)}</strong><br>
               Root x2 = <strong>${x2.toFixed(5)}</strong><br>
               Root x3 = <strong>${x3.toFixed(5)}</strong>
             `;
@@ -3800,7 +3825,7 @@
           out.innerHTML = `
             <span style="color:#38BDF8; font-weight:800;">d/dx [${expr}] at x = ${x0}:</span><br>
             Numerical derivative: <strong>${derivative.toFixed(6)}</strong><br>
-            <span style="color:#94A3B8; font-size:0.75rem;">O(h&#8308;) central 5-point stencil (h=10&#8315;��)</span>
+            <span style="color:#94A3B8; font-size:0.75rem;">O(h&#8308;) central 5-point stencil (h=10&#8315; &mdash;  &mdash; )</span>
           `;
         } catch (err) {
           out.innerHTML = `<span style="color:#EF4444;">Evaluation Error: ${err.message}</span>`;

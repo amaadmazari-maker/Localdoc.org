@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Combining Multiple JPG Photos into a Single Printable PDF | LocalDoc Guides</title>
@@ -327,6 +334,16 @@
     }
   </style>
 
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Combining Multiple JPG Photos into a Single Printable PDF | LocalDoc Guides">
+  <meta property="og:description" content="Package smartphone photos, invoice scans, and receipts into standardized A4 PDF documents with zero cloud transmission.">
+  <meta property="og:url" content="https://localdoc.org/blog/jpg-to-pdf-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Combining Multiple JPG Photos into a Single Printable PDF | LocalDoc Guides">
+  <meta name="twitter:description" content="Package smartphone photos, invoice scans, and receipts into standardized A4 PDF documents with zero cloud transmission.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -407,7 +424,7 @@
 
       <h2>1. The Smartphone Photo Dump: Why Raw Images Break Submission Portals</h2>
       <p>Whether submitting an auto insurance claim, filing travel expense reimbursements, or submitting business receipts to an accountant, modern documentation relies heavily on mobile smartphone cameras. While convenient, raw camera snapshots create significant transmission bottlenecks. Modern 12 to 48-megapixel mobile sensors generate raw JPEG files ranging from 3 to 10 megabytes apiece. When a user captures 15 to 20 photographs of vehicle damage, repair estimates, and itemized invoices, the raw folder swells to over 80 megabytes.</p>
-      <p>Corporate intake portals, court filing systems, and email mailboxes strictly enforce file size limits�typically capping uploads at 10 MB or 25 MB. Furthermore, raw camera photos contain differing EXIF rotation tags, causing some pages to appear sideways or upside down when opened on desktop computers. Transmitting unvetted photos to commercial cloud conversion websites also exposes sensitive EXIF metadata�including exact GPS coordinates of your home and personal device identifiers�to third-party tracking databases.</p>
+      <p>Corporate intake portals, court filing systems, and email mailboxes strictly enforce file size limits &mdash; typically capping uploads at 10 MB or 25 MB. Furthermore, raw camera photos contain differing EXIF rotation tags, causing some pages to appear sideways or upside down when opened on desktop computers. Transmitting unvetted photos to commercial cloud conversion websites also exposes sensitive EXIF metadata &mdash; including exact GPS coordinates of your home and personal device identifiers &mdash; to third-party tracking databases.</p>
 
       <h2>2. EXIF Tag Parsing: Automatic Canvas Rotation in Client RAM</h2>
       <p>A frequent defect of basic photo-to-PDF utilities is misaligned orientation. Smartphone cameras do not always physically rotate pixel arrays when held vertically; instead, the hardware writes an orientation flag into the image's EXIF metadata header (tags 1 through 8). If a PDF generator ignores this metadata, portrait photos are displayed in sideways landscape mode.</p>
@@ -416,14 +433,14 @@
         <li><strong>Binary EXIF Inspection:</strong> The WebAssembly parser locates the JPEG <code>APP1</code> marker segment (<code>0xFFE1</code>) and reads the TIFF header to extract the primary orientation tag.</li>
         <li><strong>Matrix Transformation:</strong> The engine applies the corresponding 90&deg;, 180&deg;, or 270&deg; rotation matrix directly to the image canvas, ensuring that the visual content matches the photographer's intended perspective.</li>
         <li><strong>Standardized Page Geometry:</strong> The rotated image is mapped onto an International ISO A4 canvas (595.28 &times; 841.89 pt) or US Letter canvas (612 &times; 792 pt). The engine calculates proportional scale factors with 28 pt safety gutters to prevent laser printers from clipping margins.</li>
-        <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tags�such as GPS coordinates, camera serial numbers, and exposure times�are stripped from the binary streams, protecting user privacy.</li>
+        <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tags &mdash; such as GPS coordinates, camera serial numbers, and exposure times &mdash; are stripped from the binary streams, protecting user privacy.</li>
       </ol>
 
       <h2>3. Under the Hood: Lossless DCT Passthrough vs Smart Resampling</h2>
       <p>LocalDoc utilizes a dual-path pipeline to balance execution speed, visual quality, and output file size:</p>
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
         <li><strong>Lossless DCT Passthrough:</strong> If the input JPEG images are already optimized and correctly oriented, our engine bypasses canvas decompression entirely. The raw JPEG byte stream is injected directly into a PDF image XObject with <code>/Filter /DCTDecode</code>. This yields near-instant zero-latency packaging with zero generational compression loss.</li>
-        <li><strong>Adaptive Canvas Resampling:</strong> When processing oversized 48MP smartphone photos that would exceed corporate upload ceilings, the engine passes the image through an in-memory <code>OffscreenCanvas</code>. The canvas scales the image to a balanced 200�300 DPI resolution and applies controlled WebAssembly JPEG compression (typically 80�85% quality).</li>
+        <li><strong>Adaptive Canvas Resampling:</strong> When processing oversized 48MP smartphone photos that would exceed corporate upload ceilings, the engine passes the image through an in-memory <code>OffscreenCanvas</code>. The canvas scales the image to a balanced 200 &ndash; 300 DPI resolution and applies controlled WebAssembly JPEG compression (typically 80 &ndash; 85% quality).</li>
         <li><strong>Vector Coordinate Placement:</strong> The compressed stream is referenced inside the page's <code>/Contents</code> dictionary using a single PostScript drawing operator (<code>q W 0 0 H X Y cm /Im1 Do Q</code>), ensuring maximum viewer compatibility across Adobe Acrobat, Apple Preview, and mobile PDF readers.</li>
       </ol>
 
@@ -593,23 +610,23 @@
 
       <h2>7. Frequently Asked Questions (FAQ)</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will converting photos to PDF reduce text readability on invoices and receipts&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will converting photos to PDF reduce text readability on invoices and receipts?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No. Our engine uses an adaptive compression curve specifically calibrated for document legibility. High-contrast textual numbers, line items, and vendor signatures remain sharp while large background areas are compressed efficiently.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are sensitive home address coordinates stripped from my photos&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are sensitive home address coordinates stripped from my photos?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Smartphone cameras embed precise latitude, longitude, and elevation data in EXIF headers. LocalDoc automatically strips location and device tracking metadata, preventing sensitive location leaks when submitting claims.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I mix portrait and landscape photos in the same PDF document&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I mix portrait and landscape photos in the same PDF document?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc evaluates each image independently. Wide landscape photos are placed on landscape pages, while vertical photos are placed on portrait pages, preventing clumsy margins or forced stretching.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Is there a limit on how many photos I can combine&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Is there a limit on how many photos I can combine?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">On modern desktop browsers (Chrome, Firefox, Edge), you can easily package 50 or more photos into a single PDF. On mobile smartphones, we recommend batches of 20 to 25 photos to ensure smooth operation within device memory limits.</p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool require an internet connection&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool require an internet connection?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No. All EXIF parsing, image compression, and PDF assembly routines execute locally in your device's browser memory. Once loaded, LocalDoc works completely offline in airplane mode.</p>
       </div>
 

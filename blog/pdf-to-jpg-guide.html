@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>How to Convert PDF Pages to 300 DPI High-Definition JPG Images | LocalDoc Guides</title>
@@ -327,6 +334,16 @@
     }
   </style>
 
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="How to Convert PDF Pages to 300 DPI High-Definition JPG Images | LocalDoc Guides">
+  <meta property="og:description" content="Rasterize vector PDF pages into crisp, high-resolution JPEG images using client-side canvas rendering with zero cloud uploads.">
+  <meta property="og:url" content="https://localdoc.org/blog/pdf-to-jpg-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Convert PDF Pages to 300 DPI High-Definition JPG Images | LocalDoc Guides">
+  <meta name="twitter:description" content="Rasterize vector PDF pages into crisp, high-resolution JPEG images using client-side canvas rendering with zero cloud uploads.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 </head>
 <body>
   <div id="reading-progress"></div>
@@ -414,7 +431,7 @@
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
         <li><strong>Resolution Multiplier Calculation:</strong> For 300 DPI output, the scale multiplier is computed as $S = \text{DPI} / 72 = 300 / 72 \approx 4.1667$.</li>
         <li><strong>High-Resolution Canvas Allocation:</strong> Multiplying the physical point dimensions by this scale factor yields an in-memory canvas measuring 2,480 &times; 3,508 pixels ($595.28 \times 4.1667 \approx 2480.3$ px, $841.89 \times 4.1667 \approx 3507.9$ px).</li>
-        <li><strong>Subpixel Antialiasing:</strong> Vector B�zier curves and glyph contours are rasterized with subpixel coverage matrices, guaranteeing smooth letterforms even when rendering intricate 6-point financial disclaimer text.</li>
+        <li><strong>Subpixel Antialiasing:</strong> Vector B&eacute;zier curves and glyph contours are rasterized with subpixel coverage matrices, guaranteeing smooth letterforms even when rendering intricate 6-point financial disclaimer text.</li>
         <li><strong>Simulated Paper Backing:</strong> Because the JPEG specification does not support alpha channels, the canvas context is initialized with a solid paper-white fill (<code>#FFFFFF</code>) prior to vector rendering, ensuring clean contrast.</li>
       </ol>
 
@@ -593,23 +610,23 @@
 
       <h2>7. Frequently Asked Questions (FAQ)</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Why should I use 300 DPI instead of 72 DPI for web previews&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Why should I use 300 DPI instead of 72 DPI for web previews?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Modern smartphones, tablets, and 4K desktop monitors feature high pixel density screens. A 72 DPI image looks blurry and pixelated when viewed on modern displays. 300 DPI guarantees razor-sharp text and imagery across all devices.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert confidential financial prospectuses without risking data leaks&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert confidential financial prospectuses without risking data leaks?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Because 100% of the conversion pipeline executes directly inside your local browser's memory sandbox, zero bytes are transmitted over external networks. This satisfies strict corporate confidentiality and regulatory compliance mandates.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">How are converted JPEG images downloaded&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">How are converted JPEG images downloaded?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">When converting single pages, you can download the image directly with a single click. For multi-page documents, LocalDoc packages all converted images into an organized, uncompressed ZIP archive for convenient saving.</p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert password-protected PDF documents&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert password-protected PDF documents?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. If your document requires an open password, you will be prompted to enter it locally so the WebAssembly engine can decrypt the stream in RAM. Your password is never sent to any server.</p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Once the web application is loaded in your browser, the service worker caches all necessary WebAssembly binaries. You can disconnect from the internet and convert files in complete isolation.</p>
       </div>
 

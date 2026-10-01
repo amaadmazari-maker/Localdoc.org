@@ -716,6 +716,15 @@ const UIUtils = {
         localStorage.setItem(STORAGE_KEY, val);
         localStorage.setItem(STORAGE_KEY + '_date', new Date().toISOString());
       } catch (e) {}
+      if (typeof window.gtag === 'function') {
+        const state = val === 'accepted' ? 'granted' : 'denied';
+        window.gtag('consent', 'update', {
+          'analytics_storage': state,
+          'ad_storage': state,
+          'ad_user_data': state,
+          'ad_personalization': state
+        });
+      }
       banner.classList.remove('cookie-banner-visible');
       banner.classList.add('cookie-banner-hiding');
       setTimeout(() => banner.remove(), 350);

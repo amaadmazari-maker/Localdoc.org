@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>How to Add Security Watermarks to Confidential PDF Documents in RAM | LocalDoc</title>
@@ -21,10 +28,15 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
-  <meta property="og:title" content="In-Browser PDF Watermarking: Vector ExtGState Compositing in RAM � LocalDoc">
+  <meta property="og:title" content="In-Browser PDF Watermarking: Vector ExtGState Compositing in RAM &mdash; LocalDoc">
   <meta property="og:description" content="Technical guide to injecting semi-transparent diagonal watermarks into PDF streams using client-side WebAssembly graphics states.">
   <meta property="og:url" content="https://localdoc.org/blog/watermark-guide.html">
-  <meta property="og:image" content="../assets/icons/watermark.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Add Security Watermarks to Confidential PDF Documents in RAM | LocalDoc">
+  <meta name="twitter:description" content="Stamp semi-transparent diagonal vector watermarks across PDF pages in local browser RAM using ExtGState alpha compositing without cloud uploads.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -507,8 +519,8 @@
           </tr>
           <tr>
             <td><strong>File Size Impact</strong></td>
-            <td>Often flattens/rasterizes (+5�20 MB)</td>
-            <td>Minimal (+15�30 KB)</td>
+            <td>Often flattens/rasterizes (+5 &ndash; 20 MB)</td>
+            <td>Minimal (+15 &ndash; 30 KB)</td>
             <td><strong>Negligible (+18 KB total across 36 pages)</strong></td>
           </tr>
           <tr>
@@ -689,25 +701,25 @@
 
       <h2>8. Frequently Asked Questions</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does adding a watermark increase the PDF file size significantly&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does adding a watermark increase the PDF file size significantly?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           No. Because LocalDoc injects pure vector text stream operators rather than flattening pages into raster images, each page adds only about 500 bytes of text instructions. A 36-page document grows by less than 20 KB.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can readers select and copy the text underneath the watermark&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can readers select and copy the text underneath the watermark?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           Yes. The underlying text streams remain completely unmodified. Readers can highlight paragraphs, select tables, and search for terms with <kbd>Ctrl+F</kbd> normally.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I apply watermarks to specific page ranges&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I apply watermarks to specific page ranges?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          Yes. LocalDoc allows you to stamp all pages, exclude the title page, or specify custom page intervals (such as pages 2�15) to maintain professional document presentation.
+          Yes. LocalDoc allows you to stamp all pages, exclude the title page, or specify custom page intervals (such as pages 2 &ndash; 15) to maintain professional document presentation.
         </p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline&ndash;</h4>
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool work completely offline?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
           Yes. All vector injection routines and font metric computations run inside client-side WebAssembly cached via our Service Worker. You can watermark confidential files on an offline machine with zero internet connection.
         </p>
@@ -750,7 +762,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p data-i18n="footer_desc">The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p data-i18n="footer_desc">A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>

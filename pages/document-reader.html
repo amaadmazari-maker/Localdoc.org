@@ -1,15 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
-
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Universal Document Reader &mdash; View PDF, DOCX, XLSX | LocalDoc</title>
@@ -24,7 +31,12 @@
   <meta property="og:title" content="Universal Document Reader Online &mdash; PDF, Word & Excel | LocalDoc">
   <meta property="og:description" content="Open and read any PDF, Word, or Excel document in your web browser with zero uploads and complete privacy.">
   <meta property="og:url" content="https://localdoc.org/pages/document-reader.html">
-  <meta property="og:image" content="../assets/icons/document-reader.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Universal Document Reader &mdash; View PDF, DOCX, XLSX | LocalDoc">
+  <meta name="twitter:description" content="Read and view PDF, DOCX, XLSX, and image files directly in your browser with night mode, zoom, and text search. 100% private, zero uploads.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og-preview.png">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -527,42 +539,42 @@
 
           <div class="faq-accordion-box">
             <details class="faq-item" open>
-              <summary class="faq-question">Can I open password-protected PDF or Word documents&ndash;</summary>
+              <summary class="faq-question">Can I open password-protected PDF or Word documents?</summary>
               <div class="faq-answer">
                 <p>If you open an encrypted PDF, the viewer will prompt you to enter the document password directly in your browser. The decryption key is processed locally using standard AES-256 routines&mdash;your password is never transmitted across the network.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary class="faq-question">Why is LocalDoc safer for confidential contracts and medical records&ndash;</summary>
+              <summary class="faq-question">Why is LocalDoc safer for confidential contracts and medical records?</summary>
               <div class="faq-answer">
                 <p>Traditional "free online viewers" upload your files to remote cloud servers to convert them into HTML images, creating permanent server logs and exposing trade secrets. LocalDoc executes 100% within your device's browser memory (RAM). When you close the tab, the document ceases to exist anywhere in memory.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary class="faq-question">Can I use LocalDoc to read documents without an internet connection&ndash;</summary>
+              <summary class="faq-question">Can I use LocalDoc to read documents without an internet connection?</summary>
               <div class="faq-answer">
                 <p>Yes. Once you load LocalDoc once, our service worker caches the viewer engines locally. You can open files on a plane, subway, or in remote areas with zero Wi-Fi or cellular connection.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary class="faq-question">How does LocalDoc display complex multi-sheet Excel spreadsheets&ndash;</summary>
+              <summary class="faq-question">How does LocalDoc display complex multi-sheet Excel spreadsheets?</summary>
               <div class="faq-answer">
                 <p>When you load a Microsoft Excel <code>.xlsx</code> workbook, LocalDoc generates a bottom tab bar listing every sheet in the workbook (e.g., "Summary", "Q1 Budget", "Data"). Clicking any tab dynamically renders that sheet's data into clean tabular format with formatted cell values.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary class="faq-question">Does opening large PDF textbooks consume excessive device memory&ndash;</summary>
+              <summary class="faq-question">Does opening large PDF textbooks consume excessive device memory?</summary>
               <div class="faq-answer">
                 <p>No. LocalDoc uses on-demand page virtualization via Mozilla PDF.js. Only currently viewed pages are rasterized into canvas memory, allowing you to smoothly scroll through 500+ page technical manuals and textbooks without crashing mobile browser tabs.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary class="faq-question">Can I select and copy text from documents opened in this viewer&ndash;</summary>
+              <summary class="faq-question">Can I select and copy text from documents opened in this viewer?</summary>
               <div class="faq-answer">
                 <p>Yes. For Word (.docx), Excel (.xlsx), and text documents, content is rendered as native HTML text, allowing normal mouse selection and clipboard copying. For vector PDFs, text glyphs can be selected directly across rendered pages.</p>
               </div>
@@ -673,7 +685,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
+          <p>A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
           <div style="margin-top:16px;">
             <a href="../index.html" class="btn btn-outline" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
           </div>

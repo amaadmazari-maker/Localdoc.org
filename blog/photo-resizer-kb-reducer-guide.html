@@ -1,14 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
     gtag('js', new Date());
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Photo Resizer to 20KB, 50KB, 100KB: Exact Pixels, DPI &amp; Dimensions (2026) | LocalDoc</title>
@@ -23,7 +31,12 @@
   <meta property="og:title" content="Photo Resizer to 20KB, 50KB, 100KB: Exact Pixels &amp; DPI (2026)">
   <meta property="og:description" content="Resize photos to mm, cm, inches, or pixels and compress under exact 20KB, 50KB, 100KB limits with binary search in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/blog/photo-resizer-kb-reducer-guide.html">
-  <meta property="og:image" content="../assets/icons/photo-resizer.svg">
+  <meta property="og:image" content="https://localdoc.org/assets/images/biometrics-passport-3d.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Photo Resizer to 20KB, 50KB, 100KB: Exact Pixels, DPI & Dimensions (2026) | LocalDoc">
+  <meta name="twitter:description" content="Free tool &amp; guide to resize photos to exact pixels, cm, mm, inches, and compress under 20KB, 50KB, or 100KB limits without quality loss. Perfect for passport, job, and exam portals.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/biometrics-passport-3d.webp">
+
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -395,13 +408,13 @@
         <li><em>"File exceeds the maximum allowable server quota of 50 KB."</em></li>
       </ul>
       <p>
-        Most image editors offer only a coarse "Quality 1�100" slider. Candidates are forced into a frustrating trial-and-error cycle: guess 60%, export, discover the file is 21.4 KB, guess 50%, find it is 16.2 KB but blurry, and repeat. LocalDoc eliminates guesswork by replacing manual sliders with an algorithmic <strong>Binary Search Quality Optimizer</strong>.
+        Most image editors offer only a coarse "Quality 1 &ndash; 100" slider. Candidates are forced into a frustrating trial-and-error cycle: guess 60%, export, discover the file is 21.4 KB, guess 50%, find it is 16.2 KB but blurry, and repeat. LocalDoc eliminates guesswork by replacing manual sliders with an algorithmic <strong>Binary Search Quality Optimizer</strong>.
       </p>
 
       <!-- Section 2 -->
       <h2>2. Mathematical Mechanics: 7-Iteration Binary Search Compression</h2>
       <p>
-        JPEG compression uses Discrete Cosine Transform (DCT) quantization matrices parameterized by an empirical quality factor $Q \in [0.05, 0.98]$. The relationship between $Q$ and final file size is highly non-linear and depends on image entropy�facial wrinkles, hair texture, and background noise:
+        JPEG compression uses Discrete Cosine Transform (DCT) quantization matrices parameterized by an empirical quality factor $Q \in [0.05, 0.98]$. The relationship between $Q$ and final file size is highly non-linear and depends on image entropy &mdash; facial wrinkles, hair texture, and background noise:
       </p>
 
       <div class="tech-card">
@@ -462,7 +475,7 @@
             <td><strong>4032 &times; 3024 px Native</strong></td>
             <td><strong>Raw Uncompressed</strong></td>
             <td><strong>14.20 MB</strong></td>
-            <td><strong>�</strong></td>
+            <td><strong> &mdash; </strong></td>
             <td><strong>Raw iPhone 15 Pro Camera Master</strong></td>
           </tr>
         </tbody>
@@ -619,13 +632,13 @@
             <td><strong>Government Jobs &amp; UPSC / SSC</strong></td>
             <td>3.5 &times; 4.5 cm</td>
             <td>413 &times; 531 px</td>
-            <td>10 KB � 50 KB</td>
+            <td>10 KB &ndash; 50 KB</td>
           </tr>
           <tr>
             <td><strong>State Board Signature Uploads</strong></td>
             <td>3.5 &times; 1.5 cm</td>
             <td>413 &times; 177 px</td>
-            <td>10 KB � 20 KB</td>
+            <td>10 KB &ndash; 20 KB</td>
           </tr>
           <tr>
             <td><strong>NADRA Smart National ID Card</strong></td>
@@ -640,22 +653,22 @@
       <h2>7. Frequently Asked Questions</h2>
       <div class="faq-accordion">
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">How do I convert millimeters to pixels for printing&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">How do I convert millimeters to pixels for printing?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">The standard formula is: $\text{Pixels} = \frac{\text{Millimeters}}{25.4} \times \text{DPI}$. At official consular 300 DPI print quality, a 35mm width equals $\frac{35}{25.4} \times 300 \approx 413$ pixels, and a 45mm height equals $\frac{45}{25.4} \times 300 \approx 531$ pixels. Our tool handles this conversion automatically.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Will compressing to 20KB make my face blurry&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Will compressing to 20KB make my face blurry?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No, because our engine crops the dimensions to the exact pixel standard first before compressing. This ensures that high pixel density is maintained without unnecessary empty canvas data, preserving sharp facial features even under 20KB.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I change the photo background to pure white or light blue&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I change the photo background to pure white or light blue?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. In the control panel of the <a href="../pages/photo-resizer.html">Photo Resizer</a>, you can select between Original, White, or Light Blue background presets with a single click.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
-          <h4 style="margin:0 0 6px; color:var(--text-primary);">Is my portrait safe from facial recognition scrapers&ndash;</h4>
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Is my portrait safe from facial recognition scrapers?</h4>
           <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc operates entirely on your physical machine. Unlike commercial converters that store photos on cloud storage buckets, zero bytes leave your computer, guaranteeing complete biometric confidentiality.</p>
         </div>
       </div>
@@ -728,7 +741,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <h3>LocalDoc</h3>
-          <p>The world's leading client-side document processing platform. Zero cloud uploads.</p>
+          <p>A high-precision client-side document processing platform. Zero cloud uploads.</p>
         </div>
         <div class="footer-col">
           <h4>Popular Tools</h4>
