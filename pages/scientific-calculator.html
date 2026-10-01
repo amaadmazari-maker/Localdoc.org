@@ -71,11 +71,11 @@
       },
       {
         "@type": "SoftwareApplication",
-        "name": "Casio fx-5800P / fx-3650P II Programmable Scientific Calculator",
+        "name": "LocalDoc Pro-5800 Programmable Scientific Calculator",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "All modern browsers (Chrome, Edge, Firefox, Safari)",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Authentic Casio fx-5800P Super-FX Plus programmable scientific calculator online emulator. Features a 4-line dot-matrix LCD, program runner, Base-N HEX/BIN/OCT arithmetic, numerical calculus, and persistent memory registers."
+        "description": "High-precision in-browser programmable scientific calculator inspired by the classic fx-5800P architecture. Features a 4-line dot-matrix LCD emulator, Pratt recursive-descent math parser, Base-N radix conversions, numerical calculus, and persistent offline memory registers."
       },
       {
         "@type": "HowTo",
@@ -1592,7 +1592,7 @@
       <!-- Section 1: Practical Step-by-Step Guide -->
       <section class="tool-guide-section">
         <h2>How to Use the Programmable Scientific Calculator Online</h2>
-        <p>The Casio fx-5800P SUPER-FX PLUS online calculator provides professional engineers, surveyors, mathematics students, and programmers with an authentic hardware emulation of the legendary programmable scientific calculator. From advanced calculus to custom loops, here is how to master its capabilities:</p>
+        <p>LocalDoc Pro-5800 Programmable Scientific Calculator provides professional engineers, surveyors, STEM students, and developers with an authentic browser-based mathematical engine inspired by the legendary fx-5800P hardware architecture. From numerical calculus and coordinate geometry to custom programmable loops, here is how to master its capabilities:</p>
         
         <div class="tool-steps-grid">
           <div class="tool-step-card">
@@ -1618,27 +1618,31 @@
       <!-- Section 2: Deep Technical Architecture -->
       <section class="tool-guide-section">
         <h2>Technical Architecture: Programmable BASIC AST Interpreter &amp; Numeric Precision</h2>
-        <p>Unlike basic online calculators that merely pass strings into JavaScript's imprecise <code>eval()</code> function, LocalDoc features a purpose-built tokenizer, recursive-descent expression parser, and abstract syntax tree (AST) execution engine:</p>
+        <p>Unlike simplistic web calculators that blindly pass unsanitized input strings into JavaScript's imprecise <code>eval()</code> function, LocalDoc operates a dedicated tokenizer, Pratt recursive-descent expression parser, and Abstract Syntax Tree (AST) interpreter entirely within browser memory:</p>
+
+        <div style="margin: 20px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress In-Memory Mathematical Execution Architecture" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
 
         <div class="tool-tech-grid">
           <div class="tool-tech-card">
-            <h3>IEEE 754 High-Precision Math Core</h3>
-            <p>Calculations are evaluated using 64-bit double-precision floating-point arithmetic compliant with IEEE 754 standards, delivering 15 to 17 decimal digits of precision. Dedicated trigonometric reduction functions prevent catastrophic cancellation at multi-radian multiples of &pi;.</p>
+            <h3>Tokenizer &amp; Operator Precedence Parsing</h3>
+            <p>Mathematical expressions are broken into typed token streams (numeric literals, exponential scientific notation <code>1.23e-8</code>, constants &pi; and <em>e</em>, algebraic operators, and memory registers A&ndash;Z). Our Pratt recursive-descent parser enforces textbook algebraic hierarchy: unary negation vs binary subtraction, implied multiplication (e.g. <code>2(3+4)</code> or <code>5&pi;</code> parsed without requiring explicit <code>*</code> symbols), and right-associative exponentiation (<code>2^3^2 = 512</code>).</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>4-Line Dot-Matrix LCD Emulation</h3>
-            <p>The virtual display accurately replicates the hardware fx-5800P 4-line display: Line 1 indicates current expression history, Line 2 handles live cursor editing with blinking block caret, Line 3 manages interactive variable prompts (<code>A?</code>), and Line 4 displays right-aligned numeric answers.</p>
+            <h3>IEEE 754 Floating-Point &amp; Epsilon Guarding</h3>
+            <p>Native JavaScript numbers are IEEE 754 64-bit double-precision floats, which regularly suffer binary fractional rounding inaccuracies (e.g. <code>0.1 + 0.2 === 0.30000000000000004</code> or <code>sin(&pi;) === 1.2246e-16</code>). LocalDoc wraps all trigonometric and algebraic reductions in an epsilon-guarded quantization formatter (<code>Number.EPSILON</code>) that cleans floating-point noise to 12 decimal places before updating the LCD display.</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>Programmable BASIC Command Interpreter</h3>
-            <p>The program engine parses standard programmable calculator syntax: variable prompts (<code>?&rarr;A</code>), conditional branches (<code>cond=&gt;act</code>), expression assignment (<code>expr&rarr;D</code>), and output pauses (<code>&#9698;</code>). All programs execute safely within a sandboxed interpreter loop preventing infinite freezes.</p>
+            <h3>Composite Simpson Calculus &amp; Survey Coordinates</h3>
+            <p>Definite integrals (<code>&int;dx</code>) are approximated via adaptive composite Simpson's 1/3 and 3/8 quadrature rules with singularity guards (triggering <code>Math ERROR</code> at asymptotes like tan 90&deg;). Surveying coordinates (<code>Pol</code> / <code>Rec</code>) compute Euclidean hypotenuse and whole-circle azimuth bearings (&Delta;N, &Delta;E) using quadrant-aware <code>Math.atan2()</code> transformations.</p>
           </div>
 
           <div class="tool-tech-card">
-            <h3>Persistent Memory &amp; Offline PWA Architecture</h3>
-            <p>Memory registers (A through Z, Ans) and program slots P1-P4 are persisted in your browser's local storage. You can close your laptop or shut down your phone&mdash;your formulas and variables remain intact without requiring user accounts or external cloud databases.</p>
+            <h3>Sandboxed BASIC Runner &amp; Offline PWA Memory</h3>
+            <p>Program slots (P1&ndash;P4) parse variable input prompts (<code>?&rarr;A</code>), conditional branches (<code>cond=&gt;statement</code>), and pause delimiters (<code>&#9698;</code>). Each execution runs with a 50ms timeout guard to prevent runaway infinite loops, while all 26 variable registers (A&ndash;Z) and calculation tape logs are serialized locally in browser <code>localStorage</code>.</p>
           </div>
         </div>
       </section>
@@ -1653,7 +1657,7 @@
             <thead>
               <tr>
                 <th>Capability / Feature</th>
-                <th>LocalDoc fx-5800P</th>
+                <th>LocalDoc Pro-5800</th>
                 <th>Standard OS Calculator</th>
                 <th>Basic Web Calculators</th>
               </tr>
@@ -1855,9 +1859,9 @@
             </div>
           </a>
           <a href="scan.html" class="related-tool-card">
-            <img src="../assets/icons/scan.svg" alt="CamScanner Studio" width="40" height="40">
+            <img src="../assets/icons/scan.svg" alt="Document Scanner" width="40" height="40">
             <div>
-              <h4>CamScanner Studio</h4>
+              <h4>Document Scanner</h4>
               <p>Scan homework assignments &amp; receipts</p>
             </div>
           </a>
