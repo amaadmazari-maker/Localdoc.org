@@ -1092,6 +1092,27 @@
         </div>
       </div>
 
+      <!-- In-Depth Technical Architecture & Coordinate Geometry Card -->
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin:24px 0; box-shadow:var(--shadow-sm);">
+        <h3 style="margin:0 0 12px; font-size:1.25rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+          <span>📐</span> 300 DPI Coordinate Geometry &amp; In-Memory Canvas Pipeline
+        </h3>
+        <p style="margin:0 0 16px; font-size:0.92rem; color:var(--text-secondary); line-height:1.7;">
+          Government identification cards and biometric portraits require mathematical precision to prevent rejection by automated optical scanners or bank tellers. LocalDoc executes high-resolution raster compositing directly inside browser memory via HTML5 Canvas:
+        </p>
+
+        <div style="margin: 20px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Zero-Egress In-Memory Document Processing Architecture" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 0 0 18px 20px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.75;">
+          <li><strong>ISO/IEC 7810 ID-1 Coordinate Mapping:</strong> Physical millimeters convert to digital pixel coordinates using $\text{pixels} = \frac{\text{mm}}{25.4} \times \text{DPI}$. At 300 DPI, the $85.60 \times 53.98$ mm card footprint renders to exactly $1011 \times 638$ pixels with an authentic $37.5$ px ($3.18$ mm) corner curve radius.</li>
+          <li><strong>A4 2-in-1 Composite Geometry:</strong> Standard ISO 216 A4 paper measures $210 \times 297$ mm ($8.268 \times 11.693$ inches), representing a $2480 \times 3508$ px canvas at 300 DPI. The front card is anchored at $(Y = 720\text{ px})$ and the back card at $(Y = 1680\text{ px})$, centered horizontally ($X = 735\text{ px}$). This guarantees an exact 1:1 physical life-size printout while preserving a standardized 600 px bottom margin for bank attestation stamps and signatures.</li>
+          <li><strong>NADRA Pak-Identity Biometric Standards:</strong> Online portal uploads demand strict compliance: exactly $354 \times 472$ pixels at 350 DPI ($35 \times 45$ mm), portrait orientation, and file size strictly under 300 KB in JPEG format. Crown-to-chin facial height must occupy between 70% and 80% of vertical frame height ($32\text{--}36$ mm, or 330–377 px).</li>
+          <li><strong>Printer Driver Scaling Caveat:</strong> Real-world notice: when printing your exported 2-in-1 sheet, ensure your printer dialog scale setting is configured to <strong>"100% / Actual Size"</strong> rather than "Fit to Page". Operating system print drivers default to shrinking margins by 5% to 8%, which distorts physical card dimensions and causes bank KYC optical scanner errors.</li>
+        </ul>
+      </div>
+
       <div class="tool-steps-grid">
         <div class="tool-step-card">
           <div class="tool-step-num">1</div>
@@ -1111,26 +1132,33 @@
       </div>
 
       <!-- FAQ Section -->
-      <h2>Frequently Asked Questions</h2>
+      <h2>Frequently Asked Questions &amp; Technical Guidance</h2>
       <div class="faq-accordion-box">
         <details class="faq-accordion-item" open>
-          <summary>What is the exact size of a Pakistan CNIC card in inches and mm?</summary>
+          <summary>What is the exact size of a Pakistan CNIC card in inches, mm, and 300 DPI pixels?</summary>
           <div class="faq-accordion-answer">
-            <p>A Pakistan CNIC measures exactly <strong>3.370 &times; 2.125 inches</strong> (85.60 &times; 53.98 mm, or 8.56 &times; 5.40 cm) with a 3.18 mm rounded corner radius. At 300 DPI print quality, this corresponds to 1011 &times; 638 pixels.</p>
+            <p>A Pakistan CNIC measures exactly <strong>3.370 &times; 2.125 inches</strong> (85.60 &times; 53.98 mm, or 8.56 &times; 5.40 cm) with a 3.18 mm rounded corner radius conforming to ISO/IEC 7810 ID-1 standard. At 300 DPI print quality, this corresponds precisely to <strong>1011 &times; 638 pixels</strong>. For ultra-fine 600 DPI offset printing, it renders at 2022 &times; 1276 pixels.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>What are the compliant NADRA CNIC photo requirements?</summary>
+          <summary>What are the official NADRA Pak-Identity biometric portrait specifications?</summary>
           <div class="faq-accordion-answer">
-            <p>NADRA Pak-Identity requires photos to be exactly <strong>354 &times; 472 pixels</strong> (35 &times; 45 mm) at 350 DPI, portrait orientation, strictly under 300 KB in JPEG format, with a plain light blue (#E0F2FE) or pure white background, looking directly at the camera with a neutral expression.</p>
+            <p>NADRA Pak-Identity requires portrait photos to be exactly <strong>354 &times; 472 pixels</strong> (35 &times; 45 mm) at 350 DPI resolution, portrait orientation, and strictly under 300 KB in JPEG format. The background must be flat light blue (<code>#E0F2FE</code>) or pure white, with the applicant looking directly into the lens with a neutral expression, visible earlobes, and no specular flash reflection on eyeglasses.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>How do I print the 2-in-1 A4 ID Card Photocopy at 100% exact scale?</summary>
+          <summary>Why do printed ID card photocopies sometimes come out smaller than the physical card?</summary>
           <div class="faq-accordion-answer">
-            <p>Download the high-res 300 DPI PDF or JPG from LocalDoc. In your printer settings, select standard <strong>A4 paper</strong> and ensure the scale setting is set to <strong>100% (Actual Size / Do Not Scale)</strong>. Both sides will print at exact original dimensions with space for stamp and signature attestation.</p>
+            <p>Most operating system printer dialogs default to <em>"Fit to Printable Area"</em> or <em>"Shrink to Fit"</em>, which reduces the entire canvas by 5% to 8% to satisfy hardware margin limits. To print at true 1:1 life-size scale, open your printer settings, choose standard <strong>A4 paper</strong>, and explicitly select <strong>"100% / Actual Size / Do Not Scale"</strong>.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>Is my National Identity Card or portrait photo uploaded to any server?</summary>
+          <div class="faq-accordion-answer">
+            <p>No. Your CNIC contains sensitive personal data (CNIC number, family tree number, date of birth, home address). LocalDoc compiles the 2-in-1 A4 sheet and crops biometric photos entirely inside client-side browser memory via HTML5 Canvas. Zero bytes are uploaded to remote servers.</p>
           </div>
         </details>
       </div>
