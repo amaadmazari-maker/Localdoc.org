@@ -358,13 +358,28 @@
 
       <!-- 4. Deep Technical Architecture: ISO 32000-1 Security Handlers -->
       <div class="tool-tech-card">
-        <h2>Technical Architecture: ISO 32000-1 Standard Security Handlers</h2>
-        <p>Document security in the Portable Document Format is defined under <strong>ISO 32000-1 Section 7.6</strong> (Security). PDF security handlers manage access through document encryption dictionaries (<code>/Encrypt</code>) and permissions flags (<code>/P</code>):</p>
+        <h2>Technical Architecture: ISO 32000-1 Security Handlers &amp; In-Memory Cryptographic Hardening</h2>
+        <p>Under the <strong>ISO 32000-1 Section 7.6</strong> (Security) standard, PDF files control access rights and document confidentiality through standardized encryption dictionaries (<code>/Encrypt</code>), cryptographic password hashes, and a signed 32-bit permissions bitmask (<code>/P</code>). While commercial cloud converters upload plaintext contracts to remote servers to apply security filters&mdash;exposing proprietary data to server breach vectors&mdash;LocalDoc executes all cryptographic key derivation and stream protection inside client browser RAM:</p>
 
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Permissions Bitmask Encoding (<code>/P</code> Flag):</strong> A 32-bit integer dictates document permissions. Bit 3 controls printing rights, bit 5 controls content copying and text extraction, and bit 4 controls document modifications. LocalDoc computes the exact bitmask (e.g. <code>-3904</code>) and injects it into the trailer dictionary.</li>
-          <li><strong>Tamper-Evident Header Vector Overlays:</strong> Security seals (e.g. "PROTECTED & CONFIDENTIAL") are rendered directly into each page's content stream using vector font commands with high-visibility color metrics, preventing effortless cropping without invalidating page content streams.</li>
-          <li><strong>Zero-Upload Memory Quarantine:</strong> Traditional online PDF tools upload your unencrypted contracts to remote cloud servers to process security stamps, introducing catastrophic corporate espionage vectors. LocalDoc executes exclusively in volatile RAM.</li>
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory PDF Security Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>ISO 32000-1 Permissions Bitmask Math (<code>/P</code> Flag):</strong> Access rights are governed by a signed 32-bit integer. Compliant PDF readers (Adobe Acrobat, Apple Preview, Google Chrome) evaluate specific bit flags:
+            <ul style="margin: 8px 0 8px 20px; font-size: 0.88rem; line-height: 1.6;">
+              <li><strong>Bit 3 (Print Permission):</strong> Governs normal quality printing rights.</li>
+              <li><strong>Bit 4 (Modify Contents):</strong> Controls document editing, form page insertion, and rotation.</li>
+              <li><strong>Bit 5 (Extract Text &amp; Graphics):</strong> Controls clipboard copying and text extraction.</li>
+              <li><strong>Bit 6 (Annotations &amp; Form Fields):</strong> Authorizes digital signatures and interactive comment markup.</li>
+              <li><strong>Bit 12 (High-Fidelity Printing):</strong> Governs digital press and high-resolution print reproduction.</li>
+            </ul>
+            LocalDoc calculates the bitwise integer mask (e.g., <code>-3904</code>) and cryptographically links it to the document's encryption dictionary.
+          </li>
+          <li><strong>Cryptographic User vs. Owner Password Architecture:</strong> A secure PDF possesses two distinct encryption states: the <em>User Password</em> (required to decrypt content streams and view the pages) and the <em>Owner Password</em> (required to modify access permissions or clear restrictions). The engine derives 32-byte <code>/U</code> and <code>/O</code> validation strings through iterative hashing, authenticating keys locally without exposing plaintext strings across network boundaries.</li>
+          <li><strong>Tamper-Evident Vector Security Seals:</strong> Security stamps (e.g., "PROTECTED &amp; CONFIDENTIAL") are written directly into each page's raw vector content stream as tagged <code>/Artifact</code> objects surrounded by isolated graphics state operators (<code>q ... Q</code>). Because the text is welded into the page's structural rendering instructions, casual attempts to crop or hide the stamp are immediately apparent.</li>
+          <li><strong>Metadata Sanitization &amp; Privacy Scrubbing:</strong> Prior to compiling the final binary, LocalDoc provides automatic stripping of lingering document metadata (<code>/Author</code>, <code>/Creator</code>, <code>/Producer</code>, creation timestamps, and hidden XML packets in <code>/Metadata</code>), preventing inadvertent leakage of author names, internal corporate server paths, or printer serial numbers.</li>
+          <li><strong>Zero-Egress In-Memory Quarantine:</strong> All cryptographic operations, typed <code>Uint8Array</code> buffers, and intermediate encryption states exist exclusively within ephemeral JavaScript closures. Once the encrypted document Blob URL is generated, all memory structures are marked for immediate V8 engine garbage collection with zero disk or telemetry footprint.</li>
         </ul>
       </div>
 

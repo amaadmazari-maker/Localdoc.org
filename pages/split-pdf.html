@@ -489,14 +489,19 @@
 
       <!-- 4. Deep Technical Architecture: Selective Object Subgraph Cloning -->
       <div class="tool-tech-card">
-        <h2>Technical Architecture: Selective Object Subgraph Extraction</h2>
-        <p>In accordance with <strong>ISO 32000-1</strong>, PDF documents represent pages as nodes in a balanced B-tree. Simply slicing out binary bytes results in broken cross-reference tables and corrupt files. LocalDoc performs precise object graph surgery inside your browser:</p>
+        <h2>Technical Architecture: Selective Object Subgraph Cloning &amp; Mark-and-Sweep Extraction</h2>
+        <p>In accordance with the <strong>ISO 32000-1</strong> format specification, PDF documents structure pages as terminal leaf nodes inside a balanced B-tree. You cannot slice or split a PDF by severing raw byte offsets without invalidating the document catalog and cross-reference table. LocalDoc performs deterministic directed graph surgery directly within browser memory:</p>
 
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Page Node Isolation & Root Re-indexing:</strong> When you specify target pages (e.g. 12 through 15), LocalDoc traverses the document's page tree, locates the corresponding leaf nodes, and constructs a new independent <code>/Catalog</code> and <code>/Pages</code> dictionary referencing only the selected nodes.</li>
-          <li><strong>Deep Resource Graph Cloning:</strong> Embedded TrueType fonts, form XObjects, vector drawing graphics states, and bitmap DCTDecode streams referenced by the chosen pages are cloned into the output document's indirect object space. Redundant assets from unselected pages are completely excluded, ensuring compact file sizes.</li>
-          <li><strong>Client-Side JSZip Burst Streaming:</strong> When 'Burst' mode is active, each page is encapsulated into its own self-contained PDF container with its own valid XRef table, then streamed into a compressed ZIP file using in-memory DEFLATE compression.</li>
-          <li><strong>Total Privacy Isolation:</strong> No documents are transmitted across the internet. Execution occurs in sandboxed WebAssembly and JavaScript threads, ensuring complete compliance with HIPAA, GDPR, and confidential corporate NDAs.</li>
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory PDF Splitting Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>Page Node Traversal &amp; Root Re-indexing:</strong> When you specify target ranges (e.g., pages 12&ndash;15 or chunk intervals of 5 pages), LocalDoc descends through intermediate <code>/Pages</code> parent nodes, locates the corresponding <code>/Type /Page</code> leaf dictionaries, and synthesizes a new root <code>/Catalog</code> and <code>/Pages</code> collection with an updated <code>/Count</code> property.</li>
+          <li><strong>Deep Dependency Graph Traversal &amp; Asset Pruning:</strong> To prevent extracted 2-page chapters from ballooning to the size of the 500-page original book, LocalDoc executes a mark-and-sweep garbage collection pass. Starting from each selected page's <code>/Contents</code> streams and <code>/Resources</code> dictionary (including <code>/Font</code>, <code>/XObject</code>, <code>/ExtGState</code>, and <code>/ColorSpace</code>), the engine marks all reachable indirect objects. Unreferenced font subsets, high-res images, and CAD diagrams belonging to discarded pages are excluded from the output.</li>
+          <li><strong>Contiguous XRef Table &amp; Trailer Reconstruction:</strong> A new, clean cross-reference table (<code>xref</code>) or compressed object stream (<code>/ObjStm</code>) is generated with sequential, 1-indexed object IDs and precise byte offsets. This ensures the output PDF adheres strictly to ISO standards, opening cleanly in Adobe Acrobat, PDF.js, Preview, and mobile PDF engines.</li>
+          <li><strong>In-Memory JSZip Burst Streaming:</strong> When 'Burst All Pages' or 'Split in Chunks' mode is triggered, each extracted segment is packaged into an independent, valid PDF container and streamed into an in-memory PKZip archive using client-side DEFLATE compression. The resulting ZIP file is generated in browser memory, enabling a 1-click bundle download without multiple browser download prompts.</li>
+          <li><strong>Ephemeral Memory Lifecycle:</strong> Processing multi-hundred page documents inside client RAM is safeguarded by strict memory disposal. Once the extracted PDF or ZIP Blob URL is emitted, intermediate canvas contexts and byte arrays are unreferenced for immediate V8 engine garbage collection, ensuring zero data leakage and optimal mobile browser stability.</li>
         </ul>
       </div>
 

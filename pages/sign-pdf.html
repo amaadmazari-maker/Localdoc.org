@@ -757,15 +757,23 @@
 
       <!-- 4. Deep Technical Architecture: ESIGN Act & In-Memory Vector Stamping -->
       <div class="tool-tech-card">
-        <h2>Technical Architecture: ESIGN Act &amp; Visual Signature Coordinate Mapping</h2>
-        <p>Under the United States <strong>Electronic Signatures in Global and National Commerce Act (ESIGN, 15 U.S.C. &sect; 7001)</strong> and the European Union <strong>eIDAS Regulation (No 910/2014)</strong>, an electronic signature carries full legal enforceability when intent to sign, association with the record, and record integrity are maintained:</p>
+        <h2>Technical Architecture: ESIGN Act, Quadratic B&eacute;zier Smoothing &amp; In-Memory Coordinate Mapping</h2>
+        <p>Under the United States <strong>Electronic Signatures in Global and National Commerce Act (ESIGN, 15 U.S.C. &sect; 7001)</strong>, the <strong>Uniform Electronic Transactions Act (UETA)</strong>, and the European Union <strong>eIDAS Regulation (No 910/2014)</strong>, an electronic signature possesses full legal enforceability when intent to sign, attribution to the signer, and document record integrity are maintained. While corporate signing platforms (DocuSign, Adobe Sign) harvest non-disclosure agreements, executive salaries, and biometric signatures onto remote cloud databases, LocalDoc performs 100% of signature capture, coordinate projection, and document stream fusion in volatile client memory:</p>
 
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Real-Time PDF.js Canvas Rendering:</strong> Decodes PDF byte streams directly into HTML5 canvas viewports, allowing users to inspect contract clauses and locate the exact signature line.</li>
-          <li><strong>Interactive Pointer Coordinate Normalization:</strong> Translates screen-space drag-and-drop coordinates into native PDF bottom-left points, ensuring pixel-perfect placement regardless of screen zoom or device pixel ratio.</li>
-          <li><strong>Dual-Engine Resilience:</strong> Combines direct ISO 32000 vector stream injection with automatic PDF.js high-fidelity canvas synthesis fallback, guaranteeing 100% success on any PDF contract without parser crashes.</li>
-          <li><strong>Quadratic B&eacute;zier Smoothing:</strong> The HTML5 signature canvas captures continuous pointer movements and interpolates midpoint tangents using quadratic B&eacute;zier mathematics, eliminating robotic jagged edges.</li>
-          <li><strong>Absolute Confidentiality Guarantee:</strong> Traditional electronic signature platforms (DocuSign, Adobe Sign, HelloSign) store every contract, financial clause, and personal signature on remote cloud databases. LocalDoc runs 100% inside your browser's memory, ensuring zero third-party disclosure.</li>
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc Client Memory PDF Signing Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
+
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>Quadratic B&eacute;zier Tangent Interpolation:</strong> Drawing on capacitive touchscreens or via mouse pointers often generates jagged, polygonal line artifacts due to discrete hardware sampling rates. LocalDoc intercepts <code>pointermove</code> events, computes midpoint tangents between consecutive coordinates <code>M<sub>i</sub> = (P<sub>i</sub> + P<sub>i+1</sub>) / 2</code>, and applies continuous quadratic B&eacute;zier curves (<code>ctx.quadraticCurveTo(P<sub>i}.x, P<sub>i}.y, M<sub>i}.x, M<sub>i}.y)</code>). This produces an authentic, fluid pen-on-paper aesthetic with velocity-adjusted stroke pressure.</li>
+          <li><strong>Inverted Cartesian Coordinate Space Translation:</strong> In HTML5 DOM and CSS coordinates, the origin <code>(0, 0)</code> sits at the top-left corner with Y increasing downward. Conversely, the PDF <strong>ISO 32000-1</strong> specification establishes the coordinate origin <code>(0, 0)</code> at the bottom-left corner of the page's <code>/MediaBox</code> with Y increasing upward. LocalDoc computes the exact scale factor and affine matrix transformation:
+            <br><code>x<sub>pdf</sub> = (x<sub>dom</sub> &minus; rect.left) &times; (pageWidth / rect.width)</code>
+            <br><code>y<sub>pdf</sub> = pageHeight &minus; [(y<sub>dom</sub> &minus; rect.top) &times; (pageHeight / rect.height)] &minus; sigHeight<sub>pdf</sub></code>
+            This guarantees sub-millimeter placement accuracy across standard A4, US Letter, and non-standard architectural legal sizes.
+          </li>
+          <li><strong>Direct ISO 32000-1 Stream Injection &amp; Vector Clarity:</strong> When fusing the signature into the PDF, LocalDoc embeds the transparent PNG signature bitmap as an indirect <code>/XObject</code> image dictionary in the page's <code>/Resources</code> table. It appends isolated content stream operators (<code>q [scaleX 0 0 scaleY posX posY] cm /SigImg Do Q</code>). This leaves the original vector fonts, underlying contract text, and cryptographic structure completely untouched without blurry raster downsampling.</li>
+          <li><strong>Certified Timestamp Seals:</strong> Date and time seals are compiled into native vector text runs alongside your signature. The seal records the exact ISO 8601 calendar date, UTC timestamp, and document integrity mark into the document tree.</li>
+          <li><strong>Complete Memory Quarantine &amp; Zero-Trace Privacy:</strong> Biometric handwritten signatures represent sensitive personal identifiers. LocalDoc quarantines all signature stroke data, rendered canvases, and intermediate binary streams within private JavaScript heap closures. The moment your signed PDF is exported, memory pointers are released for garbage collection. Zero biometric data, signatures, or contract terms ever touch a remote server.</li>
         </ul>
       </div>
 

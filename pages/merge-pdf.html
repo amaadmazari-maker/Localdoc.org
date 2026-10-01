@@ -311,16 +311,19 @@
 
       <!-- 4. Deep Technical Architecture: ISO 32000-1 Page Tree Synthesis -->
       <div class="tool-tech-card">
-        <h2>Technical Architecture: In-Memory PDF Page Tree Synthesis</h2>
-        <p>Combining PDF files is substantially more complex than concatenating raw binary streams. Each individual PDF conformant with <strong>ISO 32000-1</strong> contains a hierarchical document catalog (<code>/Root</code>), a recursive page tree (<code>/Pages</code>), and an indirect object table (<code>XRef</code>) mapping fonts, images, and content streams to unique numeric object identifiers (e.g. <code>12 0 R</code>).</p>
+        <h2>Technical Architecture: In-Memory Object Graph Rewriting &amp; ISO 32000-1 Page Tree Synthesis</h2>
+        <p>Under the <strong>ISO 32000-1</strong> standard, PDF files cannot simply be concatenated end-to-end. Each PDF file is a complex directed acyclic graph (DAG) anchored by a Document Catalog (<code>/Root</code>), a hierarchical page tree (<code>/Pages</code>), and a cross-reference table (<code>xref</code>) mapping byte offsets to indirect object numbers (e.g., <code>12 0 obj ... endobj</code>). If two independent PDF documents define distinct objects under the same identifier (such as <code>5 0 obj</code>), naive concatenation causes fatal collision corruption.</p>
 
-        <p>If two distinct PDF files both define an indirect object as <code>5 0 obj</code>, blindly appending the files causes fatal collisions that corrupt the document. LocalDoc resolves this entirely in your browser using high-performance typed array graph rewriting:</p>
+        <div style="margin: 24px 0;">
+          <img src="../assets/images/local-ram-architecture.svg" alt="LocalDoc In-Memory PDF Page Tree Merging Architecture Diagram" style="width:100%; height:auto; display:block; border-radius:12px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 12px 30px rgba(0,0,0,0.35);" loading="lazy">
+        </div>
 
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Object Renumbering & Reference Remapping:</strong> LocalDoc parses the source documents' binary object tables and assigns new, non-overlapping indirect object IDs to each imported page node, content stream, and embedded font dictionary.</li>
-          <li><strong>Hierarchical Page Tree Merging:</strong> A single master <code>/Pages</code> root node is synthesized. Each incoming page is appended into the master <code>/Kids</code> array, updating the cumulative <code>/Count</code> attribute while preserving individual page dimensions, media boxes, and rotation angles.</li>
-          <li><strong>Resource Dictionary Deduplication:</strong> Shared vector resources (such as standard RGB color spaces and device-independent font descriptors) are referenced cleanly, preventing exponential file bloat.</li>
-          <li><strong>Isolated RAM Execution:</strong> The synthesized document is compiled into an in-memory <code>Uint8Array</code> buffer and emitted as an ephemeral blob URL. Zero network requests occur, safeguarding confidential contracts, bank statements, and medical records.</li>
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+          <li><strong>Indirect Object Renumbering &amp; Offset Translation:</strong> LocalDoc parses each incoming PDF's binary xref table into memory. An object allocation table calculates non-colliding object IDs for all constituent dictionaries, font descriptors, and content streams. Every internal reference pointer (<code>N 0 R</code>) is rewritten to reflect the new target identifier.</li>
+          <li><strong>Balanced ISO 32000-1 Page Tree Assembly:</strong> A new master <code>/Pages</code> node is generated. Incoming pages are referenced as indirect objects in the master <code>/Kids [ ... ]</code> array, and the cumulative page count (<code>/Count</code>) is updated. Each page dictionary's individual attributes&mdash;such as <code>/MediaBox</code>, <code>/CropBox</code>, <code>/BleedBox</code>, and <code>/Rotate</code> (0&deg;, 90&deg;, 180&deg;, 270&deg;)&mdash;are strictly preserved to ensure mixed page dimensions and orientations display flawlessly.</li>
+          <li><strong>Resource Dictionary Conflict Resolution:</strong> When merging distinct documents that utilize identical resource keys (e.g., <code>/F1</code> for Helvetica in Document A, but <code>/F1</code> for Times Roman in Document B), LocalDoc scopes resource dictionaries to the page level or prefixes font and XObject names, preventing font metric corruption and text scrambling.</li>
+          <li><strong>Outline Trees (Bookmarks) &amp; AcroForm Merging:</strong> Hierarchical document outlines (<code>/Outlines</code>) are re-linked so bookmarks from combined reports remain fully navigable. For interactive form documents (<code>/AcroForm</code>), field names are preserved or flattened to prevent conflicting data fields across merged sections.</li>
+          <li><strong>Zero-Egress Memory Safety:</strong> The merged document is assembled in typed <code>Uint8Array</code> buffers in local browser memory. A single contiguous binary <code>/XRef</code> table and trailer dictionary are synthesized, emitting an ephemeral Blob URL. No document bytes are ever uploaded or written to disk, ensuring complete protection for sensitive legal agreements and financial binders.</li>
         </ul>
       </div>
 
