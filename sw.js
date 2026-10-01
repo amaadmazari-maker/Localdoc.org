@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v60-sitemap-hub-sync';
+const CACHE_NAME = 'localdoc-v61-adsense-master-compliance';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
