@@ -3,6 +3,12 @@
  * 100% Client-Side In-Memory Execution. Zero Server Uploads.
  * Resize by mm, cm, inches, or pixels + compress to exact target file size in KB.
  * Full Multi-Photo Batch Queue & In-Memory ZIP Archive support.
+ * Polymorphic support for:
+ *   - Main Photo Resizer (photo-resizer.html)
+ *   - 20KB Resizer (photo-resizer-20kb.html)
+ *   - PAN Card Resizer (pan-card-photo-resizer.html)
+ *   - US Visa Photo Maker (us-visa-photo-maker.html)
+ *   - Emirates ID Photo Maker (emirates-id-photo-maker.html)
  */
 
 (function() {
@@ -30,11 +36,11 @@
   let outputBlob = null;
   let outputDataUrl = null;
 
-  // DOM Elements
+  // DOM Elements (Safely resolved with fallbacks)
   const dropZone = document.getElementById('resizer-drop-zone');
   const fileInput = document.getElementById('resizer-file-input');
   const emptyState = document.getElementById('resizer-empty-state');
-  const workspace = document.getElementById('resizer-workspace');
+  const workspace = document.getElementById('resizer-workspace') || document.getElementById('resizer-active-state');
 
   const batchPanel = document.getElementById('resizer-batch-panel');
   const batchTitle = document.getElementById('resizer-batch-title');
@@ -45,6 +51,10 @@
   const origInfo = document.getElementById('resizer-orig-info');
   const outputPreview = document.getElementById('resizer-output-preview');
   const outputInfo = document.getElementById('resizer-output-info');
+
+  const targetCanvas = document.getElementById('resizer-canvas');
+  const fileStats = document.getElementById('resizer-file-stats');
+  const dimStats = document.getElementById('resizer-dim-stats');
 
   const inputWidth = document.getElementById('resizer-input-width');
   const inputHeight = document.getElementById('resizer-input-height');
@@ -59,6 +69,24 @@
   function init() {
     setupEventListeners();
     parseQueryParams();
+    readInitialValues();
+  }
+
+  function readInitialValues() {
+    if (inputWidth && inputWidth.value) {
+      targetWidth = parseFloat(inputWidth.value) || 35;
+    }
+    if (inputHeight && inputHeight.value) {
+      targetHeight = parseFloat(inputHeight.value) || 45;
+    }
+    if (unitLabelW && unitLabelW.textContent) {
+      currentUnit = unitLabelW.textContent.trim() || 'mm';
+    }
+    if (targetKbSlider && targetKbSlider.value) {
+      targetMaxKB = parseInt(targetKbSlider.value, 10) || 50;
+    } else if (targetKbInput && targetKbInput.value) {
+      targetMaxKB = parseInt(targetKbInput.value, 10) || 50;
+    }
   }
 
   function parseQueryParams() {
@@ -159,7 +187,7 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('[data-preset-dim]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const dimStr = btn.getAttribute('data-preset-dim'); // e.g. "35x45mm", "2x2in", "50x50mm", "100x100mm", "600x600px"
+        const dimStr = btn.getAttribute('data-preset-dim');
         applyDimensionPreset(dimStr);
       });
     });
@@ -205,6 +233,8 @@
         const val = parseInt(e.target.value, 10);
         targetMaxKB = val;
         if (targetKbInput) targetKbInput.value = val;
+        const kbValDisplay = document.getElementById('resizer-kb-val');
+        if (kbValDisplay) kbValDisplay.textContent = `${val} KB`;
         processResize();
       });
     }
@@ -259,13 +289,19 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('[data-format]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        outputFormat = btn.getAttribute('data-format') === 'png'  ?  'image/png' : 'image/jpeg';
+        outputFormat = btn.getAttribute('data-format') === 'png' ? 'image/png' : 'image/jpeg';
         processResize();
       });
     });
 
     if (downloadBtn) {
-      downloadBtn.addEventListener('click', downloadResizedPhoto);
+      downloadBtn.addEventListener('click', () => {
+        if (loadedItems.length > 1) {
+          downloadResizedPhoto();
+        } else {
+          downloadActivePhoto();
+        }
+      });
     }
 
     if (batchDownloadBtn) {
@@ -306,14 +342,19 @@
     loadedItems = await Promise.all(promises);
     if (loadedItems.length === 0) return;
 
-    emptyState.style.display = 'none';
-    workspace.style.display = 'block';
+    if (emptyState) emptyState.style.display = 'none';
+    if (workspace) workspace.style.display = 'block';
 
+    readInitialValues();
     setActiveIndex(0);
     renderBatchUI();
 
-    // Default to standard 35x45 mm passport
-    applyDimensionPreset('35x45mm');
+    // Only apply default if input dimensions are not already configured
+    if (!inputWidth || !inputWidth.value) {
+      applyDimensionPreset('35x45mm');
+    } else {
+      processResize();
+    }
   }
 
   function setActiveIndex(idx) {
@@ -326,8 +367,8 @@
     originalHeight = item.height;
     originalSizeKB = item.sizeKB;
 
-    origPreview.src = item.dataUrl;
-    origInfo.textContent = `${originalWidth} × ${originalHeight} px • ${originalSizeKB} KB (${item.file.name})`;
+    if (origPreview) origPreview.src = item.dataUrl;
+    if (origInfo) origInfo.textContent = `${originalWidth} × ${originalHeight} px • ${originalSizeKB} KB (${item.file.name})`;
 
     updateThumbnailActiveState();
     processResize();
@@ -335,30 +376,33 @@
 
   function renderBatchUI() {
     if (loadedItems.length > 1) {
-      batchPanel.style.display = 'block';
-      batchTitle.textContent = `Batch Queue (${loadedItems.length} Photos)`;
-      batchThumbnails.innerHTML = loadedItems.map((item, idx) => `
-        <div class="batch-thumb-item ${idx === activeIndex  ?  'active' : ''}" data-idx="${idx}" style="cursor:pointer; flex-shrink:0; position:relative; border-radius:4px; overflow:hidden; border:2px solid ${idx === activeIndex  ?  'var(--primary)' : 'var(--line)'}; width:52px; height:52px;" title="${item.file.name}">
-          <img src="${item.dataUrl}" style="width:100%; height:100%; object-fit:cover;">
-          <span style="position:absolute; bottom:0; right:0; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px; font-weight:700;">${idx+1}</span>
-        </div>
-      `).join('');
+      if (batchPanel) {
+        batchPanel.style.display = 'block';
+        if (batchTitle) batchTitle.textContent = `Batch Queue (${loadedItems.length} Photos)`;
+        if (batchThumbnails) {
+          batchThumbnails.innerHTML = loadedItems.map((item, idx) => `
+            <div class="batch-thumb-item ${idx === activeIndex ? 'active' : ''}" data-idx="${idx}" style="cursor:pointer; flex-shrink:0; position:relative; border-radius:4px; overflow:hidden; border:2px solid ${idx === activeIndex ? 'var(--primary)' : 'var(--line)'}; width:52px; height:52px;" title="${item.file.name}">
+              <img src="${item.dataUrl}" style="width:100%; height:100%; object-fit:cover;">
+              <span style="position:absolute; bottom:0; right:0; background:rgba(0,0,0,0.7); color:#fff; font-size:9px; padding:1px 3px; font-weight:700;">${idx+1}</span>
+            </div>
+          `).join('');
 
-      batchThumbnails.querySelectorAll('.batch-thumb-item').forEach(el => {
-        el.addEventListener('click', () => {
-          const idx = parseInt(el.getAttribute('data-idx'), 10);
-          setActiveIndex(idx);
-        });
-      });
+          batchThumbnails.querySelectorAll('.batch-thumb-item').forEach(el => {
+            el.addEventListener('click', () => {
+              const idx = parseInt(el.getAttribute('data-idx'), 10);
+              setActiveIndex(idx);
+            });
+          });
+        }
+      }
 
-      downloadBtn.innerHTML = `<span>⬇ Process & Download Batch (${loadedItems.length} Photos as ZIP)</span>`;
+      if (downloadBtn) downloadBtn.innerHTML = `<span>⬇ Process & Download Batch (${loadedItems.length} Photos as ZIP)</span>`;
       if (batchDownloadBtn) {
         batchDownloadBtn.style.display = 'block';
         batchDownloadBtn.textContent = `⬇ Download Active Photo (#${activeIndex + 1}) Only`;
       }
     } else {
-      batchPanel.style.display = 'none';
-      downloadBtn.innerHTML = `<span>⬇ Download Resized Photo</span>`;
+      if (batchPanel) batchPanel.style.display = 'none';
       if (batchDownloadBtn) batchDownloadBtn.style.display = 'none';
     }
   }
@@ -368,7 +412,7 @@
       batchThumbnails.querySelectorAll('.batch-thumb-item').forEach(el => {
         const idx = parseInt(el.getAttribute('data-idx'), 10);
         const isActive = idx === activeIndex;
-        el.style.borderColor = isActive  ?  'var(--primary)' : 'var(--line)';
+        el.style.borderColor = isActive ? 'var(--primary)' : 'var(--line)';
         el.classList.toggle('active', isActive);
       });
       if (batchDownloadBtn && loadedItems.length > 1) {
@@ -378,6 +422,7 @@
   }
 
   function applyDimensionPreset(dimStr) {
+    if (!dimStr) return;
     if (dimStr.endsWith('mm')) {
       currentUnit = 'mm';
       const parts = dimStr.replace('mm', '').split('x');
@@ -482,8 +527,8 @@
       }
     }
 
-    const ext = outputFormat === 'image/png'  ?  'png' : 'jpg';
-    const baseName = item.file  ?  item.file.name.replace(/\.[^/.]+$/, '') : 'photo';
+    const ext = outputFormat === 'image/png' ? 'png' : 'jpg';
+    const baseName = item.file ? item.file.name.replace(/\.[^/.]+$/, '') : 'photo';
     const filename = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
 
     return { blob: bestBlob, filename, pxW, pxH };
@@ -491,6 +536,11 @@
 
   async function processResize() {
     if (!originalImg) return;
+
+    if (inputWidth) targetWidth = parseFloat(inputWidth.value) || targetWidth;
+    if (inputHeight) targetHeight = parseFloat(inputHeight.value) || targetHeight;
+    if (unitLabelW && unitLabelW.textContent) currentUnit = unitLabelW.textContent.trim() || currentUnit;
+    if (targetKbSlider) targetMaxKB = parseInt(targetKbSlider.value, 10) || targetMaxKB;
 
     const res = await resizeSingleImage({
       file: originalFile,
@@ -501,25 +551,48 @@
 
     outputBlob = res.blob;
     outputDataUrl = URL.createObjectURL(res.blob);
-    outputPreview.src = outputDataUrl;
+
+    if (outputPreview) {
+      outputPreview.src = outputDataUrl;
+    }
+
+    if (targetCanvas) {
+      targetCanvas.width = res.pxW;
+      targetCanvas.height = res.pxH;
+      const tCtx = targetCanvas.getContext('2d');
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        tCtx.clearRect(0, 0, res.pxW, res.pxH);
+        tCtx.drawImage(tempImg, 0, 0);
+      };
+      tempImg.src = outputDataUrl;
+    }
 
     const finalSizeKB = (res.blob.size / 1024).toFixed(1);
-    const badgeColor = parseFloat(finalSizeKB) <= targetMaxKB  ?  'var(--success)' : 'var(--danger)';
+    const badgeColor = parseFloat(finalSizeKB) <= targetMaxKB ? 'var(--success, #059669)' : 'var(--danger, #DC2626)';
 
-    outputInfo.innerHTML = `
-      <strong>${targetWidth} × ${targetHeight} ${currentUnit}</strong> (${res.pxW} × ${res.pxH} px @ ${targetDPI} DPI)<br>
-      <span style="color:${badgeColor}; font-weight:700;">File Size: ${finalSizeKB} KB</span> (Target: ≤ ${targetMaxKB} KB)
-    `;
+    if (outputInfo) {
+      outputInfo.innerHTML = `
+        <strong>${targetWidth} × ${targetHeight} ${currentUnit}</strong> (${res.pxW} × ${res.pxH} px @ ${targetDPI} DPI)<br>
+        <span style="color:${badgeColor}; font-weight:700;">File Size: ${finalSizeKB} KB</span> (Target: ≤ ${targetMaxKB} KB)
+      `;
+      if (window.UIUtils && UIUtils.renderQuickActions && outputInfo.parentElement) {
+        UIUtils.renderQuickActions(outputInfo.parentElement, outputBlob, res.filename);
+      }
+    }
 
-    if (window.UIUtils && UIUtils.renderQuickActions && outputInfo.parentElement) {
-      UIUtils.renderQuickActions(outputInfo.parentElement, outputBlob, res.filename);
+    if (fileStats) {
+      fileStats.innerHTML = `<span style="color:${badgeColor}; font-weight:700;">${finalSizeKB} KB</span> (Target: ≤ ${targetMaxKB} KB)`;
+    }
+    if (dimStats) {
+      dimStats.textContent = `${targetWidth} × ${targetHeight} ${currentUnit} (${res.pxW} × ${res.pxH} px)`;
     }
   }
 
   function downloadActivePhoto() {
     if (!outputBlob) return;
-    const ext = outputFormat === 'image/png'  ?  'png' : 'jpg';
-    const baseName = originalFile  ?  originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
+    const ext = outputFormat === 'image/png' ? 'png' : 'jpg';
+    const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
     const filename = `${baseName}_${targetWidth}x${targetHeight}${currentUnit}_${targetMaxKB}KB.${ext}`;
 
     if (window.UIUtils && UIUtils.downloadBlob) {
@@ -541,8 +614,8 @@
     }
 
     try {
-      downloadBtn.disabled = true;
-      const originalText = downloadBtn.innerHTML;
+      if (downloadBtn) downloadBtn.disabled = true;
+      const originalText = downloadBtn ? downloadBtn.innerHTML : '';
 
       const ZipClass = (window.UIUtils && UIUtils.Zip) || window.MiniZip;
       if (!ZipClass) {
@@ -552,12 +625,12 @@
       const zip = new ZipClass();
 
       for (let i = 0; i < loadedItems.length; i++) {
-        downloadBtn.innerHTML = `<span>Processing photo ${i + 1}/${loadedItems.length} in RAM...</span>`;
+        if (downloadBtn) downloadBtn.innerHTML = `<span>Processing photo ${i + 1}/${loadedItems.length} in RAM...</span>`;
         const res = await resizeSingleImage(loadedItems[i]);
         await zip.addBlob(res.filename, res.blob);
       }
 
-      downloadBtn.innerHTML = `<span>Creating ZIP bundle...</span>`;
+      if (downloadBtn) downloadBtn.innerHTML = `<span>Creating ZIP bundle...</span>`;
       const zipBlob = zip.generateBlob();
       const zipFilename = `localdoc-batch-resized-${targetWidth}x${targetHeight}${currentUnit}.zip`;
 
@@ -575,14 +648,14 @@
         URL.revokeObjectURL(url);
       }
 
-      downloadBtn.innerHTML = originalText;
+      if (downloadBtn) downloadBtn.innerHTML = originalText;
     } catch (err) {
       console.error('Batch resize error:', err);
       if (window.UIUtils && UIUtils.showToast) {
         UIUtils.showToast(err.message || 'Batch resize failed.', 'error');
       }
     } finally {
-      downloadBtn.disabled = false;
+      if (downloadBtn) downloadBtn.disabled = false;
     }
   }
 
