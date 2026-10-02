@@ -682,7 +682,7 @@
         UIUtils.showToast("PDF files merged successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.handleToolError(err, processBtn);
       } finally {
         processBtn.disabled = false;
       }

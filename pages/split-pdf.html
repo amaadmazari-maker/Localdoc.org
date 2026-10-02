@@ -1181,7 +1181,7 @@
         resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.handleToolError(err, splitProcessBtn || null);
       } finally {
         processBtn.disabled = false;
       }

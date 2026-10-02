@@ -175,6 +175,29 @@ const UIUtils = {
     }
   },
 
+  // Error Boundary Helper for Tool Operations
+  handleToolError(err, actionBtn = null) {
+    console.error("LocalDoc Tool Error:", err);
+    let msg = (err && err.message) || "Operation failed. Please check the file and try again.";
+    const lower = msg.toLowerCase();
+    
+    if (lower.includes('encrypt') || lower.includes('password') || (err && err.name === 'PasswordException')) {
+      msg = "This document is password-protected. Client-side privacy requires decrypting or unlocking the PDF before processing.";
+    } else if (lower.includes('corrupt') || lower.includes('no header') || lower.includes('invalid pdf')) {
+      msg = "This file appears to be corrupted or is not a valid PDF document. Please choose a different file.";
+    }
+
+    UIUtils.showToast(msg, "error", 6000);
+
+    const progressEl = document.getElementById("workflow-progress");
+    if (progressEl) progressEl.style.display = "none";
+
+    if (actionBtn) {
+      actionBtn.disabled = false;
+    }
+    return msg;
+  },
+
   // Drag & Drop Setup (With Fullscreen Window Drag Delight)
   setupDropZone(zoneEl, inputEl, onFilesSelected) {
     if (!zoneEl) return;

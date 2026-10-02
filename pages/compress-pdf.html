@@ -891,7 +891,7 @@
         UIUtils.showToast("PDF compressed successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Compression failed", "error");
+        UIUtils.handleToolError(err, processBtn);
       } finally {
         processBtn.disabled = false;
       }

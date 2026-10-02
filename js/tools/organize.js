@@ -4,6 +4,25 @@
  */
 
 const PDFOrganize = {
+  // Safe in-memory PDF loader with encryption and corruption error boundaries
+  async safeLoadPDF(buffer, fileName = 'document.pdf') {
+    let doc;
+    try {
+      doc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    } catch (err) {
+      const msg = (err && err.message) ? err.message.toLowerCase() : '';
+      if (msg.includes('encrypt') || msg.includes('password') || (err && err.name === 'EncryptedPDFError')) {
+        throw new Error(`"${fileName}" is password-protected. Please decrypt or unlock it before processing.`);
+      }
+      throw new Error(`"${fileName}" appears to be corrupt or not a valid PDF file.`);
+    }
+
+    if (doc.isEncrypted) {
+      throw new Error(`"${fileName}" is password-protected. Please decrypt or unlock it before processing.`);
+    }
+
+    return doc;
+  },
   // 1. Merge PDF Documents with Reordered Queue
   async mergePDF(files, onProgress = null) {
     if (!files || files.length === 0) {
@@ -23,7 +42,7 @@ const PDFOrganize = {
       if (onProgress) onProgress(pct, `Merging Document ${i + 1} of ${files.length} (${file.name})...`);
 
       const buffer = await UIUtils.readFileAsArrayBuffer(file);
-      const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+      const srcDoc = await this.safeLoadPDF(buffer, file.name);
       const indices = srcDoc.getPageIndices();
       totalPageCount += indices.length;
 
@@ -47,7 +66,7 @@ const PDFOrganize = {
   async splitPDF(file, pageRangeString, onProgress = null) {
     if (onProgress) onProgress(20, 'Loading PDF document structure into RAM...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
     const totalPages = srcDoc.getPageCount();
 
     // Parse ranges e.g. "1-3, 5, 8-10" or array of numbers
@@ -109,7 +128,7 @@ const PDFOrganize = {
   async splitSelectedPagesToZip(file, pageNumbers = null, onProgress = null) {
     if (onProgress) onProgress(15, 'Reading PDF document structure into memory...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
     const totalPages = srcDoc.getPageCount();
 
     // Determine target 1-based page numbers
@@ -179,7 +198,7 @@ const PDFOrganize = {
   async splitPagesToChunks(file, pageNumbers = null, chunkSize = 2, onProgress = null) {
     if (onProgress) onProgress(15, 'Reading PDF document pages...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
     const totalPages = srcDoc.getPageCount();
 
     const cleanChunkSize = Math.max(1, Math.min(10, parseInt(chunkSize, 10) || 2));
@@ -266,7 +285,7 @@ const PDFOrganize = {
     let losslessBlob = null;
     let losslessSize = originalSize;
     try {
-      const srcDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+      const srcDoc = await this.safeLoadPDF(buffer, file.name);
       const newDoc = await PDFLib.PDFDocument.create();
       const pageIndices = srcDoc.getPageIndices();
       const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
@@ -403,7 +422,7 @@ const PDFOrganize = {
   async rotatePDF(file, rotationParam = 90, onProgress = null) {
     if (onProgress) onProgress(20, 'Loading PDF document into memory...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const pdfDoc = await this.safeLoadPDF(buffer, file.name);
     const pages = pdfDoc.getPages();
     const totalPages = pages.length;
 
@@ -451,7 +470,7 @@ const PDFOrganize = {
 
     if (onProgress) onProgress(20, 'Loading PDF pages for numbering...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const pdfDoc = await this.safeLoadPDF(buffer, file.name);
     const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
     const pages = pdfDoc.getPages();
     const total = pages.length;
@@ -527,7 +546,7 @@ const PDFOrganize = {
 
     if (onProgress) onProgress(20, 'Loading PDF for watermarking...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
+    const pdfDoc = await this.safeLoadPDF(buffer, file.name);
     const pages = pdfDoc.getPages();
 
     if (type === 'image' && imageFile) {
