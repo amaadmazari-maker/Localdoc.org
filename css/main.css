@@ -202,6 +202,90 @@ a:hover {
 }
 
 /* Header */
+/* Desktop Header Polish (1440px & Ultra-Wide) */
+.site-header .container {
+  max-width: 1420px;
+  padding: 0 24px;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 66px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-link {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 6px 9px;
+  border-radius: var(--radius-sm);
+  transition: all 0.16s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.header-search-input {
+  width: 120px;
+}
+
+@media (max-width: 1536px) {
+  .header-search-input,
+  .search-trigger-btn .kbd-shortcut {
+    display: none;
+  }
+  .search-trigger-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: var(--radius-full);
+  }
+  .pwa-install-btn span {
+    display: none;
+  }
+  .pwa-install-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: var(--radius-full);
+  }
+  .privacy-pill {
+    padding: 4px 9px;
+    font-size: 0.72rem;
+  }
+  .header-actions {
+    gap: 8px;
+  }
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -217,6 +301,11 @@ a:hover {
   box-sizing: border-box;
 }
 
+.site-header .container {
+  max-width: 1400px;
+  padding: 0 28px;
+}
+
 .header-inner {
   display: flex;
   align-items: center;
@@ -225,6 +314,7 @@ a:hover {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  gap: 16px;
 }
 
 .brand {
@@ -282,6 +372,8 @@ a:hover {
   align-items: center;
   list-style: none;
   gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nav-link {
@@ -295,6 +387,8 @@ a:hover {
   align-items: center;
   gap: 6px;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-link:hover {
@@ -325,6 +419,8 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .search-trigger-btn {
@@ -517,6 +613,15 @@ a:hover {
   font-weight: 700;
   border: 1px solid rgba(5, 150, 105, 0.25);
   box-shadow: 0 1px 3px rgba(5, 150, 105, 0.08);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lang-select-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 2px;
 }
 
 .lang-select-wrap select {
@@ -525,11 +630,13 @@ a:hover {
   color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: border-color 0.15s ease;
   box-shadow: var(--shadow-sm);
+  outline: none;
+  min-width: 82px;
 }
 .lang-select-wrap select:hover {
   border-color: var(--primary);
