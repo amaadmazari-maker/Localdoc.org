@@ -134,33 +134,45 @@ const UIUtils = {
     if (statusEl && statusText) statusEl.textContent = statusText;
   },
 
-  // Direct File Input Binding (Guaranteed Native Event Flow)
+  // Direct File Input Binding (Guaranteed Single Native Event Flow with Debounce)
   bindFileInput(inputEl, onFilesSelected) {
     if (!inputEl) return;
     inputEl.__localdoc_handler = onFilesSelected;
-    const handleChange = (e) => {
-      const files = Array.from((e && e.target && e.target.files) || inputEl.files || []);
-      if (files.length > 0) {
+    let isProcessing = false;
+
+    const processFiles = (files) => {
+      if (isProcessing) return;
+      if (!files || files.length === 0) return;
+      isProcessing = true;
+      try {
         UIUtils.triggerHaptic();
         onFilesSelected(files);
+      } finally {
+        setTimeout(() => {
+          try { inputEl.value = ''; } catch(err) {}
+          isProcessing = false;
+        }, 300);
       }
-      setTimeout(() => { try { inputEl.value = ''; } catch(err) {} }, 250);
     };
-    inputEl.addEventListener('change', handleChange);
-    inputEl.addEventListener('input', handleChange);
+
+    inputEl.__localdoc_processFiles = processFiles;
+
+    // Listen strictly on 'change' to avoid duplicated events
+    inputEl.addEventListener('change', (e) => {
+      const files = Array.from((e && e.target && e.target.files) || inputEl.files || []);
+      processFiles(files);
+    });
   },
 
   // Global fallback called by inline onchange on file inputs
   handleGlobalFileInput(inputEl) {
     if (!inputEl) return;
     const files = Array.from(inputEl.files || []);
-    if (files.length > 0) {
-      UIUtils.triggerHaptic();
-      if (typeof inputEl.__localdoc_handler === 'function') {
-        inputEl.__localdoc_handler(files);
-      }
+    if (typeof inputEl.__localdoc_processFiles === 'function') {
+      inputEl.__localdoc_processFiles(files);
+    } else if (typeof inputEl.__localdoc_handler === 'function') {
+      inputEl.__localdoc_handler(files);
     }
-    setTimeout(() => { try { inputEl.value = ''; } catch(err) {} }, 250);
   },
 
   // Drag & Drop Setup (With Fullscreen Window Drag Delight)
