@@ -252,6 +252,8 @@
 
   function formatDisplayNumber(num) {
     if (isNaN(num) || !isFinite(num)) return 'Error';
+    // Handle near-zero precision artifacts for trig (e.g. cos(90) -> 0)
+    if (Math.abs(num) < 1e-12) return '0';
     // Clean precision artifacts like 0.30000000000000004
     const rounded = Number(parseFloat(num.toPrecision(12)));
     if (Math.abs(rounded) > 1e12 || (Math.abs(rounded) < 1e-6 && rounded !== 0)) {
