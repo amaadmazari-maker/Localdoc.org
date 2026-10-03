@@ -50,105 +50,84 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Compress PDF to 200KB",
-            "item": "https://localdoc.org/pages/compress-pdf-200kb.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Compress PDF to 200KB",
+          "item": "https://localdoc.org/pages/compress-pdf-200kb.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc 200KB PDF Compressor",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc 200KB PDF Compressor",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload in-browser PDF compressor optimized to fit files under 200KB and 100KB for government job portals and online forms."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Compress a PDF to Under 200 KB Online",
-        "description": "Step-by-step instructions to shrink PDF documents under 200KB without losing text quality or clarity.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Choose Your PDF File",
-            "text": "Drag and drop or select your document. The file loads directly into physical device RAM."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Select 200 KB Target Preset",
-            "text": "The 200 KB preset automatically optimizes stream structures and resamples embedded images while preserving vector text."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Download Optimized PDF",
-            "text": "Click Compress PDF Now to generate a compliant PDF ready for immediate portal submission."
+      "description": "Zero-upload in-browser PDF compressor optimized to fit files under 200KB and 100KB for government job portals and online forms."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I compress a PDF to under 200 KB without making text blurry?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc uses lossless FlateDecode stream compression for typography. Vector fonts and character glyphs remain mathematically sharp at infinite magnification. Only heavy embedded raster images are downsampled to fit the 200 KB portal limit."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How do I compress a PDF to under 200 KB without making text blurry?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "LocalDoc uses lossless FlateDecode stream compression for typography. Vector fonts and character glyphs remain mathematically sharp at infinite magnification. Only heavy embedded raster images are downsampled to fit the 200 KB portal limit."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why do government and examination portals require PDFs under 200 KB?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Government portals handle millions of concurrent applicant submissions. Strict 200 KB or 100 KB limits protect server bandwidth and database storage, ensuring fast processing times during peak exam registration deadlines."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What if my PDF is still larger than 200 KB after compression?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "If a multi-page document contains numerous full-color scans, select the 100 KB (Extreme) preset or use our Split PDF tool to remove blank or unneeded pages before compressing."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are my sensitive bank statements or certificates uploaded to a server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Never. LocalDoc processes every single byte locally inside your web browser's RAM via WebAssembly. Zero bytes are transmitted to any cloud server, ensuring 100% data privacy."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do government and examination portals require PDFs under 200 KB?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Government portals handle millions of concurrent applicant submissions. Strict 200 KB or 100 KB limits protect server bandwidth and database storage, ensuring fast processing times during peak exam registration deadlines."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "What if my PDF is still larger than 200 KB after compression?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If a multi-page document contains numerous full-color scans, select the 100 KB (Extreme) preset or use our Split PDF tool to remove blank or unneeded pages before compressing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my sensitive bank statements or certificates uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. LocalDoc processes every single byte locally inside your web browser's RAM via WebAssembly. Zero bytes are transmitted to any cloud server, ensuring 100% data privacy."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>

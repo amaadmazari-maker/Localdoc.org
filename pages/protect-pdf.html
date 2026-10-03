@@ -49,97 +49,76 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Protect PDF",
-            "item": "https://localdoc.org/pages/protect-pdf.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Protect PDF",
+          "item": "https://localdoc.org/pages/protect-pdf.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc Protect PDF",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc Protect PDF",
-        "applicationCategory": "SecurityApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload client-side PDF encryption, password protection, and access permissions management tool."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Protect and Encrypt a PDF Document Online",
-        "description": "Step-by-step instructions to protect PDF files with access restrictions and security stamps in browser memory.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Load Your PDF",
-            "text": "Drag and drop or choose your confidential PDF document. The document structure is decoded into private client RAM."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Configure Security & Restrictions",
-            "text": "Enter your document password, choose permissions (prevent copying, restrict printing), and configure security stamps."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Download Protected PDF",
-            "text": "Click Protect Document Now. The PDF is saved with hardened security metadata and downloaded instantly."
+      "description": "Zero-upload client-side PDF encryption, password protection, and access permissions management tool."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does client-side PDF protection ensure complete confidentiality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because LocalDoc executes 100% inside your browser's V8 engine using WebAssembly and pdf-lib, your confidential files never travel over the network. Passwords and encryption keys are processed solely in local device RAM."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How does client-side PDF protection ensure complete confidentiality?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Because LocalDoc executes 100% inside your browser's V8 engine using WebAssembly and pdf-lib, your confidential files never travel over the network. Passwords and encryption keys are processed solely in local device RAM."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can a user copy text or print a protected PDF?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "When you enable 'Restrict Content Copying' and 'Restrict Printing', the PDF permissions bitmask (/P flag) explicitly commands compliant PDF readers (such as Adobe Acrobat) to disable the print button and copy shortcuts."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What happens if I forget the password to my protected PDF?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Because LocalDoc uses zero-knowledge client architecture with no servers or key recovery databases, there is no backdoor. Always record your password securely in a password manager."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a user copy text or print a protected PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When you enable 'Restrict Content Copying' and 'Restrict Printing', the PDF permissions bitmask (/P flag) explicitly commands compliant PDF readers (such as Adobe Acrobat) to disable the print button and copy shortcuts."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if I forget the password to my protected PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because LocalDoc uses zero-knowledge client architecture with no servers or key recovery databases, there is no backdoor. Always record your password securely in a password manager."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>

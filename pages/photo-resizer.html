@@ -49,97 +49,76 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Photo Resizer & KB Reducer",
-            "item": "https://localdoc.org/pages/photo-resizer.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Photo Resizer & KB Reducer",
+          "item": "https://localdoc.org/pages/photo-resizer.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc Photo Resizer & KB Reducer",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc Photo Resizer & KB Reducer",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload client-side photo resizer with millimeter, centimeter, inches, and pixel units plus exact target KB size compression."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Resize a Photo to Exact Millimeters and KB Size Online",
-        "description": "Step-by-step instructions to resize portraits and documents to exact passport or visa specifications and file sizes in browser RAM.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Upload Your Image",
-            "text": "Drag and drop or choose your JPG or PNG image into the workspace box. The file is read directly into memory."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Select Dimensions and Target KB",
-            "text": "Choose standard presets like 35x45mm or 2x2 inches, or enter custom millimeters/pixels. Set maximum file size (e.g. 20KB or 50KB)."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Download Resized Photo",
-            "text": "The local binary search engine adjusts compression quality in real time. Click Download Resized Photo immediately."
+      "description": "Zero-upload client-side photo resizer with millimeter, centimeter, inches, and pixel units plus exact target KB size compression."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does the tool compress an image to an exact KB size like 50KB or 20KB?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc utilizes an iterative binary search quantization algorithm over the HTML5 Canvas JPEG encoder. It tests compression factors between 0.05 and 0.98 in sub-milliseconds until the output fits right under your specified target limit without unnecessary quality loss."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How does the tool compress an image to an exact KB size like 50KB or 20KB?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "LocalDoc utilizes an iterative binary search quantization algorithm over the HTML5 Canvas JPEG encoder. It tests compression factors between 0.05 and 0.98 in sub-milliseconds until the output fits right under your specified target limit without unnecessary quality loss."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is the pixel dimension for a 35x45mm passport photo at 300 DPI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "At 300 DPI (dots per inch), a 35 x 45 mm photo corresponds to exactly 413 x 531 pixels. At 600 DPI it is 827 x 1063 pixels."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are my private personal ID photos uploaded to any external server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. LocalDoc runs 100% inside your web browser using HTML5 Canvas and typed memory buffers. No photos are ever uploaded, transmitted, or logged."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the pixel dimension for a 35x45mm passport photo at 300 DPI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At 300 DPI (dots per inch), a 35 x 45 mm photo corresponds to exactly 413 x 531 pixels. At 600 DPI it is 827 x 1063 pixels."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "Are my private personal ID photos uploaded to any external server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc runs 100% inside your web browser using HTML5 Canvas and typed memory buffers. No photos are ever uploaded, transmitted, or logged."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
   <style>
     .resizer-grid {

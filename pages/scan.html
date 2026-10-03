@@ -42,125 +42,92 @@
 
   <!-- Structured JSON-LD Schema (Breadcrumbs, SoftwareApp, HowTo, FAQ) -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Document Scanner",
-            "item": "https://localdoc.org/pages/scan.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Document Scanner",
+          "item": "https://localdoc.org/pages/scan.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc PDF Camera Studio",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc PDF Camera Studio",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Client-side document scanner and LocalDoc Scanner alternative with 4-corner homography perspective correction, adaptive shadow removal, and zero server uploads."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Scan Documents, Receipts & IDs to PDF in Your Browser",
-        "description": "Step-by-step guide to digitizing paper documents into clean 300 DPI PDFs using client-side computer vision in device RAM.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Capture or Import",
-            "text": "Click the camera button to launch your device lens, or drag and drop existing image files from your computer or phone gallery."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Pinpoint Document Boundaries",
-            "text": "Drag the 4 corner handles to match the outer paper edges. The magnifying loupe shows exact sub-pixel positioning."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Choose Document Filter",
-            "text": "Select Magic Color (for contracts with color stamps and signatures), Black & White (for high-contrast document binarization), or Grayscale."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 4,
-            "name": "Batch Multi-Page Workflows",
-            "text": "Click Add Page to capture multiple pages sequentially into an organized document reel."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 5,
-            "name": "Export 300 DPI PDF",
-            "text": "Click Download PDF to assemble a clean, compact, watermark-free PDF ready for emailing or portal submission."
+      "description": "Client-side document scanner and LocalDoc Scanner alternative with 4-corner homography perspective correction, adaptive shadow removal, and zero server uploads."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this scanner add any watermarks to exported PDF files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc exports 100% clean, watermark-free PDFs and JPEGs suitable for legal contracts, court submissions, and university applications."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does this scanner add any watermarks to exported PDF files?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. LocalDoc exports 100% clean, watermark-free PDFs and JPEGs suitable for legal contracts, court submissions, and university applications."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How does the perspective correction work without cloud servers?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The tool uses an 8-Degree-of-Freedom (8-DOF) Projective Homography algorithm running directly on your CPU/GPU via HTML5 Canvas and typed arrays. By tracking 4 corner pins, it solves the 3x3 transformation matrix to rectify tilted angles into a flat rectangular plane in milliseconds."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I scan both sides of a National Identity Card (CNIC / Driver's License)?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Capture the front and back sides sequentially, and export as a single multi-page PDF or use our dedicated CNIC & ID Card Studio tool to align both sides on a single A4 photocopy sheet."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What lighting conditions produce the highest quality scans?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "For sharpest OCR text and clean binarization, place documents on a flat, contrasting surface under balanced overhead lighting. Avoid strong point-source lighting that casts harsh phone shadows."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is my scanned document uploaded to any remote server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Never. All image buffers, pixel transformations, and PDF compilations execute 100% inside your client device's browser memory. Zero bytes leave your machine."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the perspective correction work without cloud servers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tool uses an 8-Degree-of-Freedom (8-DOF) Projective Homography algorithm running directly on your CPU/GPU via HTML5 Canvas and typed arrays. By tracking 4 corner pins, it solves the 3x3 transformation matrix to rectify tilted angles into a flat rectangular plane in milliseconds."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "Can I scan both sides of a National Identity Card (CNIC / Driver's License)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Capture the front and back sides sequentially, and export as a single multi-page PDF or use our dedicated CNIC & ID Card Studio tool to align both sides on a single A4 photocopy sheet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What lighting conditions produce the highest quality scans?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For sharpest OCR text and clean binarization, place documents on a flat, contrasting surface under balanced overhead lighting. Avoid strong point-source lighting that casts harsh phone shadows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my scanned document uploaded to any remote server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. All image buffers, pixel transformations, and PDF compilations execute 100% inside your client device's browser memory. Zero bytes leave your machine."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">

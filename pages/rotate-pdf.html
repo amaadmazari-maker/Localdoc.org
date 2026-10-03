@@ -49,105 +49,84 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Rotate PDF",
-            "item": "https://localdoc.org/pages/rotate-pdf.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Rotate PDF",
+          "item": "https://localdoc.org/pages/rotate-pdf.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc Rotate PDF Pages Online",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All modern browsers (Chrome, Edge, Firefox, Safari)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc Rotate PDF Pages Online",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All modern browsers (Chrome, Edge, Firefox, Safari)",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload client-side PDF rotation utility. Permanently mutates ISO 32000-1 /Rotate page dictionary attributes in browser RAM without quality loss."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Permanently Rotate PDF Pages Online for Free",
-        "description": "Step-by-step instructions to fix upside-down or sideways PDF pages permanently in browser memory without re-encoding or cloud uploads.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Load Your PDF Document",
-            "text": "Drag and drop your PDF into the workspace or click Select PDF Document. The pages are decoded into instant thumbnail cards in local RAM."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Adjust Page Orientations",
-            "text": "Click the rotate buttons on individual page cards, or use bulk action buttons: Rotate All 90° CW, Rotate All 90° CCW, 180° Flip All, or Odd/Even page filters."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Save and Download",
-            "text": "Click Apply Rotations & Save PDF. The engine rewrites the internal /Rotate dictionary tags in milliseconds for instant download."
+      "description": "Zero-upload client-side PDF rotation utility. Permanently mutates ISO 32000-1 /Rotate page dictionary attributes in browser RAM without quality loss."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does rotating a PDF degrade the quality of scanned documents or vector text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc performs lossless metadata mutation. It modifies the integer /Rotate attribute in the page object rather than re-compressing image or font streams, preserving 100% of original visual sharpness."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does rotating a PDF degrade the quality of scanned documents or vector text?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. LocalDoc performs lossless metadata mutation. It modifies the integer /Rotate attribute in the page object rather than re-compressing image or font streams, preserving 100% of original visual sharpness."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why do some PDF viewers rotate a document temporarily, but it reverts when opened in Adobe Acrobat or printed?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Many desktop viewers only apply a temporary visual view transform. LocalDoc permanently rewrites the ISO 32000-1 /Rotate dictionary key inside the file binary, guaranteeing permanent orientation across all software and printers."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I rotate odd and even pages independently?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Our bulk actions bar includes dedicated Odd Pages and Even Pages rotation buttons, perfect for correcting alternating scanner orientation errors from double-sided automatic document feeders (ADF)."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are my confidential contracts or financial records transmitted to any server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Never. LocalDoc executes 100% inside your device memory using WebAssembly. There are zero cloud uploads, zero telemetry payloads, and zero external network calls."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do some PDF viewers rotate a document temporarily, but it reverts when opened in Adobe Acrobat or printed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Many desktop viewers only apply a temporary visual view transform. LocalDoc permanently rewrites the ISO 32000-1 /Rotate dictionary key inside the file binary, guaranteeing permanent orientation across all software and printers."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "Can I rotate odd and even pages independently?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Our bulk actions bar includes dedicated Odd Pages and Even Pages rotation buttons, perfect for correcting alternating scanner orientation errors from double-sided automatic document feeders (ADF)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my confidential contracts or financial records transmitted to any server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. LocalDoc executes 100% inside your device memory using WebAssembly. There are zero cloud uploads, zero telemetry payloads, and zero external network calls."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>

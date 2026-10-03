@@ -49,105 +49,84 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Compress PDF",
-            "item": "https://localdoc.org/pages/compress-pdf.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Compress PDF",
+          "item": "https://localdoc.org/pages/compress-pdf.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc Compress PDF",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc Compress PDF",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload client-side PDF compressor with real-time size reduction telemetry and custom DPI presets."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Compress PDF Files Online Without Losing Quality",
-        "description": "Step-by-step guide to reducing PDF file size securely in browser RAM without server uploads.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Select Your PDF",
-            "text": "Click Select PDF Document or drag and drop your file into the secure workspace box. The file is read directly into local RAM."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Choose Compression Tier",
-            "text": "Select your desired quality tier: Extreme (72 DPI), Recommended (150 DPI), or Low (200 DPI)."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Save Compressed PDF",
-            "text": "Click Compress PDF Now to defragment streams and download your optimized document instantly."
+      "description": "Zero-upload client-side PDF compressor with real-time size reduction telemetry and custom DPI presets."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does compressing a PDF degrade text sharpness or break searchable text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Text in compliant PDF documents is stored as mathematical Bézier vector instructions and embedded font glyph subsets, not raster pixels. Our compression engine selectively downsamples raster image dictionaries (/Subtype /Image) while leaving text streams, font tables (TrueType / CFF), and underlying invisible OCR search layers intact."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does compressing a PDF degrade text sharpness or break searchable text?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Text in compliant PDF documents is stored as mathematical Bézier vector instructions and embedded font glyph subsets, not raster pixels. Our compression engine selectively downsamples raster image dictionaries (/Subtype /Image) while leaving text streams, font tables (TrueType / CFF), and underlying invisible OCR search layers intact."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why did my PDF size barely drop (or drop by less than 5%)?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "PDF compression relies on eliminating redundancy. If your source document was generated from modern vector software (like a compiled LaTeX thesis, raw source code printout, or financial spreadsheet) without embedded high-res photos, there are virtually no raster pixels to downsample. Recompressing cannot magically remove necessary structural bytes without corrupting content."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How can I compress a PDF to fit under 200 KB or 500 KB for government job portals?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Select the Extreme (High Compression) preset to resample images at 72 DPI display resolution. If still over the limit, use the Split PDF tool to remove unnecessary pages."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is there any risk of corporate data leakage or GDPR/privacy regulation violations?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "None. LocalDoc executes entirely within your client browser engine via WebAssembly. Zero bytes are uploaded to remote servers, eliminating external transmission risks."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did my PDF size barely drop (or drop by less than 5%)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDF compression relies on eliminating redundancy. If your source document was generated from modern vector software (like a compiled LaTeX thesis, raw source code printout, or financial spreadsheet) without embedded high-res photos, there are virtually no raster pixels to downsample. Recompressing cannot magically remove necessary structural bytes without corrupting content."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "How can I compress a PDF to fit under 200 KB or 500 KB for government job portals?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Select the Extreme (High Compression) preset to resample images at 72 DPI display resolution. If still over the limit, use the Split PDF tool to remove unnecessary pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there any risk of corporate data leakage or GDPR/privacy regulation violations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "None. LocalDoc executes entirely within your client browser engine via WebAssembly. Zero bytes are uploaded to remote servers, eliminating external transmission risks."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>

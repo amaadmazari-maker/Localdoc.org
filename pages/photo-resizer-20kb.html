@@ -50,121 +50,100 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://localdoc.org/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tools",
-            "item": "https://localdoc.org/#tools-grid"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Resize Photo to 20KB",
-            "item": "https://localdoc.org/pages/photo-resizer-20kb.html"
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://localdoc.org/#tools-grid"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Resize Photo to 20KB",
+          "item": "https://localdoc.org/pages/photo-resizer-20kb.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LocalDoc 20KB Photo & Signature Resizer",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "LocalDoc 20KB Photo & Signature Resizer",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "Zero-upload client-side photo resizer pre-configured to compress images under 20KB and signatures under 10KB for online exam forms."
-      },
-      {
-        "@type": "HowTo",
-        "name": "How to Resize a Photo to 20 KB and Signature to 10 KB Online",
-        "description": "Step-by-step instructions to resize photos and signatures for UPSC, SSC, and job portals in local browser RAM.",
-        "step": [
-          {
-            "@type": "HowToStep",
-            "position": 1,
-            "name": "Upload Photo or Signature",
-            "text": "Drag and drop or select your photo or scanned signature. The file is read directly into browser memory."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 2,
-            "name": "Select 20 KB Photo or 10 KB Signature Preset",
-            "text": "Click the 20 KB Photo preset (3.5x4.5 cm) or 10 KB Signature preset. The tool auto-computes optimal canvas dimensions and compression."
-          },
-          {
-            "@type": "HowToStep",
-            "position": 3,
-            "name": "Download Validated Image",
-            "text": "Click Download Resized Photo immediately. The output file size is strictly verified under your required KB limit."
+      "description": "Zero-upload client-side photo resizer pre-configured to compress images under 20KB and signatures under 10KB for online exam forms."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I resize a passport photo to under 20 KB without making it blurry?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc uses high-quality bicubic canvas interpolation and multi-pass binary search JPEG quantization. It preserves key facial features and sharp contrasts while compressing the file size down to exactly 18-20 KB."
           }
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How do I resize a passport photo to under 20 KB without making it blurry?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "LocalDoc uses high-quality bicubic canvas interpolation and multi-pass binary search JPEG quantization. It preserves key facial features and sharp contrasts while compressing the file size down to exactly 18-20 KB."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I resize a scanned signature to under 10 KB or 20 KB for online forms?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Select the Signature Preset (typically 140x60 pixels or 6x2 cm). LocalDoc eliminates paper grain shadows, sharpens dark pen strokes against a clean white background, and compresses the signature strictly under 10 KB to 20 KB."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What are the standard dimensions for an exam application 20 KB photo?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Most exam portals (such as UPSC, SSC, IBPS, and state PSCs) require a 3.5 x 4.5 cm photo (approximately 138 x 177 pixels at 100 DPI or 413 x 531 pixels at 300 DPI) with file size strictly between 20 KB and 50 KB, or strictly under 20 KB."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why do government recruitment portals enforce strict 20 KB photo and 10 KB signature caps?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Central exam servers handle millions of candidate applications simultaneously during short registration windows. Rigid byte ceilings (such as 20,480 bytes) prevent database I/O bottlenecks and allow rapid biometric verification at physical test centers."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I fix a signature photo with gray background or shadow?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "LocalDoc's Clean White background optimization automatically applies luminance thresholding to eliminate gray scanner artifacts and phone shadows, clamping the paper background to pure #FFFFFF while leaving pen strokes dark and sharp."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is it safe to upload my signature and personal photo here?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "LocalDoc runs 100% inside your web browser RAM. Zero files are uploaded or sent to any server. Your signature and personal identity photos never leave your device, eliminating any possibility of unauthorized signature cloning or data theft."
-            }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I resize a scanned signature to under 10 KB or 20 KB for online forms?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Select the Signature Preset (typically 140x60 pixels or 6x2 cm). LocalDoc eliminates paper grain shadows, sharpens dark pen strokes against a clean white background, and compresses the signature strictly under 10 KB to 20 KB."
           }
-        ]
-      }
-    ]
-  }
-  </script>
+        },
+        {
+          "@type": "Question",
+          "name": "What are the standard dimensions for an exam application 20 KB photo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most exam portals (such as UPSC, SSC, IBPS, and state PSCs) require a 3.5 x 4.5 cm photo (approximately 138 x 177 pixels at 100 DPI or 413 x 531 pixels at 300 DPI) with file size strictly between 20 KB and 50 KB, or strictly under 20 KB."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do government recruitment portals enforce strict 20 KB photo and 10 KB signature caps?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Central exam servers handle millions of candidate applications simultaneously during short registration windows. Rigid byte ceilings (such as 20,480 bytes) prevent database I/O bottlenecks and allow rapid biometric verification at physical test centers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I fix a signature photo with gray background or shadow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc's Clean White background optimization automatically applies luminance thresholding to eliminate gray scanner artifacts and phone shadows, clamping the paper background to pure #FFFFFF while leaving pen strokes dark and sharp."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it safe to upload my signature and personal photo here?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc runs 100% inside your web browser RAM. Zero files are uploaded or sent to any server. Your signature and personal identity photos never leave your device, eliminating any possibility of unauthorized signature cloning or data theft."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
   <style>
     .resizer-grid {
