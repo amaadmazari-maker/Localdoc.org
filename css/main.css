@@ -4445,3 +4445,131 @@ main {
     line-height: 1 !important;
   }
 }
+
+/* ==========================================================================
+   Floating WhatsApp Support Widget (Direct Human E-E-A-T Signal)
+   ========================================================================== */
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  padding: 10px 18px 10px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4), 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 44px;
+}
+.floating-whatsapp-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.5), 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #FFFFFF !important;
+}
+.floating-whatsapp-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.floating-whatsapp-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 9px;
+  height: 9px;
+  background: #FFFFFF;
+  border: 2px solid #25D366;
+  border-radius: 50%;
+}
+@media (max-width: 640px) {
+  .floating-whatsapp-btn {
+    bottom: 18px;
+    right: 14px;
+    padding: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    justify-content: center;
+  }
+  .floating-whatsapp-btn span {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Section 4.3 -- Guides Mega-Dropdown Navigation
+   ========================================================================== */
+.nav-has-dropdown {
+  position: relative;
+}
+.guides-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  width: 640px;
+  max-width: 96vw;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06);
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  z-index: 1000;
+}
+.nav-has-dropdown:hover .guides-dropdown,
+.nav-has-dropdown:focus-within .guides-dropdown,
+.guides-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.guides-dropdown-col h4 {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--primary);
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.guides-dropdown-col a {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 5px 0;
+  transition: color .15s;
+  line-height: 1.3;
+}
+.guides-dropdown-col a:hover { color: var(--primary); }
+.guides-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  transform: translateX(-50%) rotate(45deg);
+}
+@media (max-width: 900px) { .guides-dropdown { display: none !important; } }
