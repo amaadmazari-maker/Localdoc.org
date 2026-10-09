@@ -302,7 +302,7 @@
           <li><strong>Input Photograph:</strong> 14.2 MB raw smartphone portrait (4032&times;3024 px) captured on an iPhone 15 Pro.</li>
           <li><strong>Dimensional Scaling:</strong> Rescaled to official 3.5 &times; 4.5 cm (413&times;531 px @ 300 DPI).</li>
           <li><strong>Target Byte Ceiling:</strong> Strict portal rejection boundary of &le; 20 KB (20,480 bytes).</li>
-          <li><strong>Optimal Output:</strong> 19.4 KB (19,865 bytes) achieved at quality factor $Q = 0.68$ with zero visible blocking on facial features.</li>
+          <li><strong>Optimal Output:</strong> 19.4 KB (19,865 bytes) achieved at quality factor <i>Q</i> = 0.68 with zero visible blocking on facial features.</li>
           <li><strong>Processing Latency:</strong> 92ms execution across 7 binary search iterations inside browser RAM (Chrome 128 / Apple M2).</li>
           <li><strong>Zero Cloud Upload:</strong> Biometric facial data never leaves local volatile memory.</li>
         </ul>
@@ -418,17 +418,17 @@
       <!-- Section 2 -->
       <h2>2. Mathematical Mechanics: 7-Iteration Binary Search Compression</h2>
       <p>
-        JPEG compression uses Discrete Cosine Transform (DCT) quantization matrices parameterized by an empirical quality factor $Q \in [0.05, 0.98]$. The relationship between $Q$ and final file size is highly non-linear and depends on image entropy &mdash; facial wrinkles, hair texture, and background noise:
+        JPEG compression uses Discrete Cosine Transform (DCT) quantization matrices parameterized by an empirical quality factor <i>Q</i> &in; [0.05, 0.98]. The relationship between <i>Q</i> and final file size is highly non-linear and depends on image entropy &mdash; facial wrinkles, hair texture, and background noise:
       </p>
 
       <div class="tech-card">
         <h3 style="margin-top:0;">The LocalDoc Binary Search Algorithm</h3>
         <ol style="margin-left:20px; line-height:1.8;">
           <li><strong>Canvas Cropping:</strong> The original image is drawn to an off-screen HTML5 Canvas at the exact requested pixel dimensions (e.g., 413 &times; 531 px for 35 &times; 45 mm at 300 DPI).</li>
-          <li><strong>Bounds Initialization:</strong> Lower bound $Q_{\min} = 0.05$; Upper bound $Q_{\max} = 0.98$.</li>
-          <li><strong>Midpoint Sampling:</strong> The midpoint $Q_{\text{mid}} = \frac{Q_{\min} + Q_{\max}}{2}$ is tested using <code>canvas.toBlob('image/jpeg', Q_mid)</code>.</li>
-          <li><strong>Boundary Convergence:</strong> If the generated blob size exceeds the target threshold (e.g., 20,480 bytes for a 20 KB limit), $Q_{\max}$ drops to $Q_{\text{mid}}$. If the blob fits under the limit, $Q_{\min}$ increases to $Q_{\text{mid}}$ to maximize optical clarity.</li>
-          <li><strong>Logarithmic Termination:</strong> Because $\log_2(100) \approx 6.64$, the engine converges on the highest possible quality factor within exactly <strong>7 iterations</strong> (under 100 milliseconds) with sub-kilobyte accuracy.</li>
+          <li><strong>Bounds Initialization:</strong> Lower bound Q<sub>min</sub> = 0.05; Upper bound Q<sub>max</sub> = 0.98.</li>
+          <li><strong>Midpoint Sampling:</strong> The midpoint Q<sub>mid</sub> = frac{Q<sub>min</sub> + Q<sub>max</sub>}{2} is tested using <code>canvas.toBlob('image/jpeg', Q_mid)</code>.</li>
+          <li><strong>Boundary Convergence:</strong> If the generated blob size exceeds the target threshold (e.g., 20,480 bytes for a 20 KB limit), Q<sub>max</sub> drops to Q<sub>mid</sub>. If the blob fits under the limit, Q<sub>min</sub> increases to Q<sub>mid</sub> to maximize optical clarity.</li>
+          <li><strong>Logarithmic Termination:</strong> Because log<sub>2</sub>(100) &approx; 6.64, the engine converges on the highest possible quality factor within exactly <strong>7 iterations</strong> (under 100 milliseconds) with sub-kilobyte accuracy.</li>
         </ol>
       </div>
 
@@ -453,7 +453,7 @@
           <tr>
             <td><strong>&le; 20 KB (Civil Exam)</strong></td>
             <td>3.5 &times; 4.5 cm (413&times;531 px)</td>
-            <td>$Q = 0.68$</td>
+            <td><i>Q</i> = 0.68</td>
             <td>19.4 KB (19,865 B)</td>
             <td>7 cycles / 92 ms</td>
             <td>Eyes, nose, and lips razor-sharp; smooth background</td>
@@ -461,7 +461,7 @@
           <tr>
             <td><strong>&le; 50 KB (State Board)</strong></td>
             <td>3.5 &times; 4.5 cm (413&times;531 px)</td>
-            <td>$Q = 0.88$</td>
+            <td><i>Q</i> = 0.88</td>
             <td>48.6 KB (49,766 B)</td>
             <td>7 cycles / 84 ms</td>
             <td>Virtually identical to original camera scan</td>
@@ -469,7 +469,7 @@
           <tr>
             <td><strong>&le; 100 KB (Schengen Visa)</strong></td>
             <td>35 &times; 45 mm (413&times;531 px)</td>
-            <td>$Q = 0.96$</td>
+            <td><i>Q</i> = 0.96</td>
             <td>96.2 KB (98,508 B)</td>
             <td>7 cycles / 78 ms</td>
             <td>Zero compression noise; archival print grade</td>
@@ -579,7 +579,7 @@
             <h3 class="walkthrough-step-title">Instant 7-Iteration Optimization &amp; Download (100% Portal Pass)</h3>
           </div>
           <p class="walkthrough-step-desc">
-            The local binary search engine completes in under 100ms. Check the <strong>Resized Result</strong> card: your photo is confirmed at <strong>19.4 KB (Target: &le; 20 KB)</strong> at $Q = 0.68$ with sharp facial contrast. Click <strong>Download Resized Photo</strong> for immediate submission with zero server delays and guaranteed validation pass.
+            The local binary search engine completes in under 100ms. Check the <strong>Resized Result</strong> card: your photo is confirmed at <strong>19.4 KB (Target: &le; 20 KB)</strong> at <i>Q</i> = 0.68 with sharp facial contrast. Click <strong>Download Resized Photo</strong> for immediate submission with zero server delays and guaranteed validation pass.
           </p>
           <div class="walkthrough-visual-frame">
             <img src="../assets/images/guides/resizer-step5-binary-search-download.webp" alt="Download optimized 19.4 KB portrait photo ready for submission" width="900" height="506" loading="lazy">
@@ -602,7 +602,7 @@
       <div class="tech-card" style="border-left:4px solid #ef4444;">
         <h3 style="margin-top:0;">3 Real Limitations to Keep in Mind</h3>
         <ul style="margin-left:20px; line-height:1.7;">
-          <li><strong>Severe JPEG Macroblock Noise Below 15 KB on Textured Backdrops:</strong> If your photo includes a textured brick wall, foliage, or noisy wallpaper, high-frequency spatial detail consumes available byte budget rapidly. When forcing a textured photo under 15 KB, $8 \times 8$ pixel quantization blocks become visible across facial contours. You must replace the backdrop with a solid studio white or light blue preset before compressing.</li>
+          <li><strong>Severe JPEG Macroblock Noise Below 15 KB on Textured Backdrops:</strong> If your photo includes a textured brick wall, foliage, or noisy wallpaper, high-frequency spatial detail consumes available byte budget rapidly. When forcing a textured photo under 15 KB, 8 &times; 8 pixel quantization blocks become visible across facial contours. You must replace the backdrop with a solid studio white or light blue preset before compressing.</li>
           <li><strong>Tiny Aspect Crops (&lt;100&times;100 px):</strong> If a portal demands sub-10 KB sizes and an applicant crops only a tiny 80 &times; 80 pixel thumbnail, printing that image at physical 300 DPI will result in severe visual pixelation. Always crop to standard physical millimeter specifications first.</li>
           <li><strong>Transparent Signatures Cannot Be Saved as JPEG:</strong> Government portals frequently require signature uploads under 20 KB. While JPEG achieves higher compression ratios, the JPEG format specification does not support alpha channel transparency. Signatures requiring transparent backgrounds must be exported as PNG, which LocalDoc supports via 8-bit paletted PNG quantization.</li>
         </ul>
@@ -658,7 +658,7 @@
       <div class="faq-accordion">
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
           <h4 style="margin:0 0 6px; color:var(--text-primary);">How do I convert millimeters to pixels for printing?</h4>
-          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">The standard formula is: $\text{Pixels} = \frac{\text{Millimeters}}{25.4} \times \text{DPI}$. At official consular 300 DPI print quality, a 35mm width equals $\frac{35}{25.4} \times 300 \approx 413$ pixels, and a 45mm height equals $\frac{45}{25.4} \times 300 \approx 531$ pixels. Our tool handles this conversion automatically.</p>
+          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">The standard formula is: Pixels = (Millimeters / 25.4) &times; DPI. At official consular 300 DPI print quality, a 35mm width equals (35 / 25.4) &times; 300 &approx; 413 pixels, and a 45mm height equals (45 / 25.4) &times; 300 &approx; 531 pixels. Our tool handles this conversion automatically.</p>
         </div>
 
         <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">

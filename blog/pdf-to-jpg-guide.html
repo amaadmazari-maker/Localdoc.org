@@ -438,8 +438,8 @@
       <h2>2. Viewport Geometry: Scaling PostScript Points to 300 DPI Pixels</h2>
       <p>PDF documents are structured around mathematical vector descriptions where coordinates are defined in PostScript points (1/72 inch). A standard International ISO A4 page measures 595.28 points wide by 841.89 points high. To produce publication-grade JPEG images suitable for retina displays and commercial printing, the rendering engine must apply dynamic coordinate scaling:</p>
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
-        <li><strong>Resolution Multiplier Calculation:</strong> For 300 DPI output, the scale multiplier is computed as $S = \text{DPI} / 72 = 300 / 72 \approx 4.1667$.</li>
-        <li><strong>High-Resolution Canvas Allocation:</strong> Multiplying the physical point dimensions by this scale factor yields an in-memory canvas measuring 2,480 &times; 3,508 pixels ($595.28 \times 4.1667 \approx 2480.3$ px, $841.89 \times 4.1667 \approx 3507.9$ px).</li>
+        <li><strong>Resolution Multiplier Calculation:</strong> For 300 DPI output, the scale multiplier is computed as <i>S</i> = DPI / 72 = 300 / 72 &approx; 4.1667.</li>
+        <li><strong>High-Resolution Canvas Allocation:</strong> Multiplying the physical point dimensions by this scale factor yields an in-memory canvas measuring 2,480 &times; 3,508 pixels (595.28 &times; 4.1667 &approx; 2480.3 px, 841.89 &times; 4.1667 &approx; 3507.9 px).</li>
         <li><strong>Subpixel Antialiasing:</strong> Vector B&eacute;zier curves and glyph contours are rasterized with subpixel coverage matrices, guaranteeing smooth letterforms even when rendering intricate 6-point financial disclaimer text.</li>
         <li><strong>Simulated Paper Backing:</strong> Because the JPEG specification does not support alpha channels, the canvas context is initialized with a solid paper-white fill (<code>#FFFFFF</code>) prior to vector rendering, ensuring clean contrast.</li>
       </ol>

@@ -338,10 +338,12 @@
         <h3 style="margin-top:0;">3 Geometric Phases of In-Browser Document Rectification</h3>
         <ol style="margin-left:20px; line-height:1.8;">
           <li><strong>Otsu Grayscale Gradient Segmentation:</strong> The camera frame is converted to grayscale, and inter-class variance maximization detects high-contrast boundary gradients between white paper edges and dark tabletops.</li>
-          <li><strong>3&times;3 Homography Projective Matrix:</strong> Given the four extracted paper corners $(x_1, y_1) \dots (x_4, y_4)$, the engine computes a 9-element projective homography matrix $H$:
-          $$\begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix} = \begin{bmatrix} h_{11} & h_{12} & h_{13} \\ h_{21} & h_{22} & h_{23} \\ h_{31} & h_{32} & h_{33} \end{bmatrix} \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}$$
-          This matrix maps arbitrary perspective quadrilaterals onto a true rectangular Euclidean canvas $(0, 0) \dots (W, H)$ at standard ISO 216 A4 aspect ratio (1:1.414).</li>
-          <li><strong>Sauvola Adaptive Binarization (Magic Pro Filter):</strong> Unlike global thresholding that washes out faint text under hand shadows, Sauvola thresholding calculates a localized dynamic threshold $T(x,y) = m(x,y) \cdot [1 + k \cdot (\frac{s(x,y)}{R} - 1)]$ across a sliding $32 \times 32$ pixel window, stripping shadows while preserving delicate pencil strokes.</li>
+          <li><strong>3&times;3 Homography Projective Matrix:</strong> Given the four extracted paper corners (x₁, y₁) … (x₄, y₄), the engine computes a 9-element projective homography matrix <i>H</i>:
+          <pre style="background:var(--bg-body);padding:12px;border-radius:8px;font-family:monospace;font-size:0.85rem;overflow-x:auto;border:1px solid var(--line);text-align:center;">[ x' ]   [ h11  h12  h13 ] [ x ]
+[ y' ] = [ h21  h22  h23 ] [ y ]
+[ 1  ]   [ h31  h32  h33 ] [ 1 ]</pre>
+          This matrix maps arbitrary perspective quadrilaterals onto a true rectangular Euclidean canvas (0, 0) … (W, H) at standard ISO 216 A4 aspect ratio (1:1.414).</li>
+          <li><strong>Sauvola Adaptive Binarization (Magic Pro Filter):</strong> Unlike global thresholding that washes out faint text under hand shadows, Sauvola thresholding calculates a localized dynamic threshold T(x,y) = m(x,y) &times; [1 + k &times; ((s(x,y) / R) - 1)] across a sliding 32 &times; 32 pixel window, stripping shadows while preserving delicate pencil strokes.</li>
         </ol>
       </div>
 
@@ -421,7 +423,7 @@
 
         <div class="walkthrough-step-tip">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          <span><strong>Mathematical Flatness:</strong> LocalDoc computes projective homography matrix $[H]$ to un-tilt skewed captures into a flat, true rectangular A4 Euclidean projection.</span>
+          <span><strong>Mathematical Flatness:</strong> LocalDoc computes projective homography matrix [<i>H</i>] to un-tilt skewed captures into a flat, true rectangular A4 Euclidean projection.</span>
         </div>
       </div>
 
@@ -564,7 +566,7 @@
             <td><strong>Clean B&amp;W</strong></td>
             <td>Sauvola adaptive dynamic binarization</td>
             <td>Handwritten notes, black ink forms, legal briefs</td>
-            <td>Pure monochrome ($0$ or $255$), zero shadow artifacts</td>
+            <td>Pure monochrome (0 or 255), zero shadow artifacts</td>
           </tr>
           <tr>
             <td><strong>Clean Grayscale</strong></td>
@@ -601,7 +603,7 @@
           <tr>
             <td><strong>1. Quad Corner Detection</strong></td>
             <td>4032&times;3024 px raw frame</td>
-            <td>4 verified $(X,Y)$ corner vectors</td>
+            <td>4 verified (X, Y) corner vectors</td>
             <td>38 ms</td>
             <td>Locked to paper boundaries with zero desk clipping</td>
           </tr>
@@ -645,8 +647,8 @@
       <div class="tech-card" style="border-left:4px solid #ef4444;">
         <h3 style="margin-top:0;">3 Real Limitations to Keep in Mind</h3>
         <ul style="margin-left:20px; line-height:1.7;">
-          <li><strong>Severe Paper Creases and Wavy Pages:</strong> The $3 \times 3$ projective homography matrix assumes a mathematically flat Euclidean plane ($Z = 0$). If a document has deep accordion folds, crinkled water damage, or is bound tightly inside a thick textbook curve, perspective warping will flatten the four corners but leave internal text lines with wave-like optical distortions. You must manually press the sheet flat against the desk before capturing.</li>
-          <li><strong>Specular Reflections on Glossy Magazine &amp; Laminated Stock:</strong> When shooting glossy marketing brochures or laminated ID badges under direct phone flash, the plastic surface produces specular white glare patches where pixel sensors clip to pure white ($R=255, G=255, B=255$). Because the underlying ink data is obliterated, no binarization filter can reconstruct hidden text. Always photograph glossy materials under diffused daylight without flash.</li>
+          <li><strong>Severe Paper Creases and Wavy Pages:</strong> The 3 &times; 3 projective homography matrix assumes a mathematically flat Euclidean plane (Z = 0). If a document has deep accordion folds, crinkled water damage, or is bound tightly inside a thick textbook curve, perspective warping will flatten the four corners but leave internal text lines with wave-like optical distortions. You must manually press the sheet flat against the desk before capturing.</li>
+          <li><strong>Specular Reflections on Glossy Magazine &amp; Laminated Stock:</strong> When shooting glossy marketing brochures or laminated ID badges under direct phone flash, the plastic surface produces specular white glare patches where pixel sensors clip to pure white (R=255, G=255, B=255). Because the underlying ink data is obliterated, no binarization filter can reconstruct hidden text. Always photograph glossy materials under diffused daylight without flash.</li>
           <li><strong>Extreme Sensor Noise in Low Light (&lt;20 Lux):</strong> When capturing documents in dim indoor lighting, smartphone camera sensors apply heavy gain, generating random color noise and ISO grain. High-frequency sensor noise disrupts Otsu boundary gradient detection, occasionally causing the corner snap tool to latch onto dark tabletop shadows rather than true paper edges.</li>
         </ul>
       </div>
