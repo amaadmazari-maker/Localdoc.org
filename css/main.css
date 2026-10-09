@@ -2381,40 +2381,69 @@ a:hover {
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   min-height: 130px;
+  isolation: isolate;
 }
 
+/* Aceternity-inspired subtle spotlight radial glow */
+.tool-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(350px circle at 50% 0%, var(--primary-glow, rgba(2, 132, 199, 0.12)), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Magic UI shimmer top border line */
 .tool-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent-emerald));
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--accent-emerald), transparent);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transform: scaleX(0.7);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
 }
 
 .tool-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(2, 132, 199, 0.4);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-4px);
+  border-color: rgba(2, 132, 199, 0.45);
+  box-shadow: 0 14px 30px -8px rgba(15, 23, 42, 0.08), 0 0 0 1.5px rgba(2, 132, 199, 0.28);
 }
 
-.tool-card:active {
-  transform: scale(0.98);
+[data-theme="dark"] .tool-card:hover {
+  border-color: rgba(2, 132, 199, 0.6);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 24px rgba(2, 132, 199, 0.2), 0 0 0 1.5px rgba(2, 132, 199, 0.45);
 }
 
-button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
-  touch-action: manipulation;
+.tool-card:hover::after {
+  opacity: 1;
 }
 
 .tool-card:hover::before {
   opacity: 1;
+  transform: scaleX(1);
+}
+
+.tool-card:active {
+  transform: scale(0.985);
+}
+
+button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
+  touch-action: manipulation;
 }
 
 .tool-card-icon-wrap {
@@ -2425,7 +2454,14 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.tool-card:hover .tool-card-icon-wrap {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.18);
 }
 
 .tool-card-icon-wrap.cat-convert {
@@ -2498,14 +2534,14 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
 }
 
 .tool-card:hover .tool-card-icon {
-  transform: scale(1.12);
+  transform: scale(1.1);
 }
 
 .tool-card-badge {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  font-size: 0.75rem;
+  top: 14px;
+  right: 14px;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -2514,12 +2550,15 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
   background: var(--bg-body);
   color: var(--text-muted);
   border: 1px solid var(--line);
+  z-index: 2;
+  transition: all 0.2s ease;
 }
 
 .tool-card:hover .tool-card-badge {
   background: var(--primary);
   color: #FFFFFF;
   border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--primary-glow);
 }
 
 .tool-card h3 {
@@ -2529,6 +2568,13 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
   margin-bottom: 6px;
   letter-spacing: -0.015em;
   line-height: 1.32;
+  position: relative;
+  z-index: 1;
+  transition: color 0.18s ease;
+}
+
+.tool-card:hover h3 {
+  color: var(--primary);
 }
 
 .tool-card p {
@@ -2536,6 +2582,8 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
   color: var(--text-secondary);
   line-height: 1.5;
   margin-top: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Pillar 5: Competitor Comparison Table */
