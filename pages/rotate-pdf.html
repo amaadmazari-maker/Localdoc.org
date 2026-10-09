@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -653,7 +653,7 @@
     async function loadDocumentPages() {
       try {
         const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        const pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
         totalDocPages = pdf.numPages;
         pageRotations = {};
         for (let i = 0; i < totalDocPages; i++) pageRotations[i] = 0;

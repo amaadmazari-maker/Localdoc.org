@@ -1225,7 +1225,7 @@
     async function loadAndRenderPdf(buffer) {
       try {
         const previewBuffer = (buffer instanceof ArrayBuffer) ? buffer.slice(0) : buffer;
-        const loadingTask = pdfjsLib.getDocument({ data: previewBuffer });
+        const loadingTask = pdfjsLib.getDocument({ data: previewBuffer, isEvalSupported: false });
         pdfDoc = await loadingTask.promise;
         totalPages = pdfDoc.numPages;
         currentPage = 1;

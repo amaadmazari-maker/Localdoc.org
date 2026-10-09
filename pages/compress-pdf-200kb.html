@@ -730,7 +730,7 @@
           UIUtils.setWorkflowStep(2, pct, `Compressing ${currentFile.name} to 200 KB...`);
 
           const arrayBuffer = await currentFile.arrayBuffer();
-          const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
           const numPages = pdfDoc.numPages;
 
           const outPdf = await PDFLib.PDFDocument.create();

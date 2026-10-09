@@ -51,6 +51,21 @@ const UIUtils = {
   },
 
   // Toast Notification System
+  // HTML Sanitization Utility
+  escapeHtml(str) {
+    if (typeof str !== 'string') return String(str || '');
+    return str.replace(/[&<>"']/g, match => {
+      switch (match) {
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return match;
+      }
+    });
+  },
+
   showToast(message, type = 'info', duration = 3000) {
     let container = document.getElementById('toast-container');
     if (!container) {
@@ -65,7 +80,13 @@ const UIUtils = {
     const bg = type === 'success' ? '#059669' : (type === 'error' ? '#DC2626' : (type === 'warning' ? '#D97706' : '#0284C7'));
     const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : (type === 'warning' ? '⚠' : 'ℹ'));
     toast.style.cssText = `background:${bg}; color:#FFFFFF; padding:10px 18px; border-radius:24px; font-size:0.88rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.25); display:inline-flex; align-items:center; gap:8px; pointer-events:auto; transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform:translateY(20px); opacity:0;`;
-    toast.innerHTML = `<span style="font-size:1rem;">${icon}</span><span>${message}</span>`;
+    const iconSpan = document.createElement('span');
+    iconSpan.style.fontSize = '1rem';
+    iconSpan.textContent = icon;
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = String(message || '');
+    toast.appendChild(iconSpan);
+    toast.appendChild(msgSpan);
     container.appendChild(toast);
 
     requestAnimationFrame(() => {

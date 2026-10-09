@@ -38,7 +38,7 @@ const PDFConvert = {
   // 1. PDF to Images (JPG / PNG) with selectable DPI
   async pdfToImages(file, format = 'image/jpeg', dpiScale = 2.0, onProgress = null) {
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     const numPages = pdf.numPages;
     const images = [];
 
@@ -162,7 +162,7 @@ const PDFConvert = {
   async pdfToWord(file, onProgress = null) {
     if (onProgress) onProgress(15, 'Loading PDF Structure in Memory...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     const numPages = pdf.numPages;
     const docxParagraphs = [];
     const htmlPreviewBlocks = [];
@@ -675,7 +675,7 @@ const PDFConvert = {
   async pdfToExcel(file, onProgress = null) {
     if (onProgress) onProgress(20, 'Reading PDF Tables & Tabular Streams in RAM...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     const numPages = pdf.numPages;
     const wb = XLSX.utils.book_new();
     const allSheetsData = [];

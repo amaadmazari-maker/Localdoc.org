@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -795,7 +795,7 @@
 
           try {
             const arrBuf = await UIUtils.readFileAsArrayBuffer(selectedFile);
-            loadedPdf = await pdfjsLib.getDocument({ data: arrBuf }).promise;
+            loadedPdf = await pdfjsLib.getDocument({ data: arrBuf, isEvalSupported: false }).promise;
             totalDocPages = loadedPdf.numPages;
             currentPreviewPage = 1;
             if (pagerEl && totalDocPages > 1) pagerEl.style.display = 'inline-flex';

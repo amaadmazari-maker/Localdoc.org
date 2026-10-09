@@ -1,4 +1,4 @@
-﻿/**
+/**
  * LocalDoc.org — Universal Document Reader & In-Browser Viewer Engine
  * Supports PDF, Word (.docx), Excel (.xlsx, .xls, .csv), Text, and Images.
  * 100% Client-Side In-Memory Execution. Zero Server Uploads.
@@ -222,7 +222,7 @@
   async function loadPdf(file) {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      pdfDoc = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      pdfDoc = await window.pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
       pdfTotalPages = pdfDoc.numPages;
       pdfCurrentPage = 1;
       pageTotalSpan.textContent = `/ ${pdfTotalPages}`;

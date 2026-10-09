@@ -318,7 +318,7 @@ const PDFOrganize = {
 
     // Helper: High-efficiency Canvas to JPEG compressor
     const renderOptimizedPages = async (targetScale, jpegQuality, progressStart, progressEnd) => {
-      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
       const numPages = pdf.numPages;
       const pagesData = [];
 

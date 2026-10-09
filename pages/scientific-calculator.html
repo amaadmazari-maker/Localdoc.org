@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="dark">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -18,7 +18,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Scientific Calculator Online — Pro Math | LocalDoc</title>
   <meta name="description" content="Advanced scientific calculator with algebra solver, trigonometry, matrices, and calculus. Runs 100% offline in your browser. No installation needed.">
   <link rel="canonical" href="https://localdoc.org/pages/scientific-calculator.html">
@@ -3224,7 +3224,140 @@
           s += ')'.repeat(opens - closes);
         }
 
-        return Function(`'use strict'; return (${s})`)();
+        // Safe recursive-descent evaluation without Function constructor
+        return (function safeEval(expr) {
+          const tokens = [];
+          let idx = 0;
+          while (idx < expr.length) {
+            const c = expr[idx];
+            if (/\s/.test(c)) { idx++; continue; }
+            if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(expr[idx + 1] || ''))) {
+              let numStr = '';
+              while (idx < expr.length && /[0-9.]/.test(expr[idx])) { numStr += expr[idx++]; }
+              if (idx < expr.length && (expr[idx] === 'e' || expr[idx] === 'E') && /[0-9+-]/.test(expr[idx + 1] || '')) {
+                numStr += expr[idx++];
+                if (expr[idx] === '+' || expr[idx] === '-') numStr += expr[idx++];
+                while (idx < expr.length && /[0-9]/.test(expr[idx])) numStr += expr[idx++];
+              }
+              tokens.push({ type: 'NUM', val: parseFloat(numStr) });
+              continue;
+            }
+            if (expr.startsWith('**', idx)) {
+              tokens.push({ type: 'OP', val: '**' });
+              idx += 2;
+              continue;
+            }
+            if ('+-*/%(),'.includes(c)) {
+              tokens.push({ type: 'OP', val: c });
+              idx++;
+              continue;
+            }
+            if (/[a-zA-Z_]/.test(c)) {
+              let ident = '';
+              while (idx < expr.length && /[a-zA-Z0-9_.]/.test(expr[idx])) { ident += expr[idx++]; }
+              tokens.push({ type: 'IDENT', val: ident });
+              continue;
+            }
+            throw new Error('Unexpected character: ' + c);
+          }
+
+          let pos = 0;
+          const peek = () => tokens[pos];
+          const consume = (expected) => {
+            const t = tokens[pos];
+            if (expected && (!t || t.val !== expected)) throw new Error('Expected ' + expected);
+            pos++;
+            return t;
+          };
+
+          const safeFns = {
+            'Math.sin': Math.sin, 'Math.cos': Math.cos, 'Math.tan': Math.tan,
+            'Math.asin': Math.asin, 'Math.acos': Math.acos, 'Math.atan': Math.atan,
+            'Math.sinh': Math.sinh, 'Math.cosh': Math.cosh, 'Math.tanh': Math.tanh,
+            'Math.log10': Math.log10, 'Math.log': Math.log,
+            'Math.sqrt': Math.sqrt, 'Math.cbrt': Math.cbrt, 'Math.abs': Math.abs,
+            'Math.exp': Math.exp, 'factorial': factorial,
+            'window.casioPol': window.casioPol, 'window.casioRec': window.casioRec,
+            'window.casioAsin': window.casioAsin, 'window.casioAcos': window.casioAcos,
+            'window.casioAtan': window.casioAtan, 'window.casioSin': window.casioSin,
+            'window.casioCos': window.casioCos, 'window.casioTan': window.casioTan,
+            'window.casioRanHash': window.casioRanHash, 'window.casioRanInt': window.casioRanInt,
+            'window.casioRnd': window.casioRnd, 'window.casioGCD': window.casioGCD,
+            'window.casioLCM': window.casioLCM, 'window.casioNPr': window.casioNPr,
+            'window.casioNCr': window.casioNCr
+          };
+
+          function pExpr() { return pAddSub(); }
+          function pAddSub() {
+            let left = pMulDiv();
+            while (peek() && (peek().val === '+' || peek().val === '-')) {
+              const op = consume().val;
+              const right = pMulDiv();
+              left = op === '+' ? left + right : left - right;
+            }
+            return left;
+          }
+          function pMulDiv() {
+            let left = pPower();
+            while (peek() && (peek().val === '*' || peek().val === '/' || peek().val === '%')) {
+              const op = consume().val;
+              const right = pPower();
+              left = op === '*' ? left * right : (op === '/' ? left / right : left % right);
+            }
+            return left;
+          }
+          function pPower() {
+            let left = pUnary();
+            if (peek() && peek().val === '**') {
+              consume('**');
+              const right = pPower();
+              left = Math.pow(left, right);
+            }
+            return left;
+          }
+          function pUnary() {
+            if (peek() && peek().val === '+') { consume('+'); return pUnary(); }
+            if (peek() && peek().val === '-') { consume('-'); return -pUnary(); }
+            return pPrimary();
+          }
+          function pPrimary() {
+            const t = peek();
+            if (!t) throw new Error('Unexpected end of expression');
+            if (t.type === 'NUM') { consume(); return t.val; }
+            if (t.type === 'IDENT') {
+              const name = consume().val;
+              if (name === 'Math.PI') return Math.PI;
+              if (name === 'Math.E') return Math.E;
+              if (peek() && peek().val === '(') {
+                consume('(');
+                const args = [];
+                if (!peek() || peek().val !== ')') {
+                  args.push(pExpr());
+                  while (peek() && peek().val === ',') {
+                    consume(',');
+                    args.push(pExpr());
+                  }
+                }
+                if (peek() && peek().val === ')') consume(')');
+                const fn = safeFns[name];
+                if (typeof fn === 'function') {
+                  return fn(...args);
+                }
+                throw new Error('Unsupported function: ' + name);
+              }
+              throw new Error('Unsupported identifier: ' + name);
+            }
+            if (t.val === '(') {
+              consume('(');
+              const val = pExpr();
+              if (peek() && peek().val === ')') consume(')');
+              return val;
+            }
+            throw new Error('Unexpected token: ' + t.val);
+          }
+
+          return pExpr();
+        })(s);
       }
 
       function factorial(n) {
@@ -3882,19 +4015,130 @@
       // 5. Numerical Calculus Studio
       // =========================================================================
       function evalFunctionAt(exprStr, xVal) {
-        let s = exprStr.toLowerCase();
-        s = s.replace(/\^/g, '**');
-        s = s.replace(/sin\(/g, 'Math.sin(');
-        s = s.replace(/cos\(/g, 'Math.cos(');
-        s = s.replace(/tan\(/g, 'Math.tan(');
-        s = s.replace(/exp\(/g, 'Math.exp(');
-        s = s.replace(/log\(/g, 'Math.log10(');
-        s = s.replace(/ln\(/g, 'Math.log(');
-        s = s.replace(/sqrt\(/g, 'Math.sqrt(');
-        s = s.replace(/abs\(/g, 'Math.abs(');
-        s = s.replace(/(\d+)x/g, '$1*x');
-        s = s.replace(/x(\d+)/g, 'x*$1');
-        return Function('x', `'use strict'; return (${s})`)(xVal);
+        if (!exprStr || !exprStr.trim()) return 0;
+        let s = exprStr.toLowerCase()
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/')
+          .replace(/(\d+)x/g, '$1*x')
+          .replace(/x(\d+)/g, 'x*$1');
+
+        const tokens = [];
+        let idx = 0;
+        while (idx < s.length) {
+          const c = s[idx];
+          if (/\s/.test(c)) { idx++; continue; }
+          if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(s[idx + 1] || ''))) {
+            let numStr = '';
+            while (idx < s.length && /[0-9.]/.test(s[idx])) { numStr += s[idx++]; }
+            if (idx < s.length && (s[idx] === 'e' || s[idx] === 'E') && /[0-9+-]/.test(s[idx + 1] || '')) {
+              numStr += s[idx++];
+              if (s[idx] === '+' || s[idx] === '-') numStr += s[idx++];
+              while (idx < s.length && /[0-9]/.test(s[idx])) numStr += s[idx++];
+            }
+            tokens.push({ type: 'NUM', val: parseFloat(numStr) });
+            continue;
+          }
+          if (/[a-zA-Z_]/.test(c)) {
+            let ident = '';
+            while (idx < s.length && /[a-zA-Z0-9_]/.test(s[idx])) { ident += s[idx++]; }
+            tokens.push({ type: 'IDENT', val: ident });
+            continue;
+          }
+          if ('+-*/^(),'.includes(c)) {
+            tokens.push({ type: 'OP', val: c });
+            idx++;
+            continue;
+          }
+          throw new Error('Unexpected character: ' + c);
+        }
+
+        let pos = 0;
+        const peek = () => tokens[pos];
+        const consume = (expected) => {
+          const t = tokens[pos];
+          if (expected && (!t || t.val !== expected)) throw new Error('Expected ' + expected);
+          pos++;
+          return t;
+        };
+
+        function parseExpr() { return parseAddSub(); }
+        function parseAddSub() {
+          let left = parseMulDiv();
+          while (peek() && (peek().val === '+' || peek().val === '-')) {
+            const op = consume().val;
+            const right = parseMulDiv();
+            left = op === '+' ? left + right : left - right;
+          }
+          return left;
+        }
+        function parseMulDiv() {
+          let left = parsePower();
+          while (peek() && (peek().val === '*' || peek().val === '/')) {
+            const op = consume().val;
+            const right = parsePower();
+            left = op === '*' ? left * right : left / right;
+          }
+          return left;
+        }
+        function parsePower() {
+          let left = parseUnary();
+          if (peek() && peek().val === '^') {
+            consume('^');
+            const right = parsePower();
+            left = Math.pow(left, right);
+          }
+          return left;
+        }
+        function parseUnary() {
+          if (peek() && peek().val === '+') { consume('+'); return parseUnary(); }
+          if (peek() && peek().val === '-') { consume('-'); return -parseUnary(); }
+          return parsePrimary();
+        }
+        function parsePrimary() {
+          const t = peek();
+          if (!t) throw new Error('Unexpected end of expression');
+          if (t.type === 'NUM') { consume(); return t.val; }
+          if (t.type === 'IDENT') {
+            const name = consume().val.toLowerCase();
+            if (name === 'x') return xVal;
+            if (name === 'pi') return Math.PI;
+            if (name === 'e') return Math.E;
+            if (peek() && peek().val === '(') {
+              consume('(');
+              const args = [];
+              if (!peek() || peek().val !== ')') {
+                args.push(parseExpr());
+                while (peek() && peek().val === ',') {
+                  consume(',');
+                  args.push(parseExpr());
+                }
+              }
+              if (peek() && peek().val === ')') consume(')');
+              const a0 = args[0] !== undefined ? args[0] : 0;
+              switch (name) {
+                case 'sin': return Math.sin(a0);
+                case 'cos': return Math.cos(a0);
+                case 'tan': return Math.tan(a0);
+                case 'exp': return Math.exp(a0);
+                case 'ln': return Math.log(a0);
+                case 'log': return Math.log10(a0);
+                case 'sqrt': return Math.sqrt(a0);
+                case 'abs': return Math.abs(a0);
+                default: throw new Error('Unknown function: ' + name);
+              }
+            }
+            throw new Error('Unknown identifier: ' + name);
+          }
+          if (t.val === '(') {
+            consume('(');
+            const res = parseExpr();
+            if (peek() && peek().val === ')') consume(')');
+            return res;
+          }
+          throw new Error('Unexpected token: ' + t.val);
+        }
+
+        return parseExpr();
       }
 
       // Derivative Button

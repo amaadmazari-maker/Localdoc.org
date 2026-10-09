@@ -74,7 +74,7 @@ const PDFEdit = {
       if (onProgress) onProgress(30, 'Rendering document pages with high-fidelity visual engine...');
       let jsDoc = pdfJsDoc;
       if (!jsDoc && typeof pdfjsLib !== 'undefined') {
-        const loadingTask = pdfjsLib.getDocument({ data: rawBuffer.slice(0) });
+        const loadingTask = pdfjsLib.getDocument({ data: rawBuffer.slice(0), isEvalSupported: false });
         jsDoc = await loadingTask.promise;
       }
       if (!jsDoc) {

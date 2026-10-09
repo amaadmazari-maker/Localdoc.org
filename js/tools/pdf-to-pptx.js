@@ -1,4 +1,4 @@
-﻿/**
+/**
  * LocalDoc.org — PDF to PowerPoint (.pptx) In-Memory Generator
  * Converts PDF pages into genuine Microsoft PowerPoint (.pptx) presentations in client RAM.
  * 100% In-Browser Execution. Zero Server Uploads.
@@ -216,7 +216,7 @@
     const arrayBuffer = await file.arrayBuffer();
 
     try {
-      pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
       totalPages = pdfDoc.numPages;
 
       fileTitle.textContent = file.name;

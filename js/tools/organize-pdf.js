@@ -107,59 +107,66 @@
     }
   }
 
+  let isLoading = false;
   async function loadPdfFiles(files) {
-    const pdfFiles = files.filter(f => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
-    if (pdfFiles.length === 0) {
-      alert('Please select valid PDF file(s).');
-      return;
-    }
-
-    emptyState.style.display = 'none';
-    workspace.style.display = 'block';
-    workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
-      UIUtils.showToast("Loading " + pdfFiles.length + " PDF(s) into workspace...", "info");
-    }
-
-    for (const file of pdfFiles) {
-      const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      const arrayBuffer = await file.arrayBuffer();
-
-      try {
-        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
-        sourceFiles.push({
-          id: fileId,
-          name: file.name,
-          arrayBuffer: arrayBuffer,
-          numPages: pdfDoc.numPages
-        });
-
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-          const page = await pdfDoc.getPage(i);
-          const viewport = page.getViewport({ scale: 0.3 });
-
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext('2d');
-          await page.render({ canvasContext: ctx, viewport }).promise;
-
-          pagesList.push({
-            id: 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-            fileId: fileId,
-            pageIndex: i - 1, // 0-indexed for PDF-Lib
-            originalPageNum: i,
-            rotation: 0,
-            thumbnailDataUrl: canvas.toDataURL('image/jpeg', 0.8)
-          });
-        }
-      } catch (err) {
-        console.error('Error reading PDF:', err);
-        alert(`Could not load ${file.name}: Password protected or invalid format.`);
+    if (isLoading) return;
+    isLoading = true;
+    try {
+      const pdfFiles = files.filter(f => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+      if (pdfFiles.length === 0) {
+        alert('Please select valid PDF file(s).');
+        return;
       }
-    }
 
-    renderPagesGrid();
+      emptyState.style.display = 'none';
+      workspace.style.display = 'block';
+      workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+        UIUtils.showToast("Loading " + pdfFiles.length + " PDF(s) into workspace...", "info");
+      }
+
+      for (const file of pdfFiles) {
+        const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        const arrayBuffer = await file.arrayBuffer();
+
+        try {
+          const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0), isEvalSupported: false }).promise;
+          sourceFiles.push({
+            id: fileId,
+            name: file.name,
+            arrayBuffer: arrayBuffer,
+            numPages: pdfDoc.numPages
+          });
+
+          for (let i = 1; i <= pdfDoc.numPages; i++) {
+            const page = await pdfDoc.getPage(i);
+            const viewport = page.getViewport({ scale: 0.3 });
+
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+
+            pagesList.push({
+              id: 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+              fileId: fileId,
+              pageIndex: i - 1, // 0-indexed for PDF-Lib
+              originalPageNum: i,
+              rotation: 0,
+              thumbnailDataUrl: canvas.toDataURL('image/jpeg', 0.8)
+            });
+          }
+        } catch (err) {
+          console.error('Error reading PDF:', err);
+          alert(`Could not load ${file.name}: Password protected or invalid format.`);
+        }
+      }
+
+      renderPagesGrid();
+    } finally {
+      isLoading = false;
+    }
   }
 
   function renderPagesGrid() {

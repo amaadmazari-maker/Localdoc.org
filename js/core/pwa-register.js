@@ -10,12 +10,9 @@
 
   // Service Worker Registration
   if ('serviceWorker' in navigator) {
-    let refreshing = false;
+    // Note: Do not automatically reload on controllerchange to avoid disrupting user experience or losing active work.
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        refreshing = true;
-        window.location.reload();
-      }
+      console.log('LocalDoc Service Worker controller updated.');
     });
 
     window.addEventListener('load', () => {

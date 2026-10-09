@@ -867,7 +867,7 @@
     async function loadDocumentThumbnails() {
       try {
         const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        const pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
         totalDocPages = pdf.numPages;
         totalPagesCountEl.textContent = totalDocPages;
 

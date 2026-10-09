@@ -263,71 +263,186 @@
   }
 
   // Safe & Robust Math Expression Parser
+  // Safe & Robust Recursive-Descent Math Expression Parser (Zero eval / Zero new Function)
   function parseAndEvaluate(inputExpr) {
-    if (!inputExpr.trim()) return 0;
+    if (!inputExpr || !inputExpr.trim()) return 0;
 
     let s = inputExpr
       .replace(/×/g, '*')
       .replace(/÷/g, '/')
-      .replace(/π/g, 'Math.PI')
-      .replace(/φ/g, '1.618033988749895')
-      .replace(/(\d+)\%/g, '($1/100)')
-      .replace(/e\b/g, 'Math.E');
+      .replace(/π/g, 'pi')
+      .replace(/φ/g, 'phi')
+      .replace(/(\d+(?:\.\d+)?)%/g, '($1/100)')
+      .replace(/(\d+)!/g, 'fact($1)');
 
-    // Handle factorials (e.g. 5! => fact(5))
-    s = s.replace(/(\d+)!/g, 'fact($1)');
-
-    // Handle trigonometric functions considering DEG/RAD
-    const trigAngleFactor = angleMode === 'DEG'  ?  '(Math.PI/180)*' : '';
-    const invTrigAngleFactor = angleMode === 'DEG'  ?  '*(180/Math.PI)' : '';
-
-    s = s.replace(/sin\(/g, `Math.sin(${trigAngleFactor}`)
-         .replace(/cos\(/g, `Math.cos(${trigAngleFactor}`)
-         .replace(/tan\(/g, `Math.tan(${trigAngleFactor}`)
-         .replace(/asin\(/g, `(${invTrigAngleFactor}Math.asin(`)
-         .replace(/acos\(/g, `(${invTrigAngleFactor}Math.acos(`)
-         .replace(/atan\(/g, `(${invTrigAngleFactor}Math.atan(`)
-         .replace(/sinh\(/g, 'Math.sinh(')
-         .replace(/cosh\(/g, 'Math.cosh(')
-         .replace(/tanh\(/g, 'Math.tanh(')
-         .replace(/asinh\(/g, 'Math.asinh(')
-         .replace(/acosh\(/g, 'Math.acosh(')
-         .replace(/atanh\(/g, 'Math.atanh(')
-         .replace(/ln\(/g, 'Math.log(')
-         .replace(/log10\(/g, 'Math.log10(')
-         .replace(/log2\(/g, 'Math.log2(')
-         .replace(/log\(/g, 'Math.log10(')
-         .replace(/sqrt\(/g, 'Math.sqrt(')
-         .replace(/cbrt\(/g, 'Math.cbrt(')
-         .replace(/abs\(/g, 'Math.abs(')
-         .replace(/exp\(/g, 'Math.exp(');
-
-    // Exponents: a^b => Math.pow(a, b)
-    s = s.replace(/([0-9\.]+|\([^\)]+\))\^([0-9\.]+|\([^\)]+\))/g, 'Math.pow($1,$2)');
-
-    // Balance open parentheses
-    let openCount = (s.match(/\(/g) || []).length;
-    let closeCount = (s.match(/\)/g) || []).length;
-    while (openCount > closeCount) {
-      s += ')';
-      closeCount++;
+    // Tokenizer
+    const tokens = [];
+    let idx = 0;
+    while (idx < s.length) {
+      const c = s[idx];
+      if (/\s/.test(c)) { idx++; continue; }
+      if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(s[idx + 1] || ''))) {
+        let numStr = '';
+        while (idx < s.length && /[0-9.]/.test(s[idx])) { numStr += s[idx++]; }
+        if (idx < s.length && (s[idx] === 'e' || s[idx] === 'E') && /[0-9+-]/.test(s[idx + 1] || '')) {
+          numStr += s[idx++];
+          if (s[idx] === '+' || s[idx] === '-') numStr += s[idx++];
+          while (idx < s.length && /[0-9]/.test(s[idx])) numStr += s[idx++];
+        }
+        tokens.push({ type: 'NUM', val: parseFloat(numStr) });
+        continue;
+      }
+      if (/[a-zA-Z_]/.test(c)) {
+        let ident = '';
+        while (idx < s.length && /[a-zA-Z0-9_]/.test(s[idx])) { ident += s[idx++]; }
+        tokens.push({ type: 'IDENT', val: ident });
+        continue;
+      }
+      if ('+-*/^(),'.includes(c)) {
+        tokens.push({ type: 'OP', val: c });
+        idx++;
+        continue;
+      }
+      throw new Error(`Unexpected character: ${c}`);
     }
 
-    // Evaluate in safe scope with helper functions
+    let pos = 0;
+    const peek = () => tokens[pos];
+    const consume = (expected) => {
+      const t = tokens[pos];
+      if (expected && (!t || t.val !== expected)) throw new Error(`Expected ${expected}`);
+      pos++;
+      return t;
+    };
+
+    const toRad = (angle) => angleMode === 'DEG' ? (angle * Math.PI) / 180 : angle;
+    const fromRad = (rad) => angleMode === 'DEG' ? (rad * 180) / Math.PI : rad;
+
     const fact = (n) => {
       if (n < 0 || Math.floor(n) !== n) return NaN;
       if (n === 0 || n === 1) return 1;
       let r = 1;
-      for (let i = 2; i <= n; i++) r *= i;
+      for (let j = 2; j <= n; j++) r *= j;
       return r;
     };
 
-    const nPr = (n, r) => fact(n) / fact(n - r);
-    const nCr = (n, r) => fact(n) / (fact(r) * fact(n - r));
+    function parseExpr() {
+      return parseAddSub();
+    }
 
-    // Execute through Function constructor without eval
-    const evalFn = new Function('Math', 'fact', 'nPr', 'nCr', `"use strict"; return (${s});`);
-    return evalFn(Math, fact, nPr, nCr);
+    function parseAddSub() {
+      let left = parseMulDiv();
+      while (peek() && (peek().val === '+' || peek().val === '-')) {
+        const op = consume().val;
+        const right = parseMulDiv();
+        left = op === '+' ? left + right : left - right;
+      }
+      return left;
+    }
+
+    function parseMulDiv() {
+      let left = parsePower();
+      while (peek() && (peek().val === '*' || peek().val === '/')) {
+        const op = consume().val;
+        const right = parsePower();
+        left = op === '*' ? left * right : left / right;
+      }
+      return left;
+    }
+
+    function parsePower() {
+      let left = parseUnary();
+      if (peek() && peek().val === '^') {
+        consume('^');
+        const right = parsePower();
+        left = Math.pow(left, right);
+      }
+      return left;
+    }
+
+    function parseUnary() {
+      if (peek() && peek().val === '+') {
+        consume('+');
+        return parseUnary();
+      }
+      if (peek() && peek().val === '-') {
+        consume('-');
+        return -parseUnary();
+      }
+      return parsePrimary();
+    }
+
+    function parsePrimary() {
+      const t = peek();
+      if (!t) throw new Error('Unexpected end of expression');
+
+      if (t.type === 'NUM') {
+        consume();
+        return t.val;
+      }
+
+      if (t.type === 'IDENT') {
+        const name = consume().val.toLowerCase();
+        if (peek() && peek().val === '(') {
+          consume('(');
+          const args = [];
+          if (!peek() || peek().val !== ')') {
+            args.push(parseExpr());
+            while (peek() && peek().val === ',') {
+              consume(',');
+              args.push(parseExpr());
+            }
+          }
+          if (peek() && peek().val === ')') consume(')');
+
+          const a0 = args[0] !== undefined ? args[0] : 0;
+          const a1 = args[1] !== undefined ? args[1] : 0;
+
+          switch (name) {
+            case 'sin': return Math.sin(toRad(a0));
+            case 'cos': return Math.cos(toRad(a0));
+            case 'tan': return Math.tan(toRad(a0));
+            case 'asin': return fromRad(Math.asin(a0));
+            case 'acos': return fromRad(Math.acos(a0));
+            case 'atan': return fromRad(Math.atan(a0));
+            case 'sinh': return Math.sinh(a0);
+            case 'cosh': return Math.cosh(a0);
+            case 'tanh': return Math.tanh(a0);
+            case 'asinh': return Math.asinh(a0);
+            case 'acosh': return Math.acosh(a0);
+            case 'atanh': return Math.atanh(a0);
+            case 'ln': return Math.log(a0);
+            case 'log':
+            case 'log10': return Math.log10(a0);
+            case 'log2': return Math.log2(a0);
+            case 'sqrt': return Math.sqrt(a0);
+            case 'cbrt': return Math.cbrt(a0);
+            case 'abs': return Math.abs(a0);
+            case 'exp': return Math.exp(a0);
+            case 'fact': return fact(a0);
+            case 'npr': return fact(a0) / fact(a0 - a1);
+            case 'ncr': return fact(a0) / (fact(a1) * fact(a0 - a1));
+            default: throw new Error(`Unknown function: ${name}`);
+          }
+        }
+
+        if (name === 'pi') return Math.PI;
+        if (name === 'e') return Math.E;
+        if (name === 'phi') return 1.618033988749895;
+        throw new Error(`Unknown identifier: ${name}`);
+      }
+
+      if (t.val === '(') {
+        consume('(');
+        const res = parseExpr();
+        if (peek() && peek().val === ')') consume(')');
+        return res;
+      }
+
+      throw new Error(`Unexpected token: ${t.val}`);
+    }
+
+    return parseExpr();
   }
 
   function evaluateExpression() {
