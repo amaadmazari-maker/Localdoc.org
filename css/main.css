@@ -29,8 +29,8 @@
   --line-glow: rgba(2, 132, 199, 0.15);
 
   --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
+  --text-secondary: #334155;
+  --text-muted: #475569;
 
   --success: #059669;
   --success-bg: rgba(5, 150, 105, 0.1);
@@ -66,8 +66,8 @@
   --line-glow: rgba(2, 132, 199, 0.25);
 
   --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
 
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
@@ -183,6 +183,22 @@ body {
     radial-gradient(at 15% 10%, rgba(2, 132, 199, 0.14) 0px, transparent 50%),
     radial-gradient(at 88% 8%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
     radial-gradient(at 50% 50%, rgba(5, 150, 105, 0.07) 0px, transparent 60%);
+}
+
+/* Accessibility Focus-Visible Rings (WCAG 2.1 Compliant) */
+:focus-visible {
+  outline: 2px solid var(--primary, #0284C7);
+  outline-offset: 2px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--primary, #0284C7);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 a {
@@ -2755,10 +2771,12 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
 /* Tool Favorite Stars (PDF24 & iLovePDF Style) */
 .tool-fav-star {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  width: 24px;
-  height: 24px;
+  top: 6px;
+  left: 6px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -4719,13 +4737,17 @@ main {
   flex-shrink: 0;
 }
 
-/* 9-Dot App Grid Menu Button */
-.app-grid-btn {
+/* Header Action Buttons (44x44px Accessible Touch Targets) */
+.app-grid-btn,
+.theme-toggle-btn,
+.mobile-menu-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-md);
   background: var(--bg-surface);
   border: 1px solid var(--line);
@@ -4736,8 +4758,10 @@ main {
   flex-shrink: 0;
 }
 
-.app-grid-btn:hover {
-  background: var(--bg-surface-elevated);
+.app-grid-btn:hover,
+.theme-toggle-btn:hover,
+.mobile-menu-btn:hover {
+  background: var(--bg-card-hover);
   border-color: var(--primary);
   color: var(--primary);
   transform: translateY(-1px);
