@@ -247,8 +247,10 @@ const UIUtils = {
     zoneEl.addEventListener('drop', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const files = Array.from(e.dataTransfer.files || []);
-      if (files.length > 0) {
+      zoneEl.classList.remove('drag-active');
+      const rawFiles = Array.from(e.dataTransfer.files || []);
+      const files = UIUtils.validateFilesMemory ? UIUtils.validateFilesMemory(rawFiles) : rawFiles;
+      if (files.length > 0 && typeof onFilesSelected === 'function') {
         UIUtils.triggerHaptic();
         onFilesSelected(files);
       }
@@ -275,6 +277,39 @@ const UIUtils = {
 
     // 2. Window-Wide Drag & Drop Delight
     this.initFullscreenDrop(onFilesSelected);
+  },
+
+  // Safe file input binder
+  bindFileInput(inputEl, onFilesSelected) {
+    if (!inputEl) return;
+    inputEl.addEventListener('change', (e) => {
+      const rawFiles = Array.from(e.target.files || []);
+      const files = UIUtils.validateFilesMemory ? UIUtils.validateFilesMemory(rawFiles) : rawFiles;
+      if (files.length > 0 && typeof onFilesSelected === 'function') {
+        UIUtils.triggerHaptic();
+        onFilesSelected(files);
+      }
+      try { e.target.value = ''; } catch(err) {}
+    });
+  },
+
+  // Memory Safeguards (Phase B.3): Prevent browser tab out-of-memory crashes
+  validateFilesMemory(files) {
+    if (!files || files.length === 0) return [];
+    const MAX_FILE_SIZE = 250 * 1024 * 1024; // 250 MB browser RAM threshold
+    const safeFiles = [];
+
+    for (const f of files) {
+      if (f.size > MAX_FILE_SIZE) {
+        const sizeFormatted = UIUtils.formatBytes(f.size);
+        UIUtils.showToast(`"${f.name}" is ${sizeFormatted}, exceeding the 250MB browser RAM limit. File was skipped to prevent memory lockup.`, 'warning', 7000);
+      } else if (f.size === 0) {
+        UIUtils.showToast(`"${f.name}" is empty (0 bytes). File was skipped.`, 'warning', 5000);
+      } else {
+        safeFiles.push(f);
+      }
+    }
+    return safeFiles;
   },
 
   // Initialize Global Fullscreen Drag Overlay (Singleton with persistent listener)
@@ -332,7 +367,8 @@ const UIUtils = {
         dragCounter = 0;
         overlay.classList.remove('active');
         overlay.style.pointerEvents = 'none';
-        const files = Array.from(e.dataTransfer.files || []);
+        const rawFiles = Array.from(e.dataTransfer.files || []);
+        const files = UIUtils.validateFilesMemory ? UIUtils.validateFilesMemory(rawFiles) : rawFiles;
         if (files.length > 0 && typeof window.__activeFileDropHandler === 'function') {
           UIUtils.triggerHaptic();
           window.__activeFileDropHandler(files);
@@ -439,54 +475,6 @@ const UIUtils = {
   },
 
 
-  // Toast Notification
-  showToast(message, type = 'info') {
-    let toast = document.getElementById('localdoc-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'localdoc-toast';
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        padding: 14px 24px;
-        border-radius: 10px;
-        background: #1E293B;
-        color: #FFF;
-        font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        border: 1px solid #334155;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transform: translateY(100px);
-        opacity: 0;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      `;
-      document.body.appendChild(toast);
-    }
-
-    if (type === 'success') {
-      toast.style.borderColor = '#10B981';
-      toast.innerHTML = `<span style="color:#10B981;font-weight:bold;">✓</span> ${message}`;
-    } else if (type === 'error') {
-      toast.style.borderColor = '#EF4444';
-      toast.innerHTML = `<span style="color:#EF4444;font-weight:bold;">✕</span> ${message}`;
-    } else {
-      toast.style.borderColor = '#F59E0B';
-      toast.innerHTML = `<span style="color:#F59E0B;font-weight:bold;">ℹ</span> ${message}`;
-    }
-
-    toast.style.transform = 'translateY(0)';
-    toast.style.opacity = '1';
-
-    setTimeout(() => {
-      toast.style.transform = 'translateY(100px)';
-      toast.style.opacity = '0';
-    }, 3500);
-  },
 
   // Global Quick Search (Cmd+K)
   initQuickSearch() {

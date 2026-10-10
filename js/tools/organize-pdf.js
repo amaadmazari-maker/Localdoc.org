@@ -159,7 +159,14 @@
           }
         } catch (err) {
           console.error('Error reading PDF:', err);
-          alert(`Could not load ${file.name}: Password protected or invalid format.`);
+          if (typeof window !== 'undefined' && window.LocalDocPDFValidator) {
+            const check = await window.LocalDocPDFValidator.validatePdfBytes(arrayBuffer);
+            window.LocalDocPDFValidator.showPdfError(check.valid ? 'corrupt' : check.reason, file.name);
+          } else if (typeof UIUtils !== 'undefined' && UIUtils.showToast) {
+            UIUtils.showToast(`Could not load "${file.name}": Password protected or corrupted format.`, 'error', 6000);
+          } else {
+            alert(`Could not load "${file.name}": Password protected or invalid format.`);
+          }
         }
       }
 

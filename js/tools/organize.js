@@ -6,19 +6,32 @@
 const PDFOrganize = {
   // Safe in-memory PDF loader with encryption and corruption error boundaries
   async safeLoadPDF(buffer, fileName = 'document.pdf') {
-    let doc;
-    try {
-      doc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: true });
-    } catch (err) {
-      const msg = (err && err.message) ? err.message.toLowerCase() : '';
-      if (msg.includes('encrypt') || msg.includes('password') || (err && err.name === 'EncryptedPDFError')) {
-        throw new Error(`"${fileName}" is password-protected. Please decrypt or unlock it before processing.`);
+    if (typeof window !== 'undefined' && window.LocalDocPDFValidator) {
+      const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
+      if (!check.valid) {
+        if (check.reason === 'locked') {
+          throw new Error(`"${fileName}" is password-protected. Please unlock or decrypt it before processing.`);
+        } else if (check.reason === 'empty') {
+          throw new Error(`"${fileName}" is empty (0 bytes).`);
+        } else {
+          throw new Error(`"${fileName}" appears corrupted or is not a valid PDF file.`);
+        }
       }
-      throw new Error(`"${fileName}" appears to be corrupt or not a valid PDF file.`);
     }
 
-    if (doc.isEncrypted) {
-      throw new Error(`"${fileName}" is password-protected. Please decrypt or unlock it before processing.`);
+    let doc;
+    try {
+      doc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: false });
+    } catch (err) {
+      const msg = (err && err.message) ? err.message.toLowerCase() : '';
+      if (msg.includes('encrypt') || msg.includes('password') || msg.includes('protected') || (err && err.name === 'EncryptedPDFError')) {
+        throw new Error(`"${fileName}" is password-protected. Please unlock or decrypt it before processing.`);
+      }
+      throw new Error(`"${fileName}" appears corrupted or is not a valid PDF file.`);
+    }
+
+    if (doc && doc.isEncrypted) {
+      throw new Error(`"${fileName}" is password-protected. Please unlock or decrypt it before processing.`);
     }
 
     return doc;

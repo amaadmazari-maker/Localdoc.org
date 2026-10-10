@@ -19,6 +19,7 @@ const ASSETS_TO_CACHE = [
   '/css/blog.css',
   '/js/core/i18n.js',
   '/js/core/ui-utils.js',
+  '/js/core/pdf-validator.js',
   '/js/core/seo.js',
   '/js/core/pwa-register.js',
   '/js/core/motion.js',

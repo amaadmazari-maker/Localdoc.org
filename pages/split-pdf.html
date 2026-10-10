@@ -748,6 +748,7 @@
 
   <script defer src="../js/core/i18n.js?v=20260921-v26"></script>
   <script defer src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <script defer src="../js/core/pdf-validator.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
   <script src="../js/lib/docx.min.js?v=20260921-v26"></script>
@@ -853,6 +854,19 @@
     UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
       if (files.length > 0) {
         selectedFile = files[0];
+        try {
+          const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+          if (typeof window.LocalDocPDFValidator !== 'undefined') {
+            const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
+            if (!check.valid) {
+              window.LocalDocPDFValidator.showPdfError(check.reason, selectedFile.name);
+              selectedFile = null;
+              return;
+            }
+          }
+        } catch(err) {
+          console.warn('Pre-validation check error:', err);
+        }
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         dropZone.style.display = "none";
@@ -920,7 +934,18 @@
         }
       } catch (e) {
         console.error("Failed to load PDF pages for split view:", e);
-        UIUtils.showToast("Could not render page previews: " + e.message, "error");
+        if (typeof window.LocalDocPDFValidator !== 'undefined') {
+          try {
+            const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+            const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
+            window.LocalDocPDFValidator.showPdfError(check.valid ? 'corrupt' : check.reason, selectedFile.name);
+          } catch(e2) {
+            UIUtils.handleToolError(e);
+          }
+        } else {
+          UIUtils.handleToolError(e);
+        }
+        if (clearBtn) clearBtn.click();
       }
     }
 

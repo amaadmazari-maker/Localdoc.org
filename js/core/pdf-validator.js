@@ -30,16 +30,43 @@
         return { valid: false, reason: 'corrupt', error: 'Missing %PDF- header magic bytes' };
       }
 
+      // Check trailer/dictionary bytes for /Encrypt marker (catches encrypted PDFs before parser)
+      const tailLength = Math.min(arrayBuffer.byteLength, 4096);
+      const tailBytes = new Uint8Array(arrayBuffer.slice(arrayBuffer.byteLength - tailLength));
+      let tailStr = '';
+      for (let i = 0; i < tailBytes.length; i++) {
+        tailStr += String.fromCharCode(tailBytes[i]);
+      }
+      if (tailStr.includes('/Encrypt') || headerStr.includes('/Encrypt')) {
+        return { valid: false, reason: 'locked', error: 'Document contains /Encrypt dictionary' };
+      }
+
       // If PDFLib is available in window, perform quick non-destructive parse
       if (typeof window.PDFLib !== 'undefined' && window.PDFLib.PDFDocument) {
         try {
-          await window.PDFLib.PDFDocument.load(arrayBuffer, {
+          const doc = await window.PDFLib.PDFDocument.load(arrayBuffer, {
             ignoreEncryption: false,
             parseSpeed: window.PDFLib.ParseSpeeds?.Fast || 0
           });
+          if (doc && doc.isEncrypted) {
+            return { valid: false, reason: 'locked', error: 'Document is encrypted' };
+          }
         } catch (err) {
           const msg = (err && err.message) ? err.message.toLowerCase() : '';
           if (msg.includes('encrypt') || msg.includes('password') || msg.includes('protected') || err.name === 'EncryptedPDFError') {
+            return { valid: false, reason: 'locked', error: err.message };
+          }
+          return { valid: false, reason: 'corrupt', error: err.message };
+        }
+      } else if (typeof window.pdfjsLib !== 'undefined' && window.pdfjsLib.getDocument) {
+        try {
+          await window.pdfjsLib.getDocument({
+            data: arrayBuffer.slice(0),
+            isEvalSupported: false
+          }).promise;
+        } catch (err) {
+          const msg = (err && err.message) ? err.message.toLowerCase() : '';
+          if (msg.includes('password') || msg.includes('encrypt') || err.name === 'PasswordException') {
             return { valid: false, reason: 'locked', error: err.message };
           }
           return { valid: false, reason: 'corrupt', error: err.message };
@@ -71,7 +98,9 @@
           break;
       }
 
-      if (window.LocalDocUI && typeof window.LocalDocUI.showToast === 'function') {
+      if (window.UIUtils && typeof window.UIUtils.showToast === 'function') {
+        window.UIUtils.showToast(message, 'error', 6000);
+      } else if (window.LocalDocUI && typeof window.LocalDocUI.showToast === 'function') {
         window.LocalDocUI.showToast(message, 'error', 6000);
       } else if (typeof window.showToast === 'function') {
         window.showToast(message, 'error');
