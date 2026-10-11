@@ -15,15 +15,31 @@
      * @returns {Promise<{valid: boolean, reason?: 'empty' | 'corrupt' | 'locked' | 'unsupported', error?: string}>}
      */
     async validatePdfBytes(arrayBuffer, options = {}) {
-      if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+      if (!arrayBuffer) {
+        return { valid: false, reason: 'empty', error: 'File is 0 bytes' };
+      }
+
+      // Normalize arrayBuffer or TypedArray (handles Node Buffer, Uint8Array or slice offsets)
+      let bufferToScan;
+      if (typeof ArrayBuffer !== 'undefined' && arrayBuffer instanceof ArrayBuffer) {
+        bufferToScan = new Uint8Array(arrayBuffer);
+      } else if (ArrayBuffer.isView(arrayBuffer)) {
+        bufferToScan = new Uint8Array(arrayBuffer.buffer, arrayBuffer.byteOffset, arrayBuffer.byteLength);
+      } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(arrayBuffer)) {
+        bufferToScan = new Uint8Array(arrayBuffer.buffer, arrayBuffer.byteOffset, arrayBuffer.byteLength);
+      } else {
+        return { valid: false, reason: 'corrupt', error: 'Invalid input buffer type' };
+      }
+
+      if (bufferToScan.length === 0) {
         return { valid: false, reason: 'empty', error: 'File is 0 bytes' };
       }
 
       // Check header bytes for %PDF- signature
-      const headerBytes = new Uint8Array(arrayBuffer.slice(0, 1024));
+      const headerLength = Math.min(bufferToScan.length, 1024);
       let headerStr = '';
-      for (let i = 0; i < Math.min(headerBytes.length, 1024); i++) {
-        headerStr += String.fromCharCode(headerBytes[i]);
+      for (let i = 0; i < headerLength; i++) {
+        headerStr += String.fromCharCode(bufferToScan[i]);
       }
 
       if (!headerStr.includes('%PDF-')) {
@@ -31,11 +47,11 @@
       }
 
       // Check trailer/dictionary bytes for /Encrypt marker (catches encrypted PDFs before parser)
-      const tailLength = Math.min(arrayBuffer.byteLength, 4096);
-      const tailBytes = new Uint8Array(arrayBuffer.slice(arrayBuffer.byteLength - tailLength));
+      const tailLength = Math.min(bufferToScan.length, 4096);
+      const tailStart = bufferToScan.length - tailLength;
       let tailStr = '';
-      for (let i = 0; i < tailBytes.length; i++) {
-        tailStr += String.fromCharCode(tailBytes[i]);
+      for (let i = tailStart; i < bufferToScan.length; i++) {
+        tailStr += String.fromCharCode(bufferToScan[i]);
       }
       if (tailStr.includes('/Encrypt') || headerStr.includes('/Encrypt')) {
         return { valid: false, reason: 'locked', error: 'Document contains /Encrypt dictionary' };
@@ -61,7 +77,7 @@
       } else if (typeof window.pdfjsLib !== 'undefined' && window.pdfjsLib.getDocument) {
         try {
           await window.pdfjsLib.getDocument({
-            data: arrayBuffer.slice(0),
+            data: arrayBuffer.slice ? arrayBuffer.slice(0) : bufferToScan,
             isEvalSupported: false
           }).promise;
         } catch (err) {
@@ -78,10 +94,11 @@
 
     /**
      * Displays a friendly, accessible toast or notification message.
-     * @param {'empty' | 'corrupt' | 'locked' | string} reason
+     * @param {'empty' | 'corrupt' | 'locked' | object | string} reasonOrResult
      * @param {string} [filename]
      */
-    showPdfError(reason, filename = 'Document') {
+    showPdfError(reasonOrResult, filename = 'Document') {
+      const reason = (reasonOrResult && typeof reasonOrResult === 'object') ? reasonOrResult.reason : reasonOrResult;
       const cleanName = filename ? `"${filename.replace(/[<>]/g, '')}"` : 'The selected file';
       let message = '';
 
