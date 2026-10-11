@@ -147,6 +147,61 @@ const OCRUtils = {
    * @param {Object} options - { lang, filter }
    * @returns {Promise<string>}
    */
+  /**
+   * Check if an OCR language code uses a Right-to-Left (RTL) writing system
+   * @param {string} langCode
+   * @returns {boolean}
+   */
+  isRtlLang(langCode = 'eng') {
+    return langCode.includes('urd') || langCode.includes('ara');
+  },
+
+  /**
+   * Return typography and layout styles tailored to the recognition script
+   * @param {string} langCode
+   * @returns {{ fontFamily: string, lineHeight: string, dir: string, textAlign: string }}
+   */
+  getScriptStyles(langCode = 'eng') {
+    const isRtl = this.isRtlLang(langCode);
+    if (langCode.includes('urd')) {
+      return {
+        fontFamily: 'var(--font-urdu, "Noto Nastaliq Urdu", serif)',
+        lineHeight: '2.2',
+        dir: 'rtl',
+        textAlign: 'right'
+      };
+    }
+    if (langCode.includes('ara')) {
+      return {
+        fontFamily: 'var(--font-arabic, "Amiri", "Noto Naskh Arabic", serif)',
+        lineHeight: '1.85',
+        dir: 'rtl',
+        textAlign: 'right'
+      };
+    }
+    if (langCode.includes('hin')) {
+      return {
+        fontFamily: 'var(--font-hindi, "Noto Sans Devanagari", sans-serif)',
+        lineHeight: '1.7',
+        dir: 'ltr',
+        textAlign: 'left'
+      };
+    }
+    return {
+      fontFamily: 'var(--font-mono, monospace)',
+      lineHeight: '1.6',
+      dir: 'ltr',
+      textAlign: 'left'
+    };
+  },
+
+  /**
+   * Run neural OCR recognition on image file or canvas
+   * @param {File|Blob|HTMLCanvasElement|string} source
+   * @param {Function} onProgress
+   * @param {Object} options - { lang, filter, workerPath }
+   * @returns {Promise<string>}
+   */
   async imageToText(source, onProgress = null, options = {}) {
     const filter = options.filter || 'adaptive-bw';
     const lang = options.lang || 'eng';
@@ -158,18 +213,38 @@ const OCRUtils = {
       throw new Error('Tesseract OCR engine is loading. Please wait a moment and try again.');
     }
 
-    if (onProgress) onProgress(40, 'Running neural optical character recognition in browser RAM...');
+    if (onProgress) onProgress(35, 'Initializing neural optical character recognition in browser RAM...');
+
+    const workerPath = options.workerPath || (
+      (typeof window !== 'undefined' && window.location.pathname.includes('/pages/'))
+        ? '../js/lib/tesseract-worker.min.js'
+        : 'js/lib/tesseract-worker.min.js'
+    );
 
     const result = await Tesseract.recognize(
       preprocessedCanvas,
       lang,
       {
-        workerPath: '../js/lib/tesseract-worker.min.js',
+        workerPath: workerPath,
         logger: m => {
-          if (onProgress && m.status && m.progress !== undefined) {
-            const pct = Math.round(40 + (m.progress * 55));
-            const statusLabel = m.status === 'recognizing text'  ?  'Transcribing text characters...' : m.status;
-            onProgress(pct, statusLabel);
+          if (onProgress && m.status) {
+            let pct = 35;
+            let statusLabel = m.status;
+            if (m.status === 'loading tesseract core') {
+              pct = Math.round(20 + ((m.progress || 0) * 15));
+              statusLabel = 'Loading neural WebAssembly core...';
+            } else if (m.status === 'loading language traineddata') {
+              pct = Math.round(35 + ((m.progress || 0) * 20));
+              statusLabel = `Loading language model (${lang})...`;
+            } else if (m.status === 'initializing api') {
+              pct = 55;
+              statusLabel = 'Initializing neural network pipeline...';
+            } else if (m.status === 'recognizing text') {
+              const recPct = (m.progress !== undefined) ? Math.round(m.progress * 100) : 0;
+              pct = Math.round(55 + ((m.progress || 0) * 40));
+              statusLabel = `Transcribing text characters (${recPct}%)...`;
+            }
+            onProgress(Math.min(99, Math.max(10, pct)), statusLabel);
           }
         }
       }

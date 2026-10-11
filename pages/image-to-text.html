@@ -248,22 +248,41 @@
       <!-- OCR Settings Bar -->
       <div class="tool-controls-bar" id="ocr-controls-bar" style="display:none; margin-top:20px;">
         <div class="control-group">
-          <span class="control-label">Pre-OCR Filter:</span>
+          <span class="control-label" data-i18n="opt_ocr_filter">Pre-OCR Contrast Filter:</span>
           <select class="control-select" id="ocr-filter-select">
-            <option value="adaptive-bw" selected>High-Contrast B&W (Best Accuracy)</option>
-            <option value="magic-color">Magic Color (Light enhancement)</option>
-            <option value="none">Original Image (No filter)</option>
+            <option value="adaptive-bw" selected data-i18n="opt_ocr_filter_bw">High-Contrast Adaptive B&W (Best Accuracy)</option>
+            <option value="magic-color" data-i18n="opt_ocr_filter_color">Magic Color (Light enhancement)</option>
+            <option value="none" data-i18n="opt_ocr_filter_none">Original Image (No filter)</option>
           </select>
         </div>
         <div class="control-group">
-          <span class="control-label">Recognition Language:</span>
+          <span class="control-label" data-i18n="opt_ocr_lang">Recognition Language:</span>
           <select class="control-select" id="ocr-lang-select">
-            <option value="eng" selected>English (Latin)</option>
-            <option value="spa">Spanish (Espa&ntilde;ol)</option>
-            <option value="fra">French (Fran&ccedil;ais)</option>
-            <option value="deu">German (Deutsch)</option>
-            <option value="ita">Italian (Italiano)</option>
-            <option value="por">Portuguese (Portugu&ecirc;s)</option>
+            <optgroup label="Regional Languages">
+              <option value="eng" selected>English (US / UK)</option>
+              <option value="hin">हिन्दी (Hindi)</option>
+              <option value="urd">اردو (Urdu)</option>
+              <option value="ara">العربية (Arabic)</option>
+              <option value="por">Português (Portuguese)</option>
+              <option value="spa">Español (Spanish)</option>
+              <option value="fra">Français (French)</option>
+              <option value="deu">Deutsch (German)</option>
+              <option value="chi_sim">简体中文 (Chinese Simplified)</option>
+              <option value="rus">Русский (Russian)</option>
+              <option value="ind">Bahasa Indonesia (Indonesian)</option>
+              <option value="ita">Italiano (Italian)</option>
+            </optgroup>
+            <optgroup label="Bilingual & Mixed Documents">
+              <option value="eng+hin">English + हिन्दी (Bilingual)</option>
+              <option value="eng+urd">English + اردو (Bilingual)</option>
+              <option value="eng+ara">English + العربية (Bilingual)</option>
+              <option value="eng+por">English + Português (Bilingual)</option>
+              <option value="eng+spa">English + Español (Bilingual)</option>
+              <option value="eng+fra">English + Français (Bilingual)</option>
+              <option value="eng+deu">English + Deutsch (Bilingual)</option>
+              <option value="eng+chi_sim">English + 简体中文 (Bilingual)</option>
+              <option value="eng+rus">English + Русский (Bilingual)</option>
+            </optgroup>
           </select>
         </div>
       </div>
@@ -280,15 +299,15 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label">Loading Worker</div>
+            <div class="workflow-step-label" data-i18n="hud_step_1">1. Ingesting File in Memory</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Recognizing Text</div>
+            <div class="workflow-step-label" data-i18n="hud_step_2">2. Processing Locally in RAM</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
-            <div class="workflow-step-label" data-i18n="step_3">Ready</div>
+            <div class="workflow-step-label" data-i18n="hud_step_3">3. Generating Output</div>
           </div>
         </div>
         <div class="workflow-progress-track">
@@ -309,7 +328,7 @@
               <span>Extracted Text (<span id="result-stats">0 words &bull; 0 characters</span>)</span>
             </div>
             <div style="display:flex; gap:8px;">
-              <button class="btn btn-outline" id="copy-btn" style="padding:4px 10px; font-size:0.78rem;">&#128203; Copy to Clipboard</button>
+              <button class="btn btn-outline" id="copy-btn" style="padding:4px 10px; font-size:0.78rem;">&#128203; <span data-i18n="action_copy">Copy to Clipboard</span></button>
             </div>
           </div>
           <!-- Quick Search & Replace Bar -->
@@ -324,10 +343,10 @@
         <div style="display:flex; justify-content:center; gap:16px; margin-top:20px; flex-wrap:wrap;">
           <button class="btn btn-primary btn-lg" id="download-txt-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Plain Text (.txt)</span>
+            <span data-i18n="action_download_txt">Download Plain Text (.txt)</span>
           </button>
           <button class="btn btn-outline btn-lg" id="download-docx-btn">
-            <span>Download Word Document (.docx)</span>
+            <span data-i18n="action_download_docx">Export to Word (.docx)</span>
           </button>
         </div>
       </div>
@@ -718,6 +737,23 @@
     const downloadDocxBtn = document.getElementById("download-docx-btn");
     const filterSelect = document.getElementById("ocr-filter-select");
     const langSelect = document.getElementById("ocr-lang-select");
+
+    function applyScriptStyles(langCode) {
+      if (!resultTextArea) return;
+      const styles = (window.OCRUtils && OCRUtils.getScriptStyles)
+        ? OCRUtils.getScriptStyles(langCode)
+        : { dir: 'ltr', textAlign: 'left', fontFamily: 'var(--font-mono, monospace)', lineHeight: '1.6' };
+      resultTextArea.dir = styles.dir;
+      resultTextArea.style.textAlign = styles.textAlign;
+      resultTextArea.style.fontFamily = styles.fontFamily;
+      resultTextArea.style.lineHeight = styles.lineHeight;
+    }
+
+    if (langSelect) {
+      langSelect.addEventListener("change", () => {
+        applyScriptStyles(langSelect.value);
+      });
+    }
     const findInput = document.getElementById("ocr-find-input");
     const replaceInput = document.getElementById("ocr-replace-input");
     const replaceBtn = document.getElementById("ocr-replace-btn");
@@ -777,6 +813,7 @@
 
         transcribedText = combinedText.trim();
         resultTextArea.value = transcribedText;
+        applyScriptStyles(langVal);
         updateStats();
 
         UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
