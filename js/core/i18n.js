@@ -87,14 +87,26 @@ const I18N = {
     const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
     this.ensureFonts(this.currentLang);
     document.documentElement.lang = this.currentLang;
-    document.documentElement.dir = isRtl  ?  'rtl' : 'ltr';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     if (document.body) {
+      this.availableLanguages.forEach(l => document.body.classList.remove(`lang-${l.code}`));
+      document.body.classList.add(`lang-${this.currentLang}`);
       if (isRtl) {
         document.body.classList.add('is-rtl');
       } else {
         document.body.classList.remove('is-rtl');
       }
     }
+
+    // Sync any select dropdowns
+    document.querySelectorAll('.lang-select').forEach(select => {
+      select.value = this.currentLang;
+    });
+
+    // Sync any drawer buttons
+    document.querySelectorAll('.drawer-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === this.currentLang);
+    });
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -125,14 +137,44 @@ const I18N = {
   },
 
   setupSelector() {
+    // 1. Setup traditional select dropdowns
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => {
       select.innerHTML = this.availableLanguages.map(item => `
-        <option value="${item.code}" ${this.currentLang === item.code  ?  'selected' : ''}>${item.label}</option>
+        <option value="${item.code}" ${this.currentLang === item.code ? 'selected' : ''}>${item.label}</option>
       `).join('');
       select.addEventListener('change', (e) => {
         this.setLanguage(e.target.value);
       });
+    });
+
+    // 2. Populate and bind 9-dot flyout language grids
+    const langGrids = document.querySelectorAll('.drawer-lang-grid');
+    langGrids.forEach(grid => {
+      grid.innerHTML = this.availableLanguages.map(item => {
+        const shortTag = item.code.toUpperCase().replace('-', ' ');
+        const cleanLabel = item.label.replace(/^[^\s]+\s*/, '');
+        return `
+          <button type="button" class="drawer-lang-btn ${this.currentLang === item.code ? 'active' : ''}" data-lang="${item.code}">
+            <span class="lang-tag">${shortTag}</span> ${cleanLabel}
+          </button>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('.drawer-lang-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const lang = btn.getAttribute('data-lang');
+          this.setLanguage(lang);
+        });
+      });
+    });
+
+    // 3. Multi-tab storage sync
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'localdoc_lang' && e.newValue && e.newValue !== this.currentLang) {
+        this.setLanguage(e.newValue);
+      }
     });
   }
 };

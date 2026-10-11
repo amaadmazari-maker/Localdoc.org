@@ -1,16 +1,98 @@
 /**
- * localdoc.org — Bidirectional RTL Engine (css/rtl.css)
- * Supports Urdu (ur) and Arabic (ar) layouts with complete bidirectional isolation
+ * localdoc.org — Bidirectional RTL & Script Typography Engine (css/rtl.css)
+ * Supports:
+ * - Urdu (ur) with Noto Nastaliq Urdu & vertical line-height compensation
+ * - Arabic (ar) with Noto Sans Arabic & ligature alignment
+ * - Hindi (hi) with Noto Sans Devanagari & continuous shirorekha kerning
+ * - Complete bidirectional isolation for numbers, formulas, RAM counters & codes
  */
 
-[dir="rtl"], body.is-rtl {
+/* ==========================================================================
+   1. Base Direction & Script-Specific Typography
+   ========================================================================== */
+
+[dir="rtl"],
+body.is-rtl {
   direction: rtl;
   text-align: right;
   font-family: 'Noto Sans Arabic', 'Noto Nastaliq Urdu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-/* Bidirectional Text Isolation: Prevent Latin words, numbers & product names from scrambling in RTL */
+/* Urdu Script (Nastaliq): Deep descenders & tall ascenders compensation */
+html[lang="ur"],
+html[lang="ur"] body,
+body.lang-ur,
+:lang(ur) {
+  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', Tahoma, sans-serif !important;
+  line-height: 2.1 !important;
+}
+
+html[lang="ur"] h1,
+html[lang="ur"] h2,
+html[lang="ur"] h3,
+html[lang="ur"] h4,
+html[lang="ur"] h5,
+html[lang="ur"] h6,
+:lang(ur) h1,
+:lang(ur) h2,
+:lang(ur) h3 {
+  line-height: 1.85 !important;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-weight: 700;
+}
+
+html[lang="ur"] .nav-link,
+html[lang="ur"] .btn,
+html[lang="ur"] button,
+html[lang="ur"] .tool-card-title,
+html[lang="ur"] .drawer-item-card strong {
+  line-height: 1.85 !important;
+}
+
+/* Arabic Script: Noto Sans Arabic with clean modern ligatures */
+html[lang="ar"],
+html[lang="ar"] body,
+body.lang-ar,
+:lang(ar) {
+  font-family: 'Noto Sans Arabic', Tahoma, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  line-height: 1.75 !important;
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+:lang(ar) h1,
+:lang(ar) h2,
+:lang(ar) h3 {
+  line-height: 1.55 !important;
+}
+
+/* Hindi Script (Devanagari): Continuous headline (shirorekha) without disjointed kerning */
+html[lang="hi"],
+html[lang="hi"] body,
+body.lang-hi,
+:lang(hi) {
+  font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0 !important;
+}
+
+html[lang="hi"] h1,
+html[lang="hi"] h2,
+html[lang="hi"] h3,
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3 {
+  letter-spacing: 0 !important;
+}
+
+
+/* ==========================================================================
+   2. Bidirectional Text Isolation (Prevent Numeral & Formula Scrambling)
+   ========================================================================== */
+
 [dir="rtl"] bdi,
 [dir="rtl"] .ltr-text,
 [dir="rtl"] .brand,
@@ -22,10 +104,29 @@
 [dir="rtl"] .kbd-shortcut,
 [dir="rtl"] input[type="number"],
 [dir="rtl"] .cs-doc-page-counter,
-[dir="rtl"] .recent-doc-badge-pill {
+[dir="rtl"] .recent-doc-badge-pill,
+[dir="rtl"] .calc-display,
+[dir="rtl"] .calc-lcd,
+[dir="rtl"] .calc-screen,
+[dir="rtl"] .calc-grid,
+[dir="rtl"] .calc-keypad,
+[dir="rtl"] .calc-history-list,
+[dir="rtl"] .file-size-badge,
+[dir="rtl"] .queue-item-size,
+[dir="rtl"] .preset-resolution-badge,
+[dir="rtl"] .badge-dimension {
   direction: ltr !important;
   unicode-bidi: isolate !important;
   display: inline-block;
+}
+
+
+/* ==========================================================================
+   3. Header Navigation & Brand Alignment
+   ========================================================================== */
+
+[dir="rtl"] .header-inner {
+  direction: rtl;
 }
 
 [dir="rtl"] .brand {
@@ -39,38 +140,255 @@
 
 [dir="rtl"] .nav-links {
   flex-direction: row;
+  padding: 0;
 }
 
 [dir="rtl"] .header-actions {
   flex-direction: row;
 }
 
+/* 2-Column Convert Mega Dropdown */
+[dir="rtl"] .convert-mega-dropdown {
+  left: auto;
+  right: 50%;
+  transform: translateX(50%) translateY(8px);
+  direction: rtl;
+}
+
+[dir="rtl"] .nav-has-dropdown:hover .convert-mega-dropdown,
+[dir="rtl"] .nav-has-dropdown:focus-within .convert-mega-dropdown {
+  transform: translateX(50%) translateY(0);
+}
+
+[dir="rtl"] .convert-dropdown-col h4 {
+  text-align: right;
+  margin: 0 6px 12px 0;
+}
+
+[dir="rtl"] .convert-item-link {
+  text-align: right;
+  flex-direction: row;
+}
+
+[dir="rtl"] .convert-item-link:hover {
+  transform: translateX(-3px);
+}
+
+/* 9-Dot App Grid Flyout Drawer */
+[dir="rtl"] .app-drawer-flyout {
+  right: auto;
+  left: 0;
+  grid-template-columns: 220px 1fr;
+  direction: rtl;
+}
+
+[dir="rtl"] .drawer-dynamic-panel {
+  border-right: none;
+  border-left: 1px solid var(--line);
+  text-align: right;
+}
+
+[dir="rtl"] .drawer-subpanel-title {
+  text-align: right;
+}
+
+[dir="rtl"] .drawer-item-card {
+  text-align: right;
+  flex-direction: row;
+}
+
+[dir="rtl"] .drawer-item-card:hover {
+  transform: translateX(-3px);
+}
+
+[dir="rtl"] .drawer-lang-btn {
+  text-align: right;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .drawer-lang-btn .lang-tag {
+  margin-right: 0;
+  margin-left: 6px;
+}
+
+[dir="rtl"] .drawer-nav-column {
+  text-align: right;
+}
+
+[dir="rtl"] .drawer-nav-link {
+  text-align: right;
+  flex-direction: row;
+}
+
+[dir="rtl"] .drawer-category-toggle {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+
+/* ==========================================================================
+   4. Breadcrumbs & Search Systems
+   ========================================================================== */
+
 [dir="rtl"] .breadcrumb-nav {
   direction: rtl;
+  text-align: right;
 }
 
 [dir="rtl"] .breadcrumb-sep {
   transform: scaleX(-1);
   display: inline-block;
+  margin: 0 6px;
 }
 
-[dir="rtl"] .cs-search-bar svg {
+[dir="rtl"] .cs-search-bar svg,
+[dir="rtl"] .search-trigger-btn svg {
   left: auto;
   right: 14px;
 }
 
 [dir="rtl"] .cs-search-bar input {
   padding-left: 16px;
-  padding-right: 42px;
+  padding-right: 44px;
   text-align: right;
 }
 
+/* Quick Search Modal (Cmd+K) */
+[dir="rtl"] .search-modal {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .search-modal-header input {
+  padding-left: 44px;
+  padding-right: 44px;
+  text-align: right;
+}
+
+[dir="rtl"] .search-modal-header svg {
+  left: auto;
+  right: 16px;
+}
+
+[dir="rtl"] .search-modal-cat-title {
+  text-align: right;
+}
+
+[dir="rtl"] .search-modal-item {
+  text-align: right;
+  flex-direction: row;
+}
+
+
+/* ==========================================================================
+   5. Drop Zones & Unified Workspace
+   ========================================================================== */
+
+[dir="rtl"] .drop-zone,
+[dir="rtl"] .cs-dropzone {
+  text-align: center;
+}
+
+[dir="rtl"] .queue-item,
+[dir="rtl"] .cs-file-item {
+  direction: rtl;
+  text-align: right;
+  flex-direction: row;
+}
+
+[dir="rtl"] .queue-item-remove,
+[dir="rtl"] .btn-remove-file {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .queue-item-badge {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+
+/* ==========================================================================
+   6. Tool Control Panels & Options
+   ========================================================================== */
+
+[dir="rtl"] .tool-options-panel,
+[dir="rtl"] .cs-controls-panel {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .form-label,
+[dir="rtl"] label {
+  text-align: right;
+}
+
+[dir="rtl"] select.form-select,
+[dir="rtl"] .lang-select {
+  text-align: right;
+  background-position: left 14px center;
+  padding-left: 36px;
+  padding-right: 14px;
+}
+
+[dir="rtl"] .checkbox-label,
+[dir="rtl"] .radio-label {
+  flex-direction: row;
+  text-align: right;
+}
+
+[dir="rtl"] .checkbox-label input,
+[dir="rtl"] .radio-label input {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+[dir="rtl"] .slider-wrap {
+  direction: ltr; /* Sliders maintain uniform numerical progression */
+}
+
+
+/* ==========================================================================
+   7. RAM HUD & Progress Indicators
+   ========================================================================== */
+
+[dir="rtl"] .ram-hud,
+[dir="rtl"] .cs-ram-progress-box {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .hud-step-pill,
+[dir="rtl"] .step-pill {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+[dir="rtl"] .step-arrow,
+[dir="rtl"] .btn-icon-right {
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+
+/* ==========================================================================
+   8. Cards, Grids & Recent Documents
+   ========================================================================== */
+
+[dir="rtl"] .tools-grid,
 [dir="rtl"] .recent-scans-grid {
   direction: rtl;
 }
 
+[dir="rtl"] .tool-card,
 [dir="rtl"] .recent-doc-card {
   text-align: right;
+}
+
+[dir="rtl"] .tool-card-chip {
+  left: auto;
+  right: 12px;
 }
 
 [dir="rtl"] .recent-doc-badge-pill {
@@ -78,25 +396,26 @@
   left: 8px;
 }
 
-[dir="rtl"] .cs-doc-view-topbar {
+
+/* ==========================================================================
+   9. Walkthroughs, Stepper Cards & FAQs
+   ========================================================================== */
+
+[dir="rtl"] .guide-step-card,
+[dir="rtl"] .walkthrough-card {
   direction: rtl;
+  text-align: right;
 }
 
-[dir="rtl"] .cs-doc-bottom-bar {
-  direction: rtl;
-}
-
-[dir="rtl"] .cs-doc-carousel-bar {
-  direction: rtl;
-}
-
-[dir="rtl"] .app-bottom-nav-inner {
-  direction: rtl;
+[dir="rtl"] .guide-step-badge {
+  margin-right: 0;
+  margin-left: 12px;
 }
 
 [dir="rtl"] .exec-summary-box {
   border-left: 1px solid rgba(16, 185, 129, 0.3);
   border-right: 4px solid var(--primary);
+  text-align: right;
 }
 
 [dir="rtl"] .exec-summary-box li {
@@ -107,6 +426,56 @@
 [dir="rtl"] .exec-summary-box li::before {
   left: auto;
   right: 0;
+}
+
+[dir="rtl"] .faq-question {
+  text-align: right;
+  flex-direction: row;
+}
+
+[dir="rtl"] .faq-chevron {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .spec-table th,
+[dir="rtl"] .spec-table td,
+[dir="rtl"] .comparison-table th,
+[dir="rtl"] .comparison-table td {
+  text-align: right;
+}
+
+
+/* ==========================================================================
+   10. Cookie Consent CMP Banner & Toasts
+   ========================================================================== */
+
+[dir="rtl"] #cookie-banner,
+[dir="rtl"] .cookie-banner {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .cookie-banner-actions {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+[dir="rtl"] #toast-container,
+body.is-rtl #toast-container {
+  right: auto !important;
+  left: 24px !important;
+  direction: rtl;
+  text-align: right;
+}
+
+
+/* ==========================================================================
+   11. Site Footer
+   ========================================================================== */
+
+[dir="rtl"] .site-footer {
+  direction: rtl;
 }
 
 [dir="rtl"] .footer-top {
@@ -121,25 +490,31 @@
   text-align: right;
 }
 
-[dir="rtl"] .spec-table th, 
-[dir="rtl"] .spec-table td {
+[dir="rtl"] .footer-bottom {
   text-align: right;
+  flex-direction: row-reverse;
 }
 
-[dir="rtl"] .tool-card {
-  text-align: right;
-}
 
-[dir="rtl"] .tool-card-chip {
-  left: auto;
-  right: 12px;
-}
+/* ==========================================================================
+   12. Mobile Responsive RTL Overrides (<= 768px)
+   ========================================================================== */
 
-[dir="rtl"] .faq-question {
-  text-align: right;
-}
+@media (max-width: 768px) {
+  [dir="rtl"] .app-drawer-flyout {
+    width: calc(100vw - 32px);
+    right: 16px;
+    left: 16px;
+    grid-template-columns: 1fr;
+  }
 
-[dir="rtl"] .comparison-table th,
-[dir="rtl"] .comparison-table td {
-  text-align: right;
+  [dir="rtl"] .drawer-dynamic-panel {
+    border-left: none;
+    border-bottom: 1px solid var(--line);
+    max-height: 280px;
+  }
+
+  [dir="rtl"] .nav-links {
+    text-align: right;
+  }
 }
