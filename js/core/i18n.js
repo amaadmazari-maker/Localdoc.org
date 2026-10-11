@@ -69,7 +69,7 @@ const I18N = {
     }
   },
 
-  setLanguage(lang) {
+  async setLanguage(lang) {
     this.currentLang = lang;
     localStorage.setItem('localdoc_lang', lang);
     const isRtl = (lang === 'ur' || lang === 'ar');
@@ -78,9 +78,8 @@ const I18N = {
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => { select.value = lang; });
-    this.loadTranslations(lang).then(() => {
-      this.applyTranslations();
-    });
+    await this.loadTranslations(lang);
+    this.applyTranslations();
   },
 
   applyTranslations() {
@@ -196,3 +195,5 @@ const I18N = {
 document.addEventListener('DOMContentLoaded', () => {
   I18N.init();
 });
+
+window.I18N = I18N;
