@@ -133,6 +133,20 @@ const I18N = {
       }
     });
 
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.getAttribute('data-i18n-aria');
+      if (this.translations[key]) {
+        el.setAttribute('aria-label', this.translations[key]);
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (this.translations[key]) {
+        el.innerHTML = this.translations[key];
+      }
+    });
+
     window.dispatchEvent(new CustomEvent('localdoc-lang-changed', { detail: { lang: this.currentLang, isRtl } }));
   },
 
