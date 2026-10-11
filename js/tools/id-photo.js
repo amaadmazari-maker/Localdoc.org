@@ -973,6 +973,147 @@ const IDPhoto = {
       return new Blob([pdfBytes], { type: 'application/pdf' });
     }
     return null;
+  },
+
+  /**
+   * Universal Mobile (Touch / Pinch) & Desktop (Mouse / Wheel / Keyboard) Controller
+   * Provides buttery-smooth panning, 2-finger pinch zooming, mouse wheel zoom,
+   * arrow-key nudging, and touch-action protection without altering layouts.
+   */
+  attachInteractiveCanvas(container, options) {
+    if (!container || !options) return;
+    const {
+      getScale = () => 1.0,
+      setScale = () => {},
+      getOffsetX = () => 0,
+      setOffsetX = () => {},
+      getOffsetY = () => 0,
+      setOffsetY = () => {},
+      minScale = 0.5,
+      maxScale = 3.0,
+      scaleStep = 0.05,
+      onUpdate = () => {},
+      syncInputs = () => {}
+    } = options;
+
+    container.style.touchAction = 'none';
+    container.style.userSelect = 'none';
+    container.style.webkitUserSelect = 'none';
+    container.style.cursor = 'grab';
+    if (!container.getAttribute('tabindex')) {
+      container.setAttribute('tabindex', '0');
+    }
+    container.setAttribute('role', 'region');
+    container.setAttribute('aria-label', 'Biometric portrait canvas. Drag or swipe to position, mouse wheel or pinch to zoom.');
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialPinchDist = null;
+    let initialPinchScale = 1.0;
+
+    // Desktop Mouse Drag
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      container.style.cursor = 'grabbing';
+      dragStartX = e.clientX - getOffsetX();
+      dragStartY = e.clientY - getOffsetY();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      setOffsetX(e.clientX - dragStartX);
+      setOffsetY(e.clientY - dragStartY);
+      onUpdate();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        container.style.cursor = 'grab';
+      }
+    });
+
+    // Desktop Mouse Wheel Zoom
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const currentScale = getScale();
+      const delta = e.deltaY < 0 ? scaleStep : -scaleStep;
+      const nextScale = Math.min(maxScale, Math.max(minScale, parseFloat((currentScale + delta).toFixed(2))));
+      setScale(nextScale);
+      syncInputs(nextScale);
+      onUpdate();
+    }, { passive: false });
+
+    // Desktop Keyboard Arrow Nudge & +/- Zoom
+    container.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 10 : 2;
+      let handled = false;
+      if (e.key === 'ArrowLeft') { setOffsetX(getOffsetX() - step); handled = true; }
+      else if (e.key === 'ArrowRight') { setOffsetX(getOffsetX() + step); handled = true; }
+      else if (e.key === 'ArrowUp') { setOffsetY(getOffsetY() - step); handled = true; }
+      else if (e.key === 'ArrowDown') { setOffsetY(getOffsetY() + step); handled = true; }
+      else if (e.key === '+' || e.key === '=') {
+        const nextScale = Math.min(maxScale, parseFloat((getScale() + scaleStep).toFixed(2)));
+        setScale(nextScale);
+        syncInputs(nextScale);
+        handled = true;
+      } else if (e.key === '-' || e.key === '_') {
+        const nextScale = Math.max(minScale, parseFloat((getScale() - scaleStep).toFixed(2)));
+        setScale(nextScale);
+        syncInputs(nextScale);
+        handled = true;
+      } else if (e.key === '0' || e.key.toLowerCase() === 'r') {
+        setOffsetX(0);
+        setOffsetY(0);
+        setScale(1.0);
+        syncInputs(1.0);
+        handled = true;
+      }
+      if (handled) {
+        e.preventDefault();
+        onUpdate();
+      }
+    });
+
+    // Mobile Touch Drag & 2-Finger Pinch Zoom
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        dragStartX = e.touches[0].clientX - getOffsetX();
+        dragStartY = e.touches[0].clientY - getOffsetY();
+        initialPinchDist = null;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDist = Math.hypot(dx, dy);
+        initialPinchScale = getScale();
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault(); // Prevent whole-page scrolling while adjusting photo on phone!
+      if (e.touches.length === 1 && isDragging) {
+        setOffsetX(e.touches[0].clientX - dragStartX);
+        setOffsetY(e.touches[0].clientY - dragStartY);
+        onUpdate();
+      } else if (e.touches.length === 2 && initialPinchDist) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        const factor = dist / initialPinchDist;
+        const nextScale = Math.min(maxScale, Math.max(minScale, parseFloat((initialPinchScale * factor).toFixed(2))));
+        setScale(nextScale);
+        syncInputs(nextScale);
+        onUpdate();
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', () => {
+      isDragging = false;
+      initialPinchDist = null;
+    });
   }
 };
 

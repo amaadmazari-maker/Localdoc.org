@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Document Scanner Online — Free PDF Scan | LocalDoc</title>
-  <meta name="description" content="Scan documents, receipts, and IDs into crisp 300 DPI PDFs using 8-DOF homography and adaptive thresholding. Free client-side scanner with zero uploads.">
+  <title>Document Scanner Online — Scan to PDF on Phone & PC | LocalDoc</title>
+  <meta name="description" content="Scan documents, receipts, IDs, and books into crisp 300 DPI PDFs using your phone or webcam. Instant perspective crop, contrast boost, and zero cloud uploads.">
   <link rel="canonical" href="https://localdoc.org/pages/scan.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0D9488">
@@ -1381,6 +1381,17 @@
     <!-- SEO, Tutorial Guide & Blog Backlinks Section -->
     <section style="margin-top:54px; padding-top:36px; border-top:1px solid var(--line);">
       <h1 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:12px;">Scan to PDF &mdash; The Complete Client-Side PDF Camera Alternative</h1>
+
+      <!-- Keyword Synonyms Bar -->
+      <div class="keyword-synonyms-bar" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-start; align-items:center; margin:14px 0 18px; max-width:850px;">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:4px;">Scanner Keywords:</span>
+        <span class="synonym-pill active" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--primary-subtle); border:1px solid var(--primary); color:var(--primary); font-weight:600;">Document Scanner</span>
+        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Scan to PDF</span>
+        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Mobile Camera Scanner</span>
+        <a href="merge-pdf.html" class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary); text-decoration:none;">Merge PDF</a>
+        <a href="compress-pdf.html" class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary); text-decoration:none;">Compress PDF</a>
+        <a href="../blog/scan-to-pdf-guide.html" class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--primary); text-decoration:none; font-weight:600;">Read Scanner Guide &rarr;</a>
+      </div>
       <p style="color:var(--text-secondary); line-height:1.7; margin-bottom:24px; font-size:0.95rem;">
         LocalDoc PDF Camera Studio provides the exact fluid workflow of native mobile document scanners: automatic 4-corner paper edge detection, homography perspective rectification, and signature Magic Pro shadow-removal filters. All processing runs 100% locally in your device RAM via WebAssembly and Canvas &mdash; ensuring total privacy for sensitive legal contracts, bank statements, and tax receipts.
       </p>
@@ -1726,15 +1737,15 @@
   <div id="cs-fullscreen-camera">
     <!-- Top HUD -->
     <div class="cs-cam-top-hud">
-      <button type="button" class="cs-cam-hud-btn" onclick="closeFullscreenCamera()" title="Close">
+      <button type="button" class="cs-cam-hud-btn" onclick="closeFullscreenCamera()" title="Close" aria-label="Close">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
       <div style="display:flex; align-items:center; gap:8px;">
-        <button type="button" class="cs-cam-hud-btn" id="btn-camera-torch" onclick="toggleCameraTorch()" title="Flashlight">
+        <button type="button" class="cs-cam-hud-btn" id="btn-camera-torch" onclick="toggleCameraTorch()" title="Flashlight" aria-label="Flashlight">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         </button>
-        <button type="button" class="cs-cam-hud-btn" onclick="flipCameraDirection()" title="Flip Camera">
+        <button type="button" class="cs-cam-hud-btn" onclick="flipCameraDirection()" title="Flip Camera" aria-label="Flip Camera">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.008.74 3.844 1.967 5.25L4 18h4.5M4 14c0 4.418 3.582 8 8 8s8-3.582 8-8c0-2.008-.74-3.844-1.967-5.25L20 6h-4.5"></path></svg>
         </button>
       </div>
@@ -1763,7 +1774,7 @@
       <!-- Shutter Bar -->
       <div class="cs-cam-shutter-row">
         <!-- Gallery Import Button -->
-        <button type="button" class="cs-cam-hud-btn" onclick="triggerGalleryImport()" title="Import from Photos/Gallery">
+        <button type="button" class="cs-cam-hud-btn" onclick="triggerGalleryImport()" title="Import from Photos/Gallery" aria-label="Import from Photos/Gallery">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
         </button>
         <input type="file" id="cam-gallery-file-input" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none;">
@@ -1774,14 +1785,14 @@
         </button>
 
         <!-- Native Hardware Camera Shot Button -->
-        <button type="button" class="cs-cam-hud-btn" onclick="triggerNativeCameraDirect()" title="Native Camera HD Shot">
+        <button type="button" class="cs-cam-hud-btn" onclick="triggerNativeCameraDirect()" title="Native Camera HD Shot" aria-label="Native Camera HD Shot">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </button>
 
         <!-- Stack Count Badge -->
-        <button type="button" class="cs-cam-stack-btn" id="btn-cam-stack" onclick="openDocumentWorkspaceView()" title="Review Scans">
+        <button type="button" class="cs-cam-stack-btn" id="btn-cam-stack" onclick="openDocumentWorkspaceView()" title="Review Scans" aria-label="Review Scans">
           <span class="cs-cam-stack-pill" id="cam-stack-counter">0</span>
-          <img class="cs-cam-stack-thumb" id="cam-stack-thumb" src="" alt="Thumb" width="64" height="64">
+          <img class="cs-cam-stack-thumb" id="cam-stack-thumb" src="" alt="Thumb" width="64" height="64" loading="lazy" decoding="async">
           <svg id="cam-stack-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
         </button>
       </div>
@@ -1793,7 +1804,7 @@
        ========================================================================= -->
   <div id="cs-fullscreen-crop">
     <div class="cs-crop-topbar">
-      <button type="button" class="cs-cam-hud-btn" onclick="exitCropBackToCamera()" title="Back">
+      <button type="button" class="cs-cam-hud-btn" onclick="exitCropBackToCamera()" title="Back" aria-label="Back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       </button>
       <span style="font-weight:800; font-size:1rem;" data-i18n="scan_crop_title">Crop &amp; Perspective</span>
@@ -1833,7 +1844,7 @@
        ========================================================================= -->
   <div id="cs-fullscreen-filter">
     <div class="cs-filter-topbar">
-      <button type="button" class="cs-cam-hud-btn" onclick="backFromFilterToCrop()" title="Back to Crop">
+      <button type="button" class="cs-cam-hud-btn" onclick="backFromFilterToCrop()" title="Back to Crop" aria-label="Back to Crop">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
       </button>
       <span style="font-weight:800; font-size:0.95rem;" id="filter-stage-title" data-i18n="scan_enhance_title">Enhance Filter</span>
@@ -1899,7 +1910,7 @@
     <!-- Top Bar -->
     <div class="cs-doc-view-topbar">
       <div style="display:flex; align-items:center; gap:10px;">
-        <button type="button" class="cs-cam-hud-btn" onclick="closeDocumentWorkspace()" title="Back to Scanned Documents">
+        <button type="button" class="cs-cam-hud-btn" onclick="closeDocumentWorkspace()" title="Back to Scanned Documents" aria-label="Back to Scanned Documents">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
 
@@ -1915,26 +1926,26 @@
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <!-- Grid vs Single View Toggle -->
         <div class="cs-view-switcher">
-          <button type="button" id="btn-view-grid" class="cs-view-switch-btn active" onclick="setWorkspaceViewMode('grid')" title="Multi-Page Grid & Reorder View">
+          <button type="button" id="btn-view-grid" class="cs-view-switch-btn active" onclick="setWorkspaceViewMode('grid')" title="Multi-Page Grid & Reorder View" aria-label="Multi-Page Grid & Reorder View">
             &#128450; Grid
           </button>
-          <button type="button" id="btn-view-single" class="cs-view-switch-btn" onclick="setWorkspaceViewMode('single')" title="Single Page Inspector">
+          <button type="button" id="btn-view-single" class="cs-view-switch-btn" onclick="setWorkspaceViewMode('single')" title="Single Page Inspector" aria-label="Single Page Inspector">
             &#128196; Page
           </button>
         </div>
 
         <!-- Single-Click Direct Download to Device / PC -->
-        <button type="button" class="btn btn-primary btn-sm" onclick="exportDocPDF()" title="Download PDF to device/PC in single click" style="background:#0D9488; border-color:#0D9488; font-weight:800; display:inline-flex; align-items:center; gap:6px; padding:6px 12px;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="exportDocPDF()" title="Download PDF to device/PC in single click" style="background:#0D9488; border-color:#0D9488; font-weight:800; display:inline-flex; align-items:center; gap:6px; padding:6px 12px;" aria-label="Download PDF to device/PC in single click">
           <span>&#128229;</span> <span>Download PDF</span>
         </button>
 
         <!-- Multi-Channel Share Button -->
-        <button type="button" class="btn btn-outline btn-sm" onclick="openShareModal()" title="Share via WhatsApp, Facebook, Email, Bluetooth" style="color:#FFF; border-color:#334155; display:inline-flex; align-items:center; gap:5px; padding:6px 12px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="openShareModal()" title="Share via WhatsApp, Facebook, Email, Bluetooth" style="color:#FFF; border-color:#334155; display:inline-flex; align-items:center; gap:5px; padding:6px 12px;" aria-label="Share via WhatsApp, Facebook, Email, Bluetooth">
           <span>&#128279;</span> <span>Share</span>
         </button>
 
         <!-- Open in Reader -->
-        <button type="button" class="btn btn-outline btn-sm" onclick="openDocInLocalReader()" title="Open in Built-in Offline Reader" style="color:#FFF; border-color:#334155; padding:6px 12px;" data-i18n="scan_reader_btn">
+        <button type="button" class="btn btn-outline btn-sm" onclick="openDocInLocalReader()" title="Open in Built-in Offline Reader" style="color:#FFF; border-color:#334155; padding:6px 12px;" data-i18n="scan_reader_btn" aria-label="Open in Built-in Offline Reader">
           &#128214; Reader
         </button>
       </div>
@@ -1967,13 +1978,13 @@
         </button>
 
         <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" class="cs-thumb-arrow-btn" onclick="goToPrevSinglePage()" title="Previous Page" style="width:30px; height:30px; font-size:0.9rem;">&#9668;</button>
+          <button type="button" class="cs-thumb-arrow-btn" onclick="goToPrevSinglePage()" title="Previous Page" style="width:30px; height:30px; font-size:0.9rem;" aria-label="Previous Page">&#9668;</button>
           <span id="single-page-num-badge" style="font-size:0.85rem; font-weight:800; color:#F8FAFC;">Page 1 of 1</span>
-          <button type="button" class="cs-thumb-arrow-btn" onclick="goToNextSinglePage()" title="Next Page" style="width:30px; height:30px; font-size:0.9rem;">&#9658;</button>
+          <button type="button" class="cs-thumb-arrow-btn" onclick="goToNextSinglePage()" title="Next Page" style="width:30px; height:30px; font-size:0.9rem;" aria-label="Next Page">&#9658;</button>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-          <button type="button" id="single-doc-type-toggle" class="btn btn-outline btn-sm" onclick="toggleActiveDocPageType()" title="Click to toggle between Standard A4 Document and Small Slip / Receipt layout" style="color:#38BDF8; border-color:rgba(56, 189, 248, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+          <button type="button" id="single-doc-type-toggle" class="btn btn-outline btn-sm" onclick="toggleActiveDocPageType()" title="Click to toggle between Standard A4 Document and Small Slip / Receipt layout" style="color:#38BDF8; border-color:rgba(56, 189, 248, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:5px; font-weight:700;" aria-label="Click to toggle between Standard A4 Document and Small Slip / Receipt layout">
             <span id="single-doc-type-icon">&#128196;</span> <span id="single-doc-type-text">Document (A4)</span>
           </button>
           <button type="button" class="btn btn-outline btn-sm" onclick="deleteActiveDocPage()" style="color:#EF4444; border-color:rgba(239, 68, 68, 0.4); font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
@@ -1984,31 +1995,31 @@
 
       <!-- Active Document Stage (Full Height Page View) -->
       <div class="cs-doc-page-stage" id="doc-page-viewport">
-        <img id="doc-active-page-img" src="" alt="Active Document Page" width="600" height="800">
+        <img id="doc-active-page-img" src="" alt="Active Document Page" width="600" height="800" loading="lazy" decoding="async">
       </div>
 
       <!-- Interactive Core Tools Bar (Crop, Filter Studio, Rotate, Retake) -->
       <div class="cs-single-bottom-bar">
         <!-- 1. Crop & Edges (Interactive 4 Corners with Loupe) -->
-        <button type="button" class="cs-single-tool-btn primary" onclick="reCropActivePage()" title="Adjust 4 corners and perspective">
+        <button type="button" class="cs-single-tool-btn primary" onclick="reCropActivePage()" title="Adjust 4 corners and perspective" aria-label="Adjust 4 corners and perspective">
           <span style="font-size:1.25rem;">&#9986;</span>
           <span>Crop &amp; Edges</span>
         </button>
 
         <!-- 2. Filter Studio (Interactive Previews) -->
-        <button type="button" class="cs-single-tool-btn" onclick="openFilterScreenForActivePage()" title="Open interactive Filter Studio (Natural Clear, Magic White, B&W, Grayscale)">
+        <button type="button" class="cs-single-tool-btn" onclick="openFilterScreenForActivePage()" title="Open interactive Filter Studio (Natural Clear, Magic White, B&W, Grayscale)" aria-label="Open interactive Filter Studio (Natural Clear, Magic White, B&W, Grayscale)">
           <span>&#127912;</span>
           <span id="single-active-filter-text">Filter Studio</span>
         </button>
 
         <!-- 3. Rotate 90&deg; -->
-        <button type="button" class="cs-single-tool-btn" onclick="rotateActiveDocPage()" title="Rotate 90 degrees clockwise">
+        <button type="button" class="cs-single-tool-btn" onclick="rotateActiveDocPage()" title="Rotate 90 degrees clockwise" aria-label="Rotate 90 degrees clockwise">
           <span style="font-size:1.25rem;">&#128260;</span>
           <span>Rotate 90&deg;</span>
         </button>
 
         <!-- 4. Retake / Replace Page -->
-        <button type="button" class="cs-single-tool-btn" onclick="promptReplaceActivePage()" title="Retake or reselect photo for this page">
+        <button type="button" class="cs-single-tool-btn" onclick="promptReplaceActivePage()" title="Retake or reselect photo for this page" aria-label="Retake or reselect photo for this page">
           <span style="font-size:1.25rem;">&#128247;</span>
           <span>Retake Page</span>
         </button>
@@ -2024,7 +2035,7 @@
           <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#F8FAFC;">Share Document</h3>
           <p id="cs-share-subtitle" style="margin:4px 0 0; font-size:0.82rem; color:#94A3B8;">Document.pdf</p>
         </div>
-        <button type="button" class="cs-cam-hud-btn" onclick="closeShareModal()" title="Close" style="width:34px; height:34px;">&#10005;</button>
+        <button type="button" class="cs-cam-hud-btn" onclick="closeShareModal()" title="Close" style="width:34px; height:34px;" aria-label="Close">&#10005;</button>
       </div>
 
       <!-- Primary 1-Click Direct Download to Device/PC -->
@@ -2117,7 +2128,7 @@
           <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:#F8FAFC;">Replace / Retake Page</h3>
           <p id="cs-replace-subtitle" style="margin:4px 0 0; font-size:0.82rem; color:#94A3B8;">Select new image for Page 1</p>
         </div>
-        <button type="button" class="cs-cam-hud-btn" onclick="closeReplaceModal()" title="Close" style="width:34px; height:34px;">&#10005;</button>
+        <button type="button" class="cs-cam-hud-btn" onclick="closeReplaceModal()" title="Close" style="width:34px; height:34px;" aria-label="Close">&#10005;</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
         <div class="cs-quick-tool-card" onclick="triggerReplaceWithCamera()" style="padding:18px 12px; border:1px solid var(--line); background:var(--bg-surface);">
@@ -2238,13 +2249,13 @@
               </div>
             </div>
             <div class="recent-doc-actions" onclick="event.stopPropagation()">
-              <button type="button" class="recent-row-btn" onclick="openReaderDirect('${doc.id}')" title="Open in Local Reader">
+              <button type="button" class="recent-row-btn" onclick="openReaderDirect('${doc.id}')" title="Open in Local Reader" aria-label="Open in Local Reader">
                 &#128214; Open
               </button>
-              <button type="button" class="recent-row-btn" onclick="downloadPdfDirect('${doc.id}')" title="Download PDF">
+              <button type="button" class="recent-row-btn" onclick="downloadPdfDirect('${doc.id}')" title="Download PDF" aria-label="Download PDF">
                 &#128229; PDF
               </button>
-              <button type="button" class="recent-row-btn danger" onclick="deleteDocItem('${doc.id}')" title="Delete Document">
+              <button type="button" class="recent-row-btn danger" onclick="deleteDocItem('${doc.id}')" title="Delete Document" aria-label="Delete Document">
                 &#128465;
               </button>
             </div>
@@ -3210,13 +3221,13 @@
               <span class="cs-page-drag-handle" title="Drag to reorder">&#10303; &mdash;  &mdash; </span>
             </div>
             <div class="cs-tile-preview" onclick="selectAndInspectPage(${idx})" title="Click to edit (Crop, Filter, Rotate)">
-              <img src="${p.processedDataUrl}" alt="Page ${idx + 1}">
+              <img src="${p.processedDataUrl}" alt="Page ${idx + 1}" loading="lazy" decoding="async">
             </div>
             <div class="cs-tile-actions">
-              <button type="button" class="cs-tile-btn" onclick="rotateDocPageAt(${idx})" title="Rotate 90&deg;">&#128260;</button>
-              <button type="button" class="cs-tile-btn" onclick="cycleDocPageFilterAt(${idx})" title="Cycle Filter (${filterName})">&#127912;</button>
-              <button type="button" class="cs-tile-btn" onclick="reCropPageAt(${idx})" title="Crop &amp; Perspective">&#9986;</button>
-              <button type="button" class="cs-tile-btn danger" onclick="deleteDocPageAt(${idx})" title="Delete Page" style="color:#EF4444;">&#128465;</button>
+              <button type="button" class="cs-tile-btn" onclick="rotateDocPageAt(${idx})" title="Rotate 90&deg;" aria-label="Rotate 90&deg;">&#128260;</button>
+              <button type="button" class="cs-tile-btn" onclick="cycleDocPageFilterAt(${idx})" title="Cycle Filter (${filterName})" aria-label="Cycle Filter (${filterName})">&#127912;</button>
+              <button type="button" class="cs-tile-btn" onclick="reCropPageAt(${idx})" title="Crop &amp; Perspective" aria-label="Crop &amp; Perspective">&#9986;</button>
+              <button type="button" class="cs-tile-btn danger" onclick="deleteDocPageAt(${idx})" title="Delete Page" style="color:#EF4444;" aria-label="Delete Page">&#128465;</button>
             </div>
           </div>
         `;

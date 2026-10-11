@@ -623,7 +623,7 @@
       <div class="drop-zone" id="portrait-drop-zone" style="cursor:pointer;"
         title="Click to choose a photo or drop here">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/passport-photo.svg" alt="Passport Photo Maker Icon" width="54" height="54">
+          <img src="../assets/icons/passport-photo.svg" alt="Passport Photo Maker Icon" width="54" height="54" loading="lazy" decoding="async">
         </div>
         <div class="drop-zone-text">
           <h3 style="margin:0 0 6px;">Tap or Drop your portrait photo here</h3>
@@ -845,8 +845,13 @@
           <div class="controls-panel">
             <div class="control-row">
               <label for="zoom-slider">Zoom / Scale:</label>
-              <input type="range" id="zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
-              <span id="zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
+                  <div style="display:flex; align-items:center; gap:6px; flex:1;">
+                    <button type="button" class="btn btn-outline" id="passport-zoom-out-btn" aria-label="Zoom out" style="padding:4px 9px; font-size:0.82rem; min-width:32px; height:32px; font-weight:700;">&minus;</button>
+                    <input type="range" id="zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+                    <button type="button" class="btn btn-outline" id="passport-zoom-in-btn" aria-label="Zoom in" style="padding:4px 9px; font-size:0.82rem; min-width:32px; height:32px; font-weight:700;">&#43;</button>
+                    <button type="button" class="btn btn-outline" id="passport-center-btn" aria-label="Center portrait" style="padding:4px 8px; font-size:0.75rem; height:32px; white-space:nowrap;" title="Center Portrait &amp; Reset Position">&#9014; Center</button>
+                  </div>
+                  <span id="zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
             </div>
 
             <div class="control-row">
@@ -913,7 +918,7 @@
       <div class="result-card" id="result-card" style="display:none; margin-top:30px;">
         <div style="text-align:center; margin-bottom:16px;">
           <img id="result-preview-img" src="" alt="Passport Result Preview" width="220" height="220"
-            style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);">
+            style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);" loading="lazy" decoding="async">
         </div>
         <div class="result-details">
           <h3 id="result-title">Official Biometric Photo &amp; Sheets Ready!</h3>
@@ -1486,36 +1491,69 @@
         }
       });
 
-      // Canvas Dragging (Mouse & Touch)
+      // Canvas Dragging & Interactive Zoom (Mobile Pinch + Desktop Wheel/Keyboard)
       const previewBox = document.getElementById('crop-preview-box');
       if (previewBox) {
-        previewBox.addEventListener('mousedown', (e) => {
-          isDragging = true;
-          dragStartX = e.clientX - pOffsetX;
-          dragStartY = e.clientY - pOffsetY;
-        });
-        window.addEventListener('mousemove', (e) => {
-          if (!isDragging) return;
-          pOffsetX = e.clientX - dragStartX;
-          pOffsetY = e.clientY - dragStartY;
-          renderCanvasPreview();
-        });
-        window.addEventListener('mouseup', () => { isDragging = false; });
+        if (typeof IDPhoto !== 'undefined' && typeof IDPhoto.attachInteractiveCanvas === 'function') {
+          IDPhoto.attachInteractiveCanvas(previewBox, {
+            getScale: () => pScale,
+            setScale: (val) => { pScale = val; },
+            getOffsetX: () => pOffsetX,
+            setOffsetX: (val) => { pOffsetX = val; },
+            getOffsetY: () => pOffsetY,
+            setOffsetY: (val) => { pOffsetY = val; },
+            onUpdate: () => renderCanvasPreview(),
+            syncInputs: (scale) => {
+              const zS = document.getElementById('zoom-slider');
+              if (zS) zS.value = scale.toFixed(2);
+              const zVal = document.getElementById('zoom-val');
+              if (zVal) zVal.textContent = scale.toFixed(2) + 'x';
+            }
+          });
+        }
+      }
 
-        previewBox.addEventListener('touchstart', (e) => {
-          if (e.touches.length === 1) {
-            isDragging = true;
-            dragStartX = e.touches[0].clientX - pOffsetX;
-            dragStartY = e.touches[0].clientY - pOffsetY;
-          }
-        }, { passive: true });
-        window.addEventListener('touchmove', (e) => {
-          if (!isDragging || e.touches.length !== 1) return;
-          pOffsetX = e.touches[0].clientX - dragStartX;
-          pOffsetY = e.touches[0].clientY - dragStartY;
+      // Quick Zoom & Alignment Buttons for Mobile & Desktop
+      const pzIn = document.getElementById('passport-zoom-in-btn');
+      if (pzIn) {
+        pzIn.addEventListener('click', () => {
+          pScale = Math.min(3.0, parseFloat((pScale + 0.1).toFixed(2)));
+          const zS = document.getElementById('zoom-slider');
+          if (zS) zS.value = pScale.toFixed(2);
+          const zVal = document.getElementById('zoom-val');
+          if (zVal) zVal.textContent = pScale.toFixed(2) + 'x';
           renderCanvasPreview();
-        }, { passive: true });
-        window.addEventListener('touchend', () => { isDragging = false; });
+        });
+      }
+      const pzOut = document.getElementById('passport-zoom-out-btn');
+      if (pzOut) {
+        pzOut.addEventListener('click', () => {
+          pScale = Math.max(0.5, parseFloat((pScale - 0.1).toFixed(2)));
+          const zS = document.getElementById('zoom-slider');
+          if (zS) zS.value = pScale.toFixed(2);
+          const zVal = document.getElementById('zoom-val');
+          if (zVal) zVal.textContent = pScale.toFixed(2) + 'x';
+          renderCanvasPreview();
+        });
+      }
+      const pCenter = document.getElementById('passport-center-btn');
+      if (pCenter) {
+        pCenter.addEventListener('click', () => {
+          pOffsetX = 0;
+          pOffsetY = 0;
+          pScale = 1.0;
+          pRotation = 0;
+          const zS = document.getElementById('zoom-slider');
+          if (zS) zS.value = '1.0';
+          const zVal = document.getElementById('zoom-val');
+          if (zVal) zVal.textContent = '1.00x';
+          const rS = document.getElementById('rotate-slider');
+          if (rS) rS.value = '0';
+          const rVal = document.getElementById('rotate-val');
+          if (rVal) rVal.textContent = '0°';
+          renderCanvasPreview();
+          if (typeof UIUtils !== 'undefined' && UIUtils.showToast) UIUtils.showToast('Portrait centered & reset', 'info', 1500);
+        });
       }
 
       // Sliders

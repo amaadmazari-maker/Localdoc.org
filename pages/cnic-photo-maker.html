@@ -735,7 +735,7 @@
               </div>
 
               <div id="front-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
-                <img id="front-preview-img" class="id-side-preview" src="" alt="Front ID Preview" width="320" height="200">
+                <img id="front-preview-img" class="id-side-preview" src="" alt="Front ID Preview" width="320" height="200" loading="lazy" decoding="async">
                 <div style="display:flex; gap:8px; justify-content:center;">
                   <button type="button" class="btn btn-outline" id="front-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
                     🔄 Rotate 90&deg;
@@ -770,7 +770,7 @@
               </div>
 
               <div id="back-loaded-view" style="display:none; width:100%;" onclick="event.stopPropagation()">
-                <img id="back-preview-img" class="id-side-preview" src="" alt="Back ID Preview" width="320" height="200">
+                <img id="back-preview-img" class="id-side-preview" src="" alt="Back ID Preview" width="320" height="200" loading="lazy" decoding="async">
                 <div style="display:flex; gap:8px; justify-content:center;">
                   <button type="button" class="btn btn-outline" id="back-rotate-btn" style="padding:4px 10px; font-size:0.78rem;">
                     🔄 Rotate 90&deg;
@@ -835,7 +835,7 @@
           </div>
 
           <div class="a4-preview-wrap">
-            <img id="a4-result-preview" class="a4-preview-img" src="" alt="A4 Sheet Preview" width="300" height="424">
+            <img id="a4-result-preview" class="a4-preview-img" src="" alt="A4 Sheet Preview" width="300" height="424" loading="lazy" decoding="async">
           </div>
 
           <!-- Download Action Grid -->
@@ -872,7 +872,7 @@
 
         <div class="drop-zone" id="cnic-photo-drop-zone" style="cursor:pointer;" title="Click to select photo or drop here">
           <div class="drop-zone-icon">
-            <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker Icon" width="54" height="54">
+            <img src="../assets/icons/cnic-photo-maker.svg" alt="CNIC Photo Maker Icon" width="54" height="54" loading="lazy" decoding="async">
           </div>
           <div class="drop-zone-text">
             <h3 style="margin:0 0 6px;">Tap or Drop your portrait photo here</h3>
@@ -961,7 +961,12 @@
               <div class="controls-panel">
                 <div class="control-row">
                   <label for="cnic-zoom-slider">Zoom / Scale:</label>
-                  <input type="range" id="cnic-zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+                  <div style="display:flex; align-items:center; gap:6px; flex:1;">
+                    <button type="button" class="btn btn-outline" id="cnic-zoom-out-btn" aria-label="Zoom out" style="padding:4px 9px; font-size:0.82rem; min-width:32px; height:32px; font-weight:700;">&minus;</button>
+                    <input type="range" id="cnic-zoom-slider" min="0.5" max="3.0" step="0.05" value="1.0">
+                    <button type="button" class="btn btn-outline" id="cnic-zoom-in-btn" aria-label="Zoom in" style="padding:4px 9px; font-size:0.82rem; min-width:32px; height:32px; font-weight:700;">&#43;</button>
+                    <button type="button" class="btn btn-outline" id="cnic-center-btn" aria-label="Center portrait" style="padding:4px 8px; font-size:0.75rem; height:32px; white-space:nowrap;" title="Center Portrait &amp; Reset Position">&#9014; Center</button>
+                  </div>
                   <span id="cnic-zoom-val" style="min-width:45px; font-family:var(--font-mono); font-size:0.85rem;">1.00x</span>
                 </div>
                 <div class="control-row">
@@ -998,7 +1003,7 @@
         <!-- CNIC Photo Result -->
         <div class="result-card" id="cnic-photo-result-card" style="display:none; margin-top:24px;">
           <div style="text-align:center; margin-bottom:14px;">
-            <img id="cnic-photo-preview-img" src="" alt="NADRA CNIC Photo Preview" width="220" height="220" style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);">
+            <img id="cnic-photo-preview-img" src="" alt="NADRA CNIC Photo Preview" width="220" height="220" style="max-height:220px; border-radius:6px; border:1px solid var(--line); box-shadow:var(--shadow-sm);" loading="lazy" decoding="async">
           </div>
           <div class="result-details">
             <h3 id="cnic-photo-result-title">Compliant NADRA Photo Ready!</h3>
@@ -1680,7 +1685,7 @@
                   </style>
                 </head>
                 <body>
-                  <img src="${compiledA4Canvas.toDataURL('image/jpeg', 0.98)}" alt="Compiled A4 Photo Print Sheet" onload="window.print(); window.close();" />
+                  <img src="${compiledA4Canvas.toDataURL('image/jpeg', 0.98)}" alt="Compiled A4 Photo Print Sheet" onload="window.print(); window.close();" / loading="lazy" decoding="async">
                 </body>
               </html>
             `);
@@ -1901,36 +1906,69 @@
         });
       }
 
-      // Canvas Dragging
+      // Canvas Dragging & Interactive Zoom (Mobile Pinch + Desktop Wheel/Keyboard)
       const previewBox = document.getElementById('cnic-preview-box');
       if (previewBox) {
-        previewBox.addEventListener('mousedown', (e) => {
-          isCnicDragging = true;
-          cnicDragStartX = e.clientX - cnicOffsetX;
-          cnicDragStartY = e.clientY - cnicOffsetY;
-        });
-        window.addEventListener('mousemove', (e) => {
-          if (!isCnicDragging) return;
-          cnicOffsetX = e.clientX - cnicDragStartX;
-          cnicOffsetY = e.clientY - cnicDragStartY;
-          renderCnicPreview();
-        });
-        window.addEventListener('mouseup', () => { isCnicDragging = false; });
+        if (typeof IDPhoto !== 'undefined' && typeof IDPhoto.attachInteractiveCanvas === 'function') {
+          IDPhoto.attachInteractiveCanvas(previewBox, {
+            getScale: () => cnicScale,
+            setScale: (val) => { cnicScale = val; },
+            getOffsetX: () => cnicOffsetX,
+            setOffsetX: (val) => { cnicOffsetX = val; },
+            getOffsetY: () => cnicOffsetY,
+            setOffsetY: (val) => { cnicOffsetY = val; },
+            onUpdate: () => renderCnicPreview(),
+            syncInputs: (scale) => {
+              const zS = document.getElementById('cnic-zoom-slider');
+              if (zS) zS.value = scale.toFixed(2);
+              const zVal = document.getElementById('cnic-zoom-val');
+              if (zVal) zVal.textContent = scale.toFixed(2) + 'x';
+            }
+          });
+        }
+      }
 
-        previewBox.addEventListener('touchstart', (e) => {
-          if (e.touches.length === 1) {
-            isCnicDragging = true;
-            cnicDragStartX = e.touches[0].clientX - cnicOffsetX;
-            cnicDragStartY = e.touches[0].clientY - cnicOffsetY;
-          }
-        }, { passive: true });
-        window.addEventListener('touchmove', (e) => {
-          if (!isCnicDragging || e.touches.length !== 1) return;
-          cnicOffsetX = e.touches[0].clientX - cnicDragStartX;
-          cnicOffsetY = e.touches[0].clientY - cnicDragStartY;
+      // Quick Zoom & Alignment Buttons for Mobile & Desktop
+      const zIn = document.getElementById('cnic-zoom-in-btn');
+      if (zIn) {
+        zIn.addEventListener('click', () => {
+          cnicScale = Math.min(3.0, parseFloat((cnicScale + 0.1).toFixed(2)));
+          const zS = document.getElementById('cnic-zoom-slider');
+          if (zS) zS.value = cnicScale.toFixed(2);
+          const zVal = document.getElementById('cnic-zoom-val');
+          if (zVal) zVal.textContent = cnicScale.toFixed(2) + 'x';
           renderCnicPreview();
-        }, { passive: true });
-        window.addEventListener('touchend', () => { isCnicDragging = false; });
+        });
+      }
+      const zOut = document.getElementById('cnic-zoom-out-btn');
+      if (zOut) {
+        zOut.addEventListener('click', () => {
+          cnicScale = Math.max(0.5, parseFloat((cnicScale - 0.1).toFixed(2)));
+          const zS = document.getElementById('cnic-zoom-slider');
+          if (zS) zS.value = cnicScale.toFixed(2);
+          const zVal = document.getElementById('cnic-zoom-val');
+          if (zVal) zVal.textContent = cnicScale.toFixed(2) + 'x';
+          renderCnicPreview();
+        });
+      }
+      const cCenter = document.getElementById('cnic-center-btn');
+      if (cCenter) {
+        cCenter.addEventListener('click', () => {
+          cnicOffsetX = 0;
+          cnicOffsetY = 0;
+          cnicScale = 1.0;
+          cnicRotation = 0;
+          const zS = document.getElementById('cnic-zoom-slider');
+          if (zS) zS.value = '1.0';
+          const zVal = document.getElementById('cnic-zoom-val');
+          if (zVal) zVal.textContent = '1.00x';
+          const rS = document.getElementById('cnic-rot-slider');
+          if (rS) rS.value = '0';
+          const rVal = document.getElementById('cnic-rot-val');
+          if (rVal) rVal.textContent = '0°';
+          renderCnicPreview();
+          if (typeof UIUtils !== 'undefined' && UIUtils.showToast) UIUtils.showToast('Portrait centered & reset', 'info', 1500);
+        });
       }
 
       // Sliders

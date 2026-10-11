@@ -585,9 +585,9 @@ const UIUtils = {
       });
     });
 
-    // Keyboard trigger
+    // Keyboard trigger (Cmd+K / Ctrl+K across all platforms & CapsLock states)
     window.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         backdrop.classList.add('open');
         setTimeout(() => backdrop.querySelector('#global-search-input').focus(), 50);
