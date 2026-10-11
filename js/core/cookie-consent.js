@@ -62,17 +62,17 @@
           <div class="cookie-consent-content">
             <div class="cookie-consent-header">
               <span class="cookie-icon" aria-hidden="true">🍪</span>
-              <strong>Privacy & Cookie Preferences</strong>
+              <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
             </div>
-            <p class="cookie-consent-text">
-              LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and files are processed solely in your browser RAM and are never sent to any server. We use essential local storage for app settings and anonymous analytics to improve performance. Learn more in our <a href="${privacyHref}" class="cookie-link">Privacy Policy</a>.
+            <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
+              LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and files are processed solely in your browser RAM and are never sent to any server. We use essential local storage for app settings and anonymous analytics to improve performance. Learn more in our <a href="${privacyHref}" class="cookie-link" data-i18n="legal_privacy">Privacy Policy</a>.
             </p>
           </div>
           <div class="cookie-consent-actions">
-            <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+            <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn" data-i18n="cookie_btn_essential">
               Essential Only
             </button>
-            <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+            <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn" data-i18n="cookie_btn_accept">
               Accept All
             </button>
           </div>
@@ -80,6 +80,9 @@
       `;
 
       document.body.appendChild(banner);
+      if (window.I18N && window.I18N.applyTranslations) {
+        window.I18N.applyTranslations();
+      }
 
       // Trigger animation
       requestAnimationFrame(() => {
