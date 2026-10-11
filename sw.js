@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v61-adsense-master-compliance';
+const CACHE_NAME = 'localdoc-v62-universal-i18n-12lang';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -100,7 +100,19 @@ const ASSETS_TO_CACHE = [
   '/assets/images/guides/passport-step2-country-color.webp',
   '/assets/images/guides/passport-step3-biometric-align.webp',
   '/assets/images/guides/passport-step4-ai-eraser.webp',
-  '/assets/images/guides/passport-step5-print-sheet.webp'
+  '/assets/images/guides/passport-step5-print-sheet.webp',
+  '/lang/en.json',
+  '/lang/en-gb.json',
+  '/lang/ur.json',
+  '/lang/ar.json',
+  '/lang/hi.json',
+  '/lang/pt.json',
+  '/lang/es.json',
+  '/lang/fr.json',
+  '/lang/de.json',
+  '/lang/zh.json',
+  '/lang/ru.json',
+  '/lang/id.json'
 ];
 
 self.addEventListener('install', (event) => {

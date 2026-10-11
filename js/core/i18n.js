@@ -1,6 +1,6 @@
 /**
  * localdoc.org — Multi-Language Translation Engine (js/core/i18n.js)
- * Supports 7 Global Languages: EN, UR (RTL), AR (RTL), ES, FR, DE, ZH
+ * Supports 12 Global Languages: EN (US), EN-GB (UK), UR (RTL), AR (RTL), HI, PT, ES, FR, DE, ZH, RU, ID
  */
 
 const I18N = {
@@ -8,13 +8,18 @@ const I18N = {
   translations: {},
 
   availableLanguages: [
-    { code: 'en', label: '🇺🇸 English', dir: 'ltr' },
+    { code: 'en', label: '🇺🇸 English (US)', dir: 'ltr' },
+    { code: 'en-gb', label: '🇬🇧 English (UK)', dir: 'ltr' },
     { code: 'ur', label: '🇵🇰 اردو (Urdu)', dir: 'rtl' },
     { code: 'ar', label: '🇸🇦 العربية (Arabic)', dir: 'rtl' },
+    { code: 'hi', label: '🇮🇳 हिन्दी (Hindi)', dir: 'ltr' },
+    { code: 'pt', label: '🇧🇷 Português', dir: 'ltr' },
     { code: 'es', label: '🇪🇸 Español', dir: 'ltr' },
     { code: 'fr', label: '🇫🇷 Français', dir: 'ltr' },
     { code: 'de', label: '🇩🇪 Deutsch', dir: 'ltr' },
-    { code: 'zh', label: '🇨🇳 简体中文', dir: 'ltr' }
+    { code: 'zh', label: '🇨🇳 简体中文', dir: 'ltr' },
+    { code: 'ru', label: '🇷🇺 Русский', dir: 'ltr' },
+    { code: 'id', label: '🇮🇩 Bahasa Indonesia', dir: 'ltr' }
   ],
 
   async init() {
@@ -36,7 +41,7 @@ const I18N = {
 
   async loadTranslations(lang) {
     try {
-      const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/')  ?  '../' : './';
+      const basePath = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/blog/') ? '../' : './';
       const res = await fetch(`${basePath}lang/${lang}.json`);
       if (res.ok) {
         this.translations = await res.json();
@@ -46,12 +51,20 @@ const I18N = {
     }
   },
 
-  ensureRtlFonts(isRtl) {
+  ensureFonts(lang) {
+    const isRtl = (lang === 'ur' || lang === 'ar');
     if (isRtl && !document.getElementById('rtl-font-stylesheet')) {
       const link = document.createElement('link');
       link.id = 'rtl-font-stylesheet';
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2 ? family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap';
+      document.head.appendChild(link);
+    }
+    if (lang === 'hi' && !document.getElementById('devanagari-font-stylesheet')) {
+      const link = document.createElement('link');
+      link.id = 'devanagari-font-stylesheet';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap';
       document.head.appendChild(link);
     }
   },
@@ -60,9 +73,9 @@ const I18N = {
     this.currentLang = lang;
     localStorage.setItem('localdoc_lang', lang);
     const isRtl = (lang === 'ur' || lang === 'ar');
-    this.ensureRtlFonts(isRtl);
+    this.ensureFonts(lang);
     document.documentElement.lang = lang;
-    document.documentElement.dir = isRtl  ?  'rtl' : 'ltr';
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     const selects = document.querySelectorAll('.lang-select');
     selects.forEach(select => { select.value = lang; });
     this.loadTranslations(lang).then(() => {
@@ -72,7 +85,7 @@ const I18N = {
 
   applyTranslations() {
     const isRtl = (this.currentLang === 'ur' || this.currentLang === 'ar');
-    this.ensureRtlFonts(isRtl);
+    this.ensureFonts(this.currentLang);
     document.documentElement.lang = this.currentLang;
     document.documentElement.dir = isRtl  ?  'rtl' : 'ltr';
     if (document.body) {
