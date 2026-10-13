@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Scientific Calculator Online — Fractions, Matrices, Calculus | LocalDoc</title>
-  <meta name="description" content="Free online scientific calculator with natural fraction display, matrices, percentage solver, trigonometry, and calculus. Runs 100% offline in browser RAM.">
+  <title>Scientific Calculator Online &mdash; Casio fx-5800P, Fraction &amp; Percentage Solver | LocalDoc</title>
+  <meta name="description" content="Free online scientific calculator inspired by Casio fx-5800P. Features step-by-step Fraction Calculator, multi-mode Percentage Calculator, Matrix Solver (2x2, 3x3), numerical calculus, and 100% offline RAM math.">
   <link rel="canonical" href="https://localdoc.org/pages/scientific-calculator.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#1E293B">
@@ -1046,6 +1046,253 @@
       color: #0284C7 !important;
       border: 1px solid #CBD5E1 !important;
     }
+  
+    /* =========================================================================
+       Master Mode Switcher & Dedicated Fraction / Percentage Studios
+       ========================================================================= */
+    .calc-mode-switcher-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0 auto 22px;
+      max-width: 880px;
+      width: 100%;
+    }
+    .calc-mode-btn {
+      background: #111827;
+      border: 1px solid #1F2937;
+      color: #94A3B8;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .calc-mode-btn:hover {
+      background: #1E293B;
+      border-color: #38BDF8;
+      color: #F8FAFC;
+      transform: translateY(-1px);
+    }
+    .calc-mode-btn.active {
+      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+      border-color: #38BDF8;
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45);
+    }
+    .calc-studio-card {
+      width: 100%;
+      max-width: 880px;
+      background: #0B1120;
+      border: 1px solid #1E293B;
+      border-radius: 20px;
+      padding: 24px 26px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      margin: 0 auto 24px;
+      display: none;
+    }
+    .calc-studio-card.active {
+      display: block;
+      animation: fadeInStudio 0.25s ease-out;
+    }
+    @keyframes fadeInStudio {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Fraction Inputs & Visuals */
+    .frac-entry-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+      padding: 18px;
+      background: #111827;
+      border: 1px solid #1F2937;
+      border-radius: 16px;
+    }
+    .frac-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .frac-stack {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .frac-input {
+      width: 74px;
+      height: 38px;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #F8FAFC;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .frac-input:focus {
+      outline: none;
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+      background: #0F172A;
+    }
+    .frac-whole-input {
+      width: 62px;
+      height: 48px;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #F8FAFC;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .frac-bar-line {
+      width: 100%;
+      height: 2px;
+      background: #38BDF8;
+      border-radius: 2px;
+    }
+    .frac-op-selector {
+      display: flex;
+      gap: 6px;
+      background: #090D16;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid #1E293B;
+    }
+    .frac-op-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #94A3B8;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .frac-op-btn:hover {
+      color: #F8FAFC;
+      background: #1E293B;
+    }
+    .frac-op-btn.active {
+      background: #0284C7;
+      color: #FFFFFF;
+      border-color: #38BDF8;
+      box-shadow: 0 2px 8px rgba(2,132,199,0.5);
+    }
+
+    /* Percentage Grid & Tabs */
+    .pct-tabs-bar {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid #1E293B;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+    }
+    .pct-tab-pill {
+      background: #111827;
+      border: 1px solid #1F2937;
+      color: #94A3B8;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .pct-tab-pill.active {
+      background: #059669;
+      color: #FFFFFF;
+      border-color: #10B981;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+    .pct-panel {
+      display: none;
+    }
+    .pct-panel.active {
+      display: block;
+    }
+
+    /* Light Mode Overrides for Fraction & Percentage Studios */
+    [data-theme="light"] .calc-mode-btn {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+      color: #475569;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    }
+    [data-theme="light"] .calc-mode-btn:hover {
+      background: #F8FAFC;
+      border-color: #0284C7;
+      color: #0F172A;
+    }
+    [data-theme="light"] .calc-mode-btn.active {
+      background: #0284C7;
+      border-color: #0284C7;
+      color: #FFFFFF;
+    }
+    [data-theme="light"] .calc-studio-card {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08) !important;
+    }
+    [data-theme="light"] .frac-entry-wrap {
+      background: #F8FAFC !important;
+      border-color: #E2E8F0 !important;
+    }
+    [data-theme="light"] .frac-input,
+    [data-theme="light"] .frac-whole-input {
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+    [data-theme="light"] .frac-op-selector {
+      background: #F1F5F9 !important;
+      border-color: #E2E8F0 !important;
+    }
+    [data-theme="light"] .frac-op-btn {
+      color: #475569 !important;
+    }
+    [data-theme="light"] .frac-op-btn.active {
+      background: #0284C7 !important;
+      color: #FFFFFF !important;
+    }
+    [data-theme="light"] .pct-tabs-bar {
+      border-color: #E2E8F0 !important;
+    }
+    [data-theme="light"] .pct-tab-pill {
+      background: #F1F5F9 !important;
+      border-color: #E2E8F0 !important;
+      color: #475569 !important;
+    }
+    [data-theme="light"] .pct-tab-pill.active {
+      background: #059669 !important;
+      color: #FFFFFF !important;
+    }
+
   </style>
   <meta property="og:image" content="https://localdoc.org/assets/images/og/og-calculator.webp">
 </head>
@@ -1105,6 +1352,215 @@
     </div>
     </div>
     
+    
+    <!-- Dedicated Multi-Tool Mode Switcher Bar -->
+    <nav class="calc-mode-switcher-bar" aria-label="Calculator Modes">
+      <button type="button" class="calc-mode-btn active" id="btn-mode-scientific" data-mode="scientific">
+        <span>🧮</span>
+        <span>Casio Scientific fx-5800P</span>
+      </button>
+      <button type="button" class="calc-mode-btn" id="btn-mode-fraction" data-mode="fraction">
+        <span>➗</span>
+        <span>Fraction Calculator (Step-by-Step)</span>
+      </button>
+      <button type="button" class="calc-mode-btn" id="btn-mode-percentage" data-mode="percentage">
+        <span>％</span>
+        <span>Percentage Calculator</span>
+      </button>
+      <button type="button" class="calc-mode-btn" id="btn-mode-matrix" data-mode="matrix">
+        <span>🔲</span>
+        <span>Matrix Solver (2×2, 3×3)</span>
+      </button>
+    </nav>
+
+    <!-- =========================================================================
+         Fraction Calculator Studio (Step-by-Step Solver)
+         ========================================================================= -->
+    <section class="calc-studio-card" id="studio-fraction" aria-labelledby="frac-studio-title">
+      <div class="fx-solvers-head" style="margin-bottom:14px;">
+        <div class="fx-solvers-title">
+          <span style="font-size:1.3rem;">➗</span>
+          <div>
+            <h2 id="frac-studio-title" style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-primary, #F8FAFC);">Fraction Calculator &amp; Step-by-Step Reducer</h2>
+            <p style="font-size:0.78rem; color:var(--text-muted, #94A3B8); margin:2px 0 0;">Add, subtract, multiply, and divide mixed &amp; improper fractions with Least Common Denominator (LCD) steps.</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="fx-solver-btn" id="btn-frac-reset">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Pills -->
+      <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:16px;">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted, #94A3B8); text-transform:uppercase;">Quick Presets:</span>
+        <button type="button" class="fx-solver-btn" onclick="applyFractionPreset(0, 1, 2, '+', 0, 3, 4)" style="font-size:0.75rem; padding:4px 8px;">1/2 + 3/4</button>
+        <button type="button" class="fx-solver-btn" onclick="applyFractionPreset(2, 1, 3, '-', 0, 4, 5)" style="font-size:0.75rem; padding:4px 8px;">2 1/3 − 4/5</button>
+        <button type="button" class="fx-solver-btn" onclick="applyFractionPreset(0, 5, 8, '×', 0, 3, 10)" style="font-size:0.75rem; padding:4px 8px;">5/8 × 3/10</button>
+        <button type="button" class="fx-solver-btn" onclick="applyFractionPreset(0, 7, 12, '÷', 0, 2, 3)" style="font-size:0.75rem; padding:4px 8px;">7/12 ÷ 2/3</button>
+        <button type="button" class="fx-solver-btn" onclick="applyFractionPreset(0, 15, 25, '+', 0, 0, 1)" style="font-size:0.75rem; padding:4px 8px;">Simplify 15/25</button>
+      </div>
+
+      <!-- Interactive Fraction Entry Box -->
+      <div class="frac-entry-wrap">
+        <!-- Fraction 1 -->
+        <div class="frac-box">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <label style="font-size:0.68rem; color:#94A3B8; text-transform:uppercase;">Whole</label>
+            <input type="number" id="frac-w1" class="frac-whole-input" placeholder="0" value="0">
+          </div>
+          <div class="frac-stack">
+            <input type="number" id="frac-n1" class="frac-input" value="1" placeholder="Num" required>
+            <div class="frac-bar-line"></div>
+            <input type="number" id="frac-d1" class="frac-input" value="2" placeholder="Den" min="1" required>
+          </div>
+        </div>
+
+        <!-- Operator Selector -->
+        <div class="frac-op-selector" role="radiogroup" aria-label="Fraction Operator">
+          <button type="button" class="frac-op-btn active" data-op="+" title="Add (+)">+</button>
+          <button type="button" class="frac-op-btn" data-op="-" title="Subtract (−)">−</button>
+          <button type="button" class="frac-op-btn" data-op="×" title="Multiply (×)">×</button>
+          <button type="button" class="frac-op-btn" data-op="÷" title="Divide (÷)">÷</button>
+        </div>
+
+        <!-- Fraction 2 -->
+        <div class="frac-box" id="frac-box-2">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <label style="font-size:0.68rem; color:#94A3B8; text-transform:uppercase;">Whole</label>
+            <input type="number" id="frac-w2" class="frac-whole-input" placeholder="0" value="0">
+          </div>
+          <div class="frac-stack">
+            <input type="number" id="frac-n2" class="frac-input" value="3" placeholder="Num" required>
+            <div class="frac-bar-line"></div>
+            <input type="number" id="frac-d2" class="frac-input" value="4" placeholder="Den" min="1" required>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" id="btn-frac-solve" class="fx-solver-btn fx-solver-btn-accent" style="height:48px; padding:0 24px; font-size:0.95rem; font-weight:800; border-radius:10px;">
+            Calculate =
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Display Box -->
+      <div id="frac-result-card" style="background:#060A12; border:1px solid #1E293B; border-radius:14px; padding:18px 20px; margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <span style="font-size:0.8rem; font-weight:800; color:#38BDF8; text-transform:uppercase; letter-spacing:0.04em;">Resulting Fraction:</span>
+          <div style="display:flex; gap:8px;" id="frac-pill-badges">
+            <span class="badge" style="background:#1E293B; color:#38BDF8; font-family:'Share Tech Mono'; font-size:0.85rem; padding:4px 10px; border-radius:6px;" id="frac-badge-dec">Dec: 1.25</span>
+            <span class="badge" style="background:#1E293B; color:#10B981; font-family:'Share Tech Mono'; font-size:0.85rem; padding:4px 10px; border-radius:6px;" id="frac-badge-pct">125%</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+          <!-- Primary Simplified Answer -->
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.1rem; color:#94A3B8;">Exact:</span>
+            <span style="font-size:1.7rem; font-weight:900; font-family:'Share Tech Mono', monospace; color:#10B981;" id="frac-out-main">5/4</span>
+            <span style="font-size:1.2rem; color:#94A3B8;" id="frac-out-mixed-wrap">(or <strong style="color:#F59E0B;" id="frac-out-mixed">1 1/4</strong>)</span>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Breakdown -->
+        <div style="margin-top:16px; border-top:1px solid #1E293B; padding-top:14px;">
+          <div style="font-size:0.82rem; font-weight:800; color:#F8FAFC; margin-bottom:8px;">📝 Step-by-Step Solution Breakdown:</div>
+          <ol id="frac-steps-list" style="margin:0 0 0 18px; padding:0; line-height:1.7; font-size:0.86rem; color:#CBD5E1; font-family:'Share Tech Mono', monospace;">
+            <li>Find Least Common Denominator (LCD): LCD(2, 4) = 4.</li>
+            <li>Adjust numerators: 2/4 + 3/4 = 5/4.</li>
+            <li>Convert to mixed fraction: 5/4 = 1 1/4.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         Percentage Calculator Studio (Multi-Scenario Solver)
+         ========================================================================= -->
+    <section class="calc-studio-card" id="studio-percentage" aria-labelledby="pct-studio-title">
+      <div class="fx-solvers-head" style="margin-bottom:14px;">
+        <div class="fx-solvers-title">
+          <span style="font-size:1.3rem;">％</span>
+          <div>
+            <h2 id="pct-studio-title" style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-primary, #F8FAFC);">Percentage Calculator &amp; Discount Solver</h2>
+            <p style="font-size:0.78rem; color:var(--text-muted, #94A3B8); margin:2px 0 0;">Calculate percentage of a number, percentage change, and retail discounts in local browser RAM.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Percentage Sub-Tabs -->
+      <div class="pct-tabs-bar" role="tablist">
+        <button type="button" class="pct-tab-pill active" data-pct="of">&#128202; % of Number (P% of X)</button>
+        <button type="button" class="pct-tab-pill" data-pct="is">&#128207; Percentage Ratio (X is ?% of Y)</button>
+        <button type="button" class="pct-tab-pill" data-pct="change">&#128200; % Increase / Decrease</button>
+        <button type="button" class="pct-tab-pill" data-pct="discount">&#127991; Discount &amp; Sales Tax</button>
+      </div>
+
+      <!-- Tab 1: What is P% of X? -->
+      <div class="pct-panel active" id="pct-panel-of">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:16px 0;">
+          <span style="font-size:0.95rem; color:#F8FAFC;">What is</span>
+          <input type="number" id="pct-p1" class="fx-solver-field" value="15" step="any" style="width:90px; text-align:center;">
+          <span style="font-size:0.95rem; color:#38BDF8; font-weight:800;">%</span>
+          <span style="font-size:0.95rem; color:#F8FAFC;">of</span>
+          <input type="number" id="pct-x1" class="fx-solver-field" value="80" step="any" style="width:110px; text-align:center;">
+          <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-calc-pct-1">Calculate</button>
+        </div>
+        <div class="fx-result-box" id="pct-res-1">
+          Result: <strong style="color:#10B981; font-size:1.1rem;">12</strong> &bull; Formula: (15 &divide; 100) &times; 80 = 12
+        </div>
+      </div>
+
+      <!-- Tab 2: X is what % of Y? -->
+      <div class="pct-panel" id="pct-panel-is">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:16px 0;">
+          <input type="number" id="pct-x2" class="fx-solver-field" value="24" step="any" style="width:90px; text-align:center;">
+          <span style="font-size:0.95rem; color:#F8FAFC;">is what percentage of</span>
+          <input type="number" id="pct-y2" class="fx-solver-field" value="80" step="any" style="width:110px; text-align:center;">
+          <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-calc-pct-2">Calculate</button>
+        </div>
+        <div class="fx-result-box" id="pct-res-2">
+          Result: <strong style="color:#10B981; font-size:1.1rem;">30%</strong> &bull; Formula: (24 &divide; 80) &times; 100% = 30%
+        </div>
+      </div>
+
+      <!-- Tab 3: % Increase / Decrease from X to Y -->
+      <div class="pct-panel" id="pct-panel-change">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:16px 0;">
+          <span style="font-size:0.95rem; color:#F8FAFC;">From</span>
+          <input type="number" id="pct-x3" class="fx-solver-field" value="50" step="any" style="width:100px; text-align:center;">
+          <span style="font-size:0.95rem; color:#F8FAFC;">to</span>
+          <input type="number" id="pct-y3" class="fx-solver-field" value="75" step="any" style="width:100px; text-align:center;">
+          <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-calc-pct-3">Calculate Change</button>
+        </div>
+        <div class="fx-result-box" id="pct-res-3">
+          Result: <strong style="color:#10B981; font-size:1.1rem;">+50.00% Increase</strong> &bull; Formula: ((75 &minus; 50) &divide; 50) &times; 100% = +50%
+        </div>
+      </div>
+
+      <!-- Tab 4: Discount & Sales Tax -->
+      <div class="pct-panel" id="pct-panel-discount">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin:16px 0;">
+          <div>
+            <label style="font-size:0.8rem; color:#94A3B8; display:block; margin-bottom:4px;">Original Price ($):</label>
+            <input type="number" id="pct-disc-price" class="fx-solver-field" value="120" step="any" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:0.8rem; color:#94A3B8; display:block; margin-bottom:4px;">Discount (%):</label>
+            <input type="number" id="pct-disc-off" class="fx-solver-field" value="25" step="any" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:0.8rem; color:#94A3B8; display:block; margin-bottom:4px;">Sales Tax (%):</label>
+            <input type="number" id="pct-disc-tax" class="fx-solver-field" value="8" step="any" style="width:100%;">
+          </div>
+        </div>
+        <button type="button" class="fx-solver-btn fx-solver-btn-accent" id="btn-calc-pct-4">Calculate Final Price</button>
+        <div class="fx-result-box" id="pct-res-4" style="margin-top:14px;">
+          Final Price: <strong style="color:#10B981; font-size:1.2rem;">$97.20</strong> &bull; You Saved: <span style="color:#F59E0B; font-weight:800;">$30.00</span> (Discount: $30.00 &bull; Tax: $7.20)
+        </div>
+      </div>
+    </section>
+
     <!-- Pro-5800 Programmable Handheld Calculator -->
     <div class="fx-calculator" id="fx-calc-chassis">
       
@@ -4236,6 +4692,304 @@
       </div>
     </div>
   </aside>
+
+  <!-- Fraction & Percentage Studios JavaScript Engine -->
+  <script>
+    (function initStudiosAndModeSwitcher() {
+      // 1. Mode Switching Controller
+      const modeButtons = document.querySelectorAll('.calc-mode-btn');
+      const chassis = document.getElementById('fx-calc-chassis');
+      const tapeCard = document.querySelector('.fx-tape-card');
+      const solversCard = document.querySelector('.fx-solvers-card');
+      const studioFrac = document.getElementById('studio-fraction');
+      const studioPct = document.getElementById('studio-percentage');
+
+      function switchMode(targetMode, shouldScroll = false) {
+        modeButtons.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-mode') === targetMode);
+        });
+
+        // Hide or show sections depending on mode
+        if (targetMode === 'fraction') {
+          if (studioFrac) studioFrac.classList.add('active');
+          if (studioPct) studioPct.classList.remove('active');
+          if (chassis) chassis.style.display = 'none';
+          if (tapeCard) tapeCard.style.display = 'none';
+          if (solversCard) solversCard.style.display = 'none';
+          if (shouldScroll && studioFrac) studioFrac.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (targetMode === 'percentage') {
+          if (studioFrac) studioFrac.classList.remove('active');
+          if (studioPct) studioPct.classList.add('active');
+          if (chassis) chassis.style.display = 'none';
+          if (tapeCard) tapeCard.style.display = 'none';
+          if (solversCard) solversCard.style.display = 'none';
+          if (shouldScroll && studioPct) studioPct.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (targetMode === 'matrix') {
+          if (studioFrac) studioFrac.classList.remove('active');
+          if (studioPct) studioPct.classList.remove('active');
+          if (chassis) chassis.style.display = 'none';
+          if (tapeCard) tapeCard.style.display = 'none';
+          if (solversCard) {
+            solversCard.style.display = 'block';
+            // Click the matrix tab inside engineering solvers
+            const matTabBtn = document.querySelector('.fx-tab-btn[data-tab="matrix"]');
+            if (matTabBtn) matTabBtn.click();
+            if (shouldScroll) solversCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          // Scientific default
+          if (studioFrac) studioFrac.classList.remove('active');
+          if (studioPct) studioPct.classList.remove('active');
+          if (chassis) chassis.style.display = 'block';
+          if (tapeCard) tapeCard.style.display = 'block';
+          if (solversCard) solversCard.style.display = 'block';
+          if (shouldScroll && chassis) chassis.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const m = btn.getAttribute('data-mode');
+          switchMode(m, false);
+          window.location.hash = '#' + m;
+        });
+      });
+
+      // Handle URL Hash or Query Parameter on load
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const queryMode = (params.get('mode') || '').toLowerCase();
+      const initMode = hash || queryMode;
+
+      if (['fraction', 'percentage', 'matrix', 'scientific'].includes(initMode)) {
+        switchMode(initMode, false);
+      }
+
+      // =========================================================================
+      // 2. Fraction Studio Solver Engine
+      // =========================================================================
+      function gcd(a, b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        while (b) {
+          let t = b;
+          b = a % b;
+          a = t;
+        }
+        return a;
+      }
+
+      function lcm(a, b) {
+        if (a === 0 || b === 0) return 0;
+        return Math.abs(a * b) / gcd(a, b);
+      }
+
+      let activeOp = '+';
+      const opBtns = document.querySelectorAll('.frac-op-btn');
+      opBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          opBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeOp = btn.getAttribute('data-op');
+          solveFractions();
+        });
+      });
+
+      window.applyFractionPreset = function(w1, n1, d1, op, w2, n2, d2) {
+        document.getElementById('frac-w1').value = w1;
+        document.getElementById('frac-n1').value = n1;
+        document.getElementById('frac-d1').value = d1;
+        document.getElementById('frac-w2').value = w2;
+        document.getElementById('frac-n2').value = n2;
+        document.getElementById('frac-d2').value = d2;
+        opBtns.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-op') === op);
+        });
+        activeOp = op;
+        solveFractions();
+      };
+
+      function solveFractions() {
+        const w1 = parseInt(document.getElementById('frac-w1').value, 10) || 0;
+        const n1 = parseInt(document.getElementById('frac-n1').value, 10) || 0;
+        const d1 = parseInt(document.getElementById('frac-d1').value, 10) || 1;
+
+        const w2 = parseInt(document.getElementById('frac-w2').value, 10) || 0;
+        const n2 = parseInt(document.getElementById('frac-n2').value, 10) || 0;
+        const d2 = parseInt(document.getElementById('frac-d2').value, 10) || 1;
+
+        if (d1 === 0 || d2 === 0) {
+          alert('Error: Denominators cannot be zero.');
+          return;
+        }
+
+        const impN1 = (w1 >= 0 ? 1 : -1) * (Math.abs(w1) * d1 + n1);
+        const impD1 = d1;
+        const impN2 = (w2 >= 0 ? 1 : -1) * (Math.abs(w2) * d2 + n2);
+        const impD2 = d2;
+
+        let resN = 0, resD = 1;
+        const steps = [];
+
+        if (w1 !== 0 || w2 !== 0) {
+          steps.push(`Convert mixed numbers to improper fractions: ${w1 !== 0 ? `${w1} ${n1}/${d1} = ${impN1}/${impD1}` : `${n1}/${d1}`} and ${w2 !== 0 ? `${w2} ${n2}/${d2} = ${impN2}/${impD2}` : `${n2}/${d2}`}.`);
+        }
+
+        if (activeOp === '+') {
+          const L = lcm(impD1, impD2);
+          const m1 = L / impD1;
+          const m2 = L / impD2;
+          steps.push(`Find Least Common Denominator (LCD): LCD(${impD1}, ${impD2}) = ${L}.`);
+          steps.push(`Adjust numerators: (${impN1} &times; ${m1}) / ${L} + (${impN2} &times; ${m2}) / ${L} = ${impN1 * m1}/${L} + ${impN2 * m2}/${L}.`);
+          resN = (impN1 * m1) + (impN2 * m2);
+          resD = L;
+        } else if (activeOp === '-') {
+          const L = lcm(impD1, impD2);
+          const m1 = L / impD1;
+          const m2 = L / impD2;
+          steps.push(`Find Least Common Denominator (LCD): LCD(${impD1}, ${impD2}) = ${L}.`);
+          steps.push(`Adjust numerators: (${impN1} &times; ${m1}) / ${L} &minus; (${impN2} &times; ${m2}) / ${L} = ${impN1 * m1}/${L} &minus; ${impN2 * m2}/${L}.`);
+          resN = (impN1 * m1) - (impN2 * m2);
+          resD = L;
+        } else if (activeOp === '×' || activeOp === '*') {
+          steps.push(`Multiply numerators and denominators directly: (${impN1} &times; ${impN2}) / (${impD1} &times; ${impD2}).`);
+          resN = impN1 * impN2;
+          resD = impD1 * impD2;
+        } else if (activeOp === '÷' || activeOp === '/') {
+          if (impN2 === 0) {
+            alert('Error: Cannot divide by zero.');
+            return;
+          }
+          steps.push(`Multiply by reciprocal of divisor: (${impN1}/${impD1}) &times; (${impD2}/${impN2}) = (${impN1} &times; ${impD2}) / (${impD1} &times; ${impN2}).`);
+          resN = impN1 * impD2;
+          resD = impD1 * impN2;
+        }
+
+        if (resD < 0) {
+          resN = -resN;
+          resD = -resD;
+        }
+
+        const g = gcd(resN, resD);
+        const simpN = resN / g;
+        const simpD = resD / g;
+
+        if (g > 1) {
+          steps.push(`Reduce fraction by greatest common divisor (GCD = ${g}): ${resN} &divide; ${g} / ${resD} &divide; ${g} = ${simpN}/${simpD}.`);
+        } else {
+          steps.push(`Fraction ${simpN}/${simpD} is already in simplest form.`);
+        }
+
+        let mixedStr = '';
+        if (Math.abs(simpN) >= simpD && simpD !== 1) {
+          const whole = Math.trunc(simpN / simpD);
+          const rem = Math.abs(simpN % simpD);
+          if (rem !== 0) {
+            mixedStr = `${whole} ${rem}/${simpD}`;
+            steps.push(`Convert to mixed number: ${simpN}/${simpD} = ${mixedStr}.`);
+          }
+        }
+
+        const decVal = (simpN / simpD).toFixed(6).replace(/\.?0+$/, '');
+        const pctVal = ((simpN / simpD) * 100).toFixed(4).replace(/\.?0+$/, '') + '%';
+
+        document.getElementById('frac-out-main').textContent = simpD === 1 ? `${simpN}` : `${simpN}/${simpD}`;
+        const mixedWrap = document.getElementById('frac-out-mixed-wrap');
+        const mixedOut = document.getElementById('frac-out-mixed');
+        if (mixedStr) {
+          mixedWrap.style.display = 'inline';
+          mixedOut.textContent = mixedStr;
+        } else {
+          mixedWrap.style.display = 'none';
+        }
+
+        document.getElementById('frac-badge-dec').textContent = 'Dec: ' + decVal;
+        document.getElementById('frac-badge-pct').textContent = pctVal;
+
+        const stepsOl = document.getElementById('frac-steps-list');
+        stepsOl.innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+      }
+
+      document.getElementById('btn-frac-solve').addEventListener('click', solveFractions);
+      document.getElementById('btn-frac-reset').addEventListener('click', () => {
+        applyFractionPreset(0, 1, 2, '+', 0, 3, 4);
+      });
+
+      // =========================================================================
+      // 3. Percentage Studio Solver Engine
+      // =========================================================================
+      const pctTabButtons = document.querySelectorAll('.pct-tab-pill');
+      const pctPanels = {
+        of: document.getElementById('pct-panel-of'),
+        is: document.getElementById('pct-panel-is'),
+        change: document.getElementById('pct-panel-change'),
+        discount: document.getElementById('pct-panel-discount')
+      };
+
+      pctTabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          pctTabButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const target = btn.getAttribute('data-pct');
+          Object.entries(pctPanels).forEach(([key, panel]) => {
+            if (panel) panel.classList.toggle('active', key === target);
+          });
+        });
+      });
+
+      // Tab 1: P% of X
+      document.getElementById('btn-calc-pct-1').addEventListener('click', () => {
+        const p = parseFloat(document.getElementById('pct-p1').value) || 0;
+        const x = parseFloat(document.getElementById('pct-x1').value) || 0;
+        const res = (p / 100) * x;
+        document.getElementById('pct-res-1').innerHTML =
+          `Result: <strong style="color:#10B981; font-size:1.15rem;">${res}</strong> &bull; Formula: (${p} &divide; 100) &times; ${x} = ${res}`;
+      });
+
+      // Tab 2: X is what % of Y
+      document.getElementById('btn-calc-pct-2').addEventListener('click', () => {
+        const x = parseFloat(document.getElementById('pct-x2').value) || 0;
+        const y = parseFloat(document.getElementById('pct-y2').value) || 1;
+        const res = (x / y) * 100;
+        document.getElementById('pct-res-2').innerHTML =
+          `Result: <strong style="color:#10B981; font-size:1.15rem;">${res.toFixed(4).replace(/\.?0+$/, '')}%</strong> &bull; Formula: (${x} &divide; ${y}) &times; 100% = ${res.toFixed(2)}%`;
+      });
+
+      // Tab 3: % Change from X to Y
+      document.getElementById('btn-calc-pct-3').addEventListener('click', () => {
+        const x = parseFloat(document.getElementById('pct-x3').value) || 0;
+        const y = parseFloat(document.getElementById('pct-y3').value) || 0;
+        if (x === 0) {
+          document.getElementById('pct-res-3').innerHTML = 'Cannot calculate percentage change from zero.';
+          return;
+        }
+        const diff = y - x;
+        const pctChange = (diff / Math.abs(x)) * 100;
+        const isInc = pctChange >= 0;
+        const color = isInc ? '#10B981' : '#EF4444';
+        const word = isInc ? 'Increase' : 'Decrease';
+        document.getElementById('pct-res-3').innerHTML =
+          `Result: <strong style="color:${color}; font-size:1.15rem;">${isInc ? '+' : ''}${pctChange.toFixed(2)}% ${word}</strong> &bull; Formula: ((${y} &minus; ${x}) &divide; |${x}|) &times; 100% = ${pctChange.toFixed(2)}%`;
+      });
+
+      // Tab 4: Discount & Sales Tax
+      document.getElementById('btn-calc-pct-4').addEventListener('click', () => {
+        const price = parseFloat(document.getElementById('pct-disc-price').value) || 0;
+        const disc = parseFloat(document.getElementById('pct-disc-off').value) || 0;
+        const tax = parseFloat(document.getElementById('pct-disc-tax').value) || 0;
+
+        const discAmount = price * (disc / 100);
+        const discountedPrice = price - discAmount;
+        const taxAmount = discountedPrice * (tax / 100);
+        const finalPrice = discountedPrice + taxAmount;
+
+        document.getElementById('pct-res-4').innerHTML =
+          `Final Price: <strong style="color:#10B981; font-size:1.25rem;">${finalPrice.toFixed(2)}</strong> &bull; You Saved: <span style="color:#F59E0B; font-weight:800;">${discAmount.toFixed(2)}</span> (Discount: ${discAmount.toFixed(2)} &bull; Tax: ${taxAmount.toFixed(2)})`;
+      });
+
+    })();
+  </script>
+
 </body>
 </html>
 

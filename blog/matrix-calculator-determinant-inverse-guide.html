@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Matrix Calculator &amp; Solver: 2x2 &amp; 3x3 Determinant, Inverse &amp; Cramer's Rule Guide</title>
+  <meta name="description" content="Learn how to solve 2x2 and 3x3 matrices step-by-step: Calculate determinants, matrix inverses, Cramer's rule, and Casio MODE 6 key sequences without cloud servers.">
+  <link rel="canonical" href="https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Matrix Calculator: 2x2 &amp; 3x3 Determinant, Inverse &amp; Cramer's Rule">
+  <meta property="og:description" content="Master matrix math: Determinants via Sarrus rule, inverse matrices via adjugate, linear systems via Cramer's rule, and offline browser matrix solver.">
+  <meta property="og:url" content="https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-calculator.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Matrix Calculator: 2x2 &amp; 3x3 Determinant, Inverse &amp; Cramer's Rule">
+  <meta name="twitter:description" content="Master matrix math: Determinants via Sarrus rule, inverse matrices via adjugate, linear systems via Cramer's rule, and offline browser matrix solver.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-calculator.webp">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog & Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Matrix Calculator Guide",
+          "item": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html"
+        }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "How to Solve 2x2 and 3x3 Matrices Online Without Cloud Servers: Step-by-Step Linear Algebra Guide",
+      "description": "Comprehensive tutorial on matrix algebra: computing 2x2 and 3x3 determinants, calculating matrix inverses using the adjugate method, solving systems of linear equations via Cramer's Rule, and entering matrices into Casio scientific calculators.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Computational Architect"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+        }
+      },
+      "datePublished": "2026-10-13T10:00:00+00:00",
+      "dateModified": "2026-10-13T10:00:00+00:00",
+      "mainEntityOfPage": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Calculate the Determinant of a 3x3 Matrix Using Sarrus Rule",
+      "description": "Step-by-step visual method to find the determinant of any 3x3 square matrix using diagonal multiplication.",
+      "totalTime": "PT3M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc In-Browser Matrix Solver or Casio fx-991EX / fx-5800P"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Write the 3x3 Matrix Elements",
+          "text": "Identify elements across rows: row 1 (a, b, c), row 2 (d, e, f), row 3 (g, h, i).",
+          "url": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html#step-1-matrix-elements"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Sum the Primary Diagonals",
+          "text": "Multiply along top-left to bottom-right diagonals: (a*e*i) + (b*f*g) + (c*d*h).",
+          "url": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html#step-2-primary-diagonals"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Sum the Secondary Diagonals",
+          "text": "Multiply along top-right to bottom-left diagonals: (c*e*g) + (a*f*h) + (b*d*i).",
+          "url": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html#step-3-secondary-diagonals"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Subtract Secondary from Primary Sum",
+          "text": "Calculate det(A) = Primary Diagonals - Secondary Diagonals.",
+          "url": "https://localdoc.org/blog/matrix-calculator-determinant-inverse-guide.html#step-4-subtract-diagonals"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When does a matrix NOT have an inverse?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A square matrix does not have an inverse if its determinant equals zero (det(A) = 0). Such a matrix is called singular or non-invertible. Because the inverse formula requires dividing by det(A), a zero determinant causes division by zero."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do you enter a matrix on a Casio scientific calculator?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On the Casio fx-991EX ClassWiz, tap [MENU] -> [4: MATRIX] -> define MatA dimensions (e.g., 3x3), and enter the numbers. On the Casio fx-5800P, press [MODE] -> [4: BASE-N / MATRIX] or access the Matrix application via [PROG]."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Cramer's Rule used for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cramer's Rule is an explicit formula for solving a system of linear equations with as many equations as unknowns. It expresses each variable as the quotient of two determinants: x = det(Ax) / det(A)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my matrix data uploaded to any server on LocalDoc?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc runs 100% inside your local device's browser memory (RAM). Zero matrix coefficients, coordinates, or results are sent over the network."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- App Header & Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="brand-logo" aria-label="LocalDoc Homepage">
+        <svg class="brand-icon" width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#0284C7"/>
+          <path d="M8 10C8 8.89543 8.89543 8 10 8H18L24 14V22C24 23.1046 23.1046 24 22 24H10C8.89543 24 8 23.1046 8 22V10Z" fill="white"/>
+          <path d="M18 8V14H24" stroke="#CBD5E1" stroke-width="1.5"/>
+          <circle cx="16" cy="18" r="3" fill="#0284C7"/>
+        </svg>
+        <span class="brand-text">LocalDoc</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Main Navigation">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="index.html" class="nav-link active">Blog &amp; Guides</a>
+        <a href="../pages/scientific-calculator.html" class="nav-link">Scientific Calculator</a>
+        <a href="../pages/scientific-calculator.html#matrix" class="nav-link">Matrix Solver</a>
+        <a href="../pages/split-pdf.html" class="nav-link">Split PDF</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="search-trigger-btn" aria-label="Search" onclick="window.LocalDocSearch && window.LocalDocSearch.open()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <a href="../pages/scientific-calculator.html#matrix" class="btn btn-primary" style="padding:8px 18px; text-decoration:none; font-size:0.88rem;">
+          <span>🔲 Open Matrix Solver</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="content-container">
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb-list">
+          <li><a href="../index.html">Home</a></li>
+          <li><span class="sep">/</span></li>
+          <li><a href="index.html">Blog &amp; Guides</a></li>
+          <li><span class="sep">/</span></li>
+          <li aria-current="page">Matrix Calculator Guide</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Article Hero -->
+  <main class="content-container guide-layout">
+    <article class="guide-main">
+      <header class="guide-header">
+        <div class="guide-meta-pill">Linear Algebra &bull; Engineering Mathematics</div>
+        <h1 class="guide-title">How to Solve 2x2 and 3x3 Matrices Online Without Cloud Servers: Step-by-Step Linear Algebra Guide</h1>
+        <p class="guide-subtitle">
+          Master determinants, inverse matrices, cofactor expansions, Cramer's rule for linear systems, and hardware calculator matrix setups with complete privacy.
+        </p>
+
+        <div class="guide-author-row">
+          <div class="author-avatar" style="background:#0284C7; color:#FFF; font-weight:700; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">AM</div>
+          <div class="author-details">
+            <span class="author-name">Amaad Mazari</span>
+            <span class="author-role">Lead Computational Architect &bull; Verified October 13, 2026</span>
+          </div>
+          <div class="privacy-badge" style="margin-left:auto; display:flex; align-items:center; gap:6px; font-size:0.82rem; background:rgba(2, 132, 199, 0.1); color:#0284C7; padding:6px 12px; border-radius:20px; font-weight:600;">
+            <span>🛡️</span> Zero Cloud Math &bull; In-Browser RAM Only
+          </div>
+        </div>
+      </header>
+
+      <!-- Key Takeaways Callout -->
+      <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid #10B981; border-radius:12px; padding:20px 24px; margin:28px 0;">
+        <h3 style="margin:0 0 10px; font-size:1.15rem; color:var(--text-primary); font-weight:800;">Core Linear Algebra Rules &amp; Formulas:</h3>
+        <ul style="margin:0; padding-left:20px; color:var(--text-secondary); line-height:1.75; font-size:0.95rem;">
+          <li><strong>2&times;2 Determinant:</strong> ( det(A) = ad - bc ) for matrix ( egin{pmatrix} a & b \ c & d end{pmatrix} ).</li>
+          <li><strong>2&times;2 Inverse:</strong> ( A^{-1} = rac{1}{ad - bc} egin{pmatrix} d & -b \ -c & a end{pmatrix} ) (swap main diagonal, negate anti-diagonal).</li>
+          <li><strong>3&times;3 Determinant:</strong> Sarrus Rule or Cofactor Expansion along the first row: ( a(ei - fh) - b(di - fg) + c(dh - eg) ).</li>
+          <li><strong>Singular Matrices:</strong> If ( det(A) = 0 ), no inverse exists. The matrix cannot be inverted.</li>
+          <li><strong>Cramer's Rule:</strong> Solves ( Ax = b ) using determinants: ( x_i = rac{det(A_i)}{det(A)} ).</li>
+        </ul>
+      </div>
+
+      <!-- Interactive Tool Spotlight Banner -->
+      <section style="background:linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border:1px solid #334155; border-radius:16px; padding:24px; color:#F8FAFC; margin:32px 0; box-shadow:0 12px 30px rgba(0,0,0,0.25);">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px;">
+          <div style="max-width:580px;">
+            <div style="display:inline-block; background:#10B981; color:#FFF; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Zero-Upload Solver</div>
+            <h3 style="margin:0 0 6px; font-size:1.35rem; font-weight:800; color:#FFFFFF;">Solve Matrices Instantly in Browser RAM</h3>
+            <p style="margin:0; color:#94A3B8; font-size:0.92rem; line-height:1.6;">
+              Compute determinants, inverse matrices, transpose, and matrix multiplication for 2&times;2 and 3&times;3 matrices right now using LocalDoc's offline-ready engineering suite.
+            </p>
+          </div>
+          <a href="../pages/scientific-calculator.html#matrix" class="btn btn-primary" style="background:#10B981; border-color:#10B981; padding:12px 24px; font-size:0.95rem; font-weight:700; white-space:nowrap; text-decoration:none;">
+            Launch Matrix Solver &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 1: 2x2 Matrices -->
+      <section id="two-by-two-matrices" style="margin:40px 0;">
+        <h2>1. The 2&times;2 Matrix: Determinants and Inverses</h2>
+        <p>
+          A second-order square matrix contains four scalar entries arranged in two rows and two columns:
+        </p>
+        <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:1.2rem; margin:20px 0; color:var(--text-primary);">
+          ( A = egin{pmatrix} a & b \ c & d end{pmatrix} )
+        </div>
+
+        <h3>Determinant Calculation</h3>
+        <p>
+          The determinant represents the signed area scaling factor of the linear transformation defined by the matrix:
+        </p>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem; line-height:1.8;">
+          ( det(A) = |A| = (a cdot d) - (b cdot c) )<br><br>
+          <em>Worked Example:</em> Let ( A = egin{pmatrix} 4 & 7 \ 2 & 6 end{pmatrix} )<br>
+          ( det(A) = (4 	imes 6) - (7 	imes 2) = 24 - 14 = mathbf{10} )
+        </div>
+
+        <h3>Inverse Matrix Calculation</h3>
+        <p>
+          The inverse ( A^{-1} ) is the unique matrix satisfying ( A cdot A^{-1} = I ), where ( I = egin{pmatrix} 1 & 0 \ 0 & 1 end{pmatrix} ) is the identity matrix.
+        </p>
+        <div style="background:var(--bg-surface); border-left:4px solid #0284C7; padding:18px 22px; border-radius:8px; margin:18px 0; line-height:1.8;">
+          <strong>Steps for 2&times;2 Inverse:</strong>
+          <ol style="margin:6px 0 0; padding-left:20px; color:var(--text-secondary);">
+            <li>Calculate ( det(A) = ad - bc ). If zero, stop &mdash; matrix is singular!</li>
+            <li>Swap main diagonal elements: ( a ) and ( d ) trade places.</li>
+            <li>Negate the other two elements: ( b ) becomes ( -b ), and ( c ) becomes ( -c ).</li>
+            <li>Multiply the resulting adjugate matrix by ( rac{1}{det(A)} ).</li>
+          </ol>
+          <div style="margin-top:10px; font-family:'JetBrains Mono', monospace; font-size:0.92rem;">
+            For ( A = egin{pmatrix} 4 & 7 \ 2 & 6 end{pmatrix} ):<br>
+            ( A^{-1} = rac{1}{10} egin{pmatrix} 6 & -7 \ -2 & 4 end{pmatrix} = egin{pmatrix} 0.6 & -0.7 \ -0.2 & 0.4 end{pmatrix} )
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: 3x3 Matrices -->
+      <section id="three-by-three-matrices" style="margin:40px 0;">
+        <h2>2. The 3&times;3 Matrix: Determinant via Sarrus Rule</h2>
+        <p>
+          For a third-order matrix:
+        </p>
+        <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:1.1rem; margin:20px 0; color:var(--text-primary);">
+          ( A = egin{pmatrix} a & b & c \ d & e & f \ g & h & i end{pmatrix} )
+        </div>
+
+        <h3 id="step-1-matrix-elements">The Sarrus Rule Walkthrough</h3>
+        <p>
+          The Sarrus rule is an intuitive geometric shortcut applicable specifically to 3&times;3 matrices:
+        </p>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; line-height:1.8;">
+          <ul style="margin:0; padding-left:20px; color:var(--text-secondary);">
+            <li id="step-2-primary-diagonals"><strong>Primary Diagonals (&plus;):</strong> Multiply entries down-right:
+              <br>( D_1 = (a cdot e cdot i) + (b cdot f cdot g) + (c cdot d cdot h) )
+            </li>
+            <li id="step-3-secondary-diagonals"><strong>Secondary Diagonals (&minus;):</strong> Multiply entries up-right / down-left:
+              <br>( D_2 = (c cdot e cdot g) + (a cdot f cdot h) + (b cdot d cdot i) )
+            </li>
+            <li id="step-4-subtract-diagonals"><strong>Combine:</strong>
+              <br>( det(A) = D_1 - D_2 )
+            </li>
+          </ul>
+        </div>
+
+        <div style="background:var(--bg-surface); border-left:4px solid #10B981; padding:18px 22px; border-radius:8px; margin:18px 0; line-height:1.8;">
+          <h4 style="margin:0 0 8px; color:#10B981;">Worked Numerical Example:</h4>
+          <p style="margin:0; font-family:'JetBrains Mono', monospace; font-size:0.9rem;">
+            Let ( A = egin{pmatrix} 1 & 2 & 3 \ 0 & 1 & 4 \ 5 & 6 & 0 end{pmatrix} )<br><br>
+            Primary: (1&times;1&times;0) + (2&times;4&times;5) + (3&times;0&times;6) = 0 + 40 + 0 = <strong>40</strong><br>
+            Secondary: (3&times;1&times;5) + (1&times;4&times;6) + (2&times;0&times;0) = 15 + 24 + 0 = <strong>39</strong><br>
+            ( det(A) = 40 - 39 = mathbf{1} )
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 3: Cramer's Rule -->
+      <section id="cramers-rule" style="margin:40px 0;">
+        <h2>3. Solving Linear Systems with Cramer's Rule</h2>
+        <p>
+          Cramer's Rule uses determinants to solve a system of linear equations directly without performing row reduction (Gaussian elimination). Consider the 2-variable system:
+        </p>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem; line-height:1.8;">
+          ( a_1 x + b_1 y = c_1 )<br>
+          ( a_2 x + b_2 y = c_2 )<br><br>
+          Coefficient Determinant: ( D = egin{vmatrix} a_1 & b_1 \ a_2 & b_2 end{vmatrix} = a_1 b_2 - b_1 a_2 )<br>
+          ( X )-Determinant: ( D_x = egin{vmatrix} c_1 & b_1 \ c_2 & b_2 end{vmatrix} = c_1 b_2 - b_1 c_2 )<br>
+          ( Y )-Determinant: ( D_y = egin{vmatrix} a_1 & c_1 \ a_2 & c_2 end{vmatrix} = a_1 c_2 - c_1 a_2 )<br><br>
+          <strong>Solutions:</strong> ( x = rac{D_x}{D} quad 	ext{and} quad y = rac{D_y}{D} ) (Provided ( D 
+eq 0 ))
+        </div>
+      </section>
+
+      <!-- Section 4: Hardware Calculator Matrix Mode -->
+      <section id="casio-matrix-mode" style="margin:40px 0;">
+        <h2>4. How to Use Matrix Mode on Casio fx-991EX and fx-5800P</h2>
+        <p>
+          Advanced scientific and programmable calculators feature specialized matrix memory buffers:
+        </p>
+
+        <div class="spec-table-wrap">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th>Step</th>
+                <th>Casio fx-991EX ClassWiz</th>
+                <th>Casio fx-5800P Programmable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Enter Mode</strong></td>
+                <td>Press <code>[MENU]</code> &rarr; <code>[4: MATRIX]</code></td>
+                <td>Press <code>[MODE]</code> &rarr; Select Matrix Program or Base-N</td>
+              </tr>
+              <tr>
+                <td><strong>2. Define Dimension</strong></td>
+                <td>Press <code>1 (MatA)</code> &rarr; Select Rows (2 or 3) &rarr; Columns</td>
+                <td>Define Dim MatA <code>[2, 2]</code> or <code>[3, 3]</code></td>
+              </tr>
+              <tr>
+                <td><strong>3. Populate Values</strong></td>
+                <td>Type number &rarr; <code>[=]</code> (auto advances across cells)</td>
+                <td>Input elements sequentially into matrix registers</td>
+              </tr>
+              <tr>
+                <td><strong>4. Compute Determinant</strong></td>
+                <td><code>[AC]</code> &rarr; <code>[OPTN]</code> &rarr; <code>[▼]</code> &rarr; <code>2 (Det)</code> &rarr; <code>[OPTN] 3 (MatA)</code> &rarr; <code>[=]</code></td>
+                <td><code>Det(MatA) [EXE]</code></td>
+              </tr>
+              <tr>
+                <td><strong>5. Invert Matrix</strong></td>
+                <td><code>[OPTN] 3 (MatA)</code> &rarr; <code>[x⁻¹]</code> &rarr; <code>[=]</code></td>
+                <td><code>MatA⁻¹ [EXE]</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Related Pillar Cluster Links -->
+      <section style="margin: 40px 0; padding: 24px; background: var(--bg-surface); border: 1px solid var(--line); border-radius: 14px;">
+        <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary); margin:0 0 12px;">📚 Related Computational Guides</h3>
+        <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin:0 0 16px;">
+          Explore other calculators and mathematical problem solvers:
+        </p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px;">
+          <a href="fraction-calculator-steps-guide.html" style="text-decoration:none; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--bg-body);">
+            <div style="font-size:0.75rem; font-weight:800; color:#0284C7; text-transform:uppercase; margin-bottom:4px;">Arithmetic Master Guide</div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:0.92rem; margin-bottom:6px;">Fraction Calculator with Step-by-Step Solutions &rarr;</div>
+            <p style="margin:0; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Add, subtract, LCD common denominators, GCD reductions, and Casio a b/c keys.</p>
+          </a>
+          <a href="calculator-memory-keys-m-plus-mr-mc-guide.html" style="text-decoration:none; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--bg-body);">
+            <div style="font-size:0.75rem; font-weight:800; color:#10B981; text-transform:uppercase; margin-bottom:4px;">Accumulator Skills</div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:0.92rem; margin-bottom:6px;">Calculator Memory Keys: M+, MR, MC Explained &rarr;</div>
+            <p style="margin:0; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Master independent accumulators, clear lingering 'M' screen icons, and compute multi-part receipts.</p>
+          </a>
+          <a href="calculator-road-curves-guide.html" style="text-decoration:none; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--bg-body);">
+            <div style="font-size:0.75rem; font-weight:800; color:#F59E0B; text-transform:uppercase; margin-bottom:4px;">Civil Engineering</div>
+            <div style="font-weight:700; color:var(--text-primary); font-size:0.92rem; margin-bottom:6px;">Road Curve Calculation Formulas &amp; Surveying &rarr;</div>
+            <p style="margin:0; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Compute tangent lengths, circular curve radius, and deflection angles step-by-step.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- FAQ Accordion -->
+      <section style="margin:40px 0;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:var(--text-primary); margin-bottom:18px;">Frequently Asked Questions</h2>
+        <div class="faq-accordion">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>When does a square matrix NOT have an inverse?</span>
+              <span class="faq-icon">&#x25BC;</span>
+            </button>
+            <div class="faq-answer">
+              A square matrix is singular and has no inverse when its determinant equals zero (( det(A) = 0 )). In geometric terms, this means the linear transformation collapses dimension space (e.g., flattening a 2D area into a 1D line), meaning original coordinates cannot be recovered.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Can I multiply a 2x3 matrix by another 2x3 matrix?</span>
+              <span class="faq-icon">&#x25BC;</span>
+            </button>
+            <div class="faq-answer">
+              No. Matrix multiplication ( A 	imes B ) requires the number of columns in ( A ) to equal the number of rows in ( B ). For two ( 2 	imes 3 ) matrices, the inner dimensions (3 and 2) do not match. You can only multiply if the dimensions are ( m 	imes k ) and ( k 	imes n ).
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>What is an identity matrix?</span>
+              <span class="faq-icon">&#x25BC;</span>
+            </button>
+            <div class="faq-answer">
+              An identity matrix is a square matrix with ones along the main diagonal (from top-left to bottom-right) and zeros in all other positions. Multiplying any compatible matrix by the identity matrix leaves the original matrix unchanged (( A cdot I = A )).
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Are matrix calculations in LocalDoc private?</span>
+              <span class="faq-icon">&#x25BC;</span>
+            </button>
+            <div class="faq-answer">
+              Yes, 100%. All matrix determinants, matrix inversions, and Cramer linear equations are solved entirely in your local web browser's RAM. No matrix data or numbers are ever transmitted to any remote server.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- Floating Quick-Launch Button -->
+  <aside class="floating-calc-wrap" style="position:fixed; bottom:24px; right:24px; z-index:99;">
+    <a href="../pages/scientific-calculator.html#matrix" class="floating-calc-btn" style="display:flex; align-items:center; gap:8px; background:linear-gradient(135deg, #10B981 0%, #059669 100%); color:#FFFFFF !important; padding:12px 20px; border-radius:30px; font-weight:700; font-size:0.9rem; text-decoration:none; box-shadow:0 8px 24px rgba(16,185,129,0.4);">
+      <span>🔲</span>
+      <span>Open Matrix Solver</span>
+    </a>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="content-container">
+      <div class="footer-grid">
+        <div class="footer-col brand-col">
+          <div class="footer-logo">
+            <span class="brand-text">LocalDoc</span>
+          </div>
+          <p class="footer-tagline">100% Client-Side Privacy-First Document &amp; Engineering Utilities.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Calculators &amp; Math</h4>
+          <ul class="footer-links">
+            <li><a href="../pages/scientific-calculator.html" class="footer-link">Scientific Calculator</a></li>
+            <li><a href="../pages/scientific-calculator.html#matrix" class="footer-link">Matrix Solver</a></li>
+            <li><a href="../pages/scientific-calculator.html#fraction" class="footer-link">Fraction Calculator</a></li>
+            <li><a href="../pages/scientific-calculator.html#percentage" class="footer-link">Percentage Calculator</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Master Guides</h4>
+          <ul class="footer-links">
+            <li><a href="matrix-calculator-determinant-inverse-guide.html" class="footer-link">Matrix Determinant Guide</a></li>
+            <li><a href="fraction-calculator-steps-guide.html" class="footer-link">Fraction Steps Guide</a></li>
+            <li><a href="calculator-memory-keys-m-plus-mr-mc-guide.html" class="footer-link">Calculator Memory Keys</a></li>
+            <li><a href="calculator-road-curves-guide.html" class="footer-link">Road Curve Surveying</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Privacy &amp; Legal</h4>
+          <ul class="footer-links">
+            <li><a href="../privacy.html" class="footer-link">Privacy Policy</a></li>
+            <li><a href="../terms.html" class="footer-link">Terms of Service</a></li>
+            <li><a href="../sitemap.html" class="footer-link">HTML Sitemap</a></li>
+            <li><a href="../sitemap.xml" class="footer-link">XML Sitemap</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. All rights reserved. Zero cloud uploads.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script defer src="../js/core/i18n.js?v=20260921-v26"></script>
+  <script defer src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <script>
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>
