@@ -149,7 +149,7 @@
           "name": "When does a matrix NOT have an inverse?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A square matrix does not have an inverse if its determinant equals zero (det(A) = 0). Such a matrix is called singular or non-invertible. Because the inverse formula requires dividing by det(A), a zero determinant causes division by zero."
+            "text": "A square matrix does not have an inverse if its determinant equals zero <strong>det(A) = 0</strong>. Such a matrix is called singular or non-invertible. Because the inverse formula requires dividing by det(A), a zero determinant causes division by zero."
           }
         },
         {
@@ -257,11 +257,11 @@
       <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid #10B981; border-radius:12px; padding:20px 24px; margin:28px 0;">
         <h3 style="margin:0 0 10px; font-size:1.15rem; color:var(--text-primary); font-weight:800;">Core Linear Algebra Rules &amp; Formulas:</h3>
         <ul style="margin:0; padding-left:20px; color:var(--text-secondary); line-height:1.75; font-size:0.95rem;">
-          <li><strong>2&times;2 Determinant:</strong> ( det(A) = ad - bc ) for matrix ( egin{pmatrix} a & b \ c & d end{pmatrix} ).</li>
-          <li><strong>2&times;2 Inverse:</strong> ( A^{-1} = rac{1}{ad - bc} egin{pmatrix} d & -b \ -c & a end{pmatrix} ) (swap main diagonal, negate anti-diagonal).</li>
-          <li><strong>3&times;3 Determinant:</strong> Sarrus Rule or Cofactor Expansion along the first row: ( a(ei - fh) - b(di - fg) + c(dh - eg) ).</li>
-          <li><strong>Singular Matrices:</strong> If ( det(A) = 0 ), no inverse exists. The matrix cannot be inverted.</li>
-          <li><strong>Cramer's Rule:</strong> Solves ( Ax = b ) using determinants: ( x_i = rac{det(A_i)}{det(A)} ).</li>
+          <li><strong>2&times;2 Determinant:</strong> <code>det(A) = ad &minus; bc</code> for matrix <code>[ a &nbsp; b ; &nbsp; c &nbsp; d ]</code>.</li>
+          <li><strong>2&times;2 Inverse:</strong> <code>A<sup>&minus;1</sup> = (1 &frasl; (ad &minus; bc)) &times; [ d &nbsp; &minus;b ; &nbsp; &minus;c &nbsp; a ]</code> (swap main diagonal, negate anti-diagonal).</li>
+          <li><strong>3&times;3 Determinant:</strong> Sarrus Rule or Cofactor Expansion along the first row: <strong>a(ei &minus; fh) &minus; b(di &minus; fg) + c(dh &minus; eg)</strong>.</li>
+          <li><strong>Singular Matrices:</strong> If <strong>det(A) = 0</strong>, no inverse exists. The matrix cannot be inverted.</li>
+          <li><strong>Cramer's Rule:</strong> Solves <strong>Ax = b</strong> using determinants: <strong>x<sub>i</sub> = det(A<sub>i</sub>) &frasl; det(A)</strong>.</li>
         </ul>
       </div>
 
@@ -288,7 +288,7 @@
           A second-order square matrix contains four scalar entries arranged in two rows and two columns:
         </p>
         <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:1.2rem; margin:20px 0; color:var(--text-primary);">
-          ( A = egin{pmatrix} a & b \ c & d end{pmatrix} )
+          <code>A = [ a &nbsp; b ; &nbsp; c &nbsp; d ]</code>
         </div>
 
         <h3>Determinant Calculation</h3>
@@ -296,14 +296,14 @@
           The determinant represents the signed area scaling factor of the linear transformation defined by the matrix:
         </p>
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem; line-height:1.8;">
-          ( det(A) = |A| = (a cdot d) - (b cdot c) )<br><br>
-          <em>Worked Example:</em> Let ( A = egin{pmatrix} 4 & 7 \ 2 & 6 end{pmatrix} )<br>
-          ( det(A) = (4 	imes 6) - (7 	imes 2) = 24 - 14 = mathbf{10} )
+          <strong>det(A) = |A| = (a &times; d) &minus; (b &times; c)</strong><br><br>
+          <em>Worked Example:</em> Let <code>A = [ 4 &nbsp; 7 ; &nbsp; 2 &nbsp; 6 ]</code><br>
+          det(A) = (4 &times; 6) &minus; (7 &times; 2) = 24 &minus; 14 = <strong>10</strong>
         </div>
 
         <h3>Inverse Matrix Calculation</h3>
         <p>
-          The inverse ( A^{-1} ) is the unique matrix satisfying ( A cdot A^{-1} = I ), where ( I = egin{pmatrix} 1 & 0 \ 0 & 1 end{pmatrix} ) is the identity matrix.
+          The inverse <strong>A<sup>&minus;1</sup></strong> is the unique matrix satisfying A &times; A<sup>&minus;1</sup> = I, where <code>I = [ 1 &nbsp; 0 ; &nbsp; 0 &nbsp; 1 ]</code> is the identity matrix.
         </p>
         <div style="background:var(--bg-surface); border-left:4px solid #0284C7; padding:18px 22px; border-radius:8px; margin:18px 0; line-height:1.8;">
           <strong>Steps for 2&times;2 Inverse:</strong>
@@ -311,11 +311,10 @@
             <li>Calculate ( det(A) = ad - bc ). If zero, stop &mdash; matrix is singular!</li>
             <li>Swap main diagonal elements: ( a ) and ( d ) trade places.</li>
             <li>Negate the other two elements: ( b ) becomes ( -b ), and ( c ) becomes ( -c ).</li>
-            <li>Multiply the resulting adjugate matrix by ( rac{1}{det(A)} ).</li>
+            <li>Multiply the resulting adjugate matrix by <sup>1</sup>&frasl;<sub>det(A)</sub>.</li>
           </ol>
           <div style="margin-top:10px; font-family:'JetBrains Mono', monospace; font-size:0.92rem;">
-            For ( A = egin{pmatrix} 4 & 7 \ 2 & 6 end{pmatrix} ):<br>
-            ( A^{-1} = rac{1}{10} egin{pmatrix} 6 & -7 \ -2 & 4 end{pmatrix} = egin{pmatrix} 0.6 & -0.7 \ -0.2 & 0.4 end{pmatrix} )
+            For <code>A = [ 4 &nbsp; 7 ; &nbsp; 2 &nbsp; 6 ]</code>:<br><code>A<sup>&minus;1</sup> = <sup>1</sup>&frasl;<sub>10</sub> &times; [ 6 &nbsp; &minus;7 ; &nbsp; &minus;2 &nbsp; 4 ] = [ 0.6 &nbsp; &minus;0.7 ; &nbsp; &minus;0.2 &nbsp; 0.4 ]</code>
           </div>
         </div>
       </section>
@@ -327,7 +326,7 @@
           For a third-order matrix:
         </p>
         <div style="text-align:center; font-family:'JetBrains Mono', monospace; font-size:1.1rem; margin:20px 0; color:var(--text-primary);">
-          ( A = egin{pmatrix} a & b & c \ d & e & f \ g & h & i end{pmatrix} )
+          <code>A = [ a &nbsp; b &nbsp; c ; &nbsp; d &nbsp; e &nbsp; f ; &nbsp; g &nbsp; h &nbsp; i ]</code>
         </div>
 
         <h3 id="step-1-matrix-elements">The Sarrus Rule Walkthrough</h3>
@@ -337,13 +336,13 @@
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; line-height:1.8;">
           <ul style="margin:0; padding-left:20px; color:var(--text-secondary);">
             <li id="step-2-primary-diagonals"><strong>Primary Diagonals (&plus;):</strong> Multiply entries down-right:
-              <br>( D_1 = (a cdot e cdot i) + (b cdot f cdot g) + (c cdot d cdot h) )
+              <br>D<sub>1</sub> = (a &times; e &times; i) + (b &times; f &times; g) + (c &times; d &times; h)
             </li>
             <li id="step-3-secondary-diagonals"><strong>Secondary Diagonals (&minus;):</strong> Multiply entries up-right / down-left:
-              <br>( D_2 = (c cdot e cdot g) + (a cdot f cdot h) + (b cdot d cdot i) )
+              <br>D<sub>2</sub> = (c &times; e &times; g) + (a &times; f &times; h) + (b &times; d &times; i)
             </li>
             <li id="step-4-subtract-diagonals"><strong>Combine:</strong>
-              <br>( det(A) = D_1 - D_2 )
+              <br><strong>det(A) = D<sub>1</sub> &minus; D<sub>2</sub></strong>
             </li>
           </ul>
         </div>
@@ -351,10 +350,10 @@
         <div style="background:var(--bg-surface); border-left:4px solid #10B981; padding:18px 22px; border-radius:8px; margin:18px 0; line-height:1.8;">
           <h4 style="margin:0 0 8px; color:#10B981;">Worked Numerical Example:</h4>
           <p style="margin:0; font-family:'JetBrains Mono', monospace; font-size:0.9rem;">
-            Let ( A = egin{pmatrix} 1 & 2 & 3 \ 0 & 1 & 4 \ 5 & 6 & 0 end{pmatrix} )<br><br>
+            Let <code>A = [ 1 &nbsp; 2 &nbsp; 3 ; &nbsp; 0 &nbsp; 1 &nbsp; 4 ; &nbsp; 5 &nbsp; 6 &nbsp; 0 ]</code><br><br>
             Primary: (1&times;1&times;0) + (2&times;4&times;5) + (3&times;0&times;6) = 0 + 40 + 0 = <strong>40</strong><br>
             Secondary: (3&times;1&times;5) + (1&times;4&times;6) + (2&times;0&times;0) = 15 + 24 + 0 = <strong>39</strong><br>
-            ( det(A) = 40 - 39 = mathbf{1} )
+            <strong>det(A) = 40 &minus; 39 = 1</strong>
           </p>
         </div>
       </section>
@@ -366,13 +365,12 @@
           Cramer's Rule uses determinants to solve a system of linear equations directly without performing row reduction (Gaussian elimination). Consider the 2-variable system:
         </p>
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin:16px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem; line-height:1.8;">
-          ( a_1 x + b_1 y = c_1 )<br>
-          ( a_2 x + b_2 y = c_2 )<br><br>
-          Coefficient Determinant: ( D = egin{vmatrix} a_1 & b_1 \ a_2 & b_2 end{vmatrix} = a_1 b_2 - b_1 a_2 )<br>
-          ( X )-Determinant: ( D_x = egin{vmatrix} c_1 & b_1 \ c_2 & b_2 end{vmatrix} = c_1 b_2 - b_1 c_2 )<br>
-          ( Y )-Determinant: ( D_y = egin{vmatrix} a_1 & c_1 \ a_2 & c_2 end{vmatrix} = a_1 c_2 - c_1 a_2 )<br><br>
-          <strong>Solutions:</strong> ( x = rac{D_x}{D} quad 	ext{and} quad y = rac{D_y}{D} ) (Provided ( D 
-eq 0 ))
+          a<sub>1</sub>x + b<sub>1</sub>y = c<sub>1</sub><br>
+          a<sub>2</sub>x + b<sub>2</sub>y = c<sub>2</sub><br><br>
+          Coefficient Determinant: <code>D = | a<sub>1</sub> &nbsp; b<sub>1</sub> ; &nbsp; a<sub>2</sub> &nbsp; b<sub>2</sub> | = a<sub>1</sub>b<sub>2</sub> &minus; b<sub>1</sub>a<sub>2</sub></code><br>
+          <code>X</code>-Determinant: <code>D<sub>x</sub> = | c<sub>1</sub> &nbsp; b<sub>1</sub> ; &nbsp; c<sub>2</sub> &nbsp; b<sub>2</sub> | = c<sub>1</sub>b<sub>2</sub> &minus; b<sub>1</sub>c<sub>2</sub></code><br>
+          <code>Y</code>-Determinant: <code>D<sub>y</sub> = | a<sub>1</sub> &nbsp; c<sub>1</sub> ; &nbsp; a<sub>2</sub> &nbsp; c<sub>2</sub> | = a<sub>1</sub>c<sub>2</sub> &minus; c<sub>1</sub>a<sub>2</sub></code><br><br>
+          <strong>Solutions:</strong> <strong>x = D<sub>x</sub> &frasl; D</strong> and <strong>y = D<sub>y</sub> &frasl; D</strong> (Provided <strong>D &ne; 0</strong>)
         </div>
       </section>
 
@@ -458,7 +456,7 @@ eq 0 ))
               <span class="faq-icon">&#x25BC;</span>
             </button>
             <div class="faq-answer">
-              A square matrix is singular and has no inverse when its determinant equals zero (( det(A) = 0 )). In geometric terms, this means the linear transformation collapses dimension space (e.g., flattening a 2D area into a 1D line), meaning original coordinates cannot be recovered.
+              A square matrix is singular and has no inverse when its determinant equals zero (<strong>det(A) = 0</strong>). In geometric terms, this means the linear transformation collapses dimension space (e.g., flattening a 2D area into a 1D line), meaning original coordinates cannot be recovered.
             </div>
           </div>
 
@@ -468,7 +466,7 @@ eq 0 ))
               <span class="faq-icon">&#x25BC;</span>
             </button>
             <div class="faq-answer">
-              No. Matrix multiplication ( A 	imes B ) requires the number of columns in ( A ) to equal the number of rows in ( B ). For two ( 2 	imes 3 ) matrices, the inner dimensions (3 and 2) do not match. You can only multiply if the dimensions are ( m 	imes k ) and ( k 	imes n ).
+              No. Matrix multiplication ( A &times; B ) requires the number of columns in ( A ) to equal the number of rows in ( B ). For two ( 2&times;3 ) matrices, the inner dimensions (3 and 2) do not match. You can only multiply if the dimensions are ( m&times;k ) and ( k&times;n ).
             </div>
           </div>
 
