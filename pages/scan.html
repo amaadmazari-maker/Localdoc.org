@@ -1882,6 +1882,9 @@
         <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
           <span>💡 Lighten</span>
         </button>
+        <button type="button" class="cs-filter-pill-btn" id="btn-filter-clahe" onclick="toggleCLAHEFilter()" title="Contrast Limited Adaptive Histogram Equalization - boosts faint pencil and handwriting">
+          <span>⚖️ CLAHE Boost</span>
+        </button>
       </div>
 
       <!-- Bottom Actions -->
@@ -3039,7 +3042,10 @@
         filterKey,
         stagingPage.rotation || 0,
         stagingPage.corners,
-        { docType: stagingPage.docType }
+        {
+          docType: stagingPage.docType,
+          clahe: !!stagingPage.clahe
+        }
       );
 
       // Also compute raw unenhanced for the "Hold to Compare" button
@@ -3062,10 +3068,19 @@
       };
       img.src = currentEnhancedData;
 
-      // Update active filter pill
+      // Update active filter pills
       document.querySelectorAll(".cs-filter-pill-btn").forEach(p => {
-        p.classList.toggle("active", p.dataset.filter === filterKey);
+        if (p.id === "btn-filter-clahe") {
+          p.classList.toggle("active", !!stagingPage.clahe);
+        } else {
+          p.classList.toggle("active", p.dataset.filter === filterKey);
+        }
       });
+    }
+
+    function toggleCLAHEFilter() {
+      stagingPage.clahe = !stagingPage.clahe;
+      renderFilterPreview();
     }
 
     function applyEnhanceFilter(filterKey) {
@@ -3113,6 +3128,7 @@
         rawImg: stagingPage.rawImg,
         corners: stagingPage.corners,
         filter: stagingPage.filter,
+        clahe: !!stagingPage.clahe,
         rotation: stagingPage.rotation,
         processedDataUrl: currentEnhancedData
       };
@@ -3120,6 +3136,7 @@
       if (stagingIsEditingIndex >= 0) {
         docPages[stagingIsEditingIndex].corners = stagingPage.corners;
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
+        docPages[stagingIsEditingIndex].clahe = !!stagingPage.clahe;
         docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
         docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
         currentViewingPageIndex = stagingIsEditingIndex;
@@ -3479,7 +3496,8 @@
         corners: page.corners || DocumentScanner.getDefaultCorners(),
         docType: page.docType || 'a4',
         rotation: page.rotation || 0,
-        filter: page.filter || 'natural'
+        filter: page.filter || 'natural',
+        clahe: !!page.clahe
       };
       stagingIsEditingIndex = idx;
       rawWarpedData = null;

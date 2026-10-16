@@ -1411,6 +1411,12 @@ class DocumentScanner {
       }
     }
 
+    // 2. Strict Pipeline Step: CLAHE Equalization (runs immediately after Base Mode)
+    if (options.clahe) {
+      const clip = typeof options.clahe === 'number' ? options.clahe : (options.claheClipLimit || 2.0);
+      DocumentScanner.applyCLAHE(data, imgW, imgH, clip);
+    }
+
     // Apply brightness and contrast adjustments if requested
     if (brightnessAdjust !== 0 || contrastAdjust !== 0) {
       const factor = (259 * (contrastAdjust + 255)) / (255 * (259 - contrastAdjust));
@@ -1423,6 +1429,113 @@ class DocumentScanner {
 
     ctx.putImageData(imgData, 0, 0);
     return canvas.toDataURL('image/jpeg', 0.96);
+  }
+
+  // =========================================================================
+  // Contrast Limited Adaptive Histogram Equalization (CLAHE)
+  // Partitions image into an 8x8 grid of contextual tiles, calculates clipped
+  // histograms and maps each pixel via bilinear interpolation across tile CDFs.
+  // =========================================================================
+  static applyCLAHE(data, width, height, clipLimit = 2.0) {
+    const numTilesX = 8;
+    const numTilesY = 8;
+    const tileW = width / numTilesX;
+    const tileH = height / numTilesY;
+
+    // 1. Compute Histograms and Clipped CDFs per tile
+    const cdfs = new Array(numTilesX * numTilesY);
+
+    for (let ty = 0; ty < numTilesY; ty++) {
+      const yStart = Math.floor(ty * tileH);
+      const yEnd = Math.floor((ty + 1) * tileH);
+      for (let tx = 0; tx < numTilesX; tx++) {
+        const xStart = Math.floor(tx * tileW);
+        const xEnd = Math.floor((tx + 1) * tileW);
+        const numPixels = (xEnd - xStart) * (yEnd - yStart);
+        if (numPixels === 0) continue;
+
+        const hist = new Int32Array(256);
+        for (let y = yStart; y < yEnd; y++) {
+          const yOff = y * width;
+          for (let x = xStart; x < xEnd; x++) {
+            const idx = (yOff + x) * 4;
+            const lum = (data[idx] * 77 + data[idx + 1] * 150 + data[idx + 2] * 29) >> 8;
+            hist[lum]++;
+          }
+        }
+
+        // Clip histogram peaks above threshold and redistribute excess
+        const clipThreshold = Math.max(1, Math.round(clipLimit * (numPixels / 256)));
+        let excess = 0;
+        for (let i = 0; i < 256; i++) {
+          if (hist[i] > clipThreshold) {
+            excess += (hist[i] - clipThreshold);
+            hist[i] = clipThreshold;
+          }
+        }
+
+        const bonus = (excess / 256) | 0;
+        const rem = excess % 256;
+        for (let i = 0; i < 256; i++) {
+          hist[i] += bonus + (i < rem ? 1 : 0);
+        }
+
+        // Cumulative Distribution Function (CDF)
+        const cdf = new Uint8Array(256);
+        let sum = 0;
+        const scale = 255 / numPixels;
+        for (let i = 0; i < 256; i++) {
+          sum += hist[i];
+          cdf[i] = Math.min(255, Math.round(sum * scale));
+        }
+
+        cdfs[ty * numTilesX + tx] = cdf;
+      }
+    }
+
+    // 2. Bilinear Interpolation across tiles
+    for (let y = 0; y < height; y++) {
+      const gy = (y / tileH) - 0.5;
+      const ty1 = Math.max(0, Math.min(numTilesY - 1, Math.floor(gy)));
+      const ty2 = Math.max(0, Math.min(numTilesY - 1, ty1 + 1));
+      const fy = Math.max(0, Math.min(1, gy - ty1));
+
+      const yOff = y * width;
+      const cdfRow1 = ty1 * numTilesX;
+      const cdfRow2 = ty2 * numTilesX;
+
+      for (let x = 0; x < width; x++) {
+        const gx = (x / tileW) - 0.5;
+        const tx1 = Math.max(0, Math.min(numTilesX - 1, Math.floor(gx)));
+        const tx2 = Math.max(0, Math.min(numTilesX - 1, tx1 + 1));
+        const fx = Math.max(0, Math.min(1, gx - tx1));
+
+        const idx = (yOff + x) * 4;
+        const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+        const lum = (r * 77 + g * 150 + b * 29) >> 8;
+
+        const c00 = cdfs[cdfRow1 + tx1][lum];
+        const c10 = cdfs[cdfRow1 + tx2][lum];
+        const c01 = cdfs[cdfRow2 + tx1][lum];
+        const c11 = cdfs[cdfRow2 + tx2][lum];
+
+        const top = c00 + fx * (c10 - c00);
+        const bot = c01 + fx * (c11 - c01);
+        const targetLum = top + fy * (bot - top);
+
+        if (lum === 0) {
+          const v = Math.round(targetLum);
+          data[idx] = v;
+          data[idx + 1] = v;
+          data[idx + 2] = v;
+        } else {
+          const gain = targetLum / lum;
+          data[idx] = Math.min(255, Math.max(0, Math.round(r * gain)));
+          data[idx + 1] = Math.min(255, Math.max(0, Math.round(g * gain)));
+          data[idx + 2] = Math.min(255, Math.max(0, Math.round(b * gain)));
+        }
+      }
+    }
   }
 
   // =========================================================================
