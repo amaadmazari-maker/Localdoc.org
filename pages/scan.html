@@ -85,6 +85,30 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "What is the difference between Single Scan and Batch Mode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Single Scan mode provides immediate crop-and-filter verification after every snap, with an interactive 4-corner magnifying loupe, and then automatically returns to the camera. Continuous Batch Mode allows zero-interruption high-speed shooting: each page is automatically detected, perspective-rectified, filtered with your last-used settings, and saved to IndexedDB while the live camera viewfinder remains active."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the stackable filter pipeline (CLAHE, De-Moiré, Sharpen) work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LocalDoc processes scanned pages through a strict 4-stage pipeline: 1. Base Preset (Natural, Magic Color, Clean B&W, or Grayscale), followed by 2. CLAHE (Local Adaptive Histogram Equalization on an 8x8 grid to rescue faint pencil and shadowed writing), 3. De-Moiré (subpixel bilateral smoothing to remove LCD screen patterns and glossy glare), and 4. Asymmetric Unsharp Masking (crisping ink strokes without creating halos on paper borders). Filters can be stacked and customized via the advanced parameters drawer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I scan large sessions of 100 to 200+ pages without crashing or losing my work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. LocalDoc uses an IndexedDB storage engine that bypasses traditional 5MB browser storage limits, automatically committing each page immediately to client-side persistent storage. Even if your phone battery dies or the browser tab closes, your entire session is preserved and instantly recovered upon reopening."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Does this scanner add any watermarks to exported PDF files?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -1661,6 +1685,96 @@
           </div>
         </div>
 
+        <!-- Section 5.4: Scan Modes Comparison -->
+        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">Scan Modes: Single Page Precision vs. Continuous Batch Mode</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.7; margin-bottom:18px;">
+          LocalDoc Camera Studio provides two distinct operating modes tailored to different document digitizing workloads:
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:32px;">
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:22px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+              <span style="font-size:1.4rem;">📄</span>
+              <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-primary); margin:0;">Single Page Mode</h4>
+            </div>
+            <div style="font-size:0.75rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Step-by-Step Precision Verification</div>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
+              <strong>Workflow:</strong> Shutter Snap &rarr; Auto-Detect &rarr; 4-Corner Crop Screen &rarr; Filter Studio &rarr; Save &rarr; <em>Auto-Return to Camera</em>.
+            </p>
+            <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin:0;">
+              Best for contracts with irregular folds, damaged edges, or non-standard receipts where you want to inspect paper boundaries through the magnifying loupe before committing each page.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid rgba(13, 148, 136, 0.4); border-radius:14px; padding:22px; box-shadow:0 4px 16px rgba(13, 148, 136, 0.08);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+              <span style="font-size:1.4rem;">⚡</span>
+              <h4 style="font-size:1.05rem; font-weight:800; color:var(--cs-teal-light); margin:0;">Continuous Batch Mode</h4>
+            </div>
+            <div style="font-size:0.75rem; font-weight:800; color:#10B981; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Zero-Interruption Multi-Page Velocity</div>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
+              <strong>Workflow:</strong> Shutter Snap &rarr; Instant Auto-Detect &rarr; Auto-Warp &rarr; Auto-Filter &rarr; Auto-Commit &rarr; <em>Viewfinder Stays Live</em>.
+            </p>
+            <p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin:0;">
+              Shoot 20 to 200+ pages without leaving the camera. Features dual-pulse haptic feedback, non-blocking auto-save confirmation pill, running page counter, and floating thumbnail previews.
+            </p>
+          </div>
+        </div>
+
+        <!-- Section 5.4: Stackable Filter Suite Guide -->
+        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">Stackable Filter Suite: Strict Order of Operations</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.7; margin-bottom:18px;">
+          To ensure optimal readability without amplification noise or destructive pixel loss, LocalDoc executes filters in a strictly ordered mathematical pipeline:
+        </p>
+        <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:32px;">
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; gap:14px; align-items:flex-start;">
+              <span style="background:var(--primary); color:#FFFFFF; font-weight:800; font-size:0.8rem; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">1</span>
+              <div>
+                <strong style="color:var(--text-primary); font-size:0.95rem;">Base Mode Normalization:</strong>
+                <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin:4px 0 0;">
+                  Choose between <em>Magic Color</em> (equalizes paper background to clean white while preserving colored official notary seals, passport photos, and signatures), <em>Clean B&amp;W</em> (Sauvola local adaptive binarization for high-contrast pure text documents), <em>Natural</em>, or <em>Grayscale</em>.
+                </p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:flex-start;">
+              <span style="background:var(--cs-teal); color:#FFFFFF; font-weight:800; font-size:0.8rem; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">2</span>
+              <div>
+                <strong style="color:var(--text-primary); font-size:0.95rem;">CLAHE (Local Adaptive Histogram Equalization):</strong>
+                <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin:4px 0 0;">
+                  Divides the document into an 8x8 contextual tile matrix. By clipping local contrast slope (adjustable from 1.0x to 5.0x in Advanced Settings), it lifts faint pencil notes and shadowed handwriting without over-amplifying paper grain.
+                </p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:flex-start;">
+              <span style="background:var(--cs-teal); color:#FFFFFF; font-weight:800; font-size:0.8rem; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">3</span>
+              <div>
+                <strong style="color:var(--text-primary); font-size:0.95rem;">De-Moiré Cross-Bilateral Smoothing:</strong>
+                <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin:4px 0 0;">
+                  Eliminates high-frequency interference patterns, screen pixel meshes, and glossy glare that occur when photographing documents off computer monitors, tablet screens, or laminated certificates.
+                </p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:flex-start;">
+              <span style="background:var(--cs-teal); color:#FFFFFF; font-weight:800; font-size:0.8rem; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">4</span>
+              <div>
+                <strong style="color:var(--text-primary); font-size:0.95rem;">Unsharp Mask Text Sharpening (Halo Suppressed):</strong>
+                <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.6; margin:4px 0 0;">
+                  Runs as the final stage to deepen fine ink lines and micro-printed characters. Uses asymmetric halo suppression to prevent white glowing borders around paper edges.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5.4: Large Session Handling & IndexedDB Auto-Save -->
+        <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">High-Capacity Archive Sessions (200–500 Pages) &amp; Battery Safety</h3>
+        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.7; margin-bottom:28px;">
+          Traditional web applications crash when scanning large volumes because standard browser <code style="color:var(--primary); font-size:0.85rem;">localStorage</code> has a rigid 5MB quota limit. LocalDoc integrates a high-capacity <strong>IndexedDB transaction engine</strong> that stores multi-megabyte 300 DPI pages directly in structured browser database storage. Every single shot in Batch Mode is immediately auto-saved to IndexedDB with transaction abort handlers. If your smartphone battery dies, or your browser tab is accidentally swiped away, your entire session is safely intact when you return.
+        </p>
+
         <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">5 Steps to Perfect Digital Scans</h3>
         <ol style="margin-left:20px; line-height:1.8; color:var(--text-secondary); font-size:0.95rem; margin-bottom:32px;">
           <li><strong>Capture or Import:</strong> Click the camera button to launch your device lens, or drag and drop existing image files from your computer or phone gallery.</li>
@@ -1711,6 +1825,34 @@
 
         <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:16px;">Frequently Asked Questions</h3>
         <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">What is the difference between Single Scan and Batch Mode?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              Single Scan mode provides immediate crop-and-filter verification after every snap, with an interactive 4-corner magnifying loupe, and then automatically returns to the camera. Continuous Batch Mode allows zero-interruption high-speed shooting: each page is automatically detected, perspective-rectified, filtered with your last-used settings, and saved to IndexedDB while the live camera viewfinder remains active.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">How does the stackable filter pipeline (CLAHE, De-Moiré, Sharpen) work?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              LocalDoc processes scanned pages through a strict 4-stage pipeline: 1. Base Preset (Natural, Magic Color, Clean B&amp;W, or Grayscale), followed by 2. CLAHE (Local Adaptive Histogram Equalization on an 8x8 grid to rescue faint pencil and shadowed writing), 3. De-Moiré (subpixel bilateral smoothing to remove LCD screen patterns and glossy glare), and 4. Asymmetric Unsharp Masking (crisping ink strokes without creating halos on paper borders). Filters can be stacked and customized via the advanced parameters drawer.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Can I scan large sessions of 100 to 200+ pages without crashing or losing my work?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              Yes. LocalDoc uses an IndexedDB storage engine that bypasses traditional 5MB browser storage limits, automatically committing each page immediately to client-side persistent storage. Even if your phone battery dies or the browser tab closes, your entire session is preserved and instantly recovered upon reopening.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
+            <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">What happens if my phone battery dies or the browser tab closes during a long scanning session?</h4>
+            <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
+              Your scanned document is 100% safe. Every captured page is stored with transaction safety in IndexedDB. When you reopen LocalDoc Document Scanner, your draft document and all previous pages are automatically loaded and ready for additional scanning, reordering, or PDF export.
+            </p>
+          </div>
+
           <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:12px; padding:16px;">
             <h4 style="font-size:0.96rem; font-weight:700; margin-bottom:6px; color:var(--text-primary);">Does this scanner add any watermarks to exported PDF files?</h4>
             <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin:0;">
