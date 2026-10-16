@@ -2011,12 +2011,12 @@
           <span data-i18n="scan_rotate_page">Rotate</span>
         </button>
 
-        <div style="display:flex; gap:10px;">
-          <button type="button" class="btn btn-outline btn-sm" id="btn-batch-snap-next" onclick="finishAndSnapNextBatch()" style="display:none; color:#FFF; border-color:#334155;">
-            &#10133; Snap Next
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-filter-finish-doc" onclick="commitFilteredPageToDocument(true)" style="color:#CBD5E1; border-color:#334155; font-size:0.75rem; font-weight:700;">
+            📄 Finish &amp; Open
           </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="commitFilteredPageToDocument()" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal);" data-i18n="scan_done_btn">
-            &#10003; Done &amp; Open
+          <button type="button" class="btn btn-primary btn-sm" id="btn-filter-snap-next" onclick="commitFilteredPageToDocument(false)" style="font-weight:800; background:var(--cs-teal); border-color:var(--cs-teal); font-size:0.78rem;">
+            &#10003; Save &amp; Snap Next
           </button>
         </div>
       </div>
@@ -2724,60 +2724,70 @@
 
         const rawImg = await UIUtils.loadImage(rawDataUrl);
 
-        // Auto edge detection with dual logic classification
+        // Auto edge detection with Canny/Worker + Sobel fallback
         const corners = await DocumentScanner.detectDocumentEdges(rawImg, 'a4');
         const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
-        const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners, { docType });
 
-        // If replacing a specific page
-        if (replacingPageIndex >= 0 && replacingPageIndex < docPages.length) {
-          docPages[replacingPageIndex] = {
-            id: docPages[replacingPageIndex].id || ('p_' + Date.now()),
-            rawImg: rawImg,
-            corners: corners,
-            docType: docType,
-            rotation: 0,
-            filter: 'natural',
-            processedDataUrl: processed
-          };
-          const targetIdx = replacingPageIndex;
-          replacingPageIndex = -1;
-          hideProcessing();
-          fullscreenCam.style.display = "none";
-          if (scanner) scanner.stopCamera();
-          await autoSaveDocumentToDB();
-          openDocumentWorkspaceView();
-          renderWorkspacePages();
-          renderDocPageViewer();
-          UIUtils.showToast(`&#10003; Page ${targetIdx + 1} retaken & updated!`, "success");
-          return;
-        }
-
-        const newPageObj = {
-          id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        // Setup staging page for Crop -> Filter pipeline
+        stagingPage = {
           rawImg: rawImg,
           corners: corners,
           docType: docType,
           rotation: 0,
-          filter: 'natural',
-          processedDataUrl: processed
+          filter: (stagingPage && stagingPage.filter) ? stagingPage.filter : 'natural',
+          clahe: stagingPage ? !!stagingPage.clahe : false,
+          claheClipLimit: stagingPage ? (stagingPage.claheClipLimit || 2.0) : 2.0,
+          demoir: stagingPage ? !!stagingPage.demoir : false,
+          demoirStrength: stagingPage && stagingPage.demoirStrength !== undefined ? stagingPage.demoirStrength : 1.0,
+          sharpen: stagingPage ? !!stagingPage.sharpen : false,
+          sharpenAmount: stagingPage ? (stagingPage.sharpenAmount || 0.65) : 0.65
         };
 
-        docPages.push(newPageObj);
-        await autoSaveDocumentToDB();
-        updateCamStackBadge();
+        if (replacingPageIndex >= 0 && replacingPageIndex < docPages.length) {
+          stagingIsEditingIndex = replacingPageIndex;
+          replacingPageIndex = -1;
+        } else {
+          stagingIsEditingIndex = -1;
+        }
+
+        rawWarpedData = null;
 
         if (camMode === 'single') {
+          // Section 4.1: Single Scan Immediate Crop Workflow
+          // Shutter Tap -> Auto-Detect -> 4-Corner Crop Screen -> Filter Stage -> Commit -> Auto-Return to Camera
           hideProcessing();
-          fullscreenCam.style.display = "none";
-          if (scanner) scanner.stopCamera();
-          currentViewingPageIndex = docPages.length - 1;
-          workspaceViewMode = 'single';
-          openDocumentWorkspaceView();
-          renderWorkspacePages();
-          renderDocPageViewer();
-          UIUtils.showToast("&#10003; Document scanned & enhanced! Review or adjust below.", "success");
+          openCropScreen();
         } else {
+          // Batch Mode: Auto-commit and keep camera live
+          const processed = DocumentScanner.processImage(rawImg, stagingPage.filter, 0, corners, {
+            docType: docType,
+            clahe: stagingPage.clahe,
+            claheClipLimit: stagingPage.claheClipLimit,
+            demoir: stagingPage.demoir,
+            demoirStrength: stagingPage.demoirStrength,
+            sharpen: stagingPage.sharpen,
+            sharpenAmount: stagingPage.sharpenAmount
+          });
+
+          const newPageObj = {
+            id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            rawImg: rawImg,
+            corners: corners,
+            docType: docType,
+            rotation: 0,
+            filter: stagingPage.filter,
+            clahe: stagingPage.clahe,
+            claheClipLimit: stagingPage.claheClipLimit,
+            demoir: stagingPage.demoir,
+            demoirStrength: stagingPage.demoirStrength,
+            sharpen: stagingPage.sharpen,
+            sharpenAmount: stagingPage.sharpenAmount,
+            processedDataUrl: processed
+          };
+
+          docPages.push(newPageObj);
+          await autoSaveDocumentToDB();
+          updateCamStackBadge();
           hideProcessing();
           renderWorkspacePages();
           UIUtils.showToast(`&#10003; Page ${docPages.length} captured! Snap next page or tap stack.`, "success");
@@ -3383,9 +3393,11 @@
       openFullscreenCamera();
     }
 
-    async function commitFilteredPageToDocument() {
+    async function commitFilteredPageToDocument(openWorkspaceAfter = false) {
       showProcessing("Saving...");
       await new Promise(r => setTimeout(r, 20));
+
+      const wasEditingExisting = (stagingIsEditingIndex >= 0);
 
       const newPageObj = {
         id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
@@ -3402,7 +3414,7 @@
         processedDataUrl: currentEnhancedData
       };
 
-      if (stagingIsEditingIndex >= 0) {
+      if (wasEditingExisting) {
         docPages[stagingIsEditingIndex].corners = stagingPage.corners;
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
         docPages[stagingIsEditingIndex].clahe = !!stagingPage.clahe;
@@ -3426,18 +3438,27 @@
 
       filterScreen.style.display = "none";
       await autoSaveDocumentToDB();
+      updateCamStackBadge();
 
-      // Direct auto-open into Document Workspace - never require clicking an extra review button!
-      scanner.stopCamera();
-      fullscreenCam.style.display = "none";
-      openDocumentWorkspaceView();
-      hideProcessing();
-      UIUtils.showToast("&#10003; Page saved! Document updated.", "success");
+      if (wasEditingExisting || openWorkspaceAfter) {
+        if (scanner) scanner.stopCamera();
+        fullscreenCam.style.display = "none";
+        openDocumentWorkspaceView();
+        hideProcessing();
+        UIUtils.showToast("&#10003; Page saved! Document updated.", "success");
+      } else {
+        // Section 4.1: Auto-Return to Camera for next page!
+        fullscreenCam.style.display = "flex";
+        if (scanner && !scanner.stream) {
+          await scanner.startCamera(cameraFacing);
+        }
+        hideProcessing();
+        UIUtils.showToast(`&#10003; Page ${docPages.length} saved! Camera ready for next page.`, "success");
+      }
     }
 
     function finishAndSnapNextBatch() {
-      commitFilteredPageToDocument();
-      openFullscreenCamera();
+      commitFilteredPageToDocument(false);
     }
 
     // =========================================================================
