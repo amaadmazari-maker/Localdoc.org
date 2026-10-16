@@ -24,3 +24,8 @@
 | TSK-018 | Phase 5: Continuous Regression & Core Web Vitals Monitor | QA Manager | done | TSK-017 | 2026-10-16 | 81 HTML pages & 33 JS scripts tested; 2,908 links verified (0 404s); 0 syntax errors; signoff-2026-10-16-phase5.md approved |
 | TSK-019 | CamScanner Live E2E Inspection, Competitor Teardown & Design MCP Suite | QA Manager / Lead 1 | done | TSK-018 | 2026-10-16 | Verified 4 viewports (0 overflow), PDF binary integrity (%PDF-1.7), competitor teardown, and integrated Hyperframes/Taste/Vercel MCP suite |
 | TSK-020 | CamScanner Feature Parity & No-Watermark UX Optimization on `pages/scan.html` | Lead 2 / Lead 3 | todo | TSK-019 | 2026-10-17 | Implement prominent No-Watermark guarantee badge, 1-tap filter bar, and multi-page batch scanning workflow |
+| TSK-021 | Phase 6: Global Color Palettes & Contrast Schemes Upgrade | Lead 1 (Design Tokens) | todo | TSK-018 | 2026-10-17 | Calibrated HSL scales, rich brand accents, WCAG AA contrast compliance |
+| TSK-022 | Phase 6: Typography, Spacing & Micro-Styles Architecture | Lead 3 (Layout & UI) | todo | TSK-021 | 2026-10-17 | 8-pt harmonic grid, display headings, tight tracking, crisp 1px borders |
+| TSK-023 | Phase 6: Dual Theme Calibration & Surface Depth Layering | Lead 3 (Theme Specialist) | todo | TSK-021 | 2026-10-17 | Layer 0/1/2 surface hierarchy, frosted glassmorphism, OLED dark mode |
+| TSK-024 | Phase 6: Hyperframes Spring Motion & After Effects Physics | Lead 2 (Motion Engineer) | todo | TSK-022 | 2026-10-17 | Spring physics keyframes, tactile scale(0.98) feedback, fluid transitions |
+| TSK-025 | Phase 6: Comprehensive UI/UX Ergonomics & Touch Target Audit | QA & UX Specialist | todo | TSK-024 | 2026-10-17 | 44px+ hitboxes, optical centering, modal sheet dismissals, toast alerts |
