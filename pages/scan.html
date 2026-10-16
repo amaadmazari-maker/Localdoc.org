@@ -2441,7 +2441,7 @@
       try {
         UIUtils.showToast("Photo captured. Adjusting edges...", "info");
         const rawImg = await UIUtils.loadImage(dataUrl);
-        const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+        const corners = await DocumentScanner.detectDocumentEdges(rawImg, 'a4');
 
         stagingPage = {
           rawImg: rawImg,
@@ -2468,7 +2468,7 @@
       for (const dataUrl of dataUrls) {
         try {
           const rawImg = await UIUtils.loadImage(dataUrl);
-          const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+          const corners = await DocumentScanner.detectDocumentEdges(rawImg, 'a4');
           const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
 
           if (dataUrls.length === 1 && camMode === 'single') {
@@ -2555,7 +2555,7 @@
         const rawImg = await UIUtils.loadImage(rawDataUrl);
 
         // Auto edge detection with dual logic classification
-        const corners = DocumentScanner.detectDocumentEdges(rawImg, 'a4');
+        const corners = await DocumentScanner.detectDocumentEdges(rawImg, 'a4');
         const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
         const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners, { docType });
 
@@ -2665,7 +2665,7 @@
     async function renderImageFileToPage(file) {
       const dataUrl = await UIUtils.readFileAsDataURL(file);
       const img = await UIUtils.loadImage(dataUrl);
-      const corners = DocumentScanner.detectDocumentEdges(img, 'a4');
+      const corners = await DocumentScanner.detectDocumentEdges(img, 'a4');
       const docType = DocumentScanner.classifyDocumentType(corners, img.naturalWidth, img.naturalHeight);
       const processed = DocumentScanner.processImage(img, 'natural', 0, corners, { docType });
       return {
@@ -2991,10 +2991,10 @@
       ctx.drawImage(cropImg, -cropImg.naturalWidth / 2, -cropImg.naturalHeight / 2);
 
       const rotated = new Image();
-      rotated.onload = () => {
+      rotated.onload = async () => {
         cropImg = rotated;
         stagingPage.rawImg = rotated;
-        cropCorners = DocumentScanner.detectDocumentEdges(cropImg, 'a4');
+        cropCorners = await DocumentScanner.detectDocumentEdges(cropImg, 'a4');
         initCropCanvasSize();
       };
       rotated.src = canvas.toDataURL();

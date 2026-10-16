@@ -20,7 +20,7 @@ self.onmessage = function (e) {
 
   try {
     if (msg.type === 'DETECT_DOCUMENT_CORNERS') {
-      const { buffer, width, height, options } = msg;
+      const { id, buffer, width, height, options } = msg;
       const opts = options || {};
       const highThresh = opts.highThreshold || 75;
       const lowThresh = opts.lowThreshold || 30;
@@ -34,6 +34,7 @@ self.onmessage = function (e) {
 
       self.postMessage({
         type: 'DETECT_DOCUMENT_CORNERS_RESULT',
+        id: id,
         success: true,
         found: quadResult.found,
         corners: quadResult.corners,

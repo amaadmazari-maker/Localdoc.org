@@ -385,7 +385,114 @@ class DocumentScanner {
     };
   }
 
-  static detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'a4') {
+  static _scanWorker = null;
+  static _scanWorkerFailed = false;
+
+  static getScanWorker() {
+    if (this._scanWorkerFailed) return null;
+    if (typeof Worker === 'undefined') return null;
+    if (!this._scanWorker) {
+      try {
+        let workerUrl = '../js/workers/scan-worker.js';
+        if (typeof window !== 'undefined' && window.location) {
+          const pathname = window.location.pathname || '';
+          if (pathname.includes('/pages/')) {
+            workerUrl = '../js/workers/scan-worker.js';
+          } else {
+            workerUrl = 'js/workers/scan-worker.js';
+          }
+        }
+        this._scanWorker = new Worker(workerUrl);
+        this._scanWorker.onerror = (err) => {
+          console.warn('Scan worker runtime error, falling back to Sobel:', err);
+          this._scanWorkerFailed = true;
+          try { this._scanWorker.terminate(); } catch (_) {}
+          this._scanWorker = null;
+        };
+      } catch (err) {
+        console.warn('Worker constructor failed, falling back to Sobel:', err);
+        this._scanWorkerFailed = true;
+        this._scanWorker = null;
+      }
+    }
+    return this._scanWorker;
+  }
+
+  static async detectDocumentEdges(sourceImgOrCanvas, targetAspect = 'a4') {
+    const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;
+    const height = sourceImgOrCanvas.videoHeight || sourceImgOrCanvas.naturalHeight || sourceImgOrCanvas.height;
+    if (!width || !height) {
+      return this.getDefaultCorners();
+    }
+
+    const sampleW = 360;
+    const sampleH = Math.max(200, Math.round((height / width) * sampleW));
+
+    const helperCanvas = document.createElement('canvas');
+    helperCanvas.width = sampleW;
+    helperCanvas.height = sampleH;
+    const ctx = helperCanvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(sourceImgOrCanvas, 0, 0, sampleW, sampleH);
+
+    const worker = this.getScanWorker();
+    if (worker) {
+      try {
+        const workerPromise = new Promise((resolve) => {
+          const reqId = 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+          const onMessage = (e) => {
+            const res = e.data || {};
+            if (res.type === 'DETECT_DOCUMENT_CORNERS_RESULT' && res.id === reqId) {
+              cleanup();
+              if (res.success && res.found && res.corners) {
+                resolve(res.corners);
+              } else {
+                resolve(null);
+              }
+            }
+          };
+
+          const onError = () => {
+            cleanup();
+            resolve(null);
+          };
+
+          const cleanup = () => {
+            worker.removeEventListener('message', onMessage);
+            worker.removeEventListener('error', onError);
+          };
+
+          worker.addEventListener('message', onMessage);
+          worker.addEventListener('error', onError);
+
+          const imgData = ctx.getImageData(0, 0, sampleW, sampleH);
+          const buffer = imgData.data.buffer.slice(0);
+          worker.postMessage({
+            type: 'DETECT_DOCUMENT_CORNERS',
+            id: reqId,
+            buffer: buffer,
+            width: sampleW,
+            height: sampleH,
+            options: { highThreshold: 75, lowThreshold: 30 }
+          }, [buffer]);
+        });
+
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 300));
+        const workerCorners = await Promise.race([workerPromise, timeoutPromise]);
+
+        if (workerCorners) {
+          return workerCorners;
+        }
+      } catch (workerErr) {
+        console.warn('Worker dispatch failed, using Sobel fallback:', workerErr);
+      }
+    }
+
+    // Fallback: Pure JS Sobel Ray-Caster
+    return this.detectDocumentEdgesSobel(sourceImgOrCanvas, targetAspect, helperCanvas, ctx);
+  }
+
+  static detectDocumentEdgesSobel(sourceImgOrCanvas, targetAspect = 'a4', helperCanvas = null, ctx = null) {
     const width = sourceImgOrCanvas.videoWidth || sourceImgOrCanvas.naturalWidth || sourceImgOrCanvas.width;
     const height = sourceImgOrCanvas.videoHeight || sourceImgOrCanvas.naturalHeight || sourceImgOrCanvas.height;
     if (!width || !height) {
@@ -396,11 +503,13 @@ class DocumentScanner {
     const sampleW = 360;
     const sampleH = Math.max(200, Math.round((height / width) * sampleW));
 
-    const helperCanvas = document.createElement('canvas');
-    helperCanvas.width = sampleW;
-    helperCanvas.height = sampleH;
-    const ctx = helperCanvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(sourceImgOrCanvas, 0, 0, sampleW, sampleH);
+    if (!helperCanvas || !ctx) {
+      helperCanvas = document.createElement('canvas');
+      helperCanvas.width = sampleW;
+      helperCanvas.height = sampleH;
+      ctx = helperCanvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(sourceImgOrCanvas, 0, 0, sampleW, sampleH);
+    }
 
     const imgData = ctx.getImageData(0, 0, sampleW, sampleH);
     const data = imgData.data;
