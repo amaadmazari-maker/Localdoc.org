@@ -27,6 +27,7 @@ const ASSETS_TO_CACHE = [
   '/js/lib/pdf-lib.min.js',
   '/js/lib/pdf.min.js',
   '/js/lib/pdf.worker.min.js',
+  '/js/workers/scan-worker.js',
   '/js/lib/docx.min.js',
   '/js/lib/sheetjs.min.js',
   '/js/lib/tesseract.min.js',
