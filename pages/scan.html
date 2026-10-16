@@ -699,29 +699,51 @@
     .cs-filter-bottombar {
       background: #0F172A;
       border-top: 1px solid #1E293B;
-      padding: 10px 16px 16px;
+      padding: 8px 16px 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
+      position: relative;
+    }
+    .cs-filter-order-hint {
+      font-size: 0.68rem;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.2;
+    }
+    .cs-filter-tier-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .cs-filter-scroll {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: 2px;
       scrollbar-width: none;
     }
     .cs-filter-scroll::-webkit-scrollbar { display: none; }
     .cs-filter-pill-btn {
       background: #1E293B;
-      border: 2px solid transparent;
-      border-radius: 10px;
-      padding: 8px 12px;
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      padding: 6px 10px;
       color: #94A3B8;
-      font-size: 0.78rem;
-      font-weight: 800;
+      font-size: 0.74rem;
+      font-weight: 700;
       display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 4px;
       cursor: pointer;
@@ -733,6 +755,72 @@
       border-color: var(--cs-teal-light);
       background: rgba(13, 148, 136, 0.25);
       color: #FFFFFF;
+    }
+    .cs-adv-trigger-btn {
+      background: rgba(13, 148, 136, 0.15);
+      border: 1px solid var(--cs-teal);
+      border-radius: 6px;
+      padding: 2px 7px;
+      color: var(--cs-teal-light);
+      font-size: 0.70rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+    }
+    .cs-adv-trigger-btn:hover {
+      background: var(--cs-teal);
+      color: #FFF;
+    }
+    .cs-adv-filter-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0F172A;
+      border-top: 2px solid #334155;
+      border-radius: 16px 16px 0 0;
+      padding: 16px 18px 20px;
+      z-index: 100;
+      box-shadow: 0 -12px 40px rgba(0,0,0,0.85);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .cs-slider-card {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+    }
+    .cs-slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #F1F5F9;
+      margin-bottom: 3px;
+    }
+    .cs-slider-val {
+      font-size: 0.76rem;
+      color: var(--cs-teal-light);
+      font-family: monospace;
+      font-weight: 800;
+    }
+    .cs-slider-sub {
+      font-size: 0.68rem;
+      color: #94A3B8;
+      margin-bottom: 5px;
+      line-height: 1.25;
+    }
+    .cs-range-input {
+      width: 100%;
+      height: 4px;
+      accent-color: var(--cs-teal-light);
+      cursor: pointer;
     }
 
     /* =========================================================================
@@ -1859,42 +1947,65 @@
     </div>
 
     <div class="cs-filter-bottombar">
-      <!-- Filter Carousel with Live Miniature Preview Pills -->
-      <div class="cs-filter-scroll">
-        <button type="button" class="cs-filter-pill-btn active" data-filter="natural" onclick="applyEnhanceFilter('natural')">
-          <span>🌿 Natural Clear</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="original" onclick="applyEnhanceFilter('original')">
-          <span>📷 Original</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
-          <span>✨ Magic White</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="no-shadow" onclick="applyEnhanceFilter('no-shadow')">
-          <span>☀️ No Shadow</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
-          <span>📄 Crisp B&W</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="grayscale" onclick="applyEnhanceFilter('grayscale')">
-          <span>🌫️ Grayscale</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
-          <span>💡 Lighten</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" id="btn-filter-clahe" onclick="toggleCLAHEFilter()" title="Contrast Limited Adaptive Histogram Equalization - boosts faint pencil and handwriting">
-          <span>⚖️ CLAHE Boost</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" id="btn-filter-demoir" onclick="toggleDeMoireFilter()" title="De-Moiré - eliminates screen frequency grid lines and glossy surface fringes">
-          <span>🛡️ De-Moiré</span>
-        </button>
-        <button type="button" class="cs-filter-pill-btn" id="btn-filter-sharpen" onclick="toggleSharpenFilter()" title="Unsharp Mask - sharpens text edges and deepens ink strokes without bright halos">
-          <span>✨ Sharpen Ink</span>
-        </button>
+      <!-- Fixed Pipeline Order Hint -->
+      <div class="cs-filter-order-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span>Fixed Pipeline: <strong>1. Base Tone</strong> &rarr; <strong>2. CLAHE</strong> &rarr; <strong>3. De-Moiré</strong> &rarr; <strong>4. Sharpen</strong></span>
+      </div>
+
+      <!-- Tier 1 - Row 1: Base Presets -->
+      <div style="display:flex; flex-direction:column; gap:3px;">
+        <div class="cs-filter-tier-label">
+          <span>Base Tone Preset</span>
+        </div>
+        <div class="cs-filter-scroll" id="filter-presets-row">
+          <button type="button" class="cs-filter-pill-btn active" data-filter="natural" onclick="applyEnhanceFilter('natural')">
+            <span>🌿 Natural Clear</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
+            <span>✨ Magic White</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
+            <span>📄 Crisp B&W</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="original" onclick="applyEnhanceFilter('original')">
+            <span>📷 Original</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="no-shadow" onclick="applyEnhanceFilter('no-shadow')">
+            <span>☀️ No Shadow</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="grayscale" onclick="applyEnhanceFilter('grayscale')">
+            <span>🌫️ Grayscale</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="lighten" onclick="applyEnhanceFilter('lighten')">
+            <span>💡 Lighten</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tier 1 - Row 2: Stackable Filters + Advanced Trigger -->
+      <div style="display:flex; flex-direction:column; gap:3px;">
+        <div class="cs-filter-tier-label">
+          <span>Stackable Enhancements (Applied in Order)</span>
+          <button type="button" class="cs-adv-trigger-btn" onclick="toggleAdvancedFilterSheet()" title="Fine-tune filter parameters">
+            <span>⚙️ Advanced</span>
+          </button>
+        </div>
+        <div class="cs-filter-scroll" id="filter-stackable-row">
+          <button type="button" class="cs-filter-pill-btn" id="btn-filter-clahe" onclick="toggleCLAHEFilter()" title="Contrast Limited Adaptive Histogram Equalization - boosts faint pencil and handwriting">
+            <span>⚖️ CLAHE Boost</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" id="btn-filter-demoir" onclick="toggleDeMoireFilter()" title="De-Moiré - eliminates screen frequency grid lines and glossy surface fringes">
+            <span>🛡️ De-Moiré</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" id="btn-filter-sharpen" onclick="toggleSharpenFilter()" title="Unsharp Mask - sharpens text edges and deepens ink strokes without bright halos">
+            <span>✨ Sharpen Ink</span>
+          </button>
+        </div>
       </div>
 
       <!-- Bottom Actions -->
-      <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
         <button type="button" class="cs-crop-tool-btn" onclick="rotateFilterCanvas(90)">
           <span>&#128260;</span>
           <span data-i18n="scan_rotate_page">Rotate</span>
@@ -1908,6 +2019,56 @@
             &#10003; Done &amp; Open
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Tier 2: Hidden Advanced Filter Parameters Sheet -->
+    <div id="cs-filter-advanced-sheet" class="cs-adv-filter-sheet" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #334155; padding-bottom:8px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.95rem; font-weight:800; color:#F1F5F9;">⚙️ Advanced Studio Parameters</span>
+        </div>
+        <button type="button" onclick="closeAdvancedFilterSheet()" style="background:none; border:none; color:#94A3B8; font-size:1.4rem; cursor:pointer; padding:2px 8px; line-height:1;" aria-label="Close Advanced Sheet">&times;</button>
+      </div>
+
+      <!-- Slider 1: CLAHE Clip Limit -->
+      <div class="cs-slider-card">
+        <div class="cs-slider-header">
+          <span>⚖️ CLAHE Clip Limit (Local Contrast)</span>
+          <span class="cs-slider-val" id="val-clahe-clip">2.0x</span>
+        </div>
+        <div class="cs-slider-sub">Prevents over-amplification of noise while lifting faint handwriting.</div>
+        <input type="range" class="cs-range-input" id="slider-clahe-clip" min="1.0" max="5.0" step="0.1" value="2.0" oninput="onCLAHEClipChange(this.value)">
+      </div>
+
+      <!-- Slider 2: De-Moiré Strength -->
+      <div class="cs-slider-card">
+        <div class="cs-slider-header">
+          <span>🛡️ De-Moiré Strength (Cross-Bilateral)</span>
+          <span class="cs-slider-val" id="val-demoire-strength">1.0x</span>
+        </div>
+        <div class="cs-slider-sub">Suppresses screen refresh raster matrices and color banding on glossy pages.</div>
+        <input type="range" class="cs-range-input" id="slider-demoire-strength" min="0.2" max="2.0" step="0.1" value="1.0" oninput="onDeMoireStrengthChange(this.value)">
+      </div>
+
+      <!-- Slider 3: Sharpen Amount -->
+      <div class="cs-slider-card">
+        <div class="cs-slider-header">
+          <span>✨ Sharpen Amount (Unsharp Mask)</span>
+          <span class="cs-slider-val" id="val-sharpen-amount">0.65x</span>
+        </div>
+        <div class="cs-slider-sub">Deepens stroke boundaries with asymmetric dark-edge bias and zero white halos.</div>
+        <input type="range" class="cs-range-input" id="slider-sharpen-amount" min="0.2" max="1.8" step="0.05" value="0.65" oninput="onSharpenAmountChange(this.value)">
+      </div>
+
+      <!-- Reset & Close Actions -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="resetAdvancedFilterParams()" style="color:#94A3B8; border-color:#334155; font-size:0.75rem;">
+          Reset Defaults
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeAdvancedFilterSheet()" style="background:var(--cs-teal); border-color:var(--cs-teal); font-weight:800; font-size:0.75rem;">
+          Close &amp; Keep
+        </button>
       </div>
     </div>
   </div>
@@ -3033,12 +3194,90 @@
 
     function openFilterScreen() {
       filterScreen.style.display = "flex";
+      closeAdvancedFilterSheet();
+      syncAdvancedSlidersFromStaging();
       renderFilterPreview();
     }
 
     function backFromFilterToCrop() {
+      closeAdvancedFilterSheet();
       filterScreen.style.display = "none";
       openCropScreen();
+    }
+
+    function toggleAdvancedFilterSheet() {
+      const sheet = document.getElementById("cs-filter-advanced-sheet");
+      if (!sheet) return;
+      const isHidden = sheet.style.display === "none" || !sheet.style.display;
+      sheet.style.display = isHidden ? "block" : "none";
+      if (isHidden) {
+        syncAdvancedSlidersFromStaging();
+      }
+    }
+
+    function closeAdvancedFilterSheet() {
+      const sheet = document.getElementById("cs-filter-advanced-sheet");
+      if (sheet) sheet.style.display = "none";
+    }
+
+    function syncAdvancedSlidersFromStaging() {
+      const clip = stagingPage.claheClipLimit || 2.0;
+      const demoir = stagingPage.demoirStrength !== undefined ? stagingPage.demoirStrength : 1.0;
+      const sharp = stagingPage.sharpenAmount || 0.65;
+
+      const sClip = document.getElementById("slider-clahe-clip");
+      const sDemoire = document.getElementById("slider-demoire-strength");
+      const sSharp = document.getElementById("slider-sharpen-amount");
+
+      if (sClip) sClip.value = clip;
+      if (sDemoire) sDemoire.value = demoir;
+      if (sSharp) sSharp.value = sharp;
+
+      const vClip = document.getElementById("val-clahe-clip");
+      const vDemoire = document.getElementById("val-demoire-strength");
+      const vSharp = document.getElementById("val-sharpen-amount");
+
+      if (vClip) vClip.textContent = Number(clip).toFixed(1) + 'x';
+      if (vDemoire) vDemoire.textContent = Number(demoir).toFixed(1) + 'x';
+      if (vSharp) vSharp.textContent = Number(sharp).toFixed(2) + 'x';
+    }
+
+    function onCLAHEClipChange(val) {
+      stagingPage.claheClipLimit = parseFloat(val);
+      const vClip = document.getElementById("val-clahe-clip");
+      if (vClip) vClip.textContent = Number(val).toFixed(1) + 'x';
+      if (!stagingPage.clahe) {
+        stagingPage.clahe = true;
+      }
+      renderFilterPreview();
+    }
+
+    function onDeMoireStrengthChange(val) {
+      stagingPage.demoirStrength = parseFloat(val);
+      const vDemoire = document.getElementById("val-demoire-strength");
+      if (vDemoire) vDemoire.textContent = Number(val).toFixed(1) + 'x';
+      if (!stagingPage.demoir) {
+        stagingPage.demoir = true;
+      }
+      renderFilterPreview();
+    }
+
+    function onSharpenAmountChange(val) {
+      stagingPage.sharpenAmount = parseFloat(val);
+      const vSharp = document.getElementById("val-sharpen-amount");
+      if (vSharp) vSharp.textContent = Number(val).toFixed(2) + 'x';
+      if (!stagingPage.sharpen) {
+        stagingPage.sharpen = true;
+      }
+      renderFilterPreview();
+    }
+
+    function resetAdvancedFilterParams() {
+      stagingPage.claheClipLimit = 2.0;
+      stagingPage.demoirStrength = 1.0;
+      stagingPage.sharpenAmount = 0.65;
+      syncAdvancedSlidersFromStaging();
+      renderFilterPreview();
     }
 
     function renderFilterPreview() {
@@ -3051,8 +3290,11 @@
         {
           docType: stagingPage.docType,
           clahe: !!stagingPage.clahe,
+          claheClipLimit: stagingPage.claheClipLimit || 2.0,
           demoir: !!stagingPage.demoir,
-          sharpen: !!stagingPage.sharpen
+          demoirStrength: stagingPage.demoirStrength !== undefined ? stagingPage.demoirStrength : 1.0,
+          sharpen: !!stagingPage.sharpen,
+          sharpenAmount: stagingPage.sharpenAmount || 0.65
         }
       );
 
@@ -3151,8 +3393,11 @@
         corners: stagingPage.corners,
         filter: stagingPage.filter,
         clahe: !!stagingPage.clahe,
+        claheClipLimit: stagingPage.claheClipLimit || 2.0,
         demoir: !!stagingPage.demoir,
+        demoirStrength: stagingPage.demoirStrength !== undefined ? stagingPage.demoirStrength : 1.0,
         sharpen: !!stagingPage.sharpen,
+        sharpenAmount: stagingPage.sharpenAmount || 0.65,
         rotation: stagingPage.rotation,
         processedDataUrl: currentEnhancedData
       };
@@ -3161,8 +3406,11 @@
         docPages[stagingIsEditingIndex].corners = stagingPage.corners;
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
         docPages[stagingIsEditingIndex].clahe = !!stagingPage.clahe;
+        docPages[stagingIsEditingIndex].claheClipLimit = stagingPage.claheClipLimit || 2.0;
         docPages[stagingIsEditingIndex].demoir = !!stagingPage.demoir;
+        docPages[stagingIsEditingIndex].demoirStrength = stagingPage.demoirStrength !== undefined ? stagingPage.demoirStrength : 1.0;
         docPages[stagingIsEditingIndex].sharpen = !!stagingPage.sharpen;
+        docPages[stagingIsEditingIndex].sharpenAmount = stagingPage.sharpenAmount || 0.65;
         docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
         docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
         currentViewingPageIndex = stagingIsEditingIndex;
@@ -3524,8 +3772,11 @@
         rotation: page.rotation || 0,
         filter: page.filter || 'natural',
         clahe: !!page.clahe,
+        claheClipLimit: page.claheClipLimit || 2.0,
         demoir: !!page.demoir,
-        sharpen: !!page.sharpen
+        demoirStrength: page.demoirStrength !== undefined ? page.demoirStrength : 1.0,
+        sharpen: !!page.sharpen,
+        sharpenAmount: page.sharpenAmount || 0.65
       };
       stagingIsEditingIndex = idx;
       rawWarpedData = null;
@@ -3547,8 +3798,11 @@
           const processed = DocumentScanner.processImage(raw, page.filter || 'natural', page.rotation || 0, page.corners, {
             docType: page.docType,
             clahe: !!page.clahe,
+            claheClipLimit: page.claheClipLimit || 2.0,
             demoir: !!page.demoir,
-            sharpen: !!page.sharpen
+            demoirStrength: page.demoirStrength !== undefined ? page.demoirStrength : 1.0,
+            sharpen: !!page.sharpen,
+            sharpenAmount: page.sharpenAmount || 0.65
           });
           page.processedDataUrl = processed;
         }

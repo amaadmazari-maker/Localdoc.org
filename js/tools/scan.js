@@ -1419,7 +1419,7 @@ class DocumentScanner {
 
     // 3. Strict Pipeline Step: De-Moiré Filter (runs after CLAHE, before Sharpen)
     if (options.demoir) {
-      const strength = typeof options.demoir === 'number' ? options.demoir : (options.demoirStrength || 1.0);
+      const strength = typeof options.demoir === 'number' ? options.demoir : (options.demoirStrength !== undefined ? options.demoirStrength : (options.demoireStrength !== undefined ? options.demoireStrength : 1.0));
       DocumentScanner.applyDeMoire(data, imgW, imgH, strength);
     }
 
