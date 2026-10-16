@@ -22,3 +22,4 @@
 | TSK-016 | Phase 4: Keyword Gap Discovery & High-Intent Guide Expansion | Lead 1 | done | TSK-015 | 2026-10-16 | Identified Protect PDF gap; crafted technical brief & keyword mapping |
 | TSK-017 | Phase 4: Publish High-Yield Tutorial Guides with Real Screenshots | Lead 3 | done | TSK-016 | 2026-10-16 | Published `blog/protect-pdf-guide.html` with real steps, schemas, and links |
 | TSK-018 | Phase 5: Continuous Regression & Core Web Vitals Monitor | QA Manager | doing | TSK-017 | 2026-10-23 | Ongoing automated test pass and site health verification |
+| TSK-019 | CamScanner Live E2E Inspection, Competitor Teardown & Design MCP Suite | QA Manager / Lead 1 | done | TSK-018 | 2026-10-16 | Verified 4 viewports (0 overflow), PDF binary integrity (%PDF-1.7), competitor teardown, and integrated Hyperframes/Taste/Vercel MCP suite |
