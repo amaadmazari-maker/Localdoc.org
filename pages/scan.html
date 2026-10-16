@@ -2687,8 +2687,24 @@
       if (modal) modal.style.display = "none";
     }
 
+    let isShutterSnapping = false;
+
+    function showBatchHUDIndicator(pageNumber) {
+      const pill = document.getElementById("cam-paper-tracking");
+      if (!pill) return;
+      pill.innerHTML = `<span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#10B981;"></span><span style="color:#A7F3D0; font-weight:800;">✓ Saved Page ${pageNumber}</span>`;
+      setTimeout(() => {
+        if (pill) {
+          pill.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38BDF8; animation:pulse 1.2s infinite;"></span><span>Auto-Edge Detection Active</span>`;
+        }
+      }, 1600);
+    }
+
     // Shutter Snap Capture with Immediate Visual Feedback
     async function executeShutterSnap() {
+      if (isShutterSnapping) return;
+      isShutterSnapping = true;
+
       try {
         if (!videoEl || !videoEl.videoWidth) {
           if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
@@ -2701,14 +2717,15 @@
 
         // 1. Instant Shutter Feedback: Haptic + Audio + Screen Flash
         ScanFeedback.playShutter();
-        videoEl.style.opacity = '0.2';
-        setTimeout(() => videoEl.style.opacity = '1', 120);
+        videoEl.style.opacity = '0.25';
+        setTimeout(() => videoEl.style.opacity = '1', 100);
 
-        // 2. Immediately show LocalDoc Scanner-style "Processing..." spinner modal (< 20ms)
-        showProcessing("Processing...");
-
-        // Yield execution to browser event loop so modal renders immediately
-        await new Promise(r => setTimeout(r, 20));
+        // In single scan, show processing modal; in batch mode keep camera live without modal blockage
+        const isBatch = (camMode === 'batch');
+        if (!isBatch) {
+          showProcessing("Processing...");
+          await new Promise(r => setTimeout(r, 20));
+        }
 
         let rawDataUrl;
         try {
@@ -2724,7 +2741,7 @@
 
         const rawImg = await UIUtils.loadImage(rawDataUrl);
 
-        // Auto edge detection with Canny/Worker + Sobel fallback
+        // Auto edge detection with Canny/Worker + Sobel fallback (Section 2.1 - 2.3)
         const corners = await DocumentScanner.detectDocumentEdges(rawImg, 'a4');
         const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
 
@@ -2752,13 +2769,14 @@
 
         rawWarpedData = null;
 
-        if (camMode === 'single') {
+        if (!isBatch) {
           // Section 4.1: Single Scan Immediate Crop Workflow
           // Shutter Tap -> Auto-Detect -> 4-Corner Crop Screen -> Filter Stage -> Commit -> Auto-Return to Camera
           hideProcessing();
           openCropScreen();
         } else {
-          // Batch Mode: Auto-commit and keep camera live
+          // Section 4.2: Continuous Batch Scan Mode
+          // Shutter Tap -> Auto-Detect -> Auto-Warp -> Auto-Filter -> Auto-Commit -> Keep Camera Live
           const processed = DocumentScanner.processImage(rawImg, stagingPage.filter, 0, corners, {
             docType: docType,
             clahe: stagingPage.clahe,
@@ -2788,18 +2806,20 @@
           docPages.push(newPageObj);
           await autoSaveDocumentToDB();
           updateCamStackBadge();
-          hideProcessing();
           renderWorkspacePages();
-          UIUtils.showToast(`&#10003; Page ${docPages.length} captured! Snap next page or tap stack.`, "success");
+          showBatchHUDIndicator(docPages.length);
+          UIUtils.showToast(`&#10003; Page ${docPages.length} saved (Continuous Batch)! Snap next or tap stack.`, "success");
         }
       } catch (err) {
         hideProcessing();
-        console.error(err);
+        console.error("Shutter capture error:", err);
         if (window.AndroidNative && window.AndroidNative.launchNativeCamera) {
           window.AndroidNative.launchNativeCamera();
         } else {
           UIUtils.showToast("Capture note: " + err.message, "warning");
         }
+      } finally {
+        isShutterSnapping = false;
       }
     }
 
