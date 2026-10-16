@@ -1551,6 +1551,7 @@ class DocumentScanner {
   }
 
   // =========================================================================
+  // =========================================================================
   // De-Moiré Frequency Filtering (Cross-Bilateral Smoothing)
   // Suppresses high-frequency Bayer and screen pixel-matrix moiré fringes
   // while preserving sharp document text stroke boundaries.
@@ -1569,55 +1570,82 @@ class DocumentScanner {
       lut[d] = Math.exp(-(d * d) * sigmaR2_inv);
     }
 
-    const outR = new Uint8Array(totalPixels);
-    const outG = new Uint8Array(totalPixels);
-    const outB = new Uint8Array(totalPixels);
+    const s = Math.min(1.0, Math.max(0.0, strength));
+    const invS = 1.0 - s;
+    const out = new Uint8ClampedArray(data.length);
 
+    // Fast unrolled bilateral pass (avoids nested loop overhead)
     for (let y = 1; y < height - 1; y++) {
       const yOff = y * width;
+      const yU = (y - 1) * width;
+      const yD = (y + 1) * width;
+
       for (let x = 1; x < width - 1; x++) {
-        const idx = (yOff + x) * 4;
-        const centerL = lum[yOff + x];
+        const pIdx = yOff + x;
+        const idx = pIdx * 4;
+        const centerL = lum[pIdx];
 
         let sumW = 1.0;
         let sumR = data[idx];
         let sumG = data[idx + 1];
         let sumB = data[idx + 2];
 
-        for (let dy = -1; dy <= 1; dy++) {
-          const nyOff = (y + dy) * width;
-          for (let dx = -1; dx <= 1; dx++) {
-            if (dx === 0 && dy === 0) continue;
-            const nIdx = (nyOff + (x + dx)) * 4;
-            const diffL = Math.abs(lum[nyOff + (x + dx)] - centerL);
-            const ws = (dx * dx + dy * dy === 1) ? 0.65 : 0.38;
-            const w = ws * lut[diffL];
+        // 4 Orthogonal neighbors (weight 0.65)
+        const idxU = (yU + x) * 4;
+        const wU = 0.65 * lut[Math.abs(lum[yU + x] - centerL)];
+        sumW += wU; sumR += data[idxU] * wU; sumG += data[idxU + 1] * wU; sumB += data[idxU + 2] * wU;
 
-            sumW += w;
-            sumR += data[nIdx] * w;
-            sumG += data[nIdx + 1] * w;
-            sumB += data[nIdx + 2] * w;
-          }
+        const idxD = (yD + x) * 4;
+        const wD = 0.65 * lut[Math.abs(lum[yD + x] - centerL)];
+        sumW += wD; sumR += data[idxD] * wD; sumG += data[idxD + 1] * wD; sumB += data[idxD + 2] * wD;
+
+        const idxL = (yOff + x - 1) * 4;
+        const wL = 0.65 * lut[Math.abs(lum[yOff + x - 1] - centerL)];
+        sumW += wL; sumR += data[idxL] * wL; sumG += data[idxL + 1] * wL; sumB += data[idxL + 2] * wL;
+
+        const idxR = (yOff + x + 1) * 4;
+        const wR = 0.65 * lut[Math.abs(lum[yOff + x + 1] - centerL)];
+        sumW += wR; sumR += data[idxR] * wR; sumG += data[idxR + 1] * wR; sumB += data[idxR + 2] * wR;
+
+        // 4 Diagonal neighbors (weight 0.38)
+        const idxTL = (yU + x - 1) * 4;
+        const wTL = 0.38 * lut[Math.abs(lum[yU + x - 1] - centerL)];
+        sumW += wTL; sumR += data[idxTL] * wTL; sumG += data[idxTL + 1] * wTL; sumB += data[idxTL + 2] * wTL;
+
+        const idxTR = (yU + x + 1) * 4;
+        const wTR = 0.38 * lut[Math.abs(lum[yU + x + 1] - centerL)];
+        sumW += wTR; sumR += data[idxTR] * wTR; sumG += data[idxTR + 1] * wTR; sumB += data[idxTR + 2] * wTR;
+
+        const idxBL = (yD + x - 1) * 4;
+        const wBL = 0.38 * lut[Math.abs(lum[yD + x - 1] - centerL)];
+        sumW += wBL; sumR += data[idxBL] * wBL; sumG += data[idxBL + 1] * wBL; sumB += data[idxBL + 2] * wBL;
+
+        const idxBR = (yD + x + 1) * 4;
+        const wBR = 0.38 * lut[Math.abs(lum[yD + x + 1] - centerL)];
+        sumW += wBR; sumR += data[idxBR] * wBR; sumG += data[idxBR + 1] * wBR; sumB += data[idxBR + 2] * wBR;
+
+        const invW = 1.0 / sumW;
+        const filteredR = sumR * invW;
+        const filteredG = sumG * invW;
+        const filteredB = sumB * invW;
+
+        if (s >= 0.99) {
+          out[idx] = filteredR + 0.5;
+          out[idx + 1] = filteredG + 0.5;
+          out[idx + 2] = filteredB + 0.5;
+        } else {
+          out[idx] = data[idx] * invS + filteredR * s + 0.5;
+          out[idx + 1] = data[idx + 1] * invS + filteredG * s + 0.5;
+          out[idx + 2] = data[idx + 2] * invS + filteredB * s + 0.5;
         }
-
-        const pIdx = yOff + x;
-        outR[pIdx] = Math.round(sumR / sumW);
-        outG[pIdx] = Math.round(sumG / sumW);
-        outB[pIdx] = Math.round(sumB / sumW);
       }
     }
 
-    const s = Math.min(1.0, Math.max(0.0, strength));
-    const invS = 1.0 - s;
+    // Blit smoothed region into data
     for (let y = 1; y < height - 1; y++) {
-      const yOff = y * width;
-      for (let x = 1; x < width - 1; x++) {
-        const pIdx = yOff + x;
-        const idx = pIdx * 4;
-        data[idx] = (data[idx] * invS + outR[pIdx] * s) | 0;
-        data[idx + 1] = (data[idx + 1] * invS + outG[pIdx] * s) | 0;
-        data[idx + 2] = (data[idx + 2] * invS + outB[pIdx] * s) | 0;
-      }
+      const start = (y * width + 1) * 4;
+      const end = (y * width + width - 1) * 4;
+      data.set(out.subarray(start, end), start);
     }
   }
 
@@ -1627,10 +1655,6 @@ class DocumentScanner {
   // =========================================================================
   static applyUnsharpMask(data, width, height, amount = 0.65) {
     const totalPixels = width * height;
-
-    const blurR = new Uint8Array(totalPixels);
-    const blurG = new Uint8Array(totalPixels);
-    const blurB = new Uint8Array(totalPixels);
 
     const tempR = new Uint8Array(totalPixels);
     const tempG = new Uint8Array(totalPixels);
@@ -1648,39 +1672,31 @@ class DocumentScanner {
       }
     }
 
-    // 2. Vertical Gaussian Pass
+    // 2. Fused Vertical Gaussian & Asymmetric Difference Pass
+    const alpha = Math.max(0.1, Math.min(2.0, amount));
     for (let y = 2; y < height - 2; y++) {
       const yOff = y * width;
       const yU2 = (y - 2) * width, yU1 = (y - 1) * width, yD1 = (y + 1) * width, yD2 = (y + 2) * width;
       for (let x = 2; x < width - 2; x++) {
         const idx = yOff + x;
-        blurR[idx] = (tempR[yU2 + x] + 4 * tempR[yU1 + x] + 6 * tempR[idx] + 4 * tempR[yD1 + x] + tempR[yD2 + x]) >> 4;
-        blurG[idx] = (tempG[yU2 + x] + 4 * tempG[yU1 + x] + 6 * tempG[idx] + 4 * tempG[yD1 + x] + tempG[yD2 + x]) >> 4;
-        blurB[idx] = (tempB[yU2 + x] + 4 * tempB[yU1 + x] + 6 * tempB[idx] + 4 * tempB[yD1 + x] + tempB[yD2 + x]) >> 4;
-      }
-    }
+        const blurR = (tempR[yU2 + x] + 4 * tempR[yU1 + x] + 6 * tempR[idx] + 4 * tempR[yD1 + x] + tempR[yD2 + x]) >> 4;
+        const blurG = (tempG[yU2 + x] + 4 * tempG[yU1 + x] + 6 * tempG[idx] + 4 * tempG[yD1 + x] + tempG[yD2 + x]) >> 4;
+        const blurB = (tempB[yU2 + x] + 4 * tempB[yU1 + x] + 6 * tempB[idx] + 4 * tempB[yD1 + x] + tempB[yD2 + x]) >> 4;
 
-    // 3. Unsharp Masking with Halo Suppression
-    const alpha = Math.max(0.1, Math.min(2.0, amount));
-    for (let y = 2; y < height - 2; y++) {
-      const yOff = y * width;
-      for (let x = 2; x < width - 2; x++) {
-        const pIdx = yOff + x;
-        const idx = pIdx * 4;
-
-        const r = data[idx], g = data[idx + 1], b = data[idx + 2];
-        const diffR = r - blurR[pIdx];
-        const diffG = g - blurG[pIdx];
-        const diffB = b - blurB[pIdx];
+        const pIdx = idx * 4;
+        const r = data[pIdx], g = data[pIdx + 1], b = data[pIdx + 2];
+        const diffR = r - blurR;
+        const diffG = g - blurG;
+        const diffB = b - blurB;
 
         // Asymmetric halo suppression: deepen dark ink (diff < 0) fully, dampen white halo (diff > 0)
         const boostR = diffR < 0 ? alpha : alpha * 0.45;
         const boostG = diffG < 0 ? alpha : alpha * 0.45;
         const boostB = diffB < 0 ? alpha : alpha * 0.45;
 
-        data[idx] = Math.min(255, Math.max(0, Math.round(r + boostR * diffR)));
-        data[idx + 1] = Math.min(255, Math.max(0, Math.round(g + boostG * diffG)));
-        data[idx + 2] = Math.min(255, Math.max(0, Math.round(b + boostB * diffB)));
+        data[pIdx] = Math.min(255, Math.max(0, (r + boostR * diffR + 0.5) | 0));
+        data[pIdx + 1] = Math.min(255, Math.max(0, (g + boostG * diffG + 0.5) | 0));
+        data[pIdx + 2] = Math.min(255, Math.max(0, (b + boostB * diffB + 0.5) | 0));
       }
     }
   }
@@ -1855,6 +1871,11 @@ class DocumentScanner {
   }
 }
 
-window.LocalDocScanDB = LocalDocScanDB;
-window.ScanFeedback = ScanFeedback;
-window.DocumentScanner = DocumentScanner;
+if (typeof window !== 'undefined') {
+  window.LocalDocScanDB = LocalDocScanDB;
+  window.ScanFeedback = ScanFeedback;
+  window.DocumentScanner = DocumentScanner;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { LocalDocScanDB, ScanFeedback, DocumentScanner };
+}
