@@ -1417,6 +1417,12 @@ class DocumentScanner {
       DocumentScanner.applyCLAHE(data, imgW, imgH, clip);
     }
 
+    // 3. Strict Pipeline Step: De-Moiré Filter (runs after CLAHE, before Sharpen)
+    if (options.demoir) {
+      const strength = typeof options.demoir === 'number' ? options.demoir : (options.demoirStrength || 1.0);
+      DocumentScanner.applyDeMoire(data, imgW, imgH, strength);
+    }
+
     // Apply brightness and contrast adjustments if requested
     if (brightnessAdjust !== 0 || contrastAdjust !== 0) {
       const factor = (259 * (contrastAdjust + 255)) / (255 * (259 - contrastAdjust));
@@ -1534,6 +1540,77 @@ class DocumentScanner {
           data[idx + 1] = Math.min(255, Math.max(0, Math.round(g * gain)));
           data[idx + 2] = Math.min(255, Math.max(0, Math.round(b * gain)));
         }
+      }
+    }
+  }
+
+  // =========================================================================
+  // De-Moiré Frequency Filtering (Cross-Bilateral Smoothing)
+  // Suppresses high-frequency Bayer and screen pixel-matrix moiré fringes
+  // while preserving sharp document text stroke boundaries.
+  // =========================================================================
+  static applyDeMoire(data, width, height, strength = 1.0) {
+    const totalPixels = width * height;
+    const lum = new Uint8Array(totalPixels);
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+      lum[j] = (data[i] * 77 + data[i + 1] * 150 + data[i + 2] * 29) >> 8;
+    }
+
+    // Precomputed exp LUT for integer photometric differences [0..255]
+    const sigmaR2_inv = 1 / (2 * 28 * 28);
+    const lut = new Float32Array(256);
+    for (let d = 0; d < 256; d++) {
+      lut[d] = Math.exp(-(d * d) * sigmaR2_inv);
+    }
+
+    const outR = new Uint8Array(totalPixels);
+    const outG = new Uint8Array(totalPixels);
+    const outB = new Uint8Array(totalPixels);
+
+    for (let y = 1; y < height - 1; y++) {
+      const yOff = y * width;
+      for (let x = 1; x < width - 1; x++) {
+        const idx = (yOff + x) * 4;
+        const centerL = lum[yOff + x];
+
+        let sumW = 1.0;
+        let sumR = data[idx];
+        let sumG = data[idx + 1];
+        let sumB = data[idx + 2];
+
+        for (let dy = -1; dy <= 1; dy++) {
+          const nyOff = (y + dy) * width;
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            const nIdx = (nyOff + (x + dx)) * 4;
+            const diffL = Math.abs(lum[nyOff + (x + dx)] - centerL);
+            const ws = (dx * dx + dy * dy === 1) ? 0.65 : 0.38;
+            const w = ws * lut[diffL];
+
+            sumW += w;
+            sumR += data[nIdx] * w;
+            sumG += data[nIdx + 1] * w;
+            sumB += data[nIdx + 2] * w;
+          }
+        }
+
+        const pIdx = yOff + x;
+        outR[pIdx] = Math.round(sumR / sumW);
+        outG[pIdx] = Math.round(sumG / sumW);
+        outB[pIdx] = Math.round(sumB / sumW);
+      }
+    }
+
+    const s = Math.min(1.0, Math.max(0.0, strength));
+    const invS = 1.0 - s;
+    for (let y = 1; y < height - 1; y++) {
+      const yOff = y * width;
+      for (let x = 1; x < width - 1; x++) {
+        const pIdx = yOff + x;
+        const idx = pIdx * 4;
+        data[idx] = (data[idx] * invS + outR[pIdx] * s) | 0;
+        data[idx + 1] = (data[idx + 1] * invS + outG[pIdx] * s) | 0;
+        data[idx + 2] = (data[idx + 2] * invS + outB[pIdx] * s) | 0;
       }
     }
   }

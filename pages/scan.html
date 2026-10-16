@@ -1885,6 +1885,9 @@
         <button type="button" class="cs-filter-pill-btn" id="btn-filter-clahe" onclick="toggleCLAHEFilter()" title="Contrast Limited Adaptive Histogram Equalization - boosts faint pencil and handwriting">
           <span>⚖️ CLAHE Boost</span>
         </button>
+        <button type="button" class="cs-filter-pill-btn" id="btn-filter-demoir" onclick="toggleDeMoireFilter()" title="De-Moiré - eliminates screen frequency grid lines and glossy surface fringes">
+          <span>🛡️ De-Moiré</span>
+        </button>
       </div>
 
       <!-- Bottom Actions -->
@@ -3044,7 +3047,8 @@
         stagingPage.corners,
         {
           docType: stagingPage.docType,
-          clahe: !!stagingPage.clahe
+          clahe: !!stagingPage.clahe,
+          demoir: !!stagingPage.demoir
         }
       );
 
@@ -3072,6 +3076,8 @@
       document.querySelectorAll(".cs-filter-pill-btn").forEach(p => {
         if (p.id === "btn-filter-clahe") {
           p.classList.toggle("active", !!stagingPage.clahe);
+        } else if (p.id === "btn-filter-demoir") {
+          p.classList.toggle("active", !!stagingPage.demoir);
         } else {
           p.classList.toggle("active", p.dataset.filter === filterKey);
         }
@@ -3080,6 +3086,11 @@
 
     function toggleCLAHEFilter() {
       stagingPage.clahe = !stagingPage.clahe;
+      renderFilterPreview();
+    }
+
+    function toggleDeMoireFilter() {
+      stagingPage.demoir = !stagingPage.demoir;
       renderFilterPreview();
     }
 
@@ -3129,6 +3140,7 @@
         corners: stagingPage.corners,
         filter: stagingPage.filter,
         clahe: !!stagingPage.clahe,
+        demoir: !!stagingPage.demoir,
         rotation: stagingPage.rotation,
         processedDataUrl: currentEnhancedData
       };
@@ -3137,6 +3149,7 @@
         docPages[stagingIsEditingIndex].corners = stagingPage.corners;
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
         docPages[stagingIsEditingIndex].clahe = !!stagingPage.clahe;
+        docPages[stagingIsEditingIndex].demoir = !!stagingPage.demoir;
         docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
         docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
         currentViewingPageIndex = stagingIsEditingIndex;
@@ -3497,7 +3510,8 @@
         docType: page.docType || 'a4',
         rotation: page.rotation || 0,
         filter: page.filter || 'natural',
-        clahe: !!page.clahe
+        clahe: !!page.clahe,
+        demoir: !!page.demoir
       };
       stagingIsEditingIndex = idx;
       rawWarpedData = null;
