@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v62-universal-i18n-12lang';
+const CACHE_NAME = 'localdoc-v63-phase3-offline';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -31,6 +31,7 @@ const ASSETS_TO_CACHE = [
   '/js/lib/docx.min.js',
   '/js/lib/sheetjs.min.js',
   '/js/lib/tesseract.min.js',
+  '/js/lib/mediapipe/selfie_segmentation.js',
   '/js/tools/convert.js',
   '/js/tools/organize.js',
   '/js/tools/edit.js',

@@ -14,8 +14,11 @@
 | TSK-008 | Phase 2: Remediate DEF-003 - Standardize `/blog/` clean URL canonical | Lead 1 | done | TSK-005 | 2026-10-16 | Canonical and sitemap standardized to `https://localdoc.org/blog/` |
 | TSK-009 | Phase 2: Global Design System & Component Synchronization | Lead 3 | done | TSK-004 | 2026-10-16 | Harmonized design tokens, fonts, theme toggles, and consent scripts |
 | TSK-010 | Phase 2: QA Verification & Pre-Release Sign-Off Pass | QA Manager | done | TSK-006..TSK-009 | 2026-10-16 | Full sign-off issued in `/agents/qa/signoff/signoff-2026-10-16-phase2.md` |
-| TSK-011 | Phase 3: Enhance Document Reader & OCR Engine | Lead 2 | todo | TSK-010 | 2026-10-22 | Optimize canvas text layer rendering and multi-language OCR |
-| TSK-012 | Phase 3: Service Worker Offline Caching for All Core Tools | Lead 2 | todo | TSK-010 | 2026-10-23 | Complete PWA cache manifest including local MediaPipe/PDFLib assets |
-| TSK-013 | Phase 3: Interactive Tool FAQ Schema & Keyword Expansion | Lead 1 | todo | TSK-010 | 2026-10-24 | Expand FAQPage schema and structured how-to search snippets |
-| TSK-014 | Phase 3: Tool How-To Guides with Step-by-Step UI Verification | Lead 3 | todo | TSK-010 | 2026-10-25 | Refresh tool step-by-step guides with updated UI screenshots |
-| TSK-015 | Phase 3: Multi-Device Human Flow QA Verification & Sign-Off | QA Manager | todo | TSK-011..TSK-014 | 2026-10-26 | Execute human upload/download testing across 5-device class matrix |
+| TSK-011 | Phase 3: Enhance Document Reader & OCR Engine | Lead 2 | done | TSK-010 | 2026-10-16 | Hi-DPI / Retina canvas DPR rendering scaling implemented |
+| TSK-012 | Phase 3: Service Worker Offline Caching for All Core Tools | Lead 2 | done | TSK-010 | 2026-10-16 | 111 assets cached in `localdoc-v63-phase3-offline`; 0 missing assets |
+| TSK-013 | Phase 3: Interactive Tool FAQ Schema & Keyword Expansion | Lead 1 | done | TSK-010 | 2026-10-16 | Validated BreadcrumbList, SoftwareApplication, FAQPage JSON-LD schemas |
+| TSK-014 | Phase 3: Tool How-To Guides with Step-by-Step UI Verification | Lead 3 | done | TSK-010 | 2026-10-16 | Verified clean navigation, breadcrumbs, and responsive layout across guides |
+| TSK-015 | Phase 3: Multi-Device Human Flow QA Verification & Sign-Off | QA Manager | done | TSK-011..TSK-014 | 2026-10-16 | 5-device class verification pass; zero defects; sign-off issued |
+| TSK-016 | Phase 4: Keyword Gap Discovery & High-Intent Guide Expansion | Lead 1 | todo | TSK-015 | 2026-10-28 | Research emerging privacy PDF & client-side OCR search queries |
+| TSK-017 | Phase 4: Publish High-Yield Tutorial Guides with Real Screenshots | Lead 3 | todo | TSK-016 | 2026-10-30 | Author comprehensive new how-to guides using real tool steps and WebP |
+| TSK-018 | Phase 5: Weekly Automated Regression & Core Web Vitals Monitor | QA Manager | todo | TSK-017 | 2026-11-02 | Execute weekly recurring regression suite across all 80 pages |

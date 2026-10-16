@@ -241,11 +241,15 @@
     const page = await pdfDoc.getPage(pageNumber);
     const viewport = page.getViewport({ scale: pdfScale, rotation: pdfRotation });
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    canvas.height = Math.floor(viewport.height * dpr);
+    canvas.width = Math.floor(viewport.width * dpr);
+    canvas.style.height = Math.floor(viewport.height) + 'px';
+    canvas.style.width = Math.floor(viewport.width) + 'px';
     canvas.className = 'reader-canvas-shadow';
+    ctx.scale(dpr, dpr);
 
     contentContainer.appendChild(canvas);
 
