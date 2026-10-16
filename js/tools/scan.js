@@ -1423,6 +1423,12 @@ class DocumentScanner {
       DocumentScanner.applyDeMoire(data, imgW, imgH, strength);
     }
 
+    // 4. Strict Pipeline Step: Unsharp Mask Text Sharpening (runs last in pipeline)
+    if (options.sharpen) {
+      const amount = typeof options.sharpen === 'number' ? options.sharpen : (options.sharpenAmount || 0.65);
+      DocumentScanner.applyUnsharpMask(data, imgW, imgH, amount);
+    }
+
     // Apply brightness and contrast adjustments if requested
     if (brightnessAdjust !== 0 || contrastAdjust !== 0) {
       const factor = (259 * (contrastAdjust + 255)) / (255 * (259 - contrastAdjust));
@@ -1611,6 +1617,70 @@ class DocumentScanner {
         data[idx] = (data[idx] * invS + outR[pIdx] * s) | 0;
         data[idx + 1] = (data[idx + 1] * invS + outG[pIdx] * s) | 0;
         data[idx + 2] = (data[idx + 2] * invS + outB[pIdx] * s) | 0;
+      }
+    }
+  }
+
+  // =========================================================================
+  // Unsharp Mask Text Edge Sharpening
+  // Deepens stroke boundaries for laser-sharp text without white halos.
+  // =========================================================================
+  static applyUnsharpMask(data, width, height, amount = 0.65) {
+    const totalPixels = width * height;
+
+    const blurR = new Uint8Array(totalPixels);
+    const blurG = new Uint8Array(totalPixels);
+    const blurB = new Uint8Array(totalPixels);
+
+    const tempR = new Uint8Array(totalPixels);
+    const tempG = new Uint8Array(totalPixels);
+    const tempB = new Uint8Array(totalPixels);
+
+    // 1. Horizontal Gaussian Pass [1, 4, 6, 4, 1] / 16
+    for (let y = 0; y < height; y++) {
+      const yOff = y * width;
+      for (let x = 2; x < width - 2; x++) {
+        const idx = (yOff + x) * 4;
+        const iL2 = idx - 8, iL1 = idx - 4, iR1 = idx + 4, iR2 = idx + 8;
+        tempR[yOff + x] = (data[iL2] + 4 * data[iL1] + 6 * data[idx] + 4 * data[iR1] + data[iR2]) >> 4;
+        tempG[yOff + x] = (data[iL2 + 1] + 4 * data[iL1 + 1] + 6 * data[idx + 1] + 4 * data[iR1 + 1] + data[iR2 + 1]) >> 4;
+        tempB[yOff + x] = (data[iL2 + 2] + 4 * data[iL1 + 2] + 6 * data[idx + 2] + 4 * data[iR1 + 2] + data[iR2 + 2]) >> 4;
+      }
+    }
+
+    // 2. Vertical Gaussian Pass
+    for (let y = 2; y < height - 2; y++) {
+      const yOff = y * width;
+      const yU2 = (y - 2) * width, yU1 = (y - 1) * width, yD1 = (y + 1) * width, yD2 = (y + 2) * width;
+      for (let x = 2; x < width - 2; x++) {
+        const idx = yOff + x;
+        blurR[idx] = (tempR[yU2 + x] + 4 * tempR[yU1 + x] + 6 * tempR[idx] + 4 * tempR[yD1 + x] + tempR[yD2 + x]) >> 4;
+        blurG[idx] = (tempG[yU2 + x] + 4 * tempG[yU1 + x] + 6 * tempG[idx] + 4 * tempG[yD1 + x] + tempG[yD2 + x]) >> 4;
+        blurB[idx] = (tempB[yU2 + x] + 4 * tempB[yU1 + x] + 6 * tempB[idx] + 4 * tempB[yD1 + x] + tempB[yD2 + x]) >> 4;
+      }
+    }
+
+    // 3. Unsharp Masking with Halo Suppression
+    const alpha = Math.max(0.1, Math.min(2.0, amount));
+    for (let y = 2; y < height - 2; y++) {
+      const yOff = y * width;
+      for (let x = 2; x < width - 2; x++) {
+        const pIdx = yOff + x;
+        const idx = pIdx * 4;
+
+        const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+        const diffR = r - blurR[pIdx];
+        const diffG = g - blurG[pIdx];
+        const diffB = b - blurB[pIdx];
+
+        // Asymmetric halo suppression: deepen dark ink (diff < 0) fully, dampen white halo (diff > 0)
+        const boostR = diffR < 0 ? alpha : alpha * 0.45;
+        const boostG = diffG < 0 ? alpha : alpha * 0.45;
+        const boostB = diffB < 0 ? alpha : alpha * 0.45;
+
+        data[idx] = Math.min(255, Math.max(0, Math.round(r + boostR * diffR)));
+        data[idx + 1] = Math.min(255, Math.max(0, Math.round(g + boostG * diffG)));
+        data[idx + 2] = Math.min(255, Math.max(0, Math.round(b + boostB * diffB)));
       }
     }
   }

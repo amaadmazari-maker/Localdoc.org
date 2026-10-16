@@ -1888,6 +1888,9 @@
         <button type="button" class="cs-filter-pill-btn" id="btn-filter-demoir" onclick="toggleDeMoireFilter()" title="De-Moiré - eliminates screen frequency grid lines and glossy surface fringes">
           <span>🛡️ De-Moiré</span>
         </button>
+        <button type="button" class="cs-filter-pill-btn" id="btn-filter-sharpen" onclick="toggleSharpenFilter()" title="Unsharp Mask - sharpens text edges and deepens ink strokes without bright halos">
+          <span>✨ Sharpen Ink</span>
+        </button>
       </div>
 
       <!-- Bottom Actions -->
@@ -3048,7 +3051,8 @@
         {
           docType: stagingPage.docType,
           clahe: !!stagingPage.clahe,
-          demoir: !!stagingPage.demoir
+          demoir: !!stagingPage.demoir,
+          sharpen: !!stagingPage.sharpen
         }
       );
 
@@ -3078,6 +3082,8 @@
           p.classList.toggle("active", !!stagingPage.clahe);
         } else if (p.id === "btn-filter-demoir") {
           p.classList.toggle("active", !!stagingPage.demoir);
+        } else if (p.id === "btn-filter-sharpen") {
+          p.classList.toggle("active", !!stagingPage.sharpen);
         } else {
           p.classList.toggle("active", p.dataset.filter === filterKey);
         }
@@ -3091,6 +3097,11 @@
 
     function toggleDeMoireFilter() {
       stagingPage.demoir = !stagingPage.demoir;
+      renderFilterPreview();
+    }
+
+    function toggleSharpenFilter() {
+      stagingPage.sharpen = !stagingPage.sharpen;
       renderFilterPreview();
     }
 
@@ -3141,6 +3152,7 @@
         filter: stagingPage.filter,
         clahe: !!stagingPage.clahe,
         demoir: !!stagingPage.demoir,
+        sharpen: !!stagingPage.sharpen,
         rotation: stagingPage.rotation,
         processedDataUrl: currentEnhancedData
       };
@@ -3150,6 +3162,7 @@
         docPages[stagingIsEditingIndex].filter = stagingPage.filter;
         docPages[stagingIsEditingIndex].clahe = !!stagingPage.clahe;
         docPages[stagingIsEditingIndex].demoir = !!stagingPage.demoir;
+        docPages[stagingIsEditingIndex].sharpen = !!stagingPage.sharpen;
         docPages[stagingIsEditingIndex].rotation = stagingPage.rotation;
         docPages[stagingIsEditingIndex].processedDataUrl = currentEnhancedData;
         currentViewingPageIndex = stagingIsEditingIndex;
@@ -3511,7 +3524,8 @@
         rotation: page.rotation || 0,
         filter: page.filter || 'natural',
         clahe: !!page.clahe,
-        demoir: !!page.demoir
+        demoir: !!page.demoir,
+        sharpen: !!page.sharpen
       };
       stagingIsEditingIndex = idx;
       rawWarpedData = null;
@@ -3530,7 +3544,12 @@
       try {
         const raw = page.rawImg;
         if (raw) {
-          const processed = DocumentScanner.processImage(raw, page.filter || 'natural', page.rotation || 0, page.corners, { docType: page.docType });
+          const processed = DocumentScanner.processImage(raw, page.filter || 'natural', page.rotation || 0, page.corners, {
+            docType: page.docType,
+            clahe: !!page.clahe,
+            demoir: !!page.demoir,
+            sharpen: !!page.sharpen
+          });
           page.processedDataUrl = processed;
         }
         await autoSaveDocumentToDB();
