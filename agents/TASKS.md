@@ -19,6 +19,6 @@
 | TSK-013 | Phase 3: Interactive Tool FAQ Schema & Keyword Expansion | Lead 1 | done | TSK-010 | 2026-10-16 | Validated BreadcrumbList, SoftwareApplication, FAQPage JSON-LD schemas |
 | TSK-014 | Phase 3: Tool How-To Guides with Step-by-Step UI Verification | Lead 3 | done | TSK-010 | 2026-10-16 | Verified clean navigation, breadcrumbs, and responsive layout across guides |
 | TSK-015 | Phase 3: Multi-Device Human Flow QA Verification & Sign-Off | QA Manager | done | TSK-011..TSK-014 | 2026-10-16 | 5-device class verification pass; zero defects; sign-off issued |
-| TSK-016 | Phase 4: Keyword Gap Discovery & High-Intent Guide Expansion | Lead 1 | todo | TSK-015 | 2026-10-28 | Research emerging privacy PDF & client-side OCR search queries |
-| TSK-017 | Phase 4: Publish High-Yield Tutorial Guides with Real Screenshots | Lead 3 | todo | TSK-016 | 2026-10-30 | Author comprehensive new how-to guides using real tool steps and WebP |
-| TSK-018 | Phase 5: Weekly Automated Regression & Core Web Vitals Monitor | QA Manager | todo | TSK-017 | 2026-11-02 | Execute weekly recurring regression suite across all 80 pages |
+| TSK-016 | Phase 4: Keyword Gap Discovery & High-Intent Guide Expansion | Lead 1 | done | TSK-015 | 2026-10-16 | Identified Protect PDF gap; crafted technical brief & keyword mapping |
+| TSK-017 | Phase 4: Publish High-Yield Tutorial Guides with Real Screenshots | Lead 3 | done | TSK-016 | 2026-10-16 | Published `blog/protect-pdf-guide.html` with real steps, schemas, and links |
+| TSK-018 | Phase 5: Continuous Regression & Core Web Vitals Monitor | QA Manager | doing | TSK-017 | 2026-10-23 | Ongoing automated test pass and site health verification |
