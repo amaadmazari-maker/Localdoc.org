@@ -223,8 +223,10 @@ const IDPhoto = {
     if (this._segmenterInstance) return this._segmenterInstance;
     if (typeof window.SelfieSegmentation !== 'undefined') {
       try {
+        const isPagesDir = window.location.pathname.includes('/pages/');
+        const localBasePath = isPagesDir ? '../js/lib/mediapipe/' : 'js/lib/mediapipe/';
         const segmenter = new window.SelfieSegmentation({
-          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
+          locateFile: (file) => `${localBasePath}${file}`
         });
         segmenter.setOptions({
           modelSelection: 0, // 0 is fast general model (256x256, 3MB), crash-proof on mobile WebGL
