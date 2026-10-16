@@ -240,7 +240,7 @@ class ScanFeedback {
       if (window.AndroidNative && window.AndroidNative.hapticClick) {
         window.AndroidNative.hapticClick();
       } else if (navigator.vibrate) {
-        navigator.vibrate(35);
+        navigator.vibrate([30, 40, 30]); // Dual-pulse mechanical shutter haptics
       }
     } catch (e) {}
   }

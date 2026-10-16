@@ -556,6 +556,77 @@
       z-index: 2;
     }
 
+    /* Persistent Auto-Save Confirmation Banner (Section 4.3) */
+    .cs-cam-autosave-pill {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #E2E8F0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      pointer-events: none;
+    }
+
+    /* Running Batch Page Counter Pill */
+    .cs-cam-batch-counter {
+      position: absolute;
+      top: 68px;
+      right: 16px;
+      background: rgba(13, 148, 136, 0.9);
+      color: #FFFFFF;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 15;
+      pointer-events: none;
+      letter-spacing: 0.03em;
+    }
+
+    /* Floating Thumbnail of Last Committed Page (fades after 2s) */
+    .cs-cam-float-thumb {
+      position: absolute;
+      bottom: 120px;
+      left: 18px;
+      background: #0F172A;
+      border: 2px solid var(--cs-teal-light);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      animation: floatThumbFade 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+    }
+    .cs-cam-float-thumb img {
+      width: 64px;
+      height: 90px;
+      object-fit: cover;
+      display: block;
+    }
+    .cs-float-thumb-badge {
+      background: rgba(15, 23, 42, 0.9);
+      color: #A7F3D0;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 2px 4px;
+    }
+    @keyframes floatThumbFade {
+      0% { opacity: 0; transform: translateY(12px) scale(0.9); }
+      15% { opacity: 1; transform: translateY(0) scale(1); }
+      75% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-8px) scale(0.95); }
+    }
+
     /* =========================================================================
        2. FULLSCREEN 4-CORNER CROP STAGE (WITH MAGNIFYING LOUPE)
        ========================================================================= */
@@ -1829,6 +1900,12 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
+      <!-- Persistent Auto-Save Confirmation Banner (Section 4.3) -->
+      <div id="cam-autosave-hud" class="cs-cam-autosave-pill" style="display:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        <span id="cam-autosave-text">Auto-saved: 0 pages (IndexedDB)</span>
+      </div>
+
       <div style="display:flex; align-items:center; gap:8px;">
         <button type="button" class="cs-cam-hud-btn" id="btn-camera-torch" onclick="toggleCameraTorch()" title="Flashlight" aria-label="Flashlight">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
@@ -1843,6 +1920,17 @@
     <div class="cs-cam-viewport">
       <video id="camera-feed-video" class="cs-cam-video" playsinline autoplay muted></video>
       <canvas id="camera-raw-canvas" style="display:none;"></canvas>
+
+      <!-- Running Batch Page Counter Pill (Top-Right of Viewport, Section 4.3) -->
+      <div id="cam-batch-counter-pill" class="cs-cam-batch-counter" style="display:none;">
+        <span id="cam-batch-counter-text">Batch: Ready</span>
+      </div>
+
+      <!-- Floating Thumbnail of Last Committed Page (Fades after 2s, Section 4.3) -->
+      <div id="cam-floating-snap-thumb" class="cs-cam-float-thumb" style="display:none;">
+        <img id="cam-floating-thumb-img" src="" alt="Last Scanned Page" width="64" height="90">
+        <span class="cs-float-thumb-badge" id="cam-floating-thumb-badge">Page 1</span>
+      </div>
 
       <!-- Clean Live Status Pill -->
       <div class="cs-cam-tracking-pill" id="cam-paper-tracking">
@@ -2560,7 +2648,53 @@
       camMode = mode;
       document.getElementById("mode-single-btn").classList.toggle("active", mode === 'single');
       document.getElementById("mode-batch-btn").classList.toggle("active", mode === 'batch');
-      document.getElementById("btn-batch-snap-next").style.display = (mode === 'batch')  ?  'inline-flex' : 'none';
+      const batchNextBtn = document.getElementById("btn-batch-snap-next");
+      if (batchNextBtn) batchNextBtn.style.display = (mode === 'batch')  ?  'inline-flex' : 'none';
+      updateCamBatchHUD();
+    }
+
+    function updateCamBatchHUD() {
+      const autosaveHud = document.getElementById("cam-autosave-hud");
+      const autosaveText = document.getElementById("cam-autosave-text");
+      const batchCounterPill = document.getElementById("cam-batch-counter-pill");
+      const batchCounterText = document.getElementById("cam-batch-counter-text");
+
+      const count = docPages.length;
+
+      // 1. Persistent Auto-Save Confirmation Banner (Section 4.3)
+      if (autosaveHud && autosaveText) {
+        if (count > 0) {
+          autosaveText.textContent = `Auto-saved: ${count} ${count === 1 ? 'page' : 'pages'} (IndexedDB)`;
+          autosaveHud.style.display = "inline-flex";
+        } else {
+          autosaveHud.style.display = "none";
+        }
+      }
+
+      // 2. Running Batch Page Counter Pill (Section 4.3)
+      if (batchCounterPill && batchCounterText) {
+        if (camMode === 'batch') {
+          batchCounterText.textContent = count > 0 ? `Page ${count}` : `Batch Mode`;
+          batchCounterPill.style.display = "block";
+        } else {
+          batchCounterPill.style.display = "none";
+        }
+      }
+    }
+
+    function showFloatingBatchThumbnail(dataUrl, pageNum) {
+      const container = document.getElementById("cam-floating-snap-thumb");
+      const img = document.getElementById("cam-floating-thumb-img");
+      const badge = document.getElementById("cam-floating-thumb-badge");
+      if (!container || !img) return;
+
+      img.src = dataUrl;
+      if (badge) badge.textContent = `Page ${pageNum}`;
+
+      container.style.display = "flex";
+      container.style.animation = "none";
+      void container.offsetWidth; // Force reflow so animation restarts cleanly
+      container.style.animation = "floatThumbFade 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards";
     }
 
     function updateCamStackBadge() {
@@ -2577,6 +2711,7 @@
         thumb.style.display = "none";
         icon.style.display = "block";
       }
+      updateCamBatchHUD();
     }
 
     // Trigger Gallery / Files import with native or web picker
@@ -2808,6 +2943,7 @@
           updateCamStackBadge();
           renderWorkspacePages();
           showBatchHUDIndicator(docPages.length);
+          showFloatingBatchThumbnail(newPageObj.processedDataUrl, docPages.length);
           UIUtils.showToast(`&#10003; Page ${docPages.length} saved (Continuous Batch)! Snap next or tap stack.`, "success");
         }
       } catch (err) {
