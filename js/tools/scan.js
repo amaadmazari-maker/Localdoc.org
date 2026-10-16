@@ -95,13 +95,30 @@ class LocalDocScanDB {
       }
 
       return new Promise((resolve) => {
+        let settled = false;
+        const finalize = (useFallback = false) => {
+          if (settled) return;
+          settled = true;
+          if (useFallback) this.saveLocalStorageFallback(doc);
+          resolve(doc);
+        };
+
         const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+        transaction.onabort = (e) => {
+          console.warn('LocalDocScanDB save transaction aborted:', e);
+          finalize(true);
+        };
+        transaction.onerror = (e) => {
+          console.warn('LocalDocScanDB save transaction error:', e);
+          finalize(true);
+        };
+
         const store = transaction.objectStore(this.STORE_NAME);
         const request = store.put(doc);
-        request.onsuccess = () => resolve(doc);
-        request.onerror = () => {
-          this.saveLocalStorageFallback(doc);
-          resolve(doc);
+        request.onsuccess = () => finalize(false);
+        request.onerror = (e) => {
+          console.warn('LocalDocScanDB save request error:', e);
+          finalize(true);
         };
       });
     } catch (e) {
