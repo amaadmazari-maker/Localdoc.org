@@ -263,31 +263,12 @@ function runCannyPipeline(rgba, width, height, highThresh, lowThresh) {
 /**
  * 6. Edge Extraction & 7-8. Convex Hull + Dual-Chain RDP 4-Point Quad Fitting
  */
-function extractDocumentQuad(edgeMap, width, height) {
+function fitQuadFromPoints(pts, width, height) {
   const totalArea = width * height;
-  const edgePoints = [];
+  const hull = computeConvexHull(pts);
+  if (!hull || hull.length < 4) return null;
 
-  // Downsampled stride collection (fast, captures document boundary geometry)
-  for (let y = 3; y < height - 3; y += 2) {
-    const yOff = y * width;
-    for (let x = 3; x < width - 3; x += 2) {
-      if (edgeMap[yOff + x] === 255) {
-        edgePoints.push({ x: x, y: y });
-      }
-    }
-  }
-
-  if (edgePoints.length < 40) {
-    return { found: false };
-  }
-
-  // 1. Andrew's Monotone Chain 2D Convex Hull (O(N log N))
-  const hull = computeConvexHull(edgePoints);
-  if (!hull || hull.length < 4) {
-    return { found: false };
-  }
-
-  // 2. Hull Perimeter and Area Verification (Shoelace Formula)
+  // Perimeter and Area Verification (Shoelace Formula)
   let perim = 0;
   let area = 0;
   for (let i = 0; i < hull.length; i++) {
@@ -299,12 +280,12 @@ function extractDocumentQuad(edgeMap, width, height) {
   area = Math.abs(area) * 0.5;
   const relArea = area / totalArea;
 
-  // Document must occupy between 6% and 96% of the camera frame
-  if (relArea < 0.06 || relArea > 0.96) {
-    return { found: false };
+  // Document must occupy between 6% and 94% of the camera frame
+  if (relArea < 0.06 || relArea > 0.94) {
+    return null;
   }
 
-  // 3. Find Farthest Pair on Convex Hull (Main Diagonal)
+  // Find Farthest Pair on Convex Hull (Main Diagonal)
   let maxD = 0;
   let i1 = 0;
   let i2 = 0;
@@ -325,7 +306,7 @@ function extractDocumentQuad(edgeMap, width, height) {
   const chain1 = reordered.slice(0, idx2 + 1);
   const chain2 = reordered.slice(idx2).concat([reordered[0]]);
 
-  // 4. Adaptively simplify both chains with Ramer-Douglas-Peucker to extract exactly 4 corners
+  // Adaptively simplify both chains with Ramer-Douglas-Peucker to extract exactly 4 corners
   let eps = Math.max(3, perim * 0.015);
   let h1 = rdpOpen(chain1, eps);
   let h2 = rdpOpen(chain2, eps);
@@ -339,10 +320,10 @@ function extractDocumentQuad(edgeMap, width, height) {
 
   let quad = h1.slice(0, -1).concat(h2.slice(0, -1));
   if (quad.length !== 4) {
-    return { found: false };
+    return null;
   }
 
-  // 5. Check Convexity
+  // Check Convexity
   function cross(p1, p2, p3) {
     return (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
   }
@@ -352,10 +333,10 @@ function extractDocumentQuad(edgeMap, width, height) {
   const c4 = cross(quad[3], quad[0], quad[1]);
   const isConvex = (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) || (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
   if (!isConvex) {
-    return { found: false };
+    return null;
   }
 
-  // 6. Check Aspect Ratio Plausibility
+  // Check Aspect Ratio Plausibility
   const topW = Math.hypot(quad[1].x - quad[0].x, quad[1].y - quad[0].y);
   const botW = Math.hypot(quad[2].x - quad[3].x, quad[2].y - quad[3].y);
   const leftH = Math.hypot(quad[3].x - quad[0].x, quad[3].y - quad[0].y);
@@ -365,10 +346,10 @@ function extractDocumentQuad(edgeMap, width, height) {
   const ratio = avgW / Math.max(1, avgH);
 
   if (ratio < 0.18 || ratio > 5.5) {
-    return { found: false };
+    return null;
   }
 
-  // 7. Sort 4 vertices clockwise starting from Top-Left: TL, TR, BR, BL
+  // Sort 4 vertices clockwise starting from Top-Left: TL, TR, BR, BL
   const cx = (quad[0].x + quad[1].x + quad[2].x + quad[3].x) / 4;
   const cy = (quad[0].y + quad[1].y + quad[2].y + quad[3].y) / 4;
 
@@ -391,7 +372,7 @@ function extractDocumentQuad(edgeMap, width, height) {
   const br = sorted[(tlIdx + 2) % 4];
   const bl = sorted[(tlIdx + 3) % 4];
 
-  // 8. Convert to normalized coordinates with +5.5% outward safety breathing room padding
+  // Convert to normalized coordinates with +5.5% outward safety breathing room padding
   function expandCorner(p) {
     const normX = p.x / width;
     const normY = p.y / height;
@@ -419,6 +400,86 @@ function extractDocumentQuad(edgeMap, width, height) {
       bottomLeft: expandCorner(bl)
     }
   };
+}
+
+function extractDocumentQuad(edgeMap, width, height) {
+  // 1. Morphological 3x3 Dilation to close 90-degree corner gaps
+  const dilated = new Uint8Array(width * height);
+  for (let y = 1; y < height - 1; y++) {
+    const yOff = y * width;
+    for (let x = 1; x < width - 1; x++) {
+      let hit = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (edgeMap[(y + dy) * width + (x + dx)] === 255) {
+            hit = 255;
+            break;
+          }
+        }
+        if (hit) break;
+      }
+      dilated[yOff + x] = hit;
+    }
+  }
+
+  // 2. Extract Connected Components & Global Points
+  const visited = new Uint8Array(width * height);
+  const candidates = [];
+  const allPoints = [];
+
+  for (let y = 3; y < height - 3; y += 2) {
+    const yOff = y * width;
+    for (let x = 3; x < width - 3; x += 2) {
+      const idx = yOff + x;
+      if (dilated[idx] === 255) {
+        allPoints.push({ x: x, y: y });
+        if (!visited[idx]) {
+          const comp = [];
+          const queue = [idx];
+          visited[idx] = 1;
+          let qHead = 0;
+          while (qHead < queue.length) {
+            const cur = queue[qHead++];
+            const cx = cur % width;
+            const cy = (cur / width) | 0;
+            comp.push({ x: cx, y: cy });
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) continue;
+                const nx = cx + dx;
+                const ny = cy + dy;
+                if (nx >= 2 && nx < width - 2 && ny >= 2 && ny < height - 2) {
+                  const nidx = ny * width + nx;
+                  if (dilated[nidx] === 255 && !visited[nidx]) {
+                    visited[nidx] = 1;
+                    queue.push(nidx);
+                  }
+                }
+              }
+            }
+          }
+          if (comp.length >= 60) {
+            candidates.push(comp);
+          }
+        }
+      }
+    }
+  }
+
+  // 3. Try top 4 significant candidate components
+  candidates.sort((a, b) => b.length - a.length);
+  for (let i = 0; i < Math.min(4, candidates.length); i++) {
+    const res = fitQuadFromPoints(candidates[i], width, height);
+    if (res && res.found) return res;
+  }
+
+  // 4. Global Fallback
+  if (allPoints.length >= 40) {
+    const res = fitQuadFromPoints(allPoints, width, height);
+    if (res && res.found) return res;
+  }
+
+  return { found: false };
 }
 
 /**
