@@ -280,8 +280,8 @@ function fitQuadFromPoints(pts, width, height) {
   area = Math.abs(area) * 0.5;
   const relArea = area / totalArea;
 
-  // Document must occupy between 6% and 94% of the camera frame
-  if (relArea < 0.06 || relArea > 0.94) {
+  // Document must occupy between 4% and 97% of the camera frame
+  if (relArea < 0.04 || relArea > 0.97) {
     return null;
   }
 
@@ -372,7 +372,7 @@ function fitQuadFromPoints(pts, width, height) {
   const br = sorted[(tlIdx + 2) % 4];
   const bl = sorted[(tlIdx + 3) % 4];
 
-  // Convert to normalized coordinates with +5.5% outward safety breathing room padding
+  // Convert to normalized coordinates with subtle +1.2% outward safety breathing room
   function expandCorner(p) {
     const normX = p.x / width;
     const normY = p.y / height;
@@ -381,12 +381,12 @@ function fitQuadFromPoints(pts, width, height) {
 
     const dx = normX - normCx;
     const dy = normY - normCy;
-    const padX = Math.sign(dx || 1) * Math.max(0.016, Math.abs(dx) * 0.055);
-    const padY = Math.sign(dy || 1) * Math.max(0.016, Math.abs(dy) * 0.055);
+    const padX = Math.sign(dx || 1) * Math.max(0.004, Math.abs(dx) * 0.012);
+    const padY = Math.sign(dy || 1) * Math.max(0.004, Math.abs(dy) * 0.012);
 
     return {
-      x: Math.max(0.006, Math.min(0.994, normX + padX)),
-      y: Math.max(0.006, Math.min(0.994, normY + padY))
+      x: Math.max(0.008, Math.min(0.992, Math.round((normX + padX) * 1000) / 1000)),
+      y: Math.max(0.008, Math.min(0.992, Math.round((normY + padY) * 1000) / 1000))
     };
   }
 

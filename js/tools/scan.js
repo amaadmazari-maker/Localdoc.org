@@ -385,6 +385,60 @@ class DocumentScanner {
     };
   }
 
+  /**
+   * Generates centered, normalized 4-corner bounding quad for standard paper & card presets
+   * @param {'auto'|'a4'|'letter'|'id-card'|'full'} presetName
+   * @param {number} imgW Natural width of the image
+   * @param {number} imgH Natural height of the image
+   */
+  static getPresetCorners(presetName, imgW, imgH) {
+    if (presetName === 'full') {
+      return this.getDefaultCorners();
+    }
+
+    const w = imgW || 1000;
+    const h = imgH || 1400;
+    const imgRatio = w / h;
+
+    // Target ratios (width / height in standard document orientation)
+    let targetRatio = 1 / 1.4142; // standard portrait A4 (~0.707)
+    if (presetName === 'letter') {
+      targetRatio = 8.5 / 11; // US Letter (~0.7727)
+    } else if (presetName === 'id-card') {
+      // ISO/IEC 7810 ID-1 standard: 85.60 mm × 53.98 mm (ratio = 1.5858)
+      targetRatio = imgRatio >= 1 ? 1.5858 : (1 / 1.5858);
+    } else if (presetName === 'a4') {
+      targetRatio = imgRatio >= 1 ? 1.4142 : (1 / 1.4142);
+    }
+
+    // Centered inside [0, 1] frame with 8% breathing room
+    const margin = 0.08;
+    const maxNormW = 1 - 2 * margin;
+    const maxNormH = 1 - 2 * margin;
+
+    // (normW * w) / (normH * h) = targetRatio  =>  normW / normH = targetRatio / imgRatio
+    const relRatio = targetRatio / imgRatio;
+
+    let normW, normH;
+    if (relRatio <= maxNormW / maxNormH) {
+      normH = maxNormH;
+      normW = normH * relRatio;
+    } else {
+      normW = maxNormW;
+      normH = normW / relRatio;
+    }
+
+    const startX = (1 - normW) / 2;
+    const startY = (1 - normH) / 2;
+
+    return {
+      topLeft: { x: Math.max(0.01, Math.round(startX * 1000) / 1000), y: Math.max(0.01, Math.round(startY * 1000) / 1000) },
+      topRight: { x: Math.min(0.99, Math.round((startX + normW) * 1000) / 1000), y: Math.max(0.01, Math.round(startY * 1000) / 1000) },
+      bottomRight: { x: Math.min(0.99, Math.round((startX + normW) * 1000) / 1000), y: Math.min(0.99, Math.round((startY + normH) * 1000) / 1000) },
+      bottomLeft: { x: Math.max(0.01, Math.round(startX * 1000) / 1000), y: Math.min(0.99, Math.round((startY + normH) * 1000) / 1000) }
+    };
+  }
+
   static _scanWorker = null;
   static _scanWorkerFailed = false;
 
@@ -477,7 +531,7 @@ class DocumentScanner {
           }, [buffer]);
         });
 
-        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 300));
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 600));
         const workerCorners = await Promise.race([workerPromise, timeoutPromise]);
 
         if (workerCorners) {
@@ -643,38 +697,36 @@ class DocumentScanner {
     const avgH = (lH + rH) / 2;
     const ratio = avgW / Math.max(0.01, avgH);
 
-    // Support both full documents and narrow fuel/ATM slips
+    // Support both full documents, standard sheets, and narrow fuel/ATM slips
     if (area >= 0.04 && area <= 0.98 && isConvex && ratio >= 0.18 && ratio <= 5.5) {
-      // If document occupies most of the photo frame (> 72%), or is close to any image border (< 3.5%),
-      // snap to full safe frame so 0% of content, headers, or margins are ever cut!
+      // Only fallback to full frame if the detected shape is completely touching the extreme outer 0.8% border on all sides
       const minEdgeDist = Math.min(tl.x, tl.y, 1 - tr.x, tr.y, 1 - br.x, 1 - br.y, bl.x, 1 - bl.y);
-      if (area >= 0.72 || minEdgeDist < 0.035) {
+      if (area >= 0.98 && minEdgeDist < 0.008) {
         return this.getDefaultCorners();
       }
 
-      // Generous Outward Safety Breathing Room Expansion:
-      // Expands all 4 corners OUTWARD with a compound 5.5% proportional breathing room
-      // PLUS minimum 1.6% absolute frame padding away from document center.
-      // This strictly guarantees that headers, dates, page numbers, signatures, and stamps are NEVER cut off!
+      // Smooth Quad Corner Refinement:
+      // Preserves true page corners with subtle 1% breathing room so ink at edge is protected
+      // without pushing corners off the paper
       const cx = (tl.x + tr.x + br.x + bl.x) / 4;
       const cy = (tl.y + tr.y + br.y + bl.y) / 4;
 
-      function expandCorner(p) {
+      function smoothCorner(p) {
         const dx = p.x - cx;
         const dy = p.y - cy;
-        const padX = Math.sign(dx || 1) * Math.max(0.016, Math.abs(dx) * 0.055);
-        const padY = Math.sign(dy || 1) * Math.max(0.016, Math.abs(dy) * 0.055);
+        const padX = Math.sign(dx || 1) * Math.max(0.004, Math.abs(dx) * 0.012);
+        const padY = Math.sign(dy || 1) * Math.max(0.004, Math.abs(dy) * 0.012);
         return {
-          x: Math.max(0.006, Math.min(0.994, p.x + padX)),
-          y: Math.max(0.006, Math.min(0.994, p.y + padY))
+          x: Math.max(0.008, Math.min(0.992, Math.round((p.x + padX) * 1000) / 1000)),
+          y: Math.max(0.008, Math.min(0.992, Math.round((p.y + padY) * 1000) / 1000))
         };
       }
 
       return {
-        topLeft: expandCorner(tl),
-        topRight: expandCorner(tr),
-        bottomRight: expandCorner(br),
-        bottomLeft: expandCorner(bl)
+        topLeft: smoothCorner(tl),
+        topRight: smoothCorner(tr),
+        bottomRight: smoothCorner(br),
+        bottomLeft: smoothCorner(bl)
       };
     }
 

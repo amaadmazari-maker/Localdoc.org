@@ -428,7 +428,8 @@
 
     /* Live Video Feed Container */
     .cs-cam-viewport {
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
       position: relative;
       width: 100%;
       height: 100%;
@@ -436,10 +437,16 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      background: #000000;
     }
     .cs-cam-video {
       width: 100%;
       height: 100%;
+      object-fit: contain; /* Default: 100% of camera sensor shown, 0% clipped */
+      background: #000000;
+      transition: object-fit 0.2s ease;
+    }
+    .cs-cam-video.fill-mode {
       object-fit: cover;
     }
 
@@ -472,13 +479,15 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 12px 20px 28px;
-      background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 75%, transparent 100%);
+      padding: 10px 16px max(24px, env(safe-area-inset-bottom, 24px));
+      background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 75%, transparent 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       z-index: 20;
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
 
     /* Mode Pill Carousel (Word, Sign, Single, Batch, ID Card) */
@@ -679,7 +688,8 @@
       color: #FFFFFF;
     }
     .cs-crop-canvas-box {
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
       position: relative;
       display: flex;
       align-items: center;
@@ -687,36 +697,95 @@
       background: #020617;
       overflow: hidden;
       touch-action: none;
+      padding: 10px;
+      box-sizing: border-box;
     }
     #crop-canvas-element {
       max-width: 100%;
       max-height: 100%;
       display: block;
       cursor: crosshair;
+      touch-action: none;
     }
     /* Fixed Top-Corner Magnifying Loupe (Exact LocalDoc Scanner Pattern from Video) */
     #crop-magnifying-loupe {
       display: none;
       position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 130px;
-      height: 130px;
+      top: 14px;
+      right: 14px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      border: 3.5px solid var(--cs-teal-light);
+      border: 3px solid var(--cs-teal-light);
       box-shadow: 0 8px 30px rgba(0,0,0,0.85);
       background: #000;
       pointer-events: none;
       z-index: 100;
     }
+    /* Manual Paper Size Selection Toolbar */
+    .cs-crop-presets-toolbar {
+      flex-shrink: 0;
+      background: #0B1120;
+      border-top: 1px solid #1E293B;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      box-sizing: border-box;
+    }
+    .cs-crop-presets-toolbar::-webkit-scrollbar { display: none; }
+    .cs-crop-preset-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .cs-crop-presets-scroll {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .cs-crop-preset-pill {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid #334155;
+      color: #CBD5E1;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .cs-crop-preset-pill:hover {
+      background: #1E293B;
+      color: #FFFFFF;
+    }
+    .cs-crop-preset-pill.active {
+      background: rgba(20, 184, 166, 0.25);
+      border-color: var(--cs-teal-light);
+      color: #5EEAD4;
+      font-weight: 800;
+    }
     .cs-crop-bottombar {
+      flex-shrink: 0;
       height: 64px;
       background: #0F172A;
       border-top: 1px solid #1E293B;
-      padding: 0 16px;
+      padding: 0 16px max(14px, env(safe-area-inset-bottom, 14px));
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-around;
+      box-sizing: border-box;
     }
     .cs-crop-tool-btn {
       background: none;
@@ -775,14 +844,16 @@
       gap: 6px;
     }
     .cs-filter-canvas-box {
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #020617;
       overflow: hidden;
-      padding: 14px;
+      padding: 10px;
+      box-sizing: border-box;
     }
     #filter-canvas-element {
       max-width: 100%;
@@ -792,13 +863,15 @@
       background: #FFF;
     }
     .cs-filter-bottombar {
+      flex-shrink: 0;
       background: #0F172A;
       border-top: 1px solid #1E293B;
-      padding: 8px 16px 14px;
+      padding: 8px 16px max(14px, env(safe-area-inset-bottom, 14px));
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       position: relative;
+      box-sizing: border-box;
     }
     .cs-filter-order-hint {
       font-size: 0.68rem;
@@ -967,14 +1040,16 @@
       color: #94A3B8;
     }
     .cs-doc-page-stage {
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 12px;
       overflow: auto;
       background: #020617;
       position: relative;
+      box-sizing: border-box;
     }
     #doc-active-page-img {
       max-width: 100%;
@@ -985,13 +1060,16 @@
       background: #FFF;
     }
     .cs-doc-bottom-bar {
-      height: 70px;
+      flex-shrink: 0;
+      height: auto;
+      min-height: 64px;
       background: #0F172A;
       border-top: 1px solid #1E293B;
-      padding: 0 16px;
+      padding: 6px 16px max(14px, env(safe-area-inset-bottom, 14px));
       display: flex;
       align-items: center;
       justify-content: space-around;
+      box-sizing: border-box;
     }
     .cs-doc-action-btn {
       background: none;
@@ -1448,6 +1526,95 @@
     .cs-choice-btn:hover {
       background: #334155;
       border-color: var(--cs-teal);
+    }
+
+    /* Mobile-Specific Refinements (<= 640px) */
+    @media (max-width: 640px) {
+      .cs-cam-top-hud {
+        height: 52px;
+        padding: 0 10px;
+      }
+      .cs-cam-hud-btn {
+        width: 38px;
+        height: 38px;
+      }
+      .cs-cam-shutter-btn {
+        width: 68px;
+        height: 68px;
+      }
+      .cs-cam-shutter-inner {
+        width: 52px;
+        height: 52px;
+      }
+      .cs-cam-bottom-hud {
+        padding: 8px 12px max(20px, env(safe-area-inset-bottom, 20px));
+        gap: 8px;
+      }
+      .cs-cam-mode-item {
+        font-size: 0.76rem;
+        padding: 5px 11px;
+      }
+      .cs-crop-topbar {
+        height: 50px;
+        padding: 0 12px;
+      }
+      .cs-crop-presets-toolbar {
+        padding: 5px 10px;
+      }
+      .cs-crop-preset-pill {
+        font-size: 0.72rem;
+        padding: 4px 9px;
+      }
+      .cs-crop-bottombar {
+        height: 58px;
+        padding: 4px 10px max(12px, env(safe-area-inset-bottom, 12px));
+      }
+      .cs-crop-tool-btn {
+        font-size: 0.72rem;
+      }
+      .cs-filter-topbar {
+        height: 50px;
+        padding: 0 12px;
+      }
+      .cs-filter-order-hint {
+        display: none; /* Hide verbose text to protect vertical space on phone screens */
+      }
+      .cs-filter-tier-label {
+        font-size: 0.68rem;
+      }
+      .cs-filter-pill-btn {
+        font-size: 0.72rem;
+        padding: 4px 9px;
+      }
+      .cs-filter-bottombar {
+        padding: 6px 12px max(14px, env(safe-area-inset-bottom, 14px));
+        gap: 5px;
+      }
+      .cs-doc-view-topbar {
+        height: 50px;
+        padding: 0 10px;
+      }
+      .cs-doc-title-text {
+        max-width: 110px;
+        font-size: 0.88rem;
+      }
+      .cs-view-switch-btn {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+      }
+      .cs-doc-bottom-bar {
+        padding: 4px 10px max(12px, env(safe-area-inset-bottom, 12px));
+      }
+      .cs-doc-action-btn {
+        font-size: 0.7rem;
+        gap: 2px;
+      }
+      #crop-magnifying-loupe {
+        width: 100px;
+        height: 100px;
+        top: 10px;
+        right: 10px;
+      }
     }
   </style>
 </head>
@@ -2049,6 +2216,9 @@
       </div>
 
       <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="cs-cam-hud-btn" id="btn-camera-aspect" onclick="toggleCameraFitMode()" title="Toggle Viewfinder Fit / Fill" aria-label="Toggle Viewfinder Fit / Fill">
+          <svg id="cam-aspect-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>
+        </button>
         <button type="button" class="cs-cam-hud-btn" id="btn-camera-torch" onclick="toggleCameraTorch()" title="Flashlight" aria-label="Flashlight">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         </button>
@@ -2137,6 +2307,29 @@
       <canvas id="crop-magnifying-loupe"></canvas>
     </div>
 
+    <!-- Manual Paper Size Selection Toolbar -->
+    <div class="cs-crop-presets-toolbar" id="crop-presets-toolbar" role="toolbar" aria-label="Paper Size Presets">
+      <span class="cs-crop-preset-label">Paper Size:</span>
+      <div class="cs-crop-presets-scroll">
+        <button type="button" class="cs-crop-preset-pill active" id="btn-crop-preset-auto" onclick="applyCropPreset('auto')" title="Auto detect paper boundaries and corners">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <span>Auto Detect</span>
+        </button>
+        <button type="button" class="cs-crop-preset-pill" id="btn-crop-preset-a4" onclick="applyCropPreset('a4')" title="Standard ISO A4 sheet ratio (1:1.414)">
+          <span>📄 A4</span>
+        </button>
+        <button type="button" class="cs-crop-preset-pill" id="btn-crop-preset-letter" onclick="applyCropPreset('letter')" title="US Letter 8.5 x 11 in (1:1.294)">
+          <span>📑 Letter</span>
+        </button>
+        <button type="button" class="cs-crop-preset-pill" id="btn-crop-preset-idcard" onclick="applyCropPreset('id-card')" title="ID-1 Card / License / Badge (1:1.586)">
+          <span>🪪 ID Card</span>
+        </button>
+        <button type="button" class="cs-crop-preset-pill" id="btn-crop-preset-full" onclick="applyCropPreset('full')" title="Reset corners to full camera image frame">
+          <span>⛶ Full Frame</span>
+        </button>
+      </div>
+    </div>
+
     <div class="cs-crop-bottombar">
       <button type="button" class="cs-crop-tool-btn" onclick="rotateCropCanvas(-90)">
         <span>↶</span>
@@ -2146,7 +2339,7 @@
         <span>↷</span>
         <span>Right</span>
       </button>
-      <button type="button" class="cs-crop-tool-btn" onclick="resetCropToFull()">
+      <button type="button" class="cs-crop-tool-btn" onclick="applyCropPreset('full')">
         <span>&#10530;</span>
         <span>All</span>
       </button>
@@ -3266,20 +3459,51 @@
     }
     window.handleHomeFileImport = handleHomeFileImport;
 
+    // Viewfinder Fit / Fill Mode (Default: contain so 100% of camera sensor is visible on all phones)
+    let cameraFitMode = 'contain';
+    function toggleCameraFitMode() {
+      const video = document.getElementById("camera-feed-video");
+      const btn = document.getElementById("btn-camera-aspect");
+      if (!video) return;
+      if (cameraFitMode === 'contain') {
+        cameraFitMode = 'cover';
+        video.classList.add('fill-mode');
+        if (btn) btn.classList.add('active');
+        UIUtils.showToast("Viewfinder: Fill Screen", "info");
+      } else {
+        cameraFitMode = 'contain';
+        video.classList.remove('fill-mode');
+        if (btn) btn.classList.remove('active');
+        UIUtils.showToast("Viewfinder: Full Sensor (Contain)", "info");
+      }
+    }
+    window.toggleCameraFitMode = toggleCameraFitMode;
+
     // =========================================================================
-    // 2. 4-CORNER CROP SCREEN (WITH TOP-CORNER MAGNIFYING LOUPE)
+    // 2. 4-CORNER CROP SCREEN (WITH PRESETS & TOP-CORNER MAGNIFYING LOUPE)
     // =========================================================================
     const cropScreen = document.getElementById("cs-fullscreen-crop");
     const cropCanvas = document.getElementById("crop-canvas-element");
     const magnifyingLoupe = document.getElementById("crop-magnifying-loupe");
+    let activeDragCorner = null;
+    let dragStartPos = null;
+    let initialEdgeCorners = null;
+    let currentCropPreset = 'auto';
 
     function openCropScreen() {
       cropScreen.style.display = "flex";
       cropImg = stagingPage.rawImg;
       cropCorners = JSON.parse(JSON.stringify(stagingPage.corners));
 
-      initCropCanvasSize();
-      bindCropCanvasEvents();
+      // Reset preset active pill to Auto Detect
+      document.querySelectorAll('.cs-crop-preset-pill').forEach(el => el.classList.remove('active'));
+      const autoPill = document.getElementById('btn-crop-preset-auto');
+      if (autoPill) autoPill.classList.add('active');
+
+      setTimeout(() => {
+        initCropCanvasSize();
+        bindCropCanvasEvents();
+      }, 30);
     }
 
     function exitCropBackToCamera() {
@@ -3288,18 +3512,64 @@
 
     function initCropCanvasSize() {
       const box = document.getElementById("crop-canvas-container");
-      const bw = box.clientWidth;
-      const bh = box.clientHeight;
+      if (!box || !cropImg) return;
+      const bw = Math.max(120, box.clientWidth || (window.innerWidth - 24));
+      const bh = Math.max(120, box.clientHeight || (window.innerHeight - 160));
 
-      const iw = cropImg.naturalWidth || cropImg.width;
-      const ih = cropImg.naturalHeight || cropImg.height;
+      const iw = cropImg.naturalWidth || cropImg.width || 800;
+      const ih = cropImg.naturalHeight || cropImg.height || 1000;
 
-      cropScale = Math.min((bw - 40) / iw, (bh - 40) / ih);
-      cropCanvas.width = Math.round(iw * cropScale);
-      cropCanvas.height = Math.round(ih * cropScale);
+      cropScale = Math.min((bw - 20) / iw, (bh - 20) / ih);
+      cropCanvas.width = Math.max(100, Math.round(iw * cropScale));
+      cropCanvas.height = Math.max(100, Math.round(ih * cropScale));
+      cropCanvas.style.width = cropCanvas.width + "px";
+      cropCanvas.style.height = cropCanvas.height + "px";
 
       drawCropCanvas();
     }
+
+    // Window resize handler for mobile rotation and toolbar shifts
+    window.addEventListener('resize', () => {
+      if (cropScreen && cropScreen.style.display === "flex") {
+        initCropCanvasSize();
+      }
+    });
+
+    async function applyCropPreset(preset) {
+      currentCropPreset = preset;
+      document.querySelectorAll('.cs-crop-preset-pill').forEach(el => el.classList.remove('active'));
+      const activePill = document.getElementById('btn-crop-preset-' + preset);
+      if (activePill) activePill.classList.add('active');
+
+      if (preset === 'auto') {
+        showProcessing("Auto detecting document corners...");
+        try {
+          const detected = await DocumentScanner.detectDocumentEdges(cropImg, 'a4');
+          if (detected) {
+            cropCorners = JSON.parse(JSON.stringify(detected));
+            drawCropCanvas();
+            UIUtils.showToast("Document corners auto-detected", "success");
+          }
+        } catch (err) {
+          console.warn("Auto edge detection error:", err);
+        } finally {
+          hideProcessing();
+        }
+      } else {
+        const iw = cropImg.naturalWidth || cropImg.width || 1000;
+        const ih = cropImg.naturalHeight || cropImg.height || 1400;
+        cropCorners = DocumentScanner.getPresetCorners(preset, iw, ih);
+        drawCropCanvas();
+        const names = {
+          'a4': 'A4 Sheet (1:1.41)',
+          'letter': 'US Letter (8.5×11)',
+          'id-card': 'ID-1 Card (85×54)',
+          'full': 'Full Frame'
+        };
+        UIUtils.showToast("Applied " + (names[preset] || preset), "info");
+      }
+    }
+    window.applyCropPreset = applyCropPreset;
 
     function drawCropCanvas() {
       const ctx = cropCanvas.getContext('2d');
@@ -3316,7 +3586,7 @@
 
       // Darken outside paper
       ctx.save();
-      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.48)";
       ctx.beginPath();
       ctx.rect(0, 0, w, h);
       ctx.moveTo(tl.x, tl.y);
@@ -3326,7 +3596,7 @@
       ctx.closePath();
       ctx.fill();
 
-      // Polygon Boundary Line (Teal/Cyan from Video)
+      // Polygon Boundary Line (Teal)
       ctx.strokeStyle = "#14B8A6";
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -3337,7 +3607,7 @@
       ctx.closePath();
       ctx.stroke();
 
-      // Draw 4 Corner Circles
+      // Draw 4 Corner Circles with large touch target visual
       const corners = [tl, tr, br, bl];
       for (const c of corners) {
         ctx.fillStyle = "#FFFFFF";
@@ -3349,7 +3619,7 @@
         ctx.stroke();
       }
 
-      // Draw 4 Edge Midpoint Pill Handles (Exact LocalDoc Scanner Pattern from Video)
+      // Draw 4 Edge Midpoint Pill Handles (Can be dragged to move entire edge)
       const midpoints = [
         { x: (tl.x + tr.x)/2, y: (tl.y + tr.y)/2 },
         { x: (tr.x + br.x)/2, y: (tr.y + br.y)/2 },
@@ -3358,9 +3628,16 @@
       ];
       for (const m of midpoints) {
         ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#0D9488";
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.roundRect(m.x - 12, m.y - 4, 24, 8, 4);
+        if (ctx.roundRect) {
+          ctx.roundRect(m.x - 12, m.y - 5, 24, 10, 5);
+        } else {
+          ctx.rect(m.x - 12, m.y - 5, 24, 10);
+        }
         ctx.fill();
+        ctx.stroke();
       }
 
       ctx.restore();
@@ -3368,11 +3645,14 @@
 
     function bindCropCanvasEvents() {
       cropCanvas.onpointerdown = onCropDown;
-      window.onpointermove = onCropMove;
-      window.onpointerup = onCropUp;
+      cropCanvas.onpointermove = onCropMove;
+      cropCanvas.onpointerup = onCropUp;
+      cropCanvas.onpointercancel = onCropUp;
     }
 
     function onCropDown(e) {
+      try { cropCanvas.setPointerCapture(e.pointerId); } catch (_) {}
+
       const rect = cropCanvas.getBoundingClientRect();
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
@@ -3380,26 +3660,40 @@
       const w = cropCanvas.width;
       const h = cropCanvas.height;
 
+      const tl = { x: cropCorners.topLeft.x * w, y: cropCorners.topLeft.y * h };
+      const tr = { x: cropCorners.topRight.x * w, y: cropCorners.topRight.y * h };
+      const br = { x: cropCorners.bottomRight.x * w, y: cropCorners.bottomRight.y * h };
+      const bl = { x: cropCorners.bottomLeft.x * w, y: cropCorners.bottomLeft.y * h };
+
+      // Check 4 corners first (higher priority) + 4 edge midpoints
       const points = [
-        { key: 'topLeft', x: cropCorners.topLeft.x * w, y: cropCorners.topLeft.y * h },
-        { key: 'topRight', x: cropCorners.topRight.x * w, y: cropCorners.topRight.y * h },
-        { key: 'bottomRight', x: cropCorners.bottomRight.x * w, y: cropCorners.bottomRight.y * h },
-        { key: 'bottomLeft', x: cropCorners.bottomLeft.x * w, y: cropCorners.bottomLeft.y * h }
+        { key: 'topLeft', x: tl.x, y: tl.y, isEdge: false },
+        { key: 'topRight', x: tr.x, y: tr.y, isEdge: false },
+        { key: 'bottomRight', x: br.x, y: br.y, isEdge: false },
+        { key: 'bottomLeft', x: bl.x, y: bl.y, isEdge: false },
+        { key: 'topEdge', x: (tl.x + tr.x) / 2, y: (tl.y + tr.y) / 2, isEdge: true },
+        { key: 'bottomEdge', x: (bl.x + br.x) / 2, y: (bl.y + br.y) / 2, isEdge: true },
+        { key: 'leftEdge', x: (tl.x + bl.x) / 2, y: (tl.y + bl.y) / 2, isEdge: true },
+        { key: 'rightEdge', x: (tr.x + br.x) / 2, y: (tr.y + br.y) / 2, isEdge: true }
       ];
 
       let nearest = null;
-      let minD = 48; // Touch detection threshold
+      let minD = 52; // 52px touch detection radius
       for (const p of points) {
         const d = Math.hypot(p.x - cx, p.y - cy);
         if (d < minD) {
           minD = d;
-          nearest = p.key;
+          nearest = p;
         }
       }
 
       if (nearest) {
-        activeDragCorner = nearest;
-        renderMagnifyingLoupe();
+        activeDragCorner = nearest.key;
+        dragStartPos = { x: cx / w, y: cy / h };
+        initialEdgeCorners = JSON.parse(JSON.stringify(cropCorners));
+        if (!nearest.isEdge) {
+          renderMagnifyingLoupe();
+        }
       }
     }
 
@@ -3407,28 +3701,59 @@
       if (!activeDragCorner) return;
 
       const rect = cropCanvas.getBoundingClientRect();
-      const mx = Math.max(0, Math.min(cropCanvas.width, e.clientX - rect.left));
-      const my = Math.max(0, Math.min(cropCanvas.height, e.clientY - rect.top));
+      const w = cropCanvas.width;
+      const h = cropCanvas.height;
+      const mx = Math.max(0, Math.min(w, e.clientX - rect.left));
+      const my = Math.max(0, Math.min(h, e.clientY - rect.top));
+      const normX = mx / w;
+      const normY = my / h;
 
-      cropCorners[activeDragCorner].x = mx / cropCanvas.width;
-      cropCorners[activeDragCorner].y = my / cropCanvas.height;
+      if (activeDragCorner === 'topEdge' && dragStartPos && initialEdgeCorners) {
+        const dy = normY - dragStartPos.y;
+        cropCorners.topLeft.y = Math.max(0.005, Math.min(cropCorners.bottomLeft.y - 0.05, initialEdgeCorners.topLeft.y + dy));
+        cropCorners.topRight.y = Math.max(0.005, Math.min(cropCorners.bottomRight.y - 0.05, initialEdgeCorners.topRight.y + dy));
+      } else if (activeDragCorner === 'bottomEdge' && dragStartPos && initialEdgeCorners) {
+        const dy = normY - dragStartPos.y;
+        cropCorners.bottomLeft.y = Math.min(0.995, Math.max(cropCorners.topLeft.y + 0.05, initialEdgeCorners.bottomLeft.y + dy));
+        cropCorners.bottomRight.y = Math.min(0.995, Math.max(cropCorners.topRight.y + 0.05, initialEdgeCorners.bottomRight.y + dy));
+      } else if (activeDragCorner === 'leftEdge' && dragStartPos && initialEdgeCorners) {
+        const dx = normX - dragStartPos.x;
+        cropCorners.topLeft.x = Math.max(0.005, Math.min(cropCorners.topRight.x - 0.05, initialEdgeCorners.topLeft.x + dx));
+        cropCorners.bottomLeft.x = Math.max(0.005, Math.min(cropCorners.bottomRight.x - 0.05, initialEdgeCorners.bottomLeft.x + dx));
+      } else if (activeDragCorner === 'rightEdge' && dragStartPos && initialEdgeCorners) {
+        const dx = normX - dragStartPos.x;
+        cropCorners.topRight.x = Math.min(0.995, Math.max(cropCorners.topLeft.x + 0.05, initialEdgeCorners.topRight.x + dx));
+        cropCorners.bottomRight.x = Math.min(0.995, Math.max(cropCorners.bottomLeft.x + 0.05, initialEdgeCorners.bottomRight.x + dx));
+      } else if (cropCorners[activeDragCorner]) {
+        cropCorners[activeDragCorner].x = normX;
+        cropCorners[activeDragCorner].y = normY;
+        renderMagnifyingLoupe();
+      }
 
       drawCropCanvas();
-      renderMagnifyingLoupe();
     }
 
-    function onCropUp() {
+    function onCropUp(e) {
+      if (e && cropCanvas.hasPointerCapture && cropCanvas.hasPointerCapture(e.pointerId)) {
+        try { cropCanvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
       activeDragCorner = null;
+      dragStartPos = null;
+      initialEdgeCorners = null;
       magnifyingLoupe.style.display = "none";
     }
 
-    // Top-Corner Loupe Rendering (Exact LocalDoc Scanner Video Feature)
+    // Top-Corner Loupe Rendering
     function renderMagnifyingLoupe() {
+      if (!activeDragCorner || !cropCorners[activeDragCorner]) {
+        magnifyingLoupe.style.display = "none";
+        return;
+      }
       magnifyingLoupe.style.display = "block";
-      magnifyingLoupe.width = 130;
-      magnifyingLoupe.height = 130;
+      magnifyingLoupe.width = 120;
+      magnifyingLoupe.height = 120;
       const lCtx = magnifyingLoupe.getContext('2d');
-      lCtx.clearRect(0, 0, 130, 130);
+      lCtx.clearRect(0, 0, 120, 120);
 
       const pt = cropCorners[activeDragCorner];
       const iw = cropImg.naturalWidth || cropImg.width;
@@ -3439,20 +3764,20 @@
 
       lCtx.save();
       lCtx.beginPath();
-      lCtx.arc(65, 65, 65, 0, Math.PI * 2);
+      lCtx.arc(60, 60, 60, 0, Math.PI * 2);
       lCtx.clip();
 
       const zoom = 2.4;
-      const sw = 130 / zoom;
-      const sh = 130 / zoom;
-      lCtx.drawImage(cropImg, px - sw/2, py - sh/2, sw, sh, 0, 0, 130, 130);
+      const sw = 120 / zoom;
+      const sh = 120 / zoom;
+      lCtx.drawImage(cropImg, px - sw/2, py - sh/2, sw, sh, 0, 0, 120, 120);
 
       // Cyan Crosshairs
       lCtx.strokeStyle = "#14B8A6";
       lCtx.lineWidth = 2;
       lCtx.beginPath();
-      lCtx.moveTo(65, 0); lCtx.lineTo(65, 130);
-      lCtx.moveTo(0, 65); lCtx.lineTo(130, 65);
+      lCtx.moveTo(60, 0); lCtx.lineTo(60, 120);
+      lCtx.moveTo(0, 60); lCtx.lineTo(120, 60);
       lCtx.stroke();
 
       lCtx.restore();
@@ -3479,8 +3804,7 @@
     }
 
     function resetCropToFull() {
-      cropCorners = DocumentScanner.getDefaultCorners();
-      drawCropCanvas();
+      applyCropPreset('full');
     }
 
     async function advanceCropToFilter() {
