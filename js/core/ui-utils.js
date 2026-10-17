@@ -546,6 +546,10 @@ const UIUtils = {
         </div>
       `;
       document.body.appendChild(backdrop);
+    }
+
+    if (!backdrop.dataset.searchBound) {
+      backdrop.dataset.searchBound = 'true';
 
       backdrop.addEventListener('click', (e) => {
         if (e.target === backdrop) backdrop.classList.remove('open');
@@ -554,26 +558,28 @@ const UIUtils = {
       const input = backdrop.querySelector('#global-search-input');
       const results = backdrop.querySelector('#global-search-results');
 
-      const render = (query = '') => {
-        const q = query.toLowerCase().trim();
-        const filtered = q ? tools.filter(t => 
-          t.name.toLowerCase().includes(q) || 
-          t.category.toLowerCase().includes(q) || 
-          (t.keywords && t.keywords.toLowerCase().includes(q))
-        ) : tools.slice(0, 16);
-        results.innerHTML = filtered.map(t => `
-          <li class="search-result-item">
-            <a href="${prefix}${t.slug}">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);"></div>
-              <strong style="flex:1;">${t.name}</strong>
-              <span style="font-size:0.75rem;color:var(--text-muted);border:1px solid var(--line);padding:2px 8px;border-radius:4px;">${t.category}</span>
-            </a>
-          </li>
-        `).join('');
-      };
+      if (input && results) {
+        const render = (query = '') => {
+          const q = query.toLowerCase().trim();
+          const filtered = q ? tools.filter(t => 
+            t.name.toLowerCase().includes(q) || 
+            t.category.toLowerCase().includes(q) || 
+            (t.keywords && t.keywords.toLowerCase().includes(q))
+          ) : tools.slice(0, 16);
+          results.innerHTML = filtered.map(t => `
+            <li class="search-result-item">
+              <a href="${prefix}${t.slug}">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);"></div>
+                <strong style="flex:1;">${t.name}</strong>
+                <span style="font-size:0.75rem;color:var(--text-muted);border:1px solid var(--line);padding:2px 8px;border-radius:4px;">${t.category}</span>
+              </a>
+            </li>
+          `).join('');
+        };
 
-      input.addEventListener('input', () => render(input.value));
-      render();
+        input.addEventListener('input', () => render(input.value));
+        render();
+      }
     }
 
     // Connect any search trigger buttons on the page
