@@ -1044,3 +1044,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+
+if (typeof window !== "undefined") {
+  window.UIUtils = UIUtils;
+}

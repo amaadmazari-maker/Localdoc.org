@@ -298,7 +298,7 @@ const PDFOrganize = {
     let losslessBlob = null;
     let losslessSize = originalSize;
     try {
-      const srcDoc = await this.safeLoadPDF(buffer, file.name);
+      const srcDoc = await this.safeLoadPDF(buffer.slice(0), file.name);
       const newDoc = await PDFLib.PDFDocument.create();
       const pageIndices = srcDoc.getPageIndices();
       const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
@@ -331,7 +331,8 @@ const PDFOrganize = {
 
     // Helper: High-efficiency Canvas to JPEG compressor
     const renderOptimizedPages = async (targetScale, jpegQuality, progressStart, progressEnd) => {
-      const pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
+      const clonedData = new Uint8Array(buffer.slice(0));
+      const pdf = await pdfjsLib.getDocument({ data: clonedData, isEvalSupported: false }).promise;
       const numPages = pdf.numPages;
       const pagesData = [];
 
@@ -441,6 +442,7 @@ const PDFOrganize = {
 
     if (onProgress) onProgress(50, 'Applying rotation angles to page dictionaries...');
 
+    let rotatedPagesCount = 0;
     if (typeof rotationParam === 'object' && !Array.isArray(rotationParam)) {
       // Rotation map e.g. { 0: 90, 1: 180, 2: 270 }
       pages.forEach((page, idx) => {
@@ -448,8 +450,10 @@ const PDFOrganize = {
           const currentRotation = page.getRotation().angle;
           const targetAngle = (currentRotation + rotationParam[idx]) % 360;
           page.setRotation(PDFLib.degrees(targetAngle));
+          if (rotationParam[idx] % 360 !== 0) rotatedPagesCount++;
         }
       });
+      if (rotatedPagesCount === 0) rotatedPagesCount = totalPages;
     } else {
       // Global angle (e.g. 90, 180, 270)
       const angle = parseInt(rotationParam, 10) || 90;
@@ -457,6 +461,7 @@ const PDFOrganize = {
         const currentRotation = page.getRotation().angle;
         page.setRotation(PDFLib.degrees((currentRotation + angle) % 360));
       });
+      rotatedPagesCount = totalPages;
     }
 
     if (onProgress) onProgress(85, 'Saving rotated PDF document...');
@@ -465,7 +470,8 @@ const PDFOrganize = {
 
     return {
       pdfBlob,
-      totalPages
+      totalPages,
+      rotatedPagesCount
     };
   },
 
