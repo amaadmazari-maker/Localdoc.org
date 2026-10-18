@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -620,11 +620,19 @@
             <strong class="text-emerald-400">Pro Tip for Legal &amp; Financial Word Conversion:</strong> Always review converted documents in Microsoft Word with formatting marks turned on (Ctrl+Shift+8). This reveals structural section breaks, continuous headers, and tab stop alignments, allowing instant validation before court filing or client transmission.
         </div>
 
-<!-- Casio Trademark Notice -->
-<div class="disclaimer-box" style="margin-top:32px; padding:16px 20px; border-radius:10px; background:var(--bg-surface-2, rgba(255,255,255,0.05)); border:1px solid var(--line, #334155); font-size:0.85rem; color:var(--text-muted, #94a3b8); line-height:1.6;">
-  <p style="margin:0 0 6px;"><strong>Legal &amp; Trademark Notice:</strong></p>
-  <p style="margin:0;">CASIO&reg; is a registered trademark of Casio Computer Co., Ltd. LocalDoc is an independent engineering platform and is not affiliated with, sponsored by, or endorsed by Casio Computer Co., Ltd.</p>
-</div>
+        <section class="mt-8 p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <h3 class="text-xl font-bold text-white mb-3">4. Tackling Complex Edge Cases: Multi-Column, Tables, OCR &amp; RTL Bidi</h3>
+            <p class="text-slate-300 mb-3 leading-relaxed">
+                Modern client-side conversion engines face well-known technical constraints when dealing with complex, real-world PDF documents. Here is how LocalDoc addresses each edge case directly in browser memory:
+            </p>
+            <ul class="text-slate-300 space-y-3 leading-relaxed list-disc list-inside">
+                <li><strong class="text-white">Multi-Column Document Partitioning:</strong> In research papers, newspapers, and two-column resumes, naive coordinate sorting causes Left and Right columns to merge horizontally. LocalDoc analyzes page geometry, isolates the central column gutter, and groups text into discrete column streams processed sequentially to preserve sentence continuity.</li>
+                <li><strong class="text-white">Tabular Grid Reconstruction:</strong> Standard PDF streams have no concept of table cells. LocalDoc identifies repetitive vertical alignment boundaries across consecutive lines and synthesizes authentic Microsoft Word <code>&lt;w:tbl&gt;</code> elements with borders and cell margins.</li>
+                <li><strong class="text-white">Scanned &amp; Image-Only PDF Fallback:</strong> If a document was captured by a smartphone camera or flatbed scanner without text embedding, <code>pdf.js</code> extracts zero glyphs. LocalDoc detects empty text streams in real-time and alerts the user with a direct, 1-click bridge to our in-memory <a href="scan-to-pdf-guide.html" class="text-sky-400 underline font-semibold">Image to Text (OCR)</a> engine.</li>
+                <li><strong class="text-white">Universal Font Family Mapping:</strong> Proprietary and subsetted fonts cannot be embedded into client-generated DOCX files without licensing violations. LocalDoc maps Serif fonts to <em>Times New Roman</em>, Monospaced fonts to <em>Consolas</em>, and Sans-Serif fonts to <em>Calibri</em> or <em>Arial</em>.</li>
+                <li><strong class="text-white">Arabic, Urdu &amp; Hebrew Bidi Processing:</strong> Right-to-Left (RTL) scripts in legacy PDFs are often encoded in visual LTR order. LocalDoc applies bidirectional Unicode range detection, injecting native <code>&lt;w:bidi/&gt;</code> paragraph rules and <code>&lt;w:rtl/&gt;</code> run properties into the OpenXML schema.</li>
+            </ul>
+        </section>
 
 </article>
   </main>
