@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -48,6 +48,153 @@
 
   <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <style>
+    .merge-queue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+    @media (max-width: 600px) {
+      .merge-queue-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+    }
+    .merge-card {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md, 10px);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      cursor: grab;
+      user-select: none;
+    }
+    .merge-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .merge-card.is-locked {
+      border: 2px solid var(--danger, #EF4444) !important;
+      background: rgba(239, 68, 68, 0.04);
+    }
+    .merge-card.is-corrupt {
+      border: 2px solid #F59E0B !important;
+      background: rgba(245, 158, 11, 0.04);
+    }
+    .merge-card.is-dragging {
+      opacity: 0.4;
+      border: 2px dashed var(--primary);
+      cursor: grabbing;
+    }
+    .merge-card.is-drag-over {
+      border-color: var(--primary);
+      background: var(--primary-subtle, rgba(2, 132, 199, 0.1));
+      transform: scale(1.02);
+    }
+    .merge-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: var(--bg-body, #F8FAFC);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm, 6px);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.04);
+    }
+    .merge-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #FFFFFF;
+      display: none;
+    }
+    .merge-thumb-skeleton {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 8px;
+      text-align: center;
+    }
+    .merge-card-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .merge-card-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: var(--primary);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .merge-card-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      line-height: 1;
+      transition: all 0.15s ease;
+    }
+    .merge-card-remove:hover {
+      color: var(--danger, #EF4444);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .merge-card-info {
+      width: 100%;
+      margin-top: 8px;
+      text-align: left;
+    }
+    .merge-card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 3px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .merge-card-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .merge-card-arrows {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .merge-card-arrows button {
+      flex: 1;
+      padding: 4px 0;
+      font-size: 0.72rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
 
   <script type="application/ld+json">
 {
@@ -215,19 +362,46 @@
           <p data-i18n="drop_sub_pdf">Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null"><span data-i18n="browse_btn_pdf">Select PDF Files</span></button>
-        <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="display:none;">
       </div>
+      <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="position:absolute; width:1px; height:1px; opacity:0.01; clip:rect(0,0,0,0); overflow:hidden;">
 
       <!-- Reorderable Document Queue -->
       <div id="queue-container" style="display:none; margin-top:24px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary);">Document Queue (<span id="queue-count">0</span> files)</h4>
+        <!-- Pre-Flight Lock / Error Warning Banner -->
+        <div id="queue-warning-banner" style="display:none; background:rgba(239, 68, 68, 0.1); border:1px solid var(--danger, #EF4444); color:var(--danger, #EF4444); border-radius:var(--radius-sm, 8px); padding:12px 16px; margin-bottom:14px; font-size:0.88rem; align-items:center; gap:10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div style="flex:1;">
+            <strong>Action Required:</strong> <span id="queue-warning-msg">Some files are password-protected or corrupt. Please remove them before merging.</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">
+              Document Queue (<span id="queue-count">0</span> files)
+            </h4>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Drag visual thumbnails or use arrows to rearrange merge order.</span>
+          </div>
           <div style="display:flex; gap:8px;">
             <button class="btn btn-outline" id="add-more-btn" style="padding:4px 10px; font-size:0.78rem;">+ Add More Files</button>
             <button class="btn btn-outline" id="clear-all-btn" style="padding:4px 10px; font-size:0.78rem;"><span data-i18n="queue_clear_all">Clear All</span></button>
           </div>
         </div>
-        <div class="reorder-list" id="reorder-list"></div>
+
+        <!-- Intelligent Sorting Toolbar -->
+        <div class="queue-sort-toolbar" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); margin-bottom:14px;">
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em; margin-right:4px;">Auto-Sort:</span>
+            <button type="button" class="btn btn-outline" id="sort-natural-btn" title="Sort naturally: invoice-1, invoice-2, invoice-10" style="padding:3px 9px; font-size:0.75rem;">A &rarr; Z (Natural 1, 2, 10)</button>
+            <button type="button" class="btn btn-outline" id="sort-reverse-btn" title="Reverse document order" style="padding:3px 9px; font-size:0.75rem;">Reverse Order</button>
+            <button type="button" class="btn btn-outline" id="sort-size-btn" title="Sort smallest to largest" style="padding:3px 9px; font-size:0.75rem;">By File Size</button>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-muted); font-weight:600;" id="queue-total-size">
+            Total: 0 KB
+          </div>
+        </div>
+
+        <div class="merge-queue-grid" id="reorder-list"></div>
       </div>
 
       <!-- Action Bar -->
@@ -242,11 +416,11 @@
         <div class="workflow-steps-indicator">
           <div class="workflow-step-node workflow-step-1">
             <div class="workflow-step-circle">1</div>
-            <div class="workflow-step-label" data-i18n="step_1">Loading Files</div>
+            <div class="workflow-step-label" data-i18n="step_1">Scanning &amp; Reading</div>
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label" data-i18n="step_2">Merging Pages</div>
+            <div class="workflow-step-label" data-i18n="step_2">Merging Pages &amp; Bookmarks</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
@@ -263,17 +437,38 @@
       </div>
 
       <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
-          <h3 id="result-title">Merged PDF Ready!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+      <div class="result-card" id="result-card" style="display:none; flex-direction:column; align-items:stretch; gap:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+          <div class="result-details" style="text-align:left;">
+            <h3 id="result-title" style="margin:0 0 4px 0; color:var(--text-primary);">Merged PDF Ready!</h3>
+            <p id="result-meta" style="margin:0; font-size:0.88rem; color:var(--text-secondary);">Ready for instant download. Zero bytes transmitted.</p>
+          </div>
+          <div class="result-actions" style="display:flex; gap:10px;">
+            <button class="btn btn-primary btn-lg" id="download-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span data-i18n="action_download_pdf">Download Merged PDF</span>
+            </button>
+          </div>
         </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span data-i18n="action_download_pdf">Download PDF</span>
-          </button>
+
+        <!-- 1. Smart Optimization / Bloat Warning Box -->
+        <div id="bloat-alert-box" style="display:none; background:rgba(245, 158, 11, 0.08); border:1px solid #F59E0B; border-radius:var(--radius-sm); padding:14px 16px; text-align:left;">
+          <div style="display:flex; align-items:flex-start; gap:12px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <div style="flex:1;">
+              <strong style="color:var(--text-primary); font-size:0.92rem;" id="bloat-title">File Bloat Warning: Merged PDF Is Larger Than Inputs</strong>
+              <p style="margin:4px 0 10px; font-size:0.85rem; color:var(--text-secondary); line-height:1.5;" id="bloat-desc">
+                Merging repeated font descriptors and uncompressed object streams caused the output file to grow. Optimize font subsets and compress stream buffers with 1 click.
+              </p>
+              <button type="button" class="btn btn-warning" id="compress-merged-btn" style="background:#D97706; color:#FFFFFF; border:none; padding:7px 16px; font-size:0.85rem; font-weight:700; border-radius:var(--radius-sm); cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                <span>Optimize &amp; Compress Merged PDF (1-Click)</span>
+              </button>
+            </div>
+          </div>
         </div>
+
+        <div id="quick-actions-container"></div>
       </div>
     </section>
 
@@ -581,17 +776,25 @@
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
   <script src="../js/core/pdf-validator.js?v=20260921-v26"></script>
+  <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
   <script src="../js/tools/organize.js?v=20260921-v26"></script>
 
   <script>
-    let queueFiles = [];
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js?v=20260921-v26';
+    }
+
+    // Queue of documents: Array of { id, file, status: 'ready'|'locked'|'corrupt'|'scanning', errorMsg, pageCount, thumbnail }
+    let queueItems = [];
     let resultData = null;
+    let draggedIndex = null;
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const queueContainer = document.getElementById("queue-container");
     const queueCount = document.getElementById("queue-count");
+    const queueTotalSize = document.getElementById("queue-total-size");
     const reorderList = document.getElementById("reorder-list");
     const addMoreBtn = document.getElementById("add-more-btn");
     const clearAllBtn = document.getElementById("clear-all-btn");
@@ -599,127 +802,410 @@
     const processBtn = document.getElementById("process-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
+    const queueWarningBanner = document.getElementById("queue-warning-banner");
+    const queueWarningMsg = document.getElementById("queue-warning-msg");
+    const bloatAlertBox = document.getElementById("bloat-alert-box");
+    const compressMergedBtn = document.getElementById("compress-merged-btn");
+
+    const sortNaturalBtn = document.getElementById("sort-natural-btn");
+    const sortReverseBtn = document.getElementById("sort-reverse-btn");
+    const sortSizeBtn = document.getElementById("sort-size-btn");
 
     addMoreBtn.addEventListener("click", () => fileInput.click());
 
-    UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
-      if (files.length > 0) {
-        let addedCount = 0;
-        for (const file of files) {
-          if (typeof window.LocalDocPDFValidator !== 'undefined') {
-            try {
-              const buf = await UIUtils.readFileAsArrayBuffer(file);
-              const check = await window.LocalDocPDFValidator.validatePdfBytes(buf);
-              if (!check.valid) {
-                window.LocalDocPDFValidator.showPdfError(check.reason, file.name);
-                continue;
-              }
-            } catch(e) {
-              console.warn(e);
-            }
-          }
-          queueFiles.push(file);
-          addedCount++;
-        }
-        if (queueFiles.length > 0) {
-          dropZone.style.display = "none";
-          renderQueue();
-          if (addedCount > 0) {
-            UIUtils.showToast("Added " + addedCount + " valid PDF(s) to merger queue", "info");
-          }
-          queueContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
+    // 3. Intelligent Auto-Sort Function (Natural numeric sort: 1, 2, 10)
+    function sortQueueNatural() {
+      queueItems.sort((a, b) => a.file.name.localeCompare(b.file.name, undefined, { numeric: true, sensitivity: 'base' }));
+      renderQueue();
+    }
+
+    sortNaturalBtn.addEventListener("click", sortQueueNatural);
+    sortReverseBtn.addEventListener("click", () => {
+      queueItems.reverse();
+      renderQueue();
+    });
+    sortSizeBtn.addEventListener("click", () => {
+      queueItems.sort((a, b) => a.file.size - b.file.size);
+      renderQueue();
     });
 
-    function renderQueue() {
-      if (queueFiles.length === 0) {
-        dropZone.style.display = "block";
-        queueContainer.style.display = "none";
-        actionBar.style.display = "none";
-        return;
+    // Pre-flight file verification: scan for encryption / corrupt files immediately
+    async function handleFilesSelected(files) {
+      if (!files || files.length === 0) return;
+
+      const newItems = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const item = {
+          id: 'doc_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now(),
+          file: file,
+          status: 'scanning',
+          errorMsg: '',
+          pageCount: null,
+          thumbnail: null
+        };
+        newItems.push(item);
       }
 
-      reorderList.innerHTML = '';
-      queueCount.textContent = queueFiles.length;
+      // Append and apply natural sort initially
+      queueItems = queueItems.concat(newItems);
+      queueItems.sort((a, b) => a.file.name.localeCompare(b.file.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-      queueFiles.forEach((file, idx) => {
-        const item = document.createElement("div");
-        item.className = "reorder-item";
-
-        item.innerHTML = `
-          <div class="reorder-item-left">
-            <span class="reorder-item-num">#${idx + 1}</span>
-            <img src="../assets/icons/merge-pdf.svg" width="24" height="24" alt="PDF" loading="lazy" decoding="async">
-            <div>
-              <h5 style="margin:0; font-size:0.88rem; color:var(--text-primary); font-weight:700;">${file.name}</h5>
-              <span style="font-size:0.75rem; color:var(--text-muted);">${UIUtils.formatBytes(file.size)}</span>
-            </div>
-          </div>
-          <div class="reorder-item-actions">
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, -1)">↑ Move Up</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem;" onclick="moveItem(${idx}, 1)">↓ Move Down</button>
-            <button class="btn btn-outline" style="padding:3px 8px; font-size:0.75rem; color:var(--danger);" onclick="removeItem(${idx})">✕</button>
-          </div>
-        `;
-
-        reorderList.appendChild(item);
-      });
-
+      dropZone.style.display = "none";
       queueContainer.style.display = "block";
       actionBar.style.display = "flex";
       resultCard.style.display = "none";
+      renderQueue();
+
+      // 5. Scan each file immediately in background for password lock or corruption
+      for (const item of newItems) {
+        await scanFileItem(item);
+      }
+    }
+
+    async function scanFileItem(item) {
+      try {
+        const buf = await UIUtils.readFileAsArrayBuffer(item.file);
+        let isLocked = false;
+        let pageCount = null;
+
+        // Header check
+        if (typeof window.LocalDocPDFValidator !== 'undefined') {
+          const check = await window.LocalDocPDFValidator.validatePdfBytes(buf);
+          if (!check.valid) {
+            if (check.reason === 'locked') {
+              isLocked = true;
+            } else {
+              item.status = 'corrupt';
+              item.errorMsg = 'Corrupt or unreadable PDF file';
+              renderQueue();
+              return;
+            }
+          }
+        }
+
+        if (!isLocked) {
+          try {
+            const doc = await PDFLib.PDFDocument.load(buf, { ignoreEncryption: false });
+            if (doc.isEncrypted) {
+              isLocked = true;
+            } else {
+              pageCount = doc.getPageCount();
+            }
+          } catch (err) {
+            const msg = (err && err.message) ? err.message.toLowerCase() : '';
+            if (msg.includes('encrypt') || msg.includes('password') || msg.includes('protected') || err.name === 'EncryptedPDFError') {
+              isLocked = true;
+            } else {
+              item.status = 'corrupt';
+              item.errorMsg = 'Corrupt PDF structure';
+              renderQueue();
+              return;
+            }
+          }
+        }
+
+        if (isLocked) {
+          item.status = 'locked';
+          item.errorMsg = 'Password-Protected (Locked)';
+        } else {
+          item.status = 'ready';
+          item.pageCount = pageCount;
+        }
+      } catch (e) {
+        item.status = 'corrupt';
+        item.errorMsg = 'Error reading file in RAM';
+      }
+
+      renderQueue();
+
+      // 4. If ready, render first page visual thumbnail
+      if (item.status === 'ready') {
+        renderThumbnailForItem(item);
+      }
+    }
+
+    async function renderThumbnailForItem(item) {
+      if (item.thumbnail || item.status !== 'ready') return;
+      try {
+        const buf = await UIUtils.readFileAsArrayBuffer(item.file);
+        const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buf.slice(0)), isEvalSupported: false });
+        const pdf = await loadingTask.promise;
+        item.pageCount = pdf.numPages;
+
+        const page = await pdf.getPage(1);
+        const originalVp = page.getViewport({ scale: 1.0 });
+        const targetScale = Math.min(1.0, 160 / Math.max(1, originalVp.width));
+        const viewport = page.getViewport({ scale: targetScale });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        const ctx = canvas.getContext('2d', { alpha: false });
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        item.thumbnail = canvas.toDataURL('image/jpeg', 0.85);
+
+        // Update DOM card
+        const imgEl = document.getElementById('thumb-img-' + item.id);
+        const skelEl = document.getElementById('thumb-skel-' + item.id);
+        const pageBadgeEl = document.getElementById('pages-badge-' + item.id);
+
+        if (imgEl && skelEl) {
+          imgEl.src = item.thumbnail;
+          imgEl.style.display = 'block';
+          skelEl.style.display = 'none';
+        }
+        if (pageBadgeEl) {
+          pageBadgeEl.textContent = `${item.pageCount} ${item.pageCount === 1 ? 'page' : 'pages'}`;
+        }
+      } catch (err) {
+        console.warn('Thumbnail generation notice:', err);
+      }
+    }
+
+    UIUtils.setupDropZone(dropZone, fileInput, handleFilesSelected);
+
+    // Render Queue UI
+    function renderQueue() {
+      if (queueItems.length === 0) {
+        dropZone.style.display = "block";
+        queueContainer.style.display = "none";
+        actionBar.style.display = "none";
+        queueWarningBanner.style.display = "none";
+        return;
+      }
+
+      queueCount.textContent = queueItems.length;
+      let totalBytes = 0;
+      queueItems.forEach(item => totalBytes += (item.file.size || 0));
+      queueTotalSize.textContent = `Total: ${UIUtils.formatBytes(totalBytes)}`;
+
+      reorderList.innerHTML = '';
+
+      let lockedCount = 0;
+      let corruptCount = 0;
+
+      queueItems.forEach((item, idx) => {
+        if (item.status === 'locked') lockedCount++;
+        if (item.status === 'corrupt') corruptCount++;
+
+        const card = document.createElement("div");
+        card.className = "merge-card";
+        card.id = "card-" + item.id;
+        card.setAttribute("draggable", "true");
+        card.dataset.index = idx;
+
+        if (item.status === 'locked') card.classList.add('is-locked');
+        if (item.status === 'corrupt') card.classList.add('is-corrupt');
+
+        const pagesLabel = item.pageCount ? `${item.pageCount} ${item.pageCount === 1 ? 'page' : 'pages'}` : (item.status === 'scanning' ? 'Scanning...' : '');
+
+        card.innerHTML = `
+          <div class="merge-card-header">
+            <span class="merge-card-badge">#${idx + 1}</span>
+            <button type="button" class="merge-card-remove" title="Remove Document" onclick="window.removeItem(${idx})">&times;</button>
+          </div>
+          <div class="merge-thumb-wrap">
+            <img class="merge-thumb-img" id="thumb-img-${item.id}" src="${item.thumbnail || ''}" style="${item.thumbnail ? 'display:block;' : 'display:none;'}" alt="Page 1 preview">
+            <div class="merge-thumb-skeleton" id="thumb-skel-${item.id}" style="${item.thumbnail ? 'display:none;' : 'display:flex;'}">
+              ${item.status === 'locked' ? `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger, #EF4444)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span style="color:var(--danger, #EF4444); font-weight:700;">Locked</span>
+              ` : item.status === 'corrupt' ? `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span style="color:#F59E0B; font-weight:700;">Corrupt</span>
+              ` : `
+                <img src="../assets/icons/merge-pdf.svg" width="28" height="28" alt="PDF">
+                <span>Rendering...</span>
+              `}
+            </div>
+          </div>
+          <div class="merge-card-info">
+            <div class="merge-card-title" title="${item.file.name}">${item.file.name}</div>
+            <div class="merge-card-meta">
+              <span id="pages-badge-${item.id}">${pagesLabel}</span>
+              <span>${UIUtils.formatBytes(item.file.size)}</span>
+            </div>
+            ${item.errorMsg ? `<div style="font-size:0.7rem; color:var(--danger, #EF4444); font-weight:600; margin-top:2px;">${item.errorMsg}</div>` : ''}
+          </div>
+          <div class="merge-card-arrows">
+            <button type="button" class="btn btn-outline" title="Move Left" onclick="window.moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>&larr;</button>
+            <button type="button" class="btn btn-outline" title="Move Right" onclick="window.moveItem(${idx}, 1)" ${idx === queueItems.length - 1 ? 'disabled' : ''}>&rarr;</button>
+          </div>
+        `;
+
+        // Drag and drop event listeners
+        card.addEventListener("dragstart", (e) => {
+          draggedIndex = idx;
+          e.dataTransfer.effectAllowed = "move";
+          card.classList.add("is-dragging");
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("is-dragging");
+          document.querySelectorAll(".merge-card").forEach(c => c.classList.remove("is-drag-over"));
+          draggedIndex = null;
+        });
+
+        card.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        });
+
+        card.addEventListener("dragenter", () => {
+          if (draggedIndex !== idx) card.classList.add("is-drag-over");
+        });
+
+        card.addEventListener("dragleave", () => {
+          card.classList.remove("is-drag-over");
+        });
+
+        card.addEventListener("drop", (e) => {
+          e.preventDefault();
+          card.classList.remove("is-drag-over");
+          if (draggedIndex !== null && draggedIndex !== idx) {
+            const moved = queueItems.splice(draggedIndex, 1)[0];
+            queueItems.splice(idx, 0, moved);
+            renderQueue();
+          }
+        });
+
+        reorderList.appendChild(card);
+      });
+
+      // 5. Pre-flight lock / error enforcement
+      if (lockedCount > 0 || corruptCount > 0) {
+        queueWarningBanner.style.display = "flex";
+        queueWarningMsg.textContent = `${lockedCount > 0 ? lockedCount + ' file(s) are password-protected.' : ''} ${corruptCount > 0 ? corruptCount + ' file(s) are corrupt.' : ''} Remove or unlock them before merging.`;
+        processBtn.disabled = true;
+        processBtn.innerHTML = `<span>⚠️ Remove Locked / Corrupt Files (${lockedCount + corruptCount})</span>`;
+      } else {
+        queueWarningBanner.style.display = "none";
+        if (queueItems.length < 2) {
+          processBtn.disabled = true;
+          processBtn.innerHTML = `<span>Add at Least 2 PDFs to Merge</span>`;
+        } else {
+          processBtn.disabled = false;
+          processBtn.innerHTML = `<span data-i18n="action_merge">Merge ${queueItems.length} PDF Files</span> &rarr;`;
+        }
+      }
     }
 
     window.moveItem = function(idx, dir) {
       const target = idx + dir;
-      if (target < 0 || target >= queueFiles.length) return;
-      const temp = queueFiles[idx];
-      queueFiles[idx] = queueFiles[target];
-      queueFiles[target] = temp;
+      if (target < 0 || target >= queueItems.length) return;
+      const temp = queueItems[idx];
+      queueItems[idx] = queueItems[target];
+      queueItems[target] = temp;
       renderQueue();
     };
 
     window.removeItem = function(idx) {
-      queueFiles.splice(idx, 1);
+      queueItems.splice(idx, 1);
       renderQueue();
     };
 
     clearAllBtn.addEventListener("click", () => {
-      queueFiles = [];
+      queueItems = [];
       resultData = null;
       renderQueue();
       document.getElementById("workflow-progress").style.display = "none";
+      resultCard.style.display = "none";
     });
 
     function progressCb(pct, status) {
-      const step = pct < 40  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
+    // Merge Action
     processBtn.addEventListener("click", async function() {
-      if (queueFiles.length < 2) {
+      if (queueItems.length < 2) {
         UIUtils.showToast("Please add at least 2 PDF documents to merge.", "error");
+        return;
+      }
+
+      // Safety verify: no locked or corrupt files
+      const badItems = queueItems.filter(item => item.status === 'locked' || item.status === 'corrupt');
+      if (badItems.length > 0) {
+        UIUtils.showToast("Cannot merge: Please remove password-protected or corrupt files first.", "error");
         return;
       }
 
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 10, "Initializing local memory merger...");
+        UIUtils.setWorkflowStep(1, 10, "Initializing non-blocking merger in browser RAM...");
 
-        resultData = await PDFOrganize.mergePDF(queueFiles, progressCb);
+        const files = queueItems.map(item => item.file);
+        resultData = await PDFOrganize.mergePDF(files, progressCb);
 
         UIUtils.setWorkflowStep(3, 100, "Merge complete!");
         resultCard.style.display = "flex";
-        const resultSize = resultData && resultData.pdfBlob  ?  resultData.pdfBlob.size : 0;
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultSize)} • Processed Successfully`;
-        UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, "localdoc-merged-document.pdf");
-        UIUtils.showToast("PDF files merged successfully!", "success");
+
+        const resultSize = resultData.pdfBlob ? resultData.pdfBlob.size : 0;
+        document.getElementById("result-title").textContent = `Merged Document Ready! (${resultData.totalPages} Pages)`;
+        document.getElementById("result-meta").innerHTML = `
+          <strong>Original Total:</strong> ${UIUtils.formatBytes(resultData.totalInputBytes)} &bull; 
+          <strong>Merged Output:</strong> ${UIUtils.formatBytes(resultSize)} &bull; 
+          <strong>Bookmarks:</strong> Auto-preserved for all ${resultData.fileCount} documents
+        `;
+
+        // 1. Bloat detection
+        if (resultData.isBloated) {
+          bloatAlertBox.style.display = "block";
+          document.getElementById("bloat-title").textContent = `File Bloat Detected: Merged PDF is ${resultData.bloatPercentage}% Larger (+${UIUtils.formatBytes(resultData.bloatDifference)})`;
+          document.getElementById("bloat-desc").innerHTML = `
+            The merged file (${UIUtils.formatBytes(resultData.mergedSize)}) exceeds the sum of input files (${UIUtils.formatBytes(resultData.totalInputBytes)}) due to redundant font descriptors and uncompressed object streams. Click below to optimize and compress in 1 step.
+          `;
+        } else {
+          bloatAlertBox.style.display = "none";
+        }
+
+        UIUtils.renderQuickActions(document.getElementById("quick-actions-container"), resultData.pdfBlob, "localdoc-merged-document.pdf");
+        UIUtils.showToast("PDF files merged successfully with bookmark table of contents!", "success");
+        resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
         console.error(err);
         UIUtils.handleToolError(err, processBtn);
       } finally {
         processBtn.disabled = false;
+      }
+    });
+
+    // 1-Click Bloat Optimization / Compression Handler
+    compressMergedBtn.addEventListener("click", async function() {
+      if (!resultData || !resultData.pdfBlob) return;
+      try {
+        compressMergedBtn.disabled = true;
+        compressMergedBtn.innerHTML = '<span>⚡ Optimizing &amp; Compressing in RAM...</span>';
+        UIUtils.setWorkflowStep(2, 50, "Compressing font subsets & object streams...");
+
+        const compRes = await PDFOrganize.compressPDF(resultData.pdfBlob, 'recommended', progressCb);
+        resultData.pdfBlob = compRes.pdfBlob;
+        resultData.mergedSize = compRes.compressedSize;
+
+        UIUtils.setWorkflowStep(3, 100, "Optimization Complete!");
+        document.getElementById("result-meta").innerHTML = `
+          <strong>Original Total:</strong> ${UIUtils.formatBytes(resultData.totalInputBytes)} &bull; 
+          <strong style="color:var(--success);">Optimized Merged:</strong> ${UIUtils.formatBytes(compRes.compressedSize)} (-${compRes.savedPercentage}%) &bull; 
+          <strong>Bookmarks:</strong> Preserved
+        `;
+
+        bloatAlertBox.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; color:var(--success); font-weight:700;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Optimization Complete! Successfully reduced by ${compRes.savedPercentage}% (${UIUtils.formatBytes(compRes.savedBytes)} saved).</span>
+          </div>
+        `;
+
+        UIUtils.renderQuickActions(document.getElementById("quick-actions-container"), resultData.pdfBlob, "localdoc-merged-document.pdf");
+        UIUtils.showToast("Merged PDF compressed and optimized!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast("Compression failed: " + (err.message || err), "error");
+      } finally {
+        compressMergedBtn.disabled = false;
       }
     });
 

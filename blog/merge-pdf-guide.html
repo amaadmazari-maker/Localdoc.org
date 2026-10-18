@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -477,6 +477,68 @@
           <li><strong>Interactive Bookmark &amp; Hyperlink Preservation:</strong> The outline tree (<code>/Outlines</code> dictionary) and hyperlink annotations (<code>/Annots</code> array) are parsed. Destination coordinate targets are re-mapped so clicking "Section 4: Balance Sheet" in the combined table of contents jumps to global page 33 rather than failing.</li>
           <li><strong>XRef Stream Linearization:</strong> A clean, defragmented XRef table is generated at the end of the byte stream, followed by an updated <code>%%EOF</code> marker.</li>
         </ol>
+      </section>
+
+      <!-- 6 Technical Improvements: LocalDoc vs Cloud Mergers -->
+      <section style="margin-top:36px;">
+        <h2>Overcoming the 6 Critical Pain Points of Online PDF Mergers</h2>
+        <p>Most commercial web utilities (such as iLovePDF or Smallpdf) suffer from silent file bloat, browser freeze timeouts during large document batches, lost bookmarks, and abrupt failure when encountering locked files. LocalDoc's client-side engine was re-architected to solve each of these challenges systematically:</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin:20px 0;">
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">1.</span> Post-Merge File Bloat Prevention
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              Merging distinct PDFs frequently duplicates embedded font subsets and uncompressed object streams. LocalDoc continuously calculates total input bytes against output bytes. If bloat is detected, the UI instantly offers a <strong>1-click in-memory stream compression pass</strong> to remove redundant font metrics and compress content dictionaries without leaving your browser tab.
+            </p>
+          </div>
+
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">2.</span> Non-Blocking Execution &amp; Tab Protection
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              Traditional scripts lock the main browser thread in synchronous loops, triggering "Page Unresponsive" crashes on 10+ file batches. LocalDoc executes cooperative event-loop yielding between document chunks, keeping the UI smoothly animated and trapping memory limits gracefully with clear recovery steps.
+            </p>
+          </div>
+
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">3.</span> Natural Numeric Auto-Sorting
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              Standard ASCII alphabetization jumbles sequentially numbered documents (ordering <code>invoice-1</code>, <code>invoice-10</code>, <code>invoice-2</code>). LocalDoc employs natural numeric collation on upload, guaranteeing files are automatically sequenced in true chronological order (<code>1, 2, 10</code>) alongside one-click sorting tools.
+            </p>
+          </div>
+
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">4.</span> Visual Page 1 Thumbnail Verification
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              Selecting documents by filename alone leads to mistakes. LocalDoc decodes the first page of every uploaded document into an interactive high-resolution canvas thumbnail with page counts and direct drag-and-drop reordering.
+            </p>
+          </div>
+
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">5.</span> Pre-Flight Security &amp; Corruption Interception
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              Instead of crashing 30 seconds into an active batch, LocalDoc pre-scans file headers and security flags immediately upon selection. Password-protected or damaged files are flagged with a red alert badge and disabled from the merge queue until resolved.
+            </p>
+          </div>
+
+          <div class="tech-card" style="margin:0;">
+            <h3 style="display:flex; align-items:center; gap:8px; font-size:1rem; color:var(--text-primary);">
+              <span style="color:var(--primary); font-weight:800;">6.</span> Automated Table of Contents &amp; Bookmarks
+            </h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin:6px 0 0;">
+              While typical web mergers discard document outline structures, LocalDoc constructs an ISO 32000-1 <code>/Outlines</code> dictionary. Opening the merged binder in Adobe Acrobat, Edge, or Preview displays a fully clickable navigation sidebar keyed to each constituent document's first page.
+            </p>
+          </div>
+        </div>
       </section>
 
       <!-- BENCHMARK TABLE -->

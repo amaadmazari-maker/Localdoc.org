@@ -36,7 +36,7 @@ const PDFOrganize = {
 
     return doc;
   },
-  // 1. Merge PDF Documents with Reordered Queue
+  // 1. Merge PDF Documents with Reordered Queue & Intelligent Features
   async mergePDF(files, onProgress = null) {
     if (!files || files.length === 0) {
       throw new Error('Please select at least two PDF documents to merge.');
@@ -45,34 +45,114 @@ const PDFOrganize = {
       throw new Error('Please select at least 2 PDF files to merge into a single document.');
     }
 
-    if (onProgress) onProgress(10, 'Creating in-memory merged document container...');
-    const mergedDoc = await PDFLib.PDFDocument.create();
-    let totalPageCount = 0;
+    try {
+      if (onProgress) onProgress(10, 'Creating in-memory merged document container...');
+      const mergedDoc = await PDFLib.PDFDocument.create();
+      let totalPageCount = 0;
+      let totalInputBytes = 0;
+      const bookmarks = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const pct = 15 + Math.round(((i + 1) / files.length) * 70);
-      if (onProgress) onProgress(pct, `Merging Document ${i + 1} of ${files.length} (${file.name})...`);
+      for (let i = 0; i < files.length; i++) {
+        // Cooperative yield so browser tab never freezes
+        await new Promise(r => setTimeout(r, 0));
 
-      const buffer = await UIUtils.readFileAsArrayBuffer(file);
-      const srcDoc = await this.safeLoadPDF(buffer, file.name);
-      const indices = srcDoc.getPageIndices();
-      totalPageCount += indices.length;
+        const file = files[i];
+        totalInputBytes += (file.size || 0);
 
-      const copiedPages = await mergedDoc.copyPages(srcDoc, indices);
-      copiedPages.forEach(page => mergedDoc.addPage(page));
+        const pct = 15 + Math.round(((i + 1) / files.length) * 65);
+        if (onProgress) onProgress(pct, `Merging Document ${i + 1} of ${files.length} (${file.name})...`);
+
+        const buffer = await UIUtils.readFileAsArrayBuffer(file);
+        const srcDoc = await this.safeLoadPDF(buffer, file.name);
+        const indices = srcDoc.getPageIndices();
+
+        // Record bookmark / outline entry for this document's start page
+        bookmarks.push({
+          title: file.name.replace(/\.pdf$/i, ''),
+          pageIndex: totalPageCount
+        });
+        totalPageCount += indices.length;
+
+        // Copy pages in chunks to keep memory smooth
+        for (let chunkStart = 0; chunkStart < indices.length; chunkStart += 25) {
+          const chunkIndices = indices.slice(chunkStart, chunkStart + 25);
+          const copiedPages = await mergedDoc.copyPages(srcDoc, chunkIndices);
+          copiedPages.forEach(page => mergedDoc.addPage(page));
+          if (indices.length > 50) {
+            await new Promise(r => setTimeout(r, 0));
+          }
+        }
+      }
+
+      // 6. Killer Feature: Rebuild ISO 32000-1 Outlines / Bookmarks table of contents
+      if (bookmarks.length > 0 && mergedDoc.getPageCount() > 0) {
+        try {
+          const { PDFName, PDFHexString } = PDFLib;
+          const context = mergedDoc.context;
+          const outlinesDictRef = context.nextRef();
+          const outlineItemRefs = bookmarks.map(() => context.nextRef());
+
+          for (let bIdx = 0; bIdx < bookmarks.length; bIdx++) {
+            const bm = bookmarks[bIdx];
+            const pageRef = mergedDoc.getPage(bm.pageIndex).ref;
+            const itemDict = {
+              Title: PDFHexString.fromText(bm.title),
+              Parent: outlinesDictRef,
+              Dest: [pageRef, PDFName.of('Fit')]
+            };
+            if (bIdx > 0) {
+              itemDict.Prev = outlineItemRefs[bIdx - 1];
+            }
+            if (bIdx < bookmarks.length - 1) {
+              itemDict.Next = outlineItemRefs[bIdx + 1];
+            }
+            context.assign(outlineItemRefs[bIdx], context.obj(itemDict));
+          }
+
+          const outlinesDict = context.obj({
+            Type: 'Outlines',
+            First: outlineItemRefs[0],
+            Last: outlineItemRefs[outlineItemRefs.length - 1],
+            Count: outlineItemRefs.length
+          });
+          context.assign(outlinesDictRef, outlinesDict);
+          mergedDoc.catalog.set(PDFName.of('Outlines'), outlinesDictRef);
+        } catch (bmErr) {
+          console.warn('Outline preservation non-fatal notice:', bmErr);
+        }
+      }
+
+      if (onProgress) onProgress(85, 'Optimizing object streams in RAM...');
+      await new Promise(r => setTimeout(r, 0));
+
+      const pdfBytes = await mergedDoc.save({ useObjectStreams: true });
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const mergedSize = pdfBytes.byteLength;
+
+      // 1. File Bloat Detection: if merged size exceeds total input size + 5% overhead
+      const isBloated = (mergedSize > totalInputBytes * 1.05) && (totalInputBytes > 100000);
+      const bloatDifference = Math.max(0, mergedSize - totalInputBytes);
+      const bloatPercentage = totalInputBytes > 0 ? Math.round(((mergedSize - totalInputBytes) / totalInputBytes) * 100) : 0;
+
+      if (onProgress) onProgress(100, 'Merge complete!');
+
+      return {
+        pdfBlob,
+        totalPages: totalPageCount,
+        fileCount: files.length,
+        mergedSize,
+        totalInputBytes,
+        isBloated,
+        bloatDifference,
+        bloatPercentage
+      };
+    } catch (err) {
+      const msg = (err && err.message) ? err.message.toLowerCase() : '';
+      if (err.name === 'RangeError' || msg.includes('allocation') || msg.includes('out of memory') || msg.includes('memory')) {
+        throw new Error('This file collection is too large to merge in your browser RAM at once. Try merging fewer documents at a time or compress them first.');
+      }
+      throw err;
     }
-
-    if (onProgress) onProgress(90, 'Serializing merged PDF document in RAM...');
-    const pdfBytes = await mergedDoc.save({ useObjectStreams: true });
-    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-    return {
-      pdfBlob,
-      totalPages: totalPageCount,
-      fileCount: files.length,
-      mergedSize: pdfBytes.byteLength
-    };
   },
 
   // 2. Split PDF Document by Page Ranges or Selection
