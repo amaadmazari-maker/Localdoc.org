@@ -139,31 +139,58 @@ const PDFEdit = {
 
             const w = anno.width || 150;
             const h = anno.height || 65;
-            const x = Math.max(0, Math.min(pWidth - w, anno.x));
-            const y = Math.max(0, Math.min(pHeight - h, anno.y));
-            pdfPage.drawImage(sigImage, { x, y, width: w, height: h });
+            const rotationDeg = anno.rotation || 0;
+            const drawOpts = { width: w, height: h };
+
+            if (rotationDeg !== 0) {
+              const angleDeg = -rotationDeg;
+              const rad = angleDeg * (Math.PI / 180);
+              const cx = anno.x + w / 2;
+              const cy = anno.y + h / 2;
+              drawOpts.x = cx + (-w / 2) * Math.cos(rad) - (-h / 2) * Math.sin(rad);
+              drawOpts.y = cy + (-w / 2) * Math.sin(rad) + (-h / 2) * Math.cos(rad);
+              drawOpts.rotate = PDFLib.degrees(angleDeg);
+            } else {
+              drawOpts.x = Math.max(0, Math.min(pWidth - w, anno.x));
+              drawOpts.y = Math.max(0, Math.min(pHeight - h, anno.y));
+            }
+            pdfPage.drawImage(sigImage, drawOpts);
           } else if (anno.type === 'text' && anno.text) {
             const font = await newPdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
             const size = anno.fontSize || 12;
             const colorHex = anno.color || '#000000';
             const rgb = this.hexToRgb(colorHex);
-            pdfPage.drawText(anno.text, {
-              x: Math.max(0, Math.min(pWidth - 50, anno.x)),
-              y: Math.max(0, Math.min(pHeight - size, anno.y)),
+            const textOpts = {
               size,
               font,
               color: PDFLib.rgb(rgb.r, rgb.g, rgb.b)
-            });
+            };
+            if (anno.rotation) {
+              textOpts.x = anno.x;
+              textOpts.y = anno.y;
+              textOpts.rotate = PDFLib.degrees(-anno.rotation);
+            } else {
+              textOpts.x = Math.max(0, Math.min(pWidth - 50, anno.x));
+              textOpts.y = Math.max(0, Math.min(pHeight - size, anno.y));
+            }
+            pdfPage.drawText(anno.text, textOpts);
           } else if (anno.type === 'date' && anno.text) {
             const font = await newPdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
             const size = anno.fontSize || 10;
-            pdfPage.drawText(anno.text, {
-              x: Math.max(0, Math.min(pWidth - 60, anno.x)),
-              y: Math.max(0, Math.min(pHeight - size, anno.y)),
+            const dateOpts = {
               size,
               font,
               color: PDFLib.rgb(0.2, 0.25, 0.35)
-            });
+            };
+            if (anno.rotation) {
+              dateOpts.x = anno.x;
+              dateOpts.y = anno.y;
+              dateOpts.rotate = PDFLib.degrees(-anno.rotation);
+            } else {
+              dateOpts.x = Math.max(0, Math.min(pWidth - 60, anno.x));
+              dateOpts.y = Math.max(0, Math.min(pHeight - size, anno.y));
+            }
+            pdfPage.drawText(anno.text, dateOpts);
           }
         }
       }
@@ -231,40 +258,62 @@ const PDFEdit = {
 
           const w = anno.width || 140;
           const h = anno.height || 60;
-          const x = Math.max(0, Math.min(pWidth - w, anno.x));
-          const y = Math.max(0, Math.min(pHeight - h, anno.y));
+          const rotationDeg = anno.rotation || 0;
+          const drawOpts = { width: w, height: h };
 
-          page.drawImage(sigImage, {
-            x,
-            y,
-            width: w,
-            height: h
-          });
+          if (rotationDeg !== 0) {
+            const angleDeg = -rotationDeg;
+            const rad = angleDeg * (Math.PI / 180);
+            const cx = anno.x + w / 2;
+            const cy = anno.y + h / 2;
+            drawOpts.x = cx + (-w / 2) * Math.cos(rad) - (-h / 2) * Math.sin(rad);
+            drawOpts.y = cy + (-w / 2) * Math.sin(rad) + (-h / 2) * Math.cos(rad);
+            drawOpts.rotate = PDFLib.degrees(angleDeg);
+          } else {
+            drawOpts.x = Math.max(0, Math.min(pWidth - w, anno.x));
+            drawOpts.y = Math.max(0, Math.min(pHeight - h, anno.y));
+          }
+
+          page.drawImage(sigImage, drawOpts);
           stampedCount++;
         } else if (anno.type === 'text' && anno.text) {
           const font = await getFont(anno.bold || false);
           const size = anno.fontSize || 12;
           const colorHex = anno.color || '#000000';
           const rgb = this.hexToRgb(colorHex);
-
-          page.drawText(anno.text, {
-            x: Math.max(0, Math.min(pWidth - 50, anno.x)),
-            y: Math.max(0, Math.min(pHeight - size, anno.y)),
+          const textOpts = {
             size,
             font,
             color: PDFLib.rgb(rgb.r, rgb.g, rgb.b)
-          });
+          };
+          if (anno.rotation) {
+            textOpts.x = anno.x;
+            textOpts.y = anno.y;
+            textOpts.rotate = PDFLib.degrees(-anno.rotation);
+          } else {
+            textOpts.x = Math.max(0, Math.min(pWidth - 50, anno.x));
+            textOpts.y = Math.max(0, Math.min(pHeight - size, anno.y));
+          }
+
+          page.drawText(anno.text, textOpts);
           stampedCount++;
         } else if (anno.type === 'date' && anno.text) {
           const font = await getFont(false);
           const size = anno.fontSize || 10;
-          page.drawText(anno.text, {
-            x: Math.max(0, Math.min(pWidth - 60, anno.x)),
-            y: Math.max(0, Math.min(pHeight - size, anno.y)),
+          const dateOpts = {
             size,
             font,
             color: PDFLib.rgb(0.2, 0.25, 0.35)
-          });
+          };
+          if (anno.rotation) {
+            dateOpts.x = anno.x;
+            dateOpts.y = anno.y;
+            dateOpts.rotate = PDFLib.degrees(-anno.rotation);
+          } else {
+            dateOpts.x = Math.max(0, Math.min(pWidth - 60, anno.x));
+            dateOpts.y = Math.max(0, Math.min(pHeight - size, anno.y));
+          }
+          page.drawText(anno.text, dateOpts);
           stampedCount++;
         }
       }
