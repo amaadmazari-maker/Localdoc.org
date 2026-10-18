@@ -475,13 +475,36 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
-      background: #1E293B;
-      padding: 8px 14px;
+      background: #0F172A;
+      padding: 6px 14px;
       border-radius: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       color: #F8FAFC;
       box-sizing: border-box;
+    }
+    .nav-icon-btn {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      color: #F8FAFC !important;
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      padding: 0 !important;
+      transition: all 0.15s ease !important;
+      box-shadow: none !important;
+    }
+    .nav-icon-btn:hover:not(:disabled) {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #FFF !important;
+    }
+    .nav-icon-btn:disabled {
+      opacity: 0.3 !important;
+      cursor: not-allowed !important;
     }
     .pdf-viewport-scroller {
       width: 100%;
@@ -926,25 +949,25 @@
 
           <!-- Column 2: Document Viewport Stage -->
           <main class="pdf-main-stage">
-            <div class="pdf-nav-bar">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <button type="button" class="btn btn-outline" id="btn-pdf-prev" style="padding:4px 8px; font-size:0.78rem; color:#FFF; border-color:#475569;">&#9668; Prev</button>
-                <span style="font-size:0.82rem; font-weight:700; white-space:nowrap; color:#FFF;">P. <span id="pdf-current-page">1</span> / <span id="pdf-total-pages">1</span></span>
-                <button type="button" class="btn btn-outline" id="btn-pdf-next" style="padding:4px 8px; font-size:0.78rem; color:#FFF; border-color:#475569;">Next &#9658;</button>
+            <div class="pdf-nav-bar" style="display:flex; justify-content:space-between; align-items:center; background:#0F172A; padding:6px 14px; border-radius:8px; margin-bottom:12px; color:#F8FAFC;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="nav-icon-btn" id="btn-pdf-prev" title="Previous Page" aria-label="Previous Page">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <span style="font-size:0.85rem; font-weight:700; color:#F8FAFC; white-space:nowrap;">Page <span id="pdf-current-page">1</span> of <span id="pdf-total-pages">1</span></span>
+                <button type="button" class="nav-icon-btn" id="btn-pdf-next" title="Next Page" aria-label="Next Page">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
               </div>
 
-              <!-- Quick Stamping Shortcuts directly over document -->
-              <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
-                <button type="button" class="pill-btn" id="quick-add-sig" title="Place signature on current page">&#9997; + Signature</button>
-                <button type="button" class="pill-btn" id="quick-add-initials" title="Place initials on current page">&#128394; + Initials</button>
-                <button type="button" class="pill-btn" id="quick-add-date" title="Place today's date stamp">&#128197; + Date</button>
-                <button type="button" class="pill-btn" id="quick-add-name" title="Place signer name">&#128100; + Name</button>
-              </div>
-              
               <div style="display:flex; align-items:center; gap:6px;">
-                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:3px 7px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom Out">&minus;</button>
-                <span id="pdf-zoom-level" style="font-size:0.78rem; font-family:monospace; color:#FFF;">115%</span>
-                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-in" style="padding:3px 7px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom In">+</button>
+                <button type="button" class="nav-icon-btn" id="btn-pdf-zoom-out" title="Zoom Out" aria-label="Zoom Out">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <span id="pdf-zoom-level" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:#94A3B8; min-width:42px; text-align:center;">115%</span>
+                <button type="button" class="nav-icon-btn" id="btn-pdf-zoom-in" title="Zoom In" aria-label="Zoom In">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
               </div>
             </div>
 
@@ -957,7 +980,7 @@
             </div>
           </main>
 
-          <!-- Column 3: Signer Toolbox Panel (Live Real-Time Stamping, Rotation & Range Targeting) -->
+          <!-- Column 3: Signer Toolbox Panel (Option 1: Streamlined Unified Workflow) -->
           <aside class="signer-toolbox-panel">
             
             <!-- Card 1: ✍️ Live Real-Time Signature Pad -->
@@ -1012,48 +1035,91 @@
               </div>
             </div>
 
-            <!-- Card 2: ➕ Add Fields to Page (Signature, Text, Combo) -->
+            <!-- Card 2: 🎯 Apply Signature To (Page Scope) -->
+            <div class="toolbox-card" style="background:linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%); border:1px solid rgba(2, 132, 199, 0.25);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span class="toolbox-title" style="margin:0; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-primary);">
+                  🎯 Apply Signature To
+                </span>
+                <span id="scope-badge" style="font-size:0.68rem; font-weight:800; background:var(--primary); color:#FFF; padding:1px 6px; border-radius:999px;">Current</span>
+              </div>
+              <p style="font-size:0.72rem; color:var(--text-secondary); margin:0 0 8px; line-height:1.35;">
+                Select target pages &mdash; added items appear on all chosen pages simultaneously:
+              </p>
+
+              <!-- Target Range Mode Selector -->
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
+                <button type="button" class="range-tab-btn active" id="range-btn-current" data-range="current">This Page (<span id="range-cur-page-span">1</span>)</button>
+                <button type="button" class="range-tab-btn" id="range-btn-all" data-range="all">All Pages (1..<span id="range-total-pages-span">1</span>)</button>
+                <button type="button" class="range-tab-btn" id="range-btn-except" data-range="except">All Except Cover</button>
+                <button type="button" class="range-tab-btn" id="range-btn-custom" data-range="custom">Custom Range</button>
+              </div>
+
+              <!-- Exclude Pages Input (All Except...) -->
+              <div id="range-pane-except" style="display:none; background:var(--bg-surface); padding:8px; border-radius:6px; border:1px solid var(--line); margin-bottom:8px;">
+                <label style="display:block; font-size:0.72rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
+                  Pages to Skip / Exclude:
+                </label>
+                <input type="text" id="range-exclude-input" value="1" placeholder="e.g. 1 (Leaves Page 1 clean)" style="width:100%; padding:5px 8px; font-size:0.8rem; border:1px solid var(--line); border-radius:4px; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+                <span style="font-size:0.68rem; color:var(--text-muted); display:block; margin-top:3px;">Leaves cover or overview page unsigned</span>
+              </div>
+
+              <!-- Custom Page Range Input -->
+              <div id="range-pane-custom" style="display:none; background:var(--bg-surface); padding:8px; border-radius:6px; border:1px solid var(--line); margin-bottom:8px;">
+                <label style="display:block; font-size:0.72rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
+                  Target Page Numbers:
+                </label>
+                <input type="text" id="range-custom-input" placeholder="e.g. 1, 3, 5-8" style="width:100%; padding:5px 8px; font-size:0.8rem; border:1px solid var(--line); border-radius:4px; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+                <span style="font-size:0.68rem; color:var(--text-muted); display:block; margin-top:3px;">Comma-separated numbers &amp; ranges</span>
+              </div>
+
+              <div id="scope-active-summary" style="font-size:0.7rem; color:#059669; font-weight:700; display:flex; align-items:center; gap:4px;">
+                <span>✓ Active:</span> <span id="scope-summary-text">Signing Page 1 only</span>
+              </div>
+            </div>
+
+            <!-- Card 3: ➕ 1-Click Placement Fields -->
             <div class="toolbox-card">
-              <span class="toolbox-title">&#128295; Add to Current Page (<span id="toolbox-cur-page">1</span>)</span>
+              <span class="toolbox-title">➕ Add to Document</span>
               <div style="display:flex; flex-direction:column; gap:6px;">
                 <button type="button" class="field-asset-btn" id="btn-add-sig-field">
                   <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#9997;</span>
+                    <span style="font-size:1.05rem;">✍️</span>
                     <span>Signature Box</span>
                   </span>
                   <span class="field-btn-badge">+ Add</span>
                 </button>
-                <button type="button" class="field-asset-btn" id="btn-add-name-field">
+                <button type="button" class="field-asset-btn" id="btn-add-combo-field" style="border-color:#8B5CF6; background:rgba(139, 92, 246, 0.06);">
                   <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#128100;</span>
-                    <span>Printed Signer Name Text</span>
-                  </span>
-                  <span class="field-btn-badge">+ Add</span>
-                </button>
-                <button type="button" class="field-asset-btn" id="btn-add-combo-field" style="border-color:#8B5CF6; background:rgba(139, 92, 246, 0.04);">
-                  <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#9997;&#128100;</span>
-                    <span style="font-weight:800; color:#6D28D9;">Signature &amp; Text (Both at Once)</span>
+                    <span style="font-size:1.05rem;">✍️📝</span>
+                    <span style="font-weight:800; color:#6D28D9;">Signature &amp; Text (Combo)</span>
                   </span>
                   <span class="field-btn-badge" style="background:rgba(139, 92, 246, 0.15); color:#6D28D9;">+ Combo</span>
                 </button>
+                <button type="button" class="field-asset-btn" id="btn-add-name-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">👤</span>
+                    <span>Printed Signer Name</span>
+                  </span>
+                  <span class="field-btn-badge">+ Add</span>
+                </button>
                 <button type="button" class="field-asset-btn" id="btn-add-initials-field">
                   <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#128394;</span>
+                    <span style="font-size:1.05rem;">🖋️</span>
                     <span>Initials</span>
                   </span>
                   <span class="field-btn-badge">+ Add</span>
                 </button>
                 <button type="button" class="field-asset-btn" id="btn-add-date-field">
                   <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#128197;</span>
+                    <span style="font-size:1.05rem;">📅</span>
                     <span>Date Seal (<span id="btn-date-seal-text">Today</span>)</span>
                   </span>
                   <span class="field-btn-badge">+ Add</span>
                 </button>
                 <button type="button" class="field-asset-btn" id="btn-add-stamp-field">
                   <span style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.05rem;">&#127970;</span>
+                    <span style="font-size:1.05rem;">🏢</span>
                     <span>Company Stamp / Seal</span>
                   </span>
                   <span class="field-btn-badge">+ Add</span>
@@ -1061,82 +1127,29 @@
               </div>
             </div>
 
-            <!-- Card 3: ⚡ Multi-Page Page Targeting Structure -->
-            <div class="batch-card">
-              <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                <span style="font-size:1rem;">⚡</span>
-                <strong style="font-size:0.8rem; color:#065F46; text-transform:uppercase; letter-spacing:0.04em;">Apply Across Pages</strong>
-              </div>
-              <p style="font-size:0.72rem; color:var(--text-secondary); margin:0 0 8px; line-height:1.4;">
-                Where should items appear? One page, all, or all except:
-              </p>
-
-              <!-- Target Range Mode Selector -->
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:8px;">
-                <button type="button" class="range-tab-btn active" id="range-btn-current" data-range="current">This Page (P. <span id="range-cur-page-span">1</span>)</button>
-                <button type="button" class="range-tab-btn" id="range-btn-all" data-range="all">All Pages (1..<span id="range-total-pages-span">1</span>)</button>
-                <button type="button" class="range-tab-btn" id="range-btn-except" data-range="except">All Except...</button>
-                <button type="button" class="range-tab-btn" id="range-btn-custom" data-range="custom">Custom Range</button>
-              </div>
-
-              <!-- Exclude Pages Input (All Except...) -->
-              <div id="range-pane-except" style="display:none; background:var(--bg-body); padding:8px; border-radius:6px; border:1px solid var(--line); margin-bottom:8px;">
-                <label style="display:block; font-size:0.72rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
-                  Pages to Exclude / Skip:
-                </label>
-                <input type="text" id="range-exclude-input" value="1" placeholder="e.g. 1 (Exclude cover page)" style="width:100%; padding:5px 8px; font-size:0.8rem; border:1px solid var(--line); border-radius:4px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-                <span style="font-size:0.68rem; color:var(--text-muted); display:block; margin-top:3px;">Signs all pages EXCEPT the ones listed (e.g. 1 or 1, 6)</span>
-              </div>
-
-              <!-- Custom Page Range Input -->
-              <div id="range-pane-custom" style="display:none; background:var(--bg-body); padding:8px; border-radius:6px; border:1px solid var(--line); margin-bottom:8px;">
-                <label style="display:block; font-size:0.72rem; font-weight:700; color:var(--text-primary); margin-bottom:3px;">
-                  Target Page Numbers:
-                </label>
-                <input type="text" id="range-custom-input" placeholder="e.g. 1, 3, 5-8" style="width:100%; padding:5px 8px; font-size:0.8rem; border:1px solid var(--line); border-radius:4px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-                <span style="font-size:0.68rem; color:var(--text-muted); display:block; margin-top:3px;">Comma-separated numbers &amp; ranges (e.g. 2, 4 or 2-5)</span>
-              </div>
-
-              <!-- Target Action Execution Buttons -->
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <button type="button" class="btn btn-outline" id="btn-apply-sig-target" style="width:100%; font-size:0.78rem; padding:7px 10px; font-weight:700; color:var(--primary-dark,#0369A1); border-color:var(--primary); background:rgba(2, 132, 199, 0.08); justify-content:center;">
-                  ⚡ Stamp Signature to Selected Pages
-                </button>
-                <button type="button" class="btn btn-outline" id="btn-apply-initials-target" style="width:100%; font-size:0.78rem; padding:7px 10px; font-weight:700; color:#065F46; border-color:#059669; background:#ECFDF5; justify-content:center;">
-                  ⚡ Stamp Initials to Selected Pages (Footer)
-                </button>
-                <button type="button" class="btn btn-outline" id="btn-apply-combo-target" style="width:100%; font-size:0.78rem; padding:7px 10px; font-weight:700; color:#7C3AED; border-color:#8B5CF6; background:rgba(139, 92, 246, 0.08); justify-content:center;">
-                  ⚡ Stamp Signature &amp; Text to Selected Pages
-                </button>
-              </div>
-
-              <!-- Clear Buttons -->
-              <div style="display:flex; justify-content:space-between; margin-top:8px; gap:6px;">
-                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="flex:1; color:var(--danger); border-color:var(--danger); font-size:0.72rem; padding:4px 6px;">
+            <!-- Card 4: Secondary Clear & Primary Download -->
+            <div class="toolbox-card" style="padding:12px; background:var(--bg-body); border:1px solid var(--line);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px; gap:6px;">
+                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="flex:1; color:var(--danger); border-color:var(--danger); font-size:0.72rem; padding:5px 6px;">
                   Clear Page <span id="clear-page-num">1</span>
                 </button>
-                <button type="button" class="btn btn-outline" id="btn-clear-all-annos" style="flex:1; color:var(--text-muted); border-color:var(--line); font-size:0.72rem; padding:4px 6px;">
+                <button type="button" class="btn btn-outline" id="btn-clear-all-annos" style="flex:1; color:var(--text-muted); border-color:var(--line); font-size:0.72rem; padding:5px 6px;">
                   Reset All Pages
                 </button>
               </div>
-            </div>
 
-            <!-- Card 4: Burn & Download -->
-            <button class="btn btn-primary btn-lg" id="process-btn" style="width:100%; padding:14px 18px; font-size:0.92rem; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(2, 132, 199, 0.35);">
-              <span>Sign &amp; Download PDF</span> &rarr;
-            </button>
+              <button class="btn btn-primary btn-lg" id="process-btn" style="width:100%; padding:14px 18px; font-size:0.92rem; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(2, 132, 199, 0.35);">
+                <span>Sign &amp; Download PDF</span> &rarr;
+              </button>
+            </div>
 
           </aside>
 
         </div>
       </div>
 
-      <!-- Action Bar (Sticky Mobile Alternative) -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="mobile-process-btn">
-          <span>Apply Signature &amp; Download Signed PDF</span> &rarr;
-        </button>
-      </div>
+      <!-- Workflow Progress Bar -->
+      <div class="workflow-progress" id="workflow-progress" style="display:none; margin:20px auto; max-width:850px;">
         <div class="workflow-progress-track">
           <div class="workflow-progress-fill"></div>
         </div>
@@ -1507,7 +1520,9 @@
     const btnDateSealText = document.getElementById("btn-date-seal-text");
     if (btnDateSealText) btnDateSealText.textContent = todayDateStr;
 
-    // Range Target Controls (Card 3)
+    // Range Target Controls (Card 2)
+    const scopeBadge = document.getElementById("scope-badge");
+    const scopeSummaryText = document.getElementById("scope-summary-text");
     const rangeBtnCurrent = document.getElementById("range-btn-current");
     const rangeBtnAll = document.getElementById("range-btn-all");
     const rangeBtnExcept = document.getElementById("range-btn-except");
@@ -1519,9 +1534,6 @@
     const rangeCurPageSpan = document.getElementById("range-cur-page-span");
     const rangeTotalPagesSpan = document.getElementById("range-total-pages-span");
 
-    const btnApplySigTarget = document.getElementById("btn-apply-sig-target");
-    const btnApplyInitialsTarget = document.getElementById("btn-apply-initials-target");
-    const btnApplyComboTarget = document.getElementById("btn-apply-combo-target");
     const btnClearPageAnnos = document.getElementById("btn-clear-page-annos");
     const btnClearAllAnnos = document.getElementById("btn-clear-all-annos");
     const clearPageNum = document.getElementById("clear-page-num");
@@ -1682,10 +1694,11 @@
             const img = el.querySelector('img');
             if (img) img.src = dataUrl;
           }
+          if (sigAnno.syncId) {
+            syncAnnotationAcrossPages(sigAnno);
+          }
         } else {
-          // Auto-spawn signature on current page
-          addSignatureToPage(currentPage);
-          renderOverlayAnnotations(currentPage);
+          addSignatureToTargets();
         }
       });
     }
@@ -1743,10 +1756,21 @@
       sideClearSigBtn.addEventListener('click', () => {
         if (ctxSideSig) ctxSideSig.clearRect(0, 0, sideSigCanvas.width, sideSigCanvas.height);
         hasSignatureDrawn = false;
-        // Also remove signature from active page
+        // Also remove signature from active page and synced pages
         if (pageAnnotations[currentPage]) {
+          const removed = pageAnnotations[currentPage].filter(a => a.type === 'signature');
+          removed.forEach(r => {
+            if (r.syncId) {
+              for (let p = 1; p <= totalPages; p++) {
+                if (pageAnnotations[p]) {
+                  pageAnnotations[p] = pageAnnotations[p].filter(a => a.syncId !== r.syncId);
+                }
+              }
+            }
+          });
           pageAnnotations[currentPage] = pageAnnotations[currentPage].filter(a => a.type !== 'signature');
           renderOverlayAnnotations(currentPage);
+          updateThumbnailBadges();
         }
         UIUtils.showToast("Signature pad cleared", "info");
       });
@@ -2118,6 +2142,7 @@
         if (thumbTotalBadge) thumbTotalBadge.textContent = totalPages;
         if (rangeTotalPagesSpan) rangeTotalPagesSpan.textContent = totalPages;
         if (rangeCurPageSpan) rangeCurPageSpan.textContent = '1';
+        updateScopeSummary();
 
         if (window.innerWidth <= 768) {
           const availWidth = Math.max(260, window.innerWidth - 64);
@@ -2154,6 +2179,7 @@
       if (clearPageNum) clearPageNum.textContent = pageNumber;
       if (btnPrev) btnPrev.disabled = pageNumber <= 1;
       if (btnNext) btnNext.disabled = pageNumber >= totalPages;
+      updateScopeSummary();
 
       updateActiveThumbnail(pageNumber);
 
@@ -2191,6 +2217,26 @@
         overlayLayer.appendChild(el);
       });
       updateThumbnailBadges();
+    }
+
+    // Synchronize position, rotation, scale, and text across all target pages sharing the same syncId
+    function syncAnnotationAcrossPages(sourceAnno) {
+      if (!sourceAnno || !sourceAnno.syncId) return;
+      for (let p = 1; p <= totalPages; p++) {
+        if (p === currentPage) continue;
+        const list = pageAnnotations[p];
+        if (!list) continue;
+        const match = list.find(a => a.syncId === sourceAnno.syncId);
+        if (match) {
+          match.relX = sourceAnno.relX;
+          match.relY = sourceAnno.relY;
+          match.relW = sourceAnno.relW;
+          match.relH = sourceAnno.relH;
+          match.rotation = sourceAnno.rotation;
+          if (sourceAnno.text !== undefined) match.text = sourceAnno.text;
+          if (sourceAnno.dataUrl !== undefined) match.dataUrl = sourceAnno.dataUrl;
+        }
+      }
     }
 
     function createAnnotationElement(anno, pageNumber) {
@@ -2310,6 +2356,7 @@
         input.placeholder = 'Signer Printed Name';
         input.addEventListener('input', (e) => {
           anno.text = e.target.value;
+          syncAnnotationAcrossPages(anno);
         });
         textPart.appendChild(input);
         box.appendChild(textPart);
@@ -2328,6 +2375,7 @@
         input.style.fontSize = (anno.fontSize || 12) + 'px';
         input.addEventListener('input', (e) => {
           anno.text = e.target.value;
+          syncAnnotationAcrossPages(anno);
         });
         box.appendChild(input);
 
@@ -2357,6 +2405,7 @@
         el.style.width = anno.width + 'px';
         el.style.height = anno.height + 'px';
       }
+      syncAnnotationAcrossPages(anno);
     }
 
     function makeDraggable(element, anno) {
@@ -2407,6 +2456,7 @@
           isDragging = false;
           element.classList.remove('active');
           try { element.releasePointerCapture(e.pointerId); } catch(ex){}
+          syncAnnotationAcrossPages(anno);
         }
       });
     }
@@ -2445,6 +2495,7 @@
             try { handle.releasePointerCapture(ev.pointerId); } catch(ex){}
             window.removeEventListener('pointermove', onPointerMove);
             window.removeEventListener('pointerup', onPointerUp);
+            syncAnnotationAcrossPages(anno);
           }
         }
 
@@ -2455,7 +2506,16 @@
 
     function removeAnnotation(pageNumber, id) {
       if (!pageAnnotations[pageNumber]) return;
-      pageAnnotations[pageNumber] = pageAnnotations[pageNumber].filter(a => a.id !== id);
+      const targetAnno = pageAnnotations[pageNumber].find(a => a.id === id);
+      if (targetAnno && targetAnno.syncId) {
+        for (let p = 1; p <= totalPages; p++) {
+          if (pageAnnotations[p]) {
+            pageAnnotations[p] = pageAnnotations[p].filter(a => a.syncId !== targetAnno.syncId);
+          }
+        }
+      } else {
+        pageAnnotations[pageNumber] = pageAnnotations[pageNumber].filter(a => a.id !== id);
+      }
       const el = document.getElementById(`anno-${id}`);
       if (el) el.remove();
       updateThumbnailBadges();
@@ -2510,7 +2570,29 @@
       return [currentPage];
     }
 
-    // Tab buttons for Range Selector
+    // Dynamic Scope Summary & Range Selector
+    function updateScopeSummary() {
+      if (!scopeSummaryText) return;
+      const targets = computeTargetPages();
+      const count = targets.length;
+      if (scopeBadge) {
+        if (selectedRangeMode === 'current') scopeBadge.textContent = `Page ${currentPage}`;
+        else if (selectedRangeMode === 'all') scopeBadge.textContent = `All (${totalPages})`;
+        else if (selectedRangeMode === 'except') scopeBadge.textContent = `Except`;
+        else scopeBadge.textContent = `Custom (${count})`;
+      }
+      if (selectedRangeMode === 'current') {
+        scopeSummaryText.textContent = `Signing Current Page (${currentPage}) only`;
+      } else if (selectedRangeMode === 'all') {
+        scopeSummaryText.textContent = `Signing all ${count} pages (1..${totalPages}) at once`;
+      } else if (selectedRangeMode === 'except') {
+        const rawExclude = (rangeExcludeInput ? rangeExcludeInput.value : '1') || '1';
+        scopeSummaryText.textContent = `Signing ${count} pages (excluding P. ${rawExclude})`;
+      } else if (selectedRangeMode === 'custom') {
+        scopeSummaryText.textContent = `Signing ${count} selected page${count !== 1 ? 's' : ''}`;
+      }
+    }
+
     function setRangeMode(mode) {
       selectedRangeMode = mode;
       [rangeBtnCurrent, rangeBtnAll, rangeBtnExcept, rangeBtnCustom].forEach(btn => {
@@ -2530,244 +2612,258 @@
         if (rangeBtnCustom) rangeBtnCustom.classList.add('active');
         if (rangePaneCustom) rangePaneCustom.style.display = 'block';
       }
+      updateScopeSummary();
     }
 
     if (rangeBtnCurrent) rangeBtnCurrent.addEventListener('click', () => setRangeMode('current'));
     if (rangeBtnAll) rangeBtnAll.addEventListener('click', () => setRangeMode('all'));
     if (rangeBtnExcept) rangeBtnExcept.addEventListener('click', () => setRangeMode('except'));
     if (rangeBtnCustom) rangeBtnCustom.addEventListener('click', () => setRangeMode('custom'));
+    if (rangeExcludeInput) rangeExcludeInput.addEventListener('input', () => updateScopeSummary());
+    if (rangeCustomInput) rangeCustomInput.addEventListener('input', () => updateScopeSummary());
 
     // =========================================================================
-    // Placing Items & Target Stamping Actions
+    // Placing Items & 1-Click Multi-Page Scope Placement (Option 1 Streamlined)
+    // When scope is 'All Pages', items appear on all pages simultaneously!
+    // Moving, scaling, or rotating updates all synchronized pages in real time.
     // =========================================================================
-    function addSignatureToPage(pageNum, relX = 0.65, relY = 0.83, relW = 0.28, relH = 0.10, rotation = 0) {
-      if (!pageAnnotations[pageNum]) pageAnnotations[pageNum] = [];
+    function addSignatureToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-sig-' + Date.now();
       const dataUrl = getSignatureDataUrl();
+      const relX = 0.65, relY = 0.83, relW = 0.28, relH = 0.10, rotation = 0;
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
 
-      pageAnnotations[pageNum].push({
-        id: 'sig-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-        type: 'signature',
-        relX: relX,
-        relY: relY,
-        relW: relW,
-        relH: relH,
-        rotation: rotation,
-        x: Math.round(relX * cW),
-        y: Math.round(relY * cH),
-        width: Math.round(relW * cW),
-        height: Math.round(relH * cH),
-        dataUrl: dataUrl
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'sig-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
+          type: 'signature',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          rotation: rotation,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          dataUrl: dataUrl
+        });
       });
+
+      renderOverlayAnnotations(currentPage);
+      updateThumbnailBadges();
+
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Signature box placed on all ${targetPages.length} pages at once!`, "success");
+      } else {
+        UIUtils.showToast(`Signature box added to Page ${targetPages[0]}! Drag or rotate anywhere.`, "success");
+      }
     }
 
-    function addInitialsToPage(pageNum, relX = 0.82, relY = 0.91, relW = 0.14, relH = 0.06, rotation = 0) {
-      if (!pageAnnotations[pageNum]) pageAnnotations[pageNum] = [];
+    function addComboToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-combo-' + Date.now();
+      const dataUrl = getSignatureDataUrl();
+      const relX = 0.65, relY = 0.80, relW = 0.30, relH = 0.15, rotation = 0;
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'combo-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
+          type: 'combo',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          rotation: rotation,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          dataUrl: dataUrl,
+          text: signerFullName
+        });
+      });
+
+      renderOverlayAnnotations(currentPage);
+      updateThumbnailBadges();
+
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Signature & Text Combo placed on all ${targetPages.length} pages at once!`, "success");
+      } else {
+        UIUtils.showToast(`Signature & Text Combo added to Page ${targetPages[0]}!`, "success");
+      }
+    }
+
+    function addNameToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-txt-' + Date.now();
+      const relX = 0.10, relY = 0.84, relW = 0.26, relH = 0.05, rotation = 0;
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'txt-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
+          type: 'text',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          rotation: rotation,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          text: signerFullName,
+          color: '#0F172A',
+          fontSize: 12
+        });
+      });
+
+      renderOverlayAnnotations(currentPage);
+      updateThumbnailBadges();
+
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Printed Signer Name placed on all ${targetPages.length} pages!`, "success");
+      } else {
+        UIUtils.showToast("Printed Signer Name added! Drag or rotate into position.", "success");
+      }
+    }
+
+    function addInitialsToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-init-' + Date.now();
       const dataUrl = getInitialsDataUrl();
+      const relX = 0.82, relY = 0.91, relW = 0.14, relH = 0.06, rotation = 0;
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
 
-      pageAnnotations[pageNum].push({
-        id: 'init-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-        type: 'initials',
-        relX: relX,
-        relY: relY,
-        relW: relW,
-        relH: relH,
-        rotation: rotation,
-        x: Math.round(relX * cW),
-        y: Math.round(relY * cH),
-        width: Math.round(relW * cW),
-        height: Math.round(relH * cH),
-        dataUrl: dataUrl
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'init-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
+          type: 'initials',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          rotation: rotation,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          dataUrl: dataUrl
+        });
       });
+
+      renderOverlayAnnotations(currentPage);
+      updateThumbnailBadges();
+
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Initials placed across all ${targetPages.length} page footers!`, "success");
+      } else {
+        UIUtils.showToast(`Initials placed on Page ${targetPages[0]} footer!`, "success");
+      }
     }
 
-    function addComboToPage(pageNum, relX = 0.65, relY = 0.80, relW = 0.30, relH = 0.15, rotation = 0) {
-      if (!pageAnnotations[pageNum]) pageAnnotations[pageNum] = [];
-      const dataUrl = getSignatureDataUrl();
+    function addDateToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-date-' + Date.now();
+      const relX = 0.10, relY = 0.91, relW = 0.22, relH = 0.05, rotation = 0;
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
 
-      pageAnnotations[pageNum].push({
-        id: 'combo-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-        type: 'combo',
-        relX: relX,
-        relY: relY,
-        relW: relW,
-        relH: relH,
-        rotation: rotation,
-        x: Math.round(relX * cW),
-        y: Math.round(relY * cH),
-        width: Math.round(relW * cW),
-        height: Math.round(relH * cH),
-        dataUrl: dataUrl,
-        text: signerFullName
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'date-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
+          type: 'date',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          rotation: rotation,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          text: `Signed: ${todayDateStr}`,
+          fontSize: 10
+        });
       });
-    }
 
-    // Add Standalone Signature
-    function handleAddSig() {
-      addSignatureToPage(currentPage);
       renderOverlayAnnotations(currentPage);
-      UIUtils.showToast(`Signature added to Page ${currentPage}! Drag or rotate it anywhere.`, "success");
-    }
-    if (btnAddSigField) btnAddSigField.addEventListener('click', handleAddSig);
-    if (quickAddSig) quickAddSig.addEventListener('click', handleAddSig);
+      updateThumbnailBadges();
 
-    // Add Standalone Printed Name
-    function handleAddName() {
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Date seal placed on all ${targetPages.length} pages!`, "success");
+      } else {
+        UIUtils.showToast("Date seal placed on document!", "success");
+      }
+    }
+
+    function addStampToTargets() {
+      const targetPages = computeTargetPages();
+      const syncId = 'sync-stamp-' + Date.now();
+      const dataUrl = getStampDataUrl();
+      const relX = 0.40, relY = 0.80, relW = 0.18, relH = 0.14, rotation = 0;
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
-      const relX = 0.10, relY = 0.84, relW = 0.26, relH = 0.05;
 
-      pageAnnotations[currentPage].push({
-        id: 'txt-' + Date.now(),
-        type: 'text',
-        relX: relX,
-        relY: relY,
-        relW: relW,
-        relH: relH,
-        rotation: 0,
-        x: Math.round(relX * cW),
-        y: Math.round(relY * cH),
-        width: Math.round(relW * cW),
-        height: Math.round(relH * cH),
-        text: signerFullName,
-        color: '#0F172A',
-        fontSize: 12
-      });
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Printed name text added! Drag or rotate into position.", "success");
-    }
-    if (btnAddNameField) btnAddNameField.addEventListener('click', handleAddName);
-    if (quickAddName) quickAddName.addEventListener('click', handleAddName);
-
-    // Add Signature & Text Combo (Both Available at Once!)
-    function handleAddCombo() {
-      addComboToPage(currentPage);
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Signature & Printed Name Combo added to page!", "success");
-    }
-    if (btnAddComboField) btnAddComboField.addEventListener('click', handleAddCombo);
-
-    // Add Initials
-    function handleAddInitials() {
-      addInitialsToPage(currentPage);
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast(`Initials placed on Page ${currentPage} footer!`, "success");
-    }
-    if (btnAddInitialsField) btnAddInitialsField.addEventListener('click', handleAddInitials);
-    if (quickAddInitials) quickAddInitials.addEventListener('click', handleAddInitials);
-
-    // Add Date Seal
-    function handleAddDate() {
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-      const cW = overlayLayer.offsetWidth || 600;
-      const cH = overlayLayer.offsetHeight || 800;
-      const relX = 0.10, relY = 0.91, relW = 0.22, relH = 0.05;
-
-      pageAnnotations[currentPage].push({
-        id: 'date-' + Date.now(),
-        type: 'date',
-        relX: relX,
-        relY: relY,
-        relW: relW,
-        relH: relH,
-        rotation: 0,
-        x: Math.round(relX * cW),
-        y: Math.round(relY * cH),
-        width: Math.round(relW * cW),
-        height: Math.round(relH * cH),
-        text: `Signed: ${todayDateStr}`,
-        fontSize: 10
-      });
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Date seal placed on document!", "success");
-    }
-    if (btnAddDateField) btnAddDateField.addEventListener('click', handleAddDate);
-    if (quickAddDate) quickAddDate.addEventListener('click', handleAddDate);
-
-    // Add Company Stamp
-    if (btnAddStampField) {
-      btnAddStampField.addEventListener('click', () => {
-        if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-        const cW = overlayLayer.offsetWidth || 600;
-        const cH = overlayLayer.offsetHeight || 800;
-        const relX = 0.40, relY = 0.80, relW = 0.18, relH = 0.14;
-
-        pageAnnotations[currentPage].push({
-          id: 'stamp-' + Date.now(),
+      targetPages.forEach(p => {
+        if (!pageAnnotations[p]) pageAnnotations[p] = [];
+        pageAnnotations[p].push({
+          id: 'stamp-' + Date.now() + '-' + p + '-' + Math.floor(Math.random() * 1000),
+          syncId: syncId,
           type: 'stamp',
           relX: relX,
           relY: relY,
           relW: relW,
           relH: relH,
-          rotation: 0,
+          rotation: rotation,
           x: Math.round(relX * cW),
           y: Math.round(relY * cH),
           width: Math.round(relW * cW),
           height: Math.round(relH * cH),
-          dataUrl: getStampDataUrl()
+          dataUrl: dataUrl
         });
-        renderOverlayAnnotations(currentPage);
+      });
+
+      renderOverlayAnnotations(currentPage);
+      updateThumbnailBadges();
+
+      if (targetPages.length > 1) {
+        UIUtils.showToast(`Company stamp placed on all ${targetPages.length} pages!`, "success");
+      } else {
         UIUtils.showToast("Company stamp added! Drag or rotate anywhere.", "success");
-      });
+      }
     }
 
-    // ⚡ Execute Multi-Page Target Stamping Actions
-    if (btnApplySigTarget) {
-      btnApplySigTarget.addEventListener('click', () => {
-        if (!pdfDoc) return;
-        const targetPages = computeTargetPages();
-        targetPages.forEach(p => {
-          if (pageAnnotations[p]) {
-            pageAnnotations[p] = pageAnnotations[p].filter(a => a.type !== 'signature');
-          }
-          addSignatureToPage(p);
-        });
-        renderOverlayAnnotations(currentPage);
-        UIUtils.showToast(`⚡ Signature applied to ${targetPages.length} target pages: ${targetPages.join(', ')}`, "success", 4000);
-      });
-    }
-
-    if (btnApplyInitialsTarget) {
-      btnApplyInitialsTarget.addEventListener('click', () => {
-        if (!pdfDoc) return;
-        const targetPages = computeTargetPages();
-        targetPages.forEach(p => {
-          if (pageAnnotations[p]) {
-            pageAnnotations[p] = pageAnnotations[p].filter(a => a.type !== 'initials');
-          }
-          addInitialsToPage(p);
-        });
-        renderOverlayAnnotations(currentPage);
-        UIUtils.showToast(`⚡ Initials applied to ${targetPages.length} target footers: ${targetPages.join(', ')}`, "success", 4000);
-      });
-    }
-
-    if (btnApplyComboTarget) {
-      btnApplyComboTarget.addEventListener('click', () => {
-        if (!pdfDoc) return;
-        const targetPages = computeTargetPages();
-        targetPages.forEach(p => {
-          if (pageAnnotations[p]) {
-            pageAnnotations[p] = pageAnnotations[p].filter(a => a.type !== 'combo');
-          }
-          addComboToPage(p);
-        });
-        renderOverlayAnnotations(currentPage);
-        UIUtils.showToast(`⚡ Signature & Name combo applied to ${targetPages.length} target pages: ${targetPages.join(', ')}`, "success", 4000);
-      });
-    }
+    if (btnAddSigField) btnAddSigField.addEventListener('click', addSignatureToTargets);
+    if (btnAddComboField) btnAddComboField.addEventListener('click', addComboToTargets);
+    if (btnAddNameField) btnAddNameField.addEventListener('click', addNameToTargets);
+    if (btnAddInitialsField) btnAddInitialsField.addEventListener('click', addInitialsToTargets);
+    if (btnAddDateField) btnAddDateField.addEventListener('click', addDateToTargets);
+    if (btnAddStampField) btnAddStampField.addEventListener('click', addStampToTargets);
 
     // Clear Page
     if (btnClearPageAnnos) {
       btnClearPageAnnos.addEventListener('click', () => {
         pageAnnotations[currentPage] = [];
         renderOverlayAnnotations(currentPage);
+        updateThumbnailBadges();
         UIUtils.showToast(`Cleared all items on page ${currentPage}`, "info");
       });
     }
@@ -2779,6 +2875,7 @@
           pageAnnotations[p] = [];
         }
         renderOverlayAnnotations(currentPage);
+        updateThumbnailBadges();
         UIUtils.showToast("All annotations reset across all pages.", "info");
       });
     }
