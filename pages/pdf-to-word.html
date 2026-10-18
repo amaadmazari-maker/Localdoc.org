@@ -254,7 +254,7 @@
         </div>
       </div>
 
-      <!-- Result Card -->
+            <!-- Result Card -->
       <div class="result-card" id="result-card" style="display:none;">
         <div class="result-details">
           <h3 id="result-title">Word Document Ready!</h3>
@@ -265,6 +265,22 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span>Download .DOCX File</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Scanned / Image-Only PDF Notice -->
+      <div id="scanned-notice-box" style="display:none; margin:16px 0; background:#fff1f2; border:1px solid #fecdd3; border-radius:var(--radius-sm); padding:16px 20px; text-align:left;">
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+          <span style="font-size:1.5rem; line-height:1;" aria-hidden="true">&#9888;&#65039;</span>
+          <div style="flex:1;">
+            <h4 style="margin:0 0 4px; color:#9f1239; font-size:0.95rem;">Scanned or Image-Only PDF Detected</h4>
+            <p style="margin:0 0 12px; color:#4c0519; font-size:0.86rem; line-height:1.5;">
+              This document consists of scanned images without a selectable text layer. LocalDoc generated a Word container, but to extract editable text from scanned pages and photos, please run our client-side OCR tool.
+            </p>
+            <a href="image-to-text.html" class="btn btn-primary" style="padding:6px 16px; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+              <span>Open in Image to Text (OCR)</span> &rarr;
+            </a>
+          </div>
         </div>
       </div>
 
@@ -583,7 +599,7 @@
   <script src="../js/lib/docx.min.js?v=20260921-v26"></script>
   <script src="../js/tools/convert.js?v=20260921-v26"></script>
 
-  <script>
+    <script>
     let selectedFile = null;
     let resultData = null;
 
@@ -600,68 +616,121 @@
     const previewCard = document.getElementById("doc-preview-card");
     const previewContent = document.getElementById("doc-preview-content");
     const copyTextBtn = document.getElementById("copy-text-btn");
+    const scannedNotice = document.getElementById("scanned-notice-box");
+    const workflowProgress = document.getElementById("workflow-progress");
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
-        selectedFile = files[0];
-        queueName.textContent = selectedFile.name;
-        queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
-        dropZone.style.display = "none";
-        fileQueue.style.display = "block";
-        actionBar.style.display = "flex";
-        resultCard.style.display = "none";
-        previewCard.style.display = "none";
-        UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
-        fileQueue.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Global file input hook
+    window.handleLocalDocFileInput = function(input) {
+      if (input && input.files && input.files[0]) {
+        handleFile(input.files[0]);
       }
-    });
-
-    clearBtn.addEventListener("click", function() {
-      selectedFile = null;
-      resultData = null;
-      dropZone.style.display = "block";
-      fileQueue.style.display = "none";
-      actionBar.style.display = "none";
-      resultCard.style.display = "none";
-      previewCard.style.display = "none";
-      document.getElementById("workflow-progress").style.display = "none";
-    });
+    };
 
     function progressCb(pct, status) {
-      const step = pct < 40  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 35 ? 1 : (pct < 85 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
-    processBtn.addEventListener("click", async function() {
+    async function startConversion() {
       if (!selectedFile) return;
       try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
+        if (processBtn) processBtn.disabled = true;
+        workflowProgress.style.display = "block";
+        UIUtils.setWorkflowStep(1, 10, "Reading PDF in browser RAM...");
         
         resultData = await PDFConvert.pdfToWord(selectedFile, progressCb);
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        if (actionBar) actionBar.style.display = "none";
         resultCard.style.display = "flex";
-        UIUtils.renderQuickActions(resultCard, resultData.docxBlob, (selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".docx");
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.docxBlob.size)} &bull; ${resultData.pageCount} Page(s) &bull; Microsoft Word (.docx)`;
+        
+        // Render 1-click quick actions (download, reader preview)
+        const baseName = (selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".docx";
+        UIUtils.renderQuickActions(resultCard, resultData.docxBlob, baseName);
+        
+        const columnTag = resultData.hasTwoColumns ? ' &bull; 2-Column Detected' : '';
+        const tableTag = resultData.hasTables ? ' &bull; Table(s) Extracted' : '';
+        document.getElementById("result-meta").innerHTML = `Size: ${UIUtils.formatBytes(resultData.docxBlob.size)} &bull; ${resultData.pageCount} Page(s)${columnTag}${tableTag} &bull; Microsoft Word (.docx)`;
 
+        // Scanned Document Notification
+        if (resultData.isScanned && scannedNotice) {
+          scannedNotice.style.display = "block";
+        } else if (scannedNotice) {
+          scannedNotice.style.display = "none";
+        }
+
+        // Live Document Preview
         if (resultData.htmlPreview) {
           previewContent.innerHTML = resultData.htmlPreview;
           previewCard.style.display = "block";
         }
 
-        UIUtils.showToast("PDF converted to formatted Word document!", "success");
+        UIUtils.showToast("✓ Converted to Microsoft Word (.docx) successfully!", "success");
+        resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.handleToolError(err, processBtn);
+        if (actionBar) actionBar.style.display = "flex";
       } finally {
-        processBtn.disabled = false;
+        if (processBtn) processBtn.disabled = false;
       }
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      selectedFile = file;
+      queueName.textContent = selectedFile.name;
+      queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+      dropZone.style.display = "none";
+      fileQueue.style.display = "block";
+      if (actionBar) actionBar.style.display = "none";
+      resultCard.style.display = "none";
+      previewCard.style.display = "none";
+      if (scannedNotice) scannedNotice.style.display = "none";
+      
+      UIUtils.showToast("Processing " + selectedFile.name + " in browser RAM...", "info");
+      fileQueue.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Automatically execute conversion immediately so user never sees a freeze!
+      startConversion();
+    }
+
+    // Dropzone setup
+    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    // File input change
+    fileInput.addEventListener("change", function(e) {
+      if (e.target.files && e.target.files[0]) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    if (processBtn) {
+      processBtn.addEventListener("click", startConversion);
+    }
+
+    clearBtn.addEventListener("click", function() {
+      selectedFile = null;
+      resultData = null;
+      try { fileInput.value = ""; } catch (e) {}
+      dropZone.style.display = "block";
+      fileQueue.style.display = "none";
+      if (actionBar) actionBar.style.display = "none";
+      resultCard.style.display = "none";
+      previewCard.style.display = "none";
+      if (scannedNotice) scannedNotice.style.display = "none";
+      workflowProgress.style.display = "none";
+      UIUtils.showToast("Ready for next document.", "info");
+      dropZone.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     downloadBtn.addEventListener("click", function() {
       if (resultData && resultData.docxBlob) {
-        const baseName = selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
+        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
         UIUtils.downloadBlob(resultData.docxBlob, baseName + ".docx");
       }
     });

@@ -158,9 +158,9 @@ const PDFConvert = {
     return new Blob([pdfBytes], { type: 'application/pdf' });
   },
 
-  // 3. PDF to Word (.docx) — Enhanced Style & Layout Extractor
+  // 3. PDF to Word (.docx) — Enhanced Style, Multi-Column, Table & RTL Extractor
   async pdfToWord(file, onProgress = null) {
-    if (onProgress) onProgress(15, 'Loading PDF Structure in Memory...');
+    if (onProgress) onProgress(10, 'Loading PDF Structure in Memory...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     const numPages = pdf.numPages;
@@ -180,9 +180,14 @@ const PDFConvert = {
 
     const bulletRegex = /^[\u2022\u2023\u25E6\u2043\u2219\u25CF\u25AA\u25AB\uF0B7\u00B7*•\-\–\—]\s*/;
     const numberedListRegex = /^(\d+|[a-zA-Z]|[ivxIVX]+)[\.\)]\s+/;
+    const rtlRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u0590-\u05FF]/;
+
+    let totalExtractedChars = 0;
+    let detectedTwoColumnsTotal = false;
+    let detectedTablesTotal = false;
 
     for (let i = 1; i <= numPages; i++) {
-      if (onProgress) onProgress(20 + ((i / numPages) * 60), `Analyzing fonts, headings & layout (Page ${i} of ${numPages})...`);
+      if (onProgress) onProgress(15 + Math.round((i / numPages) * 70), `Analyzing fonts, layout & tables (Page ${i} of ${numPages})...`);
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent({ normalizeWhitespace: false });
       const viewport = page.getViewport({ scale: 1.0 });
@@ -190,12 +195,13 @@ const PDFConvert = {
 
       if (!textContent.items || textContent.items.length === 0) continue;
 
-      // Group text items by vertical lines (Y position within ~3.5px tolerance)
-      const linesMap = [];
-
+      // Extract all valid items with font, size, coordinates
+      const rawItems = [];
       textContent.items.forEach(item => {
         const text = (item.str || '').trim();
         if (!text && !item.hasEOL) return;
+
+        totalExtractedChars += text.length;
 
         const transform = item.transform;
         const fontSize = Math.round(Math.hypot(transform[0], transform[1]) || item.height || 11);
@@ -203,122 +209,250 @@ const PDFConvert = {
         const y = transform[5];
 
         const fontStyle = textContent.styles && textContent.styles[item.fontName];
-        const fontName = ((fontStyle && fontStyle.fontFamily) || item.fontName || '').toLowerCase();
-        const isBold = fontName.includes('bold') || fontName.includes('black') || fontName.includes('heavy') || fontName.includes('700') || fontName.includes('800') || fontName.includes('900') || fontName.includes('semibold');
-        const isItalic = fontName.includes('italic') || fontName.includes('oblique');
+        const rawFontName = ((fontStyle && fontStyle.fontFamily) || item.fontName || '').toLowerCase();
+        const isBold = rawFontName.includes('bold') || rawFontName.includes('black') || rawFontName.includes('heavy') || rawFontName.includes('700') || rawFontName.includes('800') || rawFontName.includes('900') || rawFontName.includes('semibold');
+        const isItalic = rawFontName.includes('italic') || rawFontName.includes('oblique');
 
-        let line = linesMap.find(l => Math.abs(l.y - y) <= 3.5);
-        if (!line) {
-          line = { y: y, items: [] };
-          linesMap.push(line);
+        // Font family mapping
+        let targetFont = 'Calibri';
+        if (rawFontName.includes('times') || rawFontName.includes('serif') || rawFontName.includes('georgia') || rawFontName.includes('minion')) {
+          targetFont = 'Times New Roman';
+        } else if (rawFontName.includes('courier') || rawFontName.includes('mono') || rawFontName.includes('consolas')) {
+          targetFont = 'Consolas';
+        } else if (rawFontName.includes('arial') || rawFontName.includes('helvetica')) {
+          targetFont = 'Arial';
         }
 
-        line.items.push({
+        const isItemRtl = rtlRegex.test(item.str);
+
+        rawItems.push({
           text: item.str,
           x: x,
+          y: y,
           width: item.width,
           fontSize: fontSize,
           bold: isBold,
           italic: isItalic,
+          fontFamily: targetFont,
+          isRtl: isItemRtl,
           hasEOL: item.hasEOL
         });
       });
 
-      // Sort lines descending by Y (top of page to bottom)
-      linesMap.sort((a, b) => b.y - a.y);
+      if (rawItems.length === 0) continue;
 
-      const allFontSizes = [];
-      linesMap.forEach(l => l.items.forEach(it => { if (it.text.trim()) allFontSizes.push(it.fontSize); }));
-      allFontSizes.sort((a, b) => a - b);
-      const medianFontSize = allFontSizes[Math.floor(allFontSizes.length / 2)] || 11;
+      // Check for multi-column layout on this page:
+      // If items cluster in two distinct vertical zones with a clear center gutter
+      const gutterLeft = pageWidth * 0.44;
+      const gutterRight = pageWidth * 0.56;
+      let leftCount = 0;
+      let rightCount = 0;
+      let spanningCount = 0;
 
-      linesMap.forEach((line) => {
-        line.items.sort((a, b) => a.x - b.x);
-
-        const fullLineText = line.items.map(it => it.text).join('').trim();
-        if (!fullLineText) return;
-
-        const cleanLower = fullLineText.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
-        const maxFontSizeInLine = Math.max(...line.items.map(it => it.fontSize));
-        const isLineBold = line.items.filter(it => it.text.trim()).every(it => it.bold);
-
-        const isKeywordHeading = sectionKeywords.some(kw => cleanLower === kw || cleanLower.startsWith(kw + ' '));
-        const isAllCapsShort = fullLineText === fullLineText.toUpperCase() && fullLineText.length >= 3 && fullLineText.length <= 40 && (isLineBold || maxFontSizeInLine >= medianFontSize);
-        const isLargeHeading = maxFontSizeInLine >= medianFontSize * 1.35;
-        const isSectionHeader = isKeywordHeading || (isAllCapsShort && (isLineBold || isLargeHeading));
-        const isBullet = bulletRegex.test(fullLineText) || numberedListRegex.test(fullLineText);
-
-        const hasWideGap = line.items.length >= 2 && (line.items[line.items.length - 1].x - (line.items[0].x + line.items[0].width)) > (pageWidth * 0.35);
-
-        const runs = [];
-        let htmlLineContent = '';
-
-        for (let j = 0; j < line.items.length; j++) {
-          const item = line.items[j];
-          let itemText = item.text;
-
-          if (isBullet && j === 0 && bulletRegex.test(itemText)) {
-            itemText = itemText.replace(bulletRegex, '');
-          }
-
-          if (!itemText) continue;
-
-          if (hasWideGap && j === line.items.length - 1) {
-            runs.push({ isTab: true });
-            htmlLineContent += '<span style="display:inline-block; float:right;">';
-          }
-
-          const halfPoints = Math.round(Math.max(8, item.fontSize) * 2);
-          runs.push({
-            text: itemText,
-            bold: item.bold || isSectionHeader,
-            italic: item.italic,
-            underline: false,
-            fontSize: isSectionHeader  ?  Math.max(26, halfPoints) : halfPoints,
-            color: isSectionHeader  ?  '0F172A' : (item.bold  ?  '1E293B' : '334155')
-          });
-
-          // Build preview run using safe escaper
-          let runHtml = PDFConvert.escapeXml(itemText);
-          if (item.bold || isSectionHeader) runHtml = `<strong>${runHtml}</strong>`;
-          if (item.italic) runHtml = `<em>${runHtml}</em>`;
-          htmlLineContent += runHtml;
-
-          if (hasWideGap && j === line.items.length - 1) {
-            htmlLineContent += '</span><div style="clear:both;"></div>';
-          }
-        }
-
-        if (runs.length === 0) return;
-
-        let pType = 'paragraph';
-        let headingLevel = 0;
-        let hasBottomBorder = false;
-
-        if (isSectionHeader) {
-          pType = 'heading';
-          headingLevel = maxFontSizeInLine >= medianFontSize * 1.5  ?  1 : 2;
-          hasBottomBorder = true;
-          htmlPreviewBlocks.push(`<h${headingLevel} style="border-bottom:1.5px solid #cbd5e1; padding-bottom:3px; margin:16px 0 6px; color:#0f172a;">${htmlLineContent}</h${headingLevel}>`);
-        } else if (isBullet) {
-          pType = 'bullet';
-          htmlPreviewBlocks.push(`<li style="margin-left:20px; color:#334155; margin-bottom:4px;">${htmlLineContent}</li>`);
-        } else {
-          htmlPreviewBlocks.push(`<p style="margin:4px 0; color:#334155;">${htmlLineContent}</p>`);
-        }
-
-        docxParagraphs.push({
-          type: pType,
-          headingLevel: headingLevel,
-          hasBottomBorder: hasBottomBorder,
-          isBullet: isBullet,
-          bulletChar: '•',
-          hasRightTab: hasWideGap,
-          spacingBefore: isSectionHeader  ?  220 : (isBullet  ?  40 : 60),
-          spacingAfter: isSectionHeader  ?  80 : (isBullet  ?  40 : 60),
-          runs: runs
-        });
+      rawItems.forEach(it => {
+        const itemRight = it.x + (it.width || 0);
+        if (itemRight <= gutterLeft) leftCount++;
+        else if (it.x >= gutterRight) rightCount++;
+        else spanningCount++;
       });
+
+      const isTwoColumnPage = leftCount >= 8 && rightCount >= 8 && (spanningCount < (leftCount + rightCount) * 0.18);
+      if (isTwoColumnPage) detectedTwoColumnsTotal = true;
+
+      // Partition items into column groups
+      const columnGroups = [];
+      if (isTwoColumnPage) {
+        // Group full-width top header/title items
+        const topThreshold = Math.max(...rawItems.map(it => it.y)) - 60;
+        const headerItems = rawItems.filter(it => it.y >= topThreshold);
+        const leftItems = rawItems.filter(it => it.y < topThreshold && (it.x + (it.width || 0)) <= gutterLeft);
+        const rightItems = rawItems.filter(it => it.y < topThreshold && it.x >= gutterRight);
+        const otherItems = rawItems.filter(it => it.y < topThreshold && !leftItems.includes(it) && !rightItems.includes(it));
+
+        if (headerItems.length > 0) columnGroups.push(headerItems);
+        if (leftItems.length > 0) columnGroups.push(leftItems);
+        if (rightItems.length > 0) columnGroups.push(rightItems);
+        if (otherItems.length > 0) columnGroups.push(otherItems);
+      } else {
+        columnGroups.push(rawItems);
+      }
+
+      // Process each column group into lines
+      for (const group of columnGroups) {
+        const linesMap = [];
+
+        group.forEach(it => {
+          let line = linesMap.find(l => Math.abs(l.y - it.y) <= 3.5);
+          if (!line) {
+            line = { y: it.y, items: [] };
+            linesMap.push(line);
+          }
+          line.items.push(it);
+        });
+
+        // Sort lines descending by Y (top of page to bottom)
+        linesMap.sort((a, b) => b.y - a.y);
+
+        // Sort items within each line: LTR ascending X, RTL descending X if line is predominantly RTL
+        linesMap.forEach(l => {
+          const isLineRtl = l.items.filter(it => it.isRtl).length > l.items.length / 2;
+          if (isLineRtl) {
+            l.items.sort((a, b) => b.x - a.x);
+          } else {
+            l.items.sort((a, b) => a.x - b.x);
+          }
+        });
+
+        const allFontSizes = [];
+        linesMap.forEach(l => l.items.forEach(it => { if (it.text.trim()) allFontSizes.push(it.fontSize); }));
+        allFontSizes.sort((a, b) => a - b);
+        const medianFontSize = allFontSizes[Math.floor(allFontSizes.length / 2)] || 11;
+
+        // Detect consecutive table rows
+        let lineIdx = 0;
+        while (lineIdx < linesMap.length) {
+          const line = linesMap[lineIdx];
+          const fullLineText = line.items.map(it => it.text).join('').trim();
+          if (!fullLineText) {
+            lineIdx++;
+            continue;
+          }
+
+          // Check if this line and next lines form a tabular structure (2-5 columns with matching X anchors)
+          let tableRows = [];
+          if (line.items.length >= 2 && line.items.length <= 5) {
+            const baseCols = line.items.map(it => it.x);
+            let checkIdx = lineIdx;
+            while (checkIdx < linesMap.length) {
+              const candLine = linesMap[checkIdx];
+              if (candLine.items.length === baseCols.length) {
+                const isMatch = candLine.items.every((it, ci) => Math.abs(it.x - baseCols[ci]) <= 25);
+                if (isMatch) {
+                  tableRows.push(candLine.items.map(it => it.text.trim()));
+                  checkIdx++;
+                  continue;
+                }
+              }
+              break;
+            }
+          }
+
+          if (tableRows.length >= 3) {
+            // Found a table!
+            detectedTablesTotal = true;
+            docxParagraphs.push({
+              type: 'table',
+              hasHeader: true,
+              rows: tableRows
+            });
+
+            // HTML preview for table
+            let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:0.85rem; border:1px solid #cbd5e1;">';
+            tableRows.forEach((r, rI) => {
+              const isH = rI === 0;
+              tableHtml += `<tr style="${isH ? 'background:#f1f5f9; font-weight:bold;' : 'border-top:1px solid #e2e8f0;'}">`;
+              r.forEach(cell => {
+                tableHtml += `<td style="padding:6px 10px; border:1px solid #cbd5e1;">${PDFConvert.escapeXml(cell)}</td>`;
+              });
+              tableHtml += '</tr>';
+            });
+            tableHtml += '</table>';
+            htmlPreviewBlocks.push(tableHtml);
+
+            lineIdx += tableRows.length;
+            continue;
+          }
+
+          // Standard paragraph / heading / bullet line
+          const cleanLower = fullLineText.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+          const maxFontSizeInLine = Math.max(...line.items.map(it => it.fontSize));
+          const isLineBold = line.items.filter(it => it.text.trim()).every(it => it.bold);
+
+          const isKeywordHeading = sectionKeywords.some(kw => cleanLower === kw || cleanLower.startsWith(kw + ' '));
+          const isAllCapsShort = fullLineText === fullLineText.toUpperCase() && fullLineText.length >= 3 && fullLineText.length <= 40 && (isLineBold || maxFontSizeInLine >= medianFontSize);
+          const isLargeHeading = maxFontSizeInLine >= medianFontSize * 1.35;
+          const isSectionHeader = isKeywordHeading || (isAllCapsShort && (isLineBold || isLargeHeading));
+          const isBullet = bulletRegex.test(fullLineText) || numberedListRegex.test(fullLineText);
+
+          const hasWideGap = line.items.length >= 2 && (line.items[line.items.length - 1].x - (line.items[0].x + line.items[0].width)) > (pageWidth * 0.35);
+          const isLineRtl = line.items.some(it => it.isRtl);
+
+          const runs = [];
+          let htmlLineContent = '';
+
+          for (let j = 0; j < line.items.length; j++) {
+            const item = line.items[j];
+            let itemText = item.text;
+
+            if (isBullet && j === 0 && bulletRegex.test(itemText)) {
+              itemText = itemText.replace(bulletRegex, '');
+            }
+
+            if (!itemText) continue;
+
+            if (hasWideGap && j === line.items.length - 1) {
+              runs.push({ isTab: true });
+              htmlLineContent += '<span style="display:inline-block; float:right;">';
+            }
+
+            const halfPoints = Math.round(Math.max(8, item.fontSize) * 2);
+            runs.push({
+              text: itemText,
+              bold: item.bold || isSectionHeader,
+              italic: item.italic,
+              underline: false,
+              fontFamily: item.fontFamily,
+              isRtl: item.isRtl,
+              fontSize: isSectionHeader ? Math.max(26, halfPoints) : halfPoints,
+              color: isSectionHeader ? '0F172A' : (item.bold ? '1E293B' : '334155')
+            });
+
+            // Build preview run
+            let runHtml = PDFConvert.escapeXml(itemText);
+            if (item.bold || isSectionHeader) runHtml = `<strong>${runHtml}</strong>`;
+            if (item.italic) runHtml = `<em>${runHtml}</em>`;
+            htmlLineContent += runHtml;
+
+            if (hasWideGap && j === line.items.length - 1) {
+              htmlLineContent += '</span><div style="clear:both;"></div>';
+            }
+          }
+
+          if (runs.length > 0) {
+            let pType = 'paragraph';
+            let headingLevel = 0;
+            let hasBottomBorder = false;
+
+            if (isSectionHeader) {
+              pType = 'heading';
+              headingLevel = maxFontSizeInLine >= medianFontSize * 1.5 ? 1 : 2;
+              hasBottomBorder = true;
+              htmlPreviewBlocks.push(`<h${headingLevel} style="border-bottom:1.5px solid #cbd5e1; padding-bottom:3px; margin:16px 0 6px; color:#0f172a;${isLineRtl ? ' text-align:right; direction:rtl;' : ''}">${htmlLineContent}</h${headingLevel}>`);
+            } else if (isBullet) {
+              pType = 'bullet';
+              htmlPreviewBlocks.push(`<li style="margin-left:20px; color:#334155; margin-bottom:4px;${isLineRtl ? ' text-align:right; direction:rtl;' : ''}">${htmlLineContent}</li>`);
+            } else {
+              htmlPreviewBlocks.push(`<p style="margin:4px 0; color:#334155;${isLineRtl ? ' text-align:right; direction:rtl;' : ''}">${htmlLineContent}</p>`);
+            }
+
+            docxParagraphs.push({
+              type: pType,
+              headingLevel: headingLevel,
+              hasBottomBorder: hasBottomBorder,
+              isBullet: isBullet,
+              bulletChar: '•',
+              isRtl: isLineRtl,
+              align: isLineRtl ? 'right' : 'left',
+              hasRightTab: hasWideGap,
+              spacingBefore: isSectionHeader ? 220 : (isBullet ? 40 : 60),
+              spacingAfter: isSectionHeader ? 80 : (isBullet ? 40 : 60),
+              runs: runs
+            });
+          }
+
+          lineIdx++;
+        }
+      }
 
       if (i < numPages) {
         docxParagraphs.push({
@@ -331,9 +465,25 @@ const PDFConvert = {
       }
     }
 
+    // Scanned document notice if text layer is empty
+    const isScannedDoc = totalExtractedChars < 15;
+    if (isScannedDoc) {
+      docxParagraphs.unshift({
+        type: 'paragraph',
+        spacingBefore: 120,
+        spacingAfter: 120,
+        runs: [{
+          text: '[Notice: This PDF appears to be a scanned image or photograph without an embedded text layer. To extract editable text from scanned documents, use LocalDoc Image to Text (OCR) Studio.]',
+          bold: true,
+          color: 'DC2626',
+          fontSize: 22
+        }]
+      });
+      htmlPreviewBlocks.unshift('<div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:6px; padding:12px 16px; margin-bottom:16px; color:#9f1239; font-size:0.9rem;"><strong>⚠️ Scanned Document Notice:</strong> This PDF contains scanned images without an embedded text layer. To extract text, use our <a href="image-to-text.html" style="color:#0284c7; font-weight:bold; text-decoration:underline;">Image to Text (OCR) Tool</a>.</div>');
+    }
+
     if (onProgress) onProgress(95, 'Compiling OpenXML Word Document (.docx)...');
-    
-    // Use DocxBuilder with fallback
+
     let docxBlob;
     if (typeof DocxBuilder !== 'undefined' && DocxBuilder.createDocxFromContent) {
       docxBlob = DocxBuilder.createDocxFromContent(docxParagraphs);
@@ -349,7 +499,10 @@ const PDFConvert = {
       htmlPreview: htmlPreview,
       textPreview: textPreview,
       pageCount: numPages,
-      paragraphCount: docxParagraphs.length
+      paragraphCount: docxParagraphs.length,
+      isScanned: isScannedDoc,
+      hasTwoColumns: detectedTwoColumnsTotal,
+      hasTables: detectedTablesTotal
     };
   },
 
