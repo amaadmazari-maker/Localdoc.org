@@ -118,7 +118,25 @@ const PDFEdit = {
 
         for (const anno of pageAnnos) {
           if (anno.type === 'signature' && anno.dataUrl) {
-            const sigImage = await newPdfDoc.embedPng(anno.dataUrl);
+            let sigImage;
+            try {
+              if (anno.dataUrl.startsWith('data:image/jpeg') || anno.dataUrl.startsWith('data:image/jpg')) {
+                sigImage = await newPdfDoc.embedJpg(anno.dataUrl);
+              } else {
+                sigImage = await newPdfDoc.embedPng(anno.dataUrl);
+              }
+            } catch (embedErr) {
+              const tempImg = new Image();
+              tempImg.src = anno.dataUrl;
+              await new Promise(r => { tempImg.onload = r; tempImg.onerror = r; });
+              const c = document.createElement('canvas');
+              c.width = tempImg.naturalWidth || 200;
+              c.height = tempImg.naturalHeight || 80;
+              const cx = c.getContext('2d');
+              cx.drawImage(tempImg, 0, 0);
+              sigImage = await newPdfDoc.embedPng(c.toDataURL('image/png'));
+            }
+
             const w = anno.width || 150;
             const h = anno.height || 65;
             const x = Math.max(0, Math.min(pWidth - w, anno.x));
@@ -191,7 +209,26 @@ const PDFEdit = {
         const { width: pWidth, height: pHeight } = page.getSize();
 
         if (anno.type === 'signature' && anno.dataUrl) {
-          const sigImage = await pdfDoc.embedPng(anno.dataUrl);
+          let sigImage;
+          try {
+            if (anno.dataUrl.startsWith('data:image/jpeg') || anno.dataUrl.startsWith('data:image/jpg')) {
+              sigImage = await pdfDoc.embedJpg(anno.dataUrl);
+            } else {
+              sigImage = await pdfDoc.embedPng(anno.dataUrl);
+            }
+          } catch (embedErr) {
+            console.warn("Direct signature embed failed, normalizing via canvas...", embedErr);
+            const tempImg = new Image();
+            tempImg.src = anno.dataUrl;
+            await new Promise(r => { tempImg.onload = r; tempImg.onerror = r; });
+            const c = document.createElement('canvas');
+            c.width = tempImg.naturalWidth || 200;
+            c.height = tempImg.naturalHeight || 80;
+            const cx = c.getContext('2d');
+            cx.drawImage(tempImg, 0, 0);
+            sigImage = await pdfDoc.embedPng(c.toDataURL('image/png'));
+          }
+
           const w = anno.width || 140;
           const h = anno.height || 60;
           const x = Math.max(0, Math.min(pWidth - w, anno.x));
