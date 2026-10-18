@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -120,6 +120,18 @@
   ]
 }
 </script>
+  <style>
+    .mode-pill-btn {
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+    .mode-pill-btn.active {
+      background: var(--primary) !important;
+      color: #FFFFFF !important;
+      border-color: var(--primary) !important;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -205,7 +217,7 @@
           <p data-i18n="drop_sub_pdf">Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select PDF Document</button>
-        <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
+        <input type="file" id="file-input" accept=".pdf,application/pdf" style="position:absolute; width:1px; height:1px; opacity:0.01; clip:rect(0,0,0,0); overflow:hidden;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- File Queue Item -->
@@ -219,6 +231,44 @@
             </div>
           </div>
           <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+        </div>
+      </div>
+
+      <!-- Extraction Settings & Bank Statement Mode -->
+      <div id="extraction-options" style="display:none; margin-top:16px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px 20px;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+          <span>⚙️</span> Extraction Profile &amp; Layout
+        </h4>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <button type="button" class="btn btn-outline mode-pill-btn active" id="mode-auto-btn" onclick="setExtractionMode('auto')" style="padding:6px 14px; font-size:0.84rem;">
+            📊 Standard Tables (Invoices / Data)
+          </button>
+          <button type="button" class="btn btn-outline mode-pill-btn" id="mode-bank-btn" onclick="setExtractionMode('bank_statement')" style="padding:6px 14px; font-size:0.84rem;">
+            🏦 Bank Statement &amp; Ledger Mode
+          </button>
+        </div>
+        <div id="mode-description-text" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px; line-height:1.45;">
+          Extracts general tables, invoices, product lists, and price sheets with column alignment and number formatting.
+        </div>
+        <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--text-secondary); cursor:pointer;">
+          <input type="checkbox" id="consolidate-sheets-chk" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+          <span><strong>Combine all pages into 1 continuous spreadsheet</strong> (Recommended for multi-page tables &amp; ledger calculations)</span>
+        </label>
+      </div>
+
+      <!-- Scanned PDF Honest Warning Banner -->
+      <div id="scanned-pdf-warning" style="display:none; margin-top:16px; background:rgba(239, 68, 68, 0.08); border:1px solid #ef4444; border-radius:var(--radius-sm); padding:14px 18px; text-align:left;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:1.2rem; line-height:1;">⚠️</span>
+          <div>
+            <strong style="color:var(--text-primary); font-size:0.9rem;">Scanned Image Detected (No Digital Text Layer)</strong>
+            <p style="margin:4px 0 8px; font-size:0.84rem; color:var(--text-secondary); line-height:1.45;">
+              This document contains scanned image bitmaps or photos rather than computer-selectable text. Table extraction algorithms require digital text vectors.
+            </p>
+            <a href="image-to-text.html" class="btn btn-primary btn-sm" style="font-size:0.8rem; padding:4px 12px; text-decoration:none;">
+              Run Optical Character Recognition (OCR) First &rarr;
+            </a>
+          </div>
         </div>
       </div>
 
@@ -583,12 +633,42 @@
     let selectedFile = null;
     let resultData = null;
     let currentActiveSheetIdx = 0;
+    window.currentExtractionMode = 'auto';
+
+    window.setExtractionMode = function(mode) {
+      window.currentExtractionMode = mode;
+      const autoBtn = document.getElementById("mode-auto-btn");
+      const bankBtn = document.getElementById("mode-bank-btn");
+      const descText = document.getElementById("mode-description-text");
+      if (mode === 'bank_statement') {
+        autoBtn?.classList.remove("active");
+        bankBtn?.classList.add("active");
+        if (descText) descText.textContent = "🏦 Bank Statement Mode: Automatically recognizes Date, Description, Debit, Credit, and Balance columns while filtering out repeated page headers & footers.";
+        UIUtils.showToast("Bank Statement & Ledger Mode enabled", "info", 2000);
+      } else {
+        bankBtn?.classList.remove("active");
+        autoBtn?.classList.add("active");
+        if (descText) descText.textContent = "📊 Standard Mode: Extracts general tables, invoices, product lists, and price sheets with column alignment and number formatting.";
+      }
+    };
+
+    function escapeHtml(val) {
+      if (val === null || val === undefined) return '';
+      return String(val)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
+    const extractionOptions = document.getElementById("extraction-options");
+    const scannedWarning = document.getElementById("scanned-pdf-warning");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const clearBtn = document.getElementById("clear-btn");
@@ -606,6 +686,8 @@
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         dropZone.style.display = "none";
         fileQueue.style.display = "block";
+        if (extractionOptions) extractionOptions.style.display = "block";
+        if (scannedWarning) scannedWarning.style.display = "none";
         actionBar.style.display = "flex";
         resultCard.style.display = "none";
         tablePreviewWrap.style.display = "none";
@@ -619,6 +701,8 @@
       resultData = null;
       dropZone.style.display = "block";
       fileQueue.style.display = "none";
+      if (extractionOptions) extractionOptions.style.display = "none";
+      if (scannedWarning) scannedWarning.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
       tablePreviewWrap.style.display = "none";
@@ -634,7 +718,7 @@
       sheetTabsContainer.innerHTML = '';
       resultData.sheetsData.forEach((s, idx) => {
         const tabBtn = document.createElement("button");
-        tabBtn.className = `sheet-tab-btn ${idx === sheetIdx  ?  'active' : ''}`;
+        tabBtn.className = `sheet-tab-btn ${idx === sheetIdx ? 'active' : ''}`;
         tabBtn.textContent = s.sheetName;
         tabBtn.onclick = () => renderSheetTable(idx);
         sheetTabsContainer.appendChild(tabBtn);
@@ -645,25 +729,28 @@
       sheet.data.slice(0, 50).forEach((row, rIdx) => {
         tableHtml += '<tr>';
         row.forEach(cell => {
+          const displayVal = (typeof cell === 'number') ? cell.toLocaleString(undefined, { maximumFractionDigits: 2 }) : escapeHtml(cell);
           if (rIdx === 0) {
-            tableHtml += `<th>${DocxBuilder.escapeXml(cell)}</th>`;
+            tableHtml += `<th>${displayVal}</th>`;
           } else {
-            tableHtml += `<td>${DocxBuilder.escapeXml(cell)}</td>`;
+            tableHtml += `<td>${displayVal}</td>`;
           }
         });
         tableHtml += '</tr>';
       });
       tableHtml += '</tbody></table>';
 
-      if (sheet.data.length > 50) {
-        tableHtml += `<div style="padding:8px 12px; font-size:0.78rem; color:var(--text-muted); text-align:center;">Showing first 50 rows of ${sheet.data.length} total rows</div>`;
-      }
+      const rowCount = sheet.data.length;
+      const colCount = sheet.data[0] ? sheet.data[0].length : 0;
+      tableHtml += `<div style="padding:10px 14px; font-size:0.8rem; color:var(--text-muted); text-align:center; background:var(--bg-elevated); border-top:1px solid var(--line);">
+        <strong>Sheet:</strong> ${escapeHtml(sheet.sheetName)} &bull; <strong>Total Extracted:</strong> ${rowCount} row(s), ${colCount} column(s) ${rowCount > 50 ? '(Showing first 50 rows in RAM preview)' : ''}
+      </div>`;
 
       tableGridContainer.innerHTML = tableHtml;
     }
 
     function progressCb(pct, status) {
-      const step = pct < 40  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
@@ -671,23 +758,39 @@
       if (!selectedFile) return;
       try {
         processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        resultData = await PDFConvert.pdfToExcel(selectedFile, progressCb);
+        if (scannedWarning) scannedWarning.style.display = "none";
+        UIUtils.setWorkflowStep(0, 15, "Initializing local table extraction in RAM...");
 
-        UIUtils.setWorkflowStep(3, 100, "Processing complete!");
+        const mode = window.currentExtractionMode || 'auto';
+        const consolidate = document.getElementById("consolidate-sheets-chk") ? document.getElementById("consolidate-sheets-chk").checked : true;
+        
+        resultData = await PDFConvert.pdfToExcel(selectedFile, progressCb, {
+          mode: mode,
+          consolidate: consolidate
+        });
+
+        UIUtils.setWorkflowStep(3, 100, "Spreadsheet extraction complete!");
         resultCard.style.display = "flex";
-        UIUtils.renderQuickActions(resultCard, resultData.xlsxBlob, (selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".xlsx");
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultData.xlsxBlob.size)} &bull; ${resultData.totalSheets} Sheet(s) &bull; Microsoft Excel (.xlsx)`;
+        UIUtils.renderQuickActions(resultCard, resultData.xlsxBlob, (selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output") + ".xlsx");
+        
+        const modeLabel = (mode === 'bank_statement') ? 'Bank Statement Mode' : 'Standard Mode';
+        document.getElementById("result-meta").innerHTML = `Size: ${UIUtils.formatBytes(resultData.xlsxBlob.size)} &bull; ${resultData.totalRows} Rows &bull; ${resultData.totalSheets} Sheet(s) &bull; <strong style="color:var(--primary);">${modeLabel}</strong>`;
 
         if (resultData.sheetsData && resultData.sheetsData.length > 0) {
           renderSheetTable(0);
           tablePreviewWrap.style.display = "block";
+          tablePreviewWrap.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
         UIUtils.showToast("PDF table extracted to Excel successfully!", "success");
       } catch (err) {
         console.error(err);
+        if (err.message && (err.message.includes("scanned") || err.message.includes("OCR"))) {
+          if (scannedWarning) {
+            scannedWarning.style.display = "block";
+            scannedWarning.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
         UIUtils.showToast(err.message || "Operation failed", "error");
       } finally {
         processBtn.disabled = false;
@@ -696,14 +799,14 @@
 
     downloadXlsxBtn.addEventListener("click", function() {
       if (resultData && resultData.xlsxBlob) {
-        const baseName = selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
+        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
         UIUtils.downloadBlob(resultData.xlsxBlob, baseName + ".xlsx");
       }
     });
 
     downloadCsvBtn.addEventListener("click", function() {
       if (resultData && resultData.csvBlob) {
-        const baseName = selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
+        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
         UIUtils.downloadBlob(resultData.csvBlob, baseName + ".csv");
       }
     });

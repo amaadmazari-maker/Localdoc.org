@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -545,17 +545,18 @@
       </table>
 
       <!-- Section 4 -->
-      <h2>4. Honest Technical Limitations: What Automated Excel Extractors Cannot Do</h2>
+      <h2>4. Honest Technical Realities: What Client-Side Table Extractors Can and Cannot Do</h2>
       <p>
-        Professional data auditing requires transparency regarding edge cases where algorithmic table extraction encounters boundaries:
+        Professional data auditing requires complete transparency regarding how client-side algorithmic table extraction works and where mathematical boundaries exist:
       </p>
 
-      <div class="tech-card" style="border-left:4px solid #ef4444;">
-        <h3 style="margin-top:0;">3 Real Limitations to Keep in Mind</h3>
-        <ul style="margin-left:20px; line-height:1.7;">
-          <li><strong>Borderless Tables with Multi-Line Wrapped Descriptions:</strong> In complex commercial bank statements where merchant names wrap onto 2 or 3 lines without horizontal dividing borders, baseline clustering heuristics may split the description into two distinct rows unless calibrated. For such entries, inspecting the debit/credit column to ensure no phantom zero-balance row was generated is recommended.</li>
-          <li><strong>Rotated or Skewed Scanned Receipts:</strong> If a paper document was photographed crookedly with a smartphone where lines slant by more than 3 degrees, vertical ray-casting rays cross neighboring columns. This can occasionally cause withdrawal amounts to bleed into deposit columns. Always straighten skewed images with <a href="scan-to-pdf-guide.html">LocalDoc Scanner</a> before table conversion.</li>
-          <li><strong>Multi-Tier Hierarchical Merged Headers:</strong> When financial disclosure reports contain nested merged header cells (such as <em>"Quarterly Operations &mdash; 2026"</em> spanning three underlying sub-headers), LocalDoc exports them as flat distinct cells rather than complex merged spans to avoid corrupting formula references in downstream pivot tables.</li>
+      <div class="tech-card" style="border-left:4px solid var(--primary);">
+        <h3 style="margin-top:0;">4 Fundamental Rules of PDF Table Extraction</h3>
+        <ul style="margin-left:20px; line-height:1.75;">
+          <li><strong>Scanned Image PDFs vs. Digital Vector PDFs:</strong> A table converter cannot extract data from a scanned photocopy or photograph because image pixels contain zero character coordinates. LocalDoc performs a pre-flight integrity scan: if no digital text layer exists, it alerts the user upfront to run our <a href="../pages/image-to-text.html">Image to Text (OCR)</a> tool first, rather than silently creating an empty Excel file.</li>
+          <li><strong>Multi-Line Wrapped Cells vs. Phantom Rows:</strong> Naive converters treat every horizontal line as a separate row. When a transaction description or address wraps across 2–3 lines, basic tools generate empty phantom rows that corrupt columns. LocalDoc calculates vertical line delta (&le; 15pt) and column occupancy to merge wrapped lines back into their parent cell.</li>
+          <li><strong>Bank Statement &amp; Ledger Mode (Header Noise Pruning):</strong> Bank statements (e.g. Meezan, HBL, UBL, MCB, Chase) repeat bank logos, branch addresses, and column headers on every page. LocalDoc's specialized <em>Bank Statement Mode</em> recognizes the transaction table structure on Page 1, then automatically filters out recurring header/footer noise on subsequent pages, stacking all transactions into a single continuous, formula-ready ledger.</li>
+          <li><strong>Single Consolidated Sheet vs. Multi-Tab Workbooks:</strong> By default, LocalDoc combines multi-page tables into a single master sheet named <em>"Consolidated Table"</em> (or <em>"Transactions"</em>). This allows accountants to immediately run <code>=SUM(D2:D500)</code> across months of records without tedious manual copy-pasting across separate page tabs. Individual page sheets are also preserved in the workbook for reference.</li>
         </ul>
       </div>
 

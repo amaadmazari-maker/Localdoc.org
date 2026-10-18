@@ -825,89 +825,178 @@ const PDFConvert = {
   },
 
   // 5. PDF to Excel (.xlsx & .csv) — High-Precision Column Clustering & Number Formatting
-  async pdfToExcel(file, onProgress = null) {
-    if (onProgress) onProgress(20, 'Reading PDF Tables & Tabular Streams in RAM...');
+  async pdfToExcel(file, onProgress = null, options = {}) {
+    const mode = options.mode || 'auto'; // 'auto' | 'bank_statement'
+    const consolidateSheets = options.consolidate !== false; // default true
+    if (onProgress) onProgress(15, 'Reading PDF document structure in RAM...');
+    
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     const numPages = pdf.numPages;
-    const wb = XLSX.utils.book_new();
-    const allSheetsData = [];
+
+    // Helper: Parse currency and formatted numbers to true native floats
+    function parseNumericCell(rawStr) {
+      if (typeof rawStr !== 'string') return rawStr;
+      const trimmed = rawStr.trim();
+      if (!trimmed) return '';
+
+      // Check accounting negative format: (1,250.00) or (500)
+      let isNegative = false;
+      let clean = trimmed;
+      if (/^\((.+)\)$/.test(clean)) {
+        isNegative = true;
+        clean = clean.replace(/^\((.+)\)$/, '$1').trim();
+      }
+
+      // Strip currency prefixes & suffixes (PKR, Rs, USD, $, EUR, €, GBP, £, INR, ₹)
+      clean = clean.replace(/^(PKR|Rs\.?|USD|\$|EUR|€|GBP|£|INR|₹)\s*/i, '');
+      clean = clean.replace(/\s*(PKR|Rs\.?|USD|\$|EUR|€|GBP|£|INR|₹)$/i, '');
+
+      // Check if percentage e.g. 15.5%
+      let isPct = false;
+      if (clean.endsWith('%')) {
+        isPct = true;
+        clean = clean.slice(0, -1).trim();
+      }
+
+      // Standard comma thousands e.g. 1,250,500.00
+      if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(clean)) {
+        clean = clean.replace(/,/g, '');
+      } else if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(clean)) {
+        // European format e.g. 1.250.500,00
+        clean = clean.replace(/\./g, '').replace(',', '.');
+      }
+
+      // Pure integer or float
+      if (/^-?\d+(\.\d+)?$/.test(clean)) {
+        let num = parseFloat(clean);
+        if (isNaN(num)) return trimmed;
+        if (isNegative && num > 0) num = -num;
+        if (isPct) num = num / 100;
+        return num;
+      }
+
+      return trimmed;
+    }
+
+    // Step 1: Pre-flight scan across all pages to check for digital text vs scanned image
+    let totalTextItemsCount = 0;
+    const pagesTextData = [];
 
     for (let i = 1; i <= numPages; i++) {
-      if (onProgress) onProgress(25 + ((i / numPages) * 65), `Extracting Tabular Grid from Page ${i} of ${numPages}...`);
+      if (onProgress) onProgress(15 + Math.round((i / numPages) * 20), `Scanning Page ${i} of ${numPages} in RAM...`);
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
-      const viewport = page.getViewport({ scale: 1.0 });
+      const items = (textContent.items || []).filter(it => (it.str || '').trim().length > 0);
+      totalTextItemsCount += items.length;
+      pagesTextData.push({ pageNum: i, items, viewport: page.getViewport({ scale: 1.0 }) });
+    }
 
-      if (!textContent.items || textContent.items.length === 0) {
-        allSheetsData.push({ sheetName: `Page ${i}`, data: [['[Empty Page]']] });
-        const ws = XLSX.utils.aoa_to_sheet([['[Empty Page]']]);
-        XLSX.utils.book_append_sheet(wb, ws, `Page ${i}`);
+    if (totalTextItemsCount === 0) {
+      throw new Error("This PDF appears to be a scanned image with no selectable text layer. Please use our Image to Text (OCR) tool to extract text before converting to Excel.");
+    }
+
+    // Step 2: Extract structured 2D table grid for each page
+    const wb = XLSX.utils.book_new();
+    const allSheetsData = [];
+    const consolidatedRows = [];
+    let detectedHeaderSignature = null;
+
+    for (let pIdx = 0; pIdx < pagesTextData.length; pIdx++) {
+      const pageNum = pIdx + 1;
+      const { items } = pagesTextData[pIdx];
+
+      if (onProgress) onProgress(35 + Math.round((pageNum / numPages) * 50), `Extracting Tabular Grid from Page ${pageNum} of ${numPages}...`);
+
+      if (!items || items.length === 0) {
+        allSheetsData.push({ sheetName: `Page ${pageNum}`, data: [['[Empty Page]']] });
         continue;
       }
 
-      // Group text items by line Y (within 5px tolerance)
-      const rowsMap = [];
-      const allXCoords = [];
-
-      textContent.items.forEach(item => {
+      // 1. Group items into lines (Y-clustering with 4.0px tolerance)
+      const rawLines = [];
+      items.forEach(item => {
         const text = (item.str || '').trim();
         if (!text) return;
         const x = item.transform[4];
         const y = item.transform[5];
-        allXCoords.push(x);
+        const w = item.width || 0;
+        const h = item.height || 10;
 
-        let row = rowsMap.find(r => Math.abs(r.y - y) <= 4.5);
-        if (!row) {
-          row = { y: y, items: [] };
-          rowsMap.push(row);
+        let line = rawLines.find(l => Math.abs(l.y - y) <= 4.0);
+        if (!line) {
+          line = { y: y, items: [] };
+          rawLines.push(line);
         }
-        row.items.push({ x: x, width: item.width || 0, text: item.str.trim() });
+        line.items.push({ x, y, width: w, height: h, text });
       });
 
-      // Sort rows top-to-bottom
-      rowsMap.sort((a, b) => b.y - a.y);
+      // Sort lines top-to-bottom (higher Y = higher in PDF coordinates)
+      rawLines.sort((a, b) => b.y - a.y);
 
-      // Compute distinct column anchor clusters along X axis
-      allXCoords.sort((a, b) => a - b);
+      // 2. Tokenize each line into coherent cell phrases by joining nearby words
+      const linePhrases = [];
+      const allPhraseStarts = [];
+
+      rawLines.forEach(line => {
+        line.items.sort((a, b) => a.x - b.x);
+        const phrases = [];
+
+        for (let j = 0; j < line.items.length; j++) {
+          const it = line.items[j];
+          if (phrases.length === 0) {
+            phrases.push({ x: it.x, right: it.x + it.width, text: it.text });
+          } else {
+            const prev = phrases[phrases.length - 1];
+            const gap = it.x - prev.right;
+            // If words are adjacent (gap between -1.5px and 9.0px), combine into the same phrase
+            if (gap >= -1.5 && gap <= 9.0) {
+              prev.text += (gap > 1.2 ? ' ' : '') + it.text;
+              prev.right = Math.max(prev.right, it.x + it.width);
+            } else {
+              phrases.push({ x: it.x, right: it.x + it.width, text: it.text });
+            }
+          }
+        }
+
+        if (phrases.length > 0) {
+          linePhrases.push({ y: line.y, phrases });
+          phrases.forEach(p => allPhraseStarts.push(p.x));
+        }
+      });
+
+      // 3. Compute distinct column anchors along the horizontal X-axis
+      allPhraseStarts.sort((a, b) => a - b);
       const colAnchors = [];
-      allXCoords.forEach(x => {
-        if (!colAnchors.some(a => Math.abs(a - x) <= 18)) {
+      allPhraseStarts.forEach(x => {
+        if (!colAnchors.some(a => Math.abs(a - x) <= 16)) {
           colAnchors.push(x);
         }
       });
       colAnchors.sort((a, b) => a - b);
 
-      const sheetData = [];
+      // 4. Map line phrases into discrete column slots
+      const rawGridRows = [];
 
-      rowsMap.forEach(row => {
-        row.items.sort((a, b) => a.x - b.x);
-
-        // Map row items into discrete column slots
+      linePhrases.forEach(line => {
         const rowCells = new Array(Math.max(1, colAnchors.length)).fill('');
 
-        row.items.forEach(item => {
-          let bestColIdx = 0;
+        line.phrases.forEach(p => {
+          // Find closest column anchor
+          let bestIdx = 0;
           let minDiff = Infinity;
           colAnchors.forEach((anchor, cIdx) => {
-            const diff = Math.abs(anchor - item.x);
+            const diff = Math.abs(anchor - p.x);
             if (diff < minDiff) {
               minDiff = diff;
-              bestColIdx = cIdx;
+              bestIdx = cIdx;
             }
           });
 
-          let cellVal = item.text;
-          // Check if numeric currency or percentage
-          const cleanNum = cellVal.replace(/[$,€£¥\s]/g, '').replace(/^\((.+)\)$/, '-$1');
-          if (/^--\d+(\.\d+)-$/.test(cleanNum)) {
-            cellVal = parseFloat(cleanNum);
-          }
-
-          if (rowCells[bestColIdx] && typeof cellVal === 'string') {
-            rowCells[bestColIdx] += ' ' + cellVal;
+          if (rowCells[bestIdx]) {
+            rowCells[bestIdx] += ' ' + p.text;
           } else {
-            rowCells[bestColIdx] = cellVal;
+            rowCells[bestIdx] = p.text;
           }
         });
 
@@ -917,36 +1006,146 @@ const PDFConvert = {
         }
 
         if (rowCells.some(c => c !== '')) {
-          sheetData.push(rowCells);
+          rawGridRows.push({ y: line.y, cells: rowCells });
         }
       });
 
-      if (sheetData.length === 0) {
-        sheetData.push(['[Empty Page / No Tabular Text Detected]']);
+      // 5. Intelligent Multi-Line Cell Merging (Wrap repair)
+      const pageRows = [];
+      for (let r = 0; r < rawGridRows.length; r++) {
+        const curr = rawGridRows[r];
+        if (pageRows.length > 0) {
+          const prev = pageRows[pageRows.length - 1];
+          const yGap = Math.abs(prev.y - curr.y);
+
+          // If current row only has 1 non-empty cell and vertical gap is small (wrapped line),
+          // merge into previous row's corresponding column
+          const filledCols = curr.cells.map((c, i) => (c ? i : -1)).filter(i => i !== -1);
+          if (filledCols.length === 1 && yGap <= 15.0) {
+            const targetCol = filledCols[0];
+            if (prev.cells[targetCol]) {
+              prev.cells[targetCol] += ' ' + curr.cells[targetCol];
+              continue;
+            }
+          }
+        }
+        pageRows.push(curr);
+      }
+
+      // Convert row cells using parseNumericCell
+      let finalPageData = pageRows.map(r => r.cells.map(c => parseNumericCell(c)));
+
+      // 6. Bank Statement & Ledger Filter
+      if (mode === 'bank_statement') {
+        const isHeaderRow = (row) => {
+          const text = row.map(c => String(c).toLowerCase()).join(' ');
+          return (text.includes('date') || text.includes('particular')) &&
+                 (text.includes('debit') || text.includes('credit') || text.includes('balance') || text.includes('amount') || text.includes('withdrawal'));
+        };
+
+        const isNoiseRow = (row) => {
+          const text = row.map(c => String(c).toLowerCase()).join(' ');
+          return text.includes('page ') || text.includes('generated on') || text.includes('computer generated') || text.includes('statement period');
+        };
+
+        // Filter out footer noise
+        finalPageData = finalPageData.filter(row => !isNoiseRow(row));
+
+        if (pageNum > 1) {
+          // Skip repeated table headers on subsequent pages
+          finalPageData = finalPageData.filter(row => !isHeaderRow(row));
+        } else {
+          // On page 1, record the header signature
+          const headerIdx = finalPageData.findIndex(isHeaderRow);
+          if (headerIdx !== -1) {
+            detectedHeaderSignature = finalPageData[headerIdx].map(c => String(c).trim());
+          }
+        }
+      }
+
+      if (finalPageData.length === 0) {
+        finalPageData.push(['[Empty Page / No Tabular Text Detected]']);
       }
 
       allSheetsData.push({
-        sheetName: `Page ${i}`,
-        data: sheetData
+        sheetName: `Page ${pageNum}`,
+        data: finalPageData
       });
 
-      const ws = XLSX.utils.aoa_to_sheet(sheetData);
-      XLSX.utils.book_append_sheet(wb, ws, `Page ${i}`);
+      // Multi-page consolidation
+      if (pageNum === 1) {
+        consolidatedRows.push(...finalPageData);
+      } else {
+        // If not bank statement mode, check if page has identical header row to page 1
+        let rowsToAdd = finalPageData;
+        if (consolidatedRows.length > 0 && finalPageData.length > 0) {
+          const firstRowStr = finalPageData[0].map(c => String(c).trim()).join('|');
+          const headerStr = consolidatedRows[0].map(c => String(c).trim()).join('|');
+          if (firstRowStr === headerStr) {
+            rowsToAdd = finalPageData.slice(1);
+          }
+        }
+        consolidatedRows.push(...rowsToAdd);
+      }
     }
+
+    // Step 3: Build OpenXML Workbook (.xlsx)
+    if (consolidateSheets && numPages > 1) {
+      // Sheet 1: Master Consolidated Table
+      const masterSheetName = (mode === 'bank_statement') ? 'Transactions' : 'Consolidated Table';
+      const masterWs = XLSX.utils.aoa_to_sheet(consolidatedRows);
+      
+      // Auto-fit column widths
+      const colWidths = [];
+      consolidatedRows.forEach(row => {
+        row.forEach((cell, cIdx) => {
+          const len = String(cell ?? '').length;
+          colWidths[cIdx] = Math.max(colWidths[cIdx] || 10, Math.min(len + 3, 50));
+        });
+      });
+      masterWs['!cols'] = colWidths.map(w => ({ wch: w }));
+
+      XLSX.utils.book_append_sheet(wb, masterWs, masterSheetName);
+
+      // Prepend consolidated sheet to allSheetsData for the live UI preview
+      allSheetsData.unshift({
+        sheetName: masterSheetName,
+        data: consolidatedRows
+      });
+    }
+
+    // Add individual page sheets
+    allSheetsData.forEach(s => {
+      if (s.sheetName === 'Consolidated Table' || s.sheetName === 'Transactions') return;
+      const ws = XLSX.utils.aoa_to_sheet(s.data);
+      const colWidths = [];
+      s.data.forEach(row => {
+        row.forEach((cell, cIdx) => {
+          const len = String(cell ?? '').length;
+          colWidths[cIdx] = Math.max(colWidths[cIdx] || 10, Math.min(len + 3, 50));
+        });
+      });
+      ws['!cols'] = colWidths.map(w => ({ wch: w }));
+      XLSX.utils.book_append_sheet(wb, ws, s.sheetName);
+    });
 
     if (onProgress) onProgress(95, 'Compiling OpenXML Workbook (.xlsx)...');
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const xlsxBlob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-    const firstWs = wb.Sheets[wb.SheetNames[0]];
-    const csvContent = XLSX.utils.sheet_to_csv(firstWs);
+    // Generate CSV from primary sheet
+    const primaryWsName = wb.SheetNames[0];
+    const primaryWs = wb.Sheets[primaryWsName];
+    const csvContent = XLSX.utils.sheet_to_csv(primaryWs);
     const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
     return {
       xlsxBlob: xlsxBlob,
       csvBlob: csvBlob,
       sheetsData: allSheetsData,
-      totalSheets: numPages
+      totalSheets: wb.SheetNames.length,
+      mode: mode,
+      totalRows: consolidatedRows.length > 0 ? consolidatedRows.length : allSheetsData[0]?.data?.length || 0
     };
   },
 
