@@ -124,7 +124,7 @@
 </script>
 
   <style>
-    /* Visual Sign & Edit Studio Layout */
+    /* Visual Sign & Edit Studio Layout (3-Column Powerhouse) */
     #edit-studio-wrap {
       width: 100%;
       max-width: 100%;
@@ -133,8 +133,8 @@
     }
     .edit-studio-grid {
       display: grid;
-      grid-template-columns: 370px minmax(0, 1fr);
-      gap: 24px;
+      grid-template-columns: 130px minmax(0, 1fr) 280px;
+      gap: 16px;
       align-items: start;
       width: 100%;
       max-width: 100%;
@@ -146,61 +146,313 @@
       max-width: 100%;
       box-sizing: border-box;
     }
-    @media (max-width: 960px) {
+    @media (max-width: 1100px) {
+      .edit-studio-grid {
+        grid-template-columns: 110px minmax(0, 1fr) 260px;
+        gap: 12px;
+      }
+    }
+    @media (max-width: 900px) {
       .edit-studio-grid {
         grid-template-columns: minmax(0, 1fr);
         gap: 16px;
       }
-    }
-    @media (max-width: 768px) {
-      .pdf-preview-pane {
-        padding: 10px;
-        min-height: auto;
-      }
-      .pdf-nav-bar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        padding: 8px 10px;
-      }
-      .pdf-nav-bar > div {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .pdf-viewport-scroller {
-        padding: 6px;
-        max-height: 480px;
-        justify-content: flex-start;
-      }
-      .sig-canvas-wrap {
-        width: 100%;
-        max-width: 100%;
-      }
-      .sig-canvas {
+      .pdf-thumbnails-sidebar {
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        max-height: none !important;
         width: 100% !important;
-        max-width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 450 / 155;
+        padding: 6px !important;
       }
-      #action-bar {
-        padding: 0;
+      .pdf-thumbnails-sidebar .thumb-list {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
       }
-      #process-btn {
-        width: 100% !important;
-        white-space: normal !important;
-        min-height: 48px !important;
-        padding: 12px 16px !important;
-        font-size: 0.95rem !important;
+      .pdf-thumbnails-sidebar .thumb-header {
+        display: none !important;
+      }
+      .pdf-thumbnails-sidebar .thumb-canvas-wrap {
+        width: 70px !important;
+        height: 90px !important;
       }
     }
-    @media (max-width: 480px) {
-      .edit-studio-grid > div > div {
-        padding: 12px !important;
-      }
-      .color-dot {
-        width: 20px;
-        height: 20px;
-      }
+
+    /* Column 1: Thumbnails Sidebar */
+    .pdf-thumbnails-sidebar {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      max-height: 640px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-sizing: border-box;
+    }
+    .thumb-header {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 4px;
+    }
+    .thumb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .thumb-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px 4px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: transparent;
+    }
+    .thumb-item:hover {
+      background: var(--bg-body);
+      border-color: var(--line);
+    }
+    .thumb-item.active {
+      border-color: var(--primary);
+      background: rgba(2, 132, 199, 0.08);
+      box-shadow: 0 0 8px rgba(2, 132, 199, 0.35);
+    }
+    .thumb-canvas-wrap {
+      width: 90px;
+      height: 118px;
+      background: #FFF;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .thumb-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 90px;
+      margin-top: 4px;
+    }
+    .thumb-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .thumb-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #059669;
+      background: rgba(5, 150, 105, 0.15);
+      padding: 1px 5px;
+      border-radius: 999px;
+      display: none;
+    }
+
+    /* Column 3: Signer Toolbox Panel */
+    .signer-toolbox-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .toolbox-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-sizing: border-box;
+    }
+    .toolbox-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 0 0 8px;
+      display: block;
+    }
+    .profile-preview-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      transition: border-color 0.15s ease;
+    }
+    .profile-preview-strip:hover {
+      border-color: var(--primary);
+    }
+    .profile-sig-box, .profile-initials-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 48px;
+    }
+    .field-asset-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .field-asset-btn:hover {
+      border-color: var(--primary);
+      background: rgba(2, 132, 199, 0.05);
+      transform: translateY(-1px);
+    }
+    .field-btn-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--primary);
+      background: rgba(2, 132, 199, 0.1);
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .batch-card {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(2, 132, 199, 0.05) 100%);
+      border: 1px solid rgba(5, 150, 105, 0.35);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .pill-btn {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: #334155;
+      color: #F8FAFC;
+      border: 1px solid #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .pill-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFF;
+    }
+
+    /* Modal Backdrop & Dialog (iLovePDF Style Clean Window) */
+    .sig-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .sig-modal-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sig-modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px) scale(0.97); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .sig-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sig-modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sig-modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg-body);
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+    .modal-tab-nav {
+      display: flex;
+      border-bottom: 1px solid var(--line);
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .modal-tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .modal-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .modal-subtab-nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
     }
     .pdf-preview-pane {
       background: #0B1120;
@@ -546,156 +798,42 @@
         </div>
       </div>
 
-      <!-- Interactive Visual PDF Editor & Sign Studio -->
+      <!-- Interactive Visual PDF Editor & Sign Studio (3-Column Powerhouse: Thumbnails + Document + Toolbox) -->
       <div id="edit-studio-wrap" style="display:none; margin-top:24px;">
         <div class="edit-studio-grid">
           
-          <!-- Left Control Panel -->
-          <div style="display:flex; flex-direction:column; gap:18px;">
-            
-            <!-- Signature Creation Box -->
-            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">1. Create Signature</h4>
-                <div style="display:flex; gap:6px;">
-                  <button type="button" class="sig-tab-btn active" id="tab-draw-btn">Draw</button>
-                  <button type="button" class="sig-tab-btn" id="tab-type-btn">Type</button>
-                  <button type="button" class="sig-tab-btn" id="tab-upload-btn">Upload</button>
-                </div>
-              </div>
-
-              <!-- Draw Mode -->
-              <div id="sig-draw-pane">
-                <div class="sig-canvas-wrap">
-                  <canvas id="sig-canvas" class="sig-canvas" width="450" height="155"></canvas>
-                </div>
-
-                <!-- Pen Thickness Slider Bar -->
-                <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                    <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Pen Stroke Thickness:</span>
-                    <span id="pen-width-display" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:var(--primary);">2.5 px</span>
-                  </div>
-                  <div style="display:flex; align-items:center; gap:10px;">
-                    <input type="range" id="pen-width-slider" min="1" max="8" value="2.5" step="0.5" style="flex:1; cursor:pointer;" aria-label="Pen stroke thickness">
-                    <div style="width:26px; height:20px; display:flex; align-items:center; justify-content:center;">
-                      <div id="pen-preview-stroke" style="width:22px; height:2.5px; background:#000000; border-radius:2px;"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Ink Color Selection (Expanded Palette) -->
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <div style="display:flex; align-items:center; gap:6px;">
-                    <span class="control-label" style="font-size:0.78rem; font-weight:700;">Ink:</span>
-                    <button type="button" class="color-dot active" data-color="#000000" style="background:#000000;" title="Black"></button>
-                    <button type="button" class="color-dot" data-color="#0F172A" style="background:#0F172A;" title="Dark Slate"></button>
-                    <button type="button" class="color-dot" data-color="#1E3A8A" style="background:#1E3A8A;" title="Classic Navy"></button>
-                    <button type="button" class="color-dot" data-color="#2563EB" style="background:#2563EB;" title="Royal Blue"></button>
-                    <button type="button" class="color-dot" data-color="#DC2626" style="background:#DC2626;" title="Contract Red"></button>
-                    <button type="button" class="color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
-                    <label style="position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; border:2px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Choose Custom Color">
-                      <input type="color" id="custom-color-picker" value="#000000" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
-                      <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red); font-size:9px;"></span>
-                    </label>
-                  </div>
-
-                  <button type="button" class="btn btn-outline" id="clear-sig-btn" style="padding:4px 10px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
-                </div>
-
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
-                  &#x2728; <strong>Auto-Stamps:</strong> Draw on the pad &mdash; your signature appears live on the document. Drag it anywhere!
-                </div>
-              </div>
-
-              <!-- Type Mode -->
-              <div id="sig-type-pane" style="display:none;">
-                <div style="margin-bottom:10px;">
-                  <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Type Your Name:</label>
-                  <input type="text" id="signer-name-input" placeholder="e.g. Jane Doe" style="width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:6px; font-size:0.95rem; background:var(--bg-body); color:var(--text-primary);">
-                </div>
-                <div style="border:1px dashed var(--line); border-radius:6px; padding:12px; text-align:center; background:#FFF; min-height:75px; display:flex; align-items:center; justify-content:center;">
-                  <span id="typed-sig-preview" style="font-family:'Brush Script MT', cursive, sans-serif; font-size:2rem; color:#000000; font-style:italic;">Your Signature</span>
-                </div>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
-                  &#x2728; <strong>Live Sync:</strong> Type your name &mdash; cursive signature updates on the document in real time. Drag it anywhere!
-                </div>
-              </div>
-
-              <!-- Upload Signature Image Mode -->
-              <div id="sig-upload-pane" style="display:none;">
-                <div class="sig-upload-drop" id="sig-upload-drop" style="border:2px dashed var(--line); border-radius:var(--radius-sm); padding:16px 12px; text-align:center; background:var(--bg-body); cursor:pointer; margin-bottom:10px; transition:border-color 0.2s;">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Signature Image</div>
-                  <div style="font-size:0.75rem; color:var(--text-muted);">Click or drop PNG, JPG, or WEBP photo of signature</div>
-                  <input type="file" id="sig-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
-                </div>
-
-                <!-- Auto-Background Whitening & Transparency -->
-                <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block;">Transparent Paper Background</span>
-                    <span style="font-size:0.72rem; color:var(--text-muted);">Strips white paper background, leaving clean ink</span>
-                  </div>
-                  <input type="checkbox" id="remove-bg-toggle" checked style="width:18px; height:18px; cursor:pointer; accent-color:var(--primary);">
-                </div>
-
-                <div id="uploaded-sig-preview-wrap" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:8px; text-align:center; background:#FFF; min-height:60px; max-height:100px; display:flex; align-items:center; justify-content:center;">
-                  <img id="uploaded-sig-img" src="" alt="Uploaded Signature" style="max-height:80px; max-width:100%; object-fit:contain;">
-                </div>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; line-height:1.4;">
-                  &#x2728; <strong>Auto-Stamps:</strong> Upload photo &mdash; signature appears cleanly on contract preview. Drag it anywhere!
-                </div>
-              </div>
-
-              <button type="button" class="btn btn-outline" id="btn-place-sig" style="width:100%; margin-top:14px; font-size:0.85rem; padding:8px 12px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                <span>+ Place Another Signature on Page</span>
-              </button>
+          <!-- Column 1: Thumbnails Sidebar (iLovePDF Style + Badges) -->
+          <aside class="pdf-thumbnails-sidebar" id="pdf-thumbnails-sidebar" aria-label="Page Thumbnails">
+            <div class="thumb-header">
+              <span>Pages</span>
+              <span id="thumb-total-badge" style="background:var(--primary);color:#FFF;padding:1px 6px;border-radius:10px;font-size:0.68rem;font-weight:800;">1</span>
             </div>
-
-            <!-- Annotation Stamp Tools -->
-            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px;">
-              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:12px;">2. Add Date &amp; Timestamp</h4>
-              
-              <div style="display:flex; flex-direction:column; gap:9px;">
-                <button type="button" class="btn btn-outline" id="btn-add-date" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  <span>+ Add Date Seal (<span id="cur-date-display">Sep 28, 2026</span>)</span>
-                </button>
-
-                <button type="button" class="btn btn-outline" id="btn-add-datetime" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                  <span>+ Add Certified Date &amp; Time Seal</span>
-                </button>
-
-                <button type="button" class="btn btn-outline" id="btn-add-text" style="width:100%; justify-content:flex-start; gap:8px; font-size:0.84rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
-                  <span>+ Add Text Box (Name, Title, Initials)</span>
-                </button>
-
-                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="width:100%; color:var(--danger); border-color:var(--danger); font-size:0.8rem; margin-top:4px;">
-                  Clear Current Page Items
-                </button>
-              </div>
+            <div class="thumb-list" id="pdf-thumbnails-list">
+              <!-- Dynamically generated thumbnail items with page previews and checkmark badges -->
             </div>
+          </aside>
 
-          </div>
-
-          <!-- Right Visual Document Viewport -->
-          <div class="pdf-preview-pane">
+          <!-- Column 2: Document Viewport Stage -->
+          <main class="pdf-main-stage">
             <div class="pdf-nav-bar">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <button type="button" class="btn btn-outline" id="btn-pdf-prev" style="padding:4px 10px; font-size:0.8rem; color:#FFF; border-color:#475569;">&#9668; Prev</button>
-                <span style="font-size:0.85rem; font-weight:700;">Page <span id="pdf-current-page">1</span> of <span id="pdf-total-pages">1</span></span>
-                <button type="button" class="btn btn-outline" id="btn-pdf-next" style="padding:4px 10px; font-size:0.8rem; color:#FFF; border-color:#475569;">Next &#9658;</button>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn btn-outline" id="btn-pdf-prev" style="padding:4px 8px; font-size:0.78rem; color:#FFF; border-color:#475569;">&#9668; Prev</button>
+                <span style="font-size:0.82rem; font-weight:700; white-space:nowrap; color:#FFF;">P. <span id="pdf-current-page">1</span> / <span id="pdf-total-pages">1</span></span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-next" style="padding:4px 8px; font-size:0.78rem; color:#FFF; border-color:#475569;">Next &#9658;</button>
+              </div>
+
+              <!-- Quick Stamping Shortcuts directly over document -->
+              <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+                <button type="button" class="pill-btn" id="quick-add-sig" title="Place signature on current page">&#9997; + Signature</button>
+                <button type="button" class="pill-btn" id="quick-add-initials" title="Place initials on current page">&#128394; + Initials</button>
+                <button type="button" class="pill-btn" id="quick-add-date" title="Place today's date stamp">&#128197; + Date</button>
+                <button type="button" class="pill-btn" id="quick-add-name" title="Place signer name">&#128100; + Name</button>
               </div>
               
-              <div style="display:flex; align-items:center; gap:8px;">
-                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:4px 8px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom Out">&minus;</button>
-                <span id="pdf-zoom-level" style="font-size:0.8rem; font-family:monospace;">115%</span>
-                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-in" style="padding:4px 8px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom In">+</button>
-                <span style="font-size:0.78rem; color:#94A3B8; margin-left:8px;">&#128161; Drag signature to any line</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-out" style="padding:3px 7px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom Out">&minus;</button>
+                <span id="pdf-zoom-level" style="font-size:0.78rem; font-family:monospace; color:#FFF;">115%</span>
+                <button type="button" class="btn btn-outline" id="btn-pdf-zoom-in" style="padding:3px 7px; font-size:0.8rem; color:#FFF; border-color:#475569;" title="Zoom In">+</button>
               </div>
             </div>
 
@@ -706,36 +844,118 @@
                 <div class="pdf-overlay-layer" id="pdf-overlay-layer"></div>
               </div>
             </div>
-          </div>
+          </main>
+
+          <!-- Column 3: Signer Toolbox Panel (Best of iLovePDF + LocalDoc Batch Superpowers) -->
+          <aside class="signer-toolbox-panel">
+            
+            <!-- Card 1: Signer Profile Details -->
+            <div class="toolbox-card">
+              <span class="toolbox-title">&#128100; Signer Details (Set Once)</span>
+              <div class="profile-preview-strip" id="profile-preview-card" style="cursor:pointer;" title="Click to edit your signature and initials">
+                <div class="profile-sig-box">
+                  <span style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Signature</span>
+                  <div id="profile-sig-render" style="max-height:36px; max-width:100%; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                    <span style="font-family:'Brush Script MT', cursive; font-size:1.2rem; color:var(--text-primary); font-style:italic;" id="profile-sig-text-preview">Amaad Mazari</span>
+                  </div>
+                </div>
+                <div class="profile-initials-box" style="border-left:1px dashed var(--line); padding-left:6px;">
+                  <span style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Initials</span>
+                  <div id="profile-initials-render" style="max-height:36px; max-width:100%; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                    <span style="font-family:'Brush Script MT', cursive; font-size:1.2rem; color:var(--text-primary); font-style:italic;" id="profile-initials-text-preview">AM</span>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline" id="btn-open-sig-modal" style="width:100%; margin-top:8px; font-size:0.78rem; padding:6px 10px; font-weight:700;">
+                &#9998; Set Signature &amp; Initials
+              </button>
+            </div>
+
+            <!-- Card 2: Click to Add Fields on Page (iLovePDF Style Palette) -->
+            <div class="toolbox-card">
+              <span class="toolbox-title">&#128295; Click to Add on Page <span id="toolbox-cur-page">1</span></span>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button type="button" class="field-asset-btn" id="btn-add-sig-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">&#9997;</span>
+                    <span>Signature</span>
+                  </span>
+                  <span class="field-btn-badge">+ Add</span>
+                </button>
+                <button type="button" class="field-asset-btn" id="btn-add-initials-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">&#128394;</span>
+                    <span>Initials</span>
+                  </span>
+                  <span class="field-btn-badge">+ Add</span>
+                </button>
+                <button type="button" class="field-asset-btn" id="btn-add-date-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">&#128197;</span>
+                    <span>Date Seal</span>
+                  </span>
+                  <span class="field-btn-badge" id="btn-date-seal-text">Today</span>
+                </button>
+                <button type="button" class="field-asset-btn" id="btn-add-name-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">&#128100;</span>
+                    <span>Signer Name</span>
+                  </span>
+                  <span class="field-btn-badge">+ Add</span>
+                </button>
+                <button type="button" class="field-asset-btn" id="btn-add-stamp-field">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.05rem;">&#127970;</span>
+                    <span>Company Stamp</span>
+                  </span>
+                  <span class="field-btn-badge">+ Add</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 3: Multi-Page Batch Stamping (Our Superpower vs iLovePDF!) -->
+            <div class="batch-card">
+              <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                <span style="font-size:1rem;">&#9889;</span>
+                <strong style="font-size:0.8rem; color:#065F46; text-transform:uppercase; letter-spacing:0.04em;">Multi-Page Batch Magic</strong>
+              </div>
+              <p style="font-size:0.72rem; color:var(--text-secondary); margin:0 0 10px; line-height:1.4;">
+                Never sign or initial 60 pages manually! Stamp automatically across all pages in 1 click.
+              </p>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button type="button" class="btn btn-outline" id="btn-batch-initials-all" style="width:100%; font-size:0.78rem; padding:7px 10px; font-weight:700; color:#065F46; border-color:#059669; background:#ECFDF5; justify-content:center;">
+                  &#9889; Stamp Initials on ALL Pages (Footer)
+                </button>
+                <button type="button" class="btn btn-outline" id="btn-batch-sig-all" style="width:100%; font-size:0.78rem; padding:7px 10px; font-weight:700; color:var(--primary-dark,#0369A1); border-color:var(--primary); background:rgba(2, 132, 199, 0.08); justify-content:center;">
+                  &#9889; Stamp Signature on ALL Pages
+                </button>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; gap:6px;">
+                <button type="button" class="btn btn-outline" id="btn-clear-page-annos" style="flex:1; color:var(--danger); border-color:var(--danger); font-size:0.72rem; padding:4px 6px;">
+                  Clear Page <span id="clear-page-num">1</span>
+                </button>
+                <button type="button" class="btn btn-outline" id="btn-clear-all-annos" style="flex:1; color:var(--text-muted); border-color:var(--line); font-size:0.72rem; padding:4px 6px;">
+                  Reset All Pages
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 4: Burn & Download -->
+            <button class="btn btn-primary btn-lg" id="process-btn" style="width:100%; padding:14px 18px; font-size:0.92rem; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(2, 132, 199, 0.35);">
+              <span>Sign &amp; Download PDF</span> &rarr;
+            </button>
+
+          </aside>
 
         </div>
       </div>
 
-      <!-- Action Bar -->
+      <!-- Action Bar (Sticky Mobile Alternative) -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="process-btn">
+        <button class="btn btn-primary btn-lg" id="mobile-process-btn">
           <span>Apply Signature &amp; Download Signed PDF</span> &rarr;
         </button>
       </div>
-
-      <!-- 3-Step Progress Workflow HUD -->
-      <div class="workflow-progress-container" id="workflow-progress" style="display:none;">
-        <div class="workflow-steps-indicator">
-          <div class="workflow-step-node workflow-step-1">
-            <div class="workflow-step-circle">1</div>
-            <span class="workflow-step-label">Decode</span>
-          </div>
-          <div class="workflow-step-line"></div>
-          <div class="workflow-step-node workflow-step-2">
-            <div class="workflow-step-circle">2</div>
-            <span class="workflow-step-label">Stamp</span>
-          </div>
-          <div class="workflow-step-line"></div>
-          <div class="workflow-step-node workflow-step-3">
-            <div class="workflow-step-circle">3</div>
-            <span class="workflow-step-label">Export</span>
-          </div>
-        </div>
         <div class="workflow-progress-track">
           <div class="workflow-progress-fill"></div>
         </div>
@@ -1000,60 +1220,67 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc = '../js/lib/pdf.worker.min.js';
     }
 
+    // =========================================================================
+    // Global State & Profile Configuration
+    // =========================================================================
     let selectedFile = null;
     let selectedFileBuffer = null;
     let resultBlob = null;
     let resultFilename = 'localdoc-signed.pdf';
-    let isDrawing = false;
+    
+    // Signer Profile Data (Default profile set once, used everywhere)
+    let signerFullName = 'Amaad Mazari';
+    let signerInitials = 'AM';
     let inkColor = '#000000';
     let penWidth = 2.5;
-    let hasSignatureDrawn = false;
-    let signatureMode = 'draw'; // 'draw' or 'type'
 
-    // Visual PDF Viewer State
+    // Signature Modes: 'draw' | 'type' | 'upload'
+    let signatureMode = 'draw';
+    let hasSignatureDrawn = false;
+    let rawUploadedImage = null;
+    let uploadedSigDataUrl = null;
+
+    // Initials & Stamp State
+    let hasInitialsDrawn = false;
+    let uploadedStampDataUrl = null;
+
+    // PDF Document Viewer State
     let pdfDoc = null;
     let currentPage = 1;
     let totalPages = 1;
     let currentScale = 1.15;
-    const pageAnnotations = {}; // { [pageNum]: [ { id, type, x, y, width, height, ... } ] }
+    let currentRenderTask = null;
+    // Map: { [pageNumber]: [ { id, type, relX, relY, relW, relH, dataUrl, text, color, fontSize } ] }
+    const pageAnnotations = {};
 
+    // Format current date strings
+    const now = new Date();
+    const todayDateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const todayDateTimeStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    // =========================================================================
+    // DOM Element References
+    // =========================================================================
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const fileQueue = document.getElementById("file-queue");
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
     const studioWrap = document.getElementById("edit-studio-wrap");
-    const sigCanvas = document.getElementById("sig-canvas");
-    const clearSigBtn = document.getElementById("clear-sig-btn");
-    const tabDrawBtn = document.getElementById("tab-draw-btn");
-    const tabTypeBtn = document.getElementById("tab-type-btn");
-    const tabUploadBtn = document.getElementById("tab-upload-btn");
-    const sigDrawPane = document.getElementById("sig-draw-pane");
-    const sigTypePane = document.getElementById("sig-type-pane");
-    const sigUploadPane = document.getElementById("sig-upload-pane");
-    const sigImageInput = document.getElementById("sig-image-input");
-    const sigUploadDrop = document.getElementById("sig-upload-drop");
-    const removeBgToggle = document.getElementById("remove-bg-toggle");
-    const uploadedSigPreviewWrap = document.getElementById("uploaded-sig-preview-wrap");
-    const uploadedSigImg = document.getElementById("uploaded-sig-img");
-    const signerNameInput = document.getElementById("signer-name-input");
-    const typedSigPreview = document.getElementById("typed-sig-preview");
-    const penWidthSlider = document.getElementById("pen-width-slider");
-    const penWidthDisplay = document.getElementById("pen-width-display");
-    const penPreviewStroke = document.getElementById("pen-preview-stroke");
-    const customColorPicker = document.getElementById("custom-color-picker");
-    const curDateDisplay = document.getElementById("cur-date-display");
+    const clearBtn = document.getElementById("clear-btn");
     const encryptedPdfWarning = document.getElementById("encrypted-pdf-warning");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
-    const clearBtn = document.getElementById("clear-btn");
+    const mobileProcessBtn = document.getElementById("mobile-process-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
 
-    let rawUploadedImage = null;
-    let uploadedSigDataUrl = null;
+    // Thumbnails Sidebar Elements
+    const thumbSidebar = document.getElementById("pdf-thumbnails-sidebar");
+    const thumbList = document.getElementById("pdf-thumbnails-list");
+    const thumbTotalBadge = document.getElementById("thumb-total-badge");
 
-    // Visual PDF Elements
+    // Stage Viewport Elements
     const renderCanvas = document.getElementById("pdf-render-canvas");
     const overlayLayer = document.getElementById("pdf-overlay-layer");
     const pageContainer = document.getElementById("pdf-page-container");
@@ -1064,211 +1291,291 @@
     const btnNext = document.getElementById("btn-pdf-next");
     const btnZoomIn = document.getElementById("btn-pdf-zoom-in");
     const btnZoomOut = document.getElementById("btn-pdf-zoom-out");
-    const btnPlaceSig = document.getElementById("btn-place-sig");
-    const btnAddText = document.getElementById("btn-add-text");
-    const btnAddDate = document.getElementById("btn-add-date");
-    const btnAddDateTime = document.getElementById("btn-add-datetime");
+
+    // Quick Action Bar Pills (Top of Document)
+    const quickAddSig = document.getElementById("quick-add-sig");
+    const quickAddInitials = document.getElementById("quick-add-initials");
+    const quickAddDate = document.getElementById("quick-add-date");
+    const quickAddName = document.getElementById("quick-add-name");
+
+    // Toolbox Controls (Right Panel)
+    const toolboxCurPage = document.getElementById("toolbox-cur-page");
+    const clearPageNum = document.getElementById("clear-page-num");
+    const profilePreviewCard = document.getElementById("profile-preview-card");
+    const btnOpenSigModal = document.getElementById("btn-open-sig-modal");
+    const profileSigRender = document.getElementById("profile-sig-render");
+    const profileInitialsRender = document.getElementById("profile-initials-render");
+    const profileSigTextPreview = document.getElementById("profile-sig-text-preview");
+    const profileInitialsTextPreview = document.getElementById("profile-initials-text-preview");
+
+    const btnAddSigField = document.getElementById("btn-add-sig-field");
+    const btnAddInitialsField = document.getElementById("btn-add-initials-field");
+    const btnAddDateField = document.getElementById("btn-add-date-field");
+    const btnAddNameField = document.getElementById("btn-add-name-field");
+    const btnAddStampField = document.getElementById("btn-add-stamp-field");
+    const btnBatchInitialsAll = document.getElementById("btn-batch-initials-all");
+    const btnBatchSigAll = document.getElementById("btn-batch-sig-all");
     const btnClearPageAnnos = document.getElementById("btn-clear-page-annos");
+    const btnClearAllAnnos = document.getElementById("btn-clear-all-annos");
+    const btnDateSealText = document.getElementById("btn-date-seal-text");
 
-    // Format current date and time
-    const now = new Date();
-    const todayDateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    const todayDateTimeStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    if (curDateDisplay) curDateDisplay.textContent = todayDateStr;
+    if (btnDateSealText) btnDateSealText.textContent = todayDateStr;
 
-    // Canvas drawing setup for Signature Pad
-    const ctx = sigCanvas ? sigCanvas.getContext('2d') : null;
-    if (ctx) {
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.lineWidth = penWidth;
-      ctx.strokeStyle = inkColor;
+    // Modal Elements
+    const sigModal = document.getElementById("sig-details-modal");
+    const modalCloseBtn = document.getElementById("modal-close-btn");
+    const modalCancelBtn = document.getElementById("modal-cancel-btn");
+    const modalApplyBtn = document.getElementById("modal-apply-btn");
+    const modalFullNameInput = document.getElementById("modal-full-name-input");
+    const modalInitialsInput = document.getElementById("modal-initials-input");
+
+    const modalTabSig = document.getElementById("modal-tab-sig");
+    const modalTabInitials = document.getElementById("modal-tab-initials");
+    const modalTabStamp = document.getElementById("modal-tab-stamp");
+    const modalPanelSig = document.getElementById("modal-panel-sig");
+    const modalPanelInitials = document.getElementById("modal-panel-initials");
+    const modalPanelStamp = document.getElementById("modal-panel-stamp");
+
+    const sigModeDrawBtn = document.getElementById("sig-mode-draw-btn");
+    const sigModeTypeBtn = document.getElementById("sig-mode-type-btn");
+    const sigModeUploadBtn = document.getElementById("sig-mode-upload-btn");
+    const modalSigDrawPane = document.getElementById("modal-sig-draw-pane");
+    const modalSigTypePane = document.getElementById("modal-sig-type-pane");
+    const modalSigUploadPane = document.getElementById("modal-sig-upload-pane");
+    const modalSigCanvas = document.getElementById("modal-sig-canvas");
+    const clearSigModalBtn = document.getElementById("clear-sig-modal-btn");
+    const modalPenWidthSlider = document.getElementById("modal-pen-width-slider");
+    const modalPenWidthDisplay = document.getElementById("modal-pen-width-display");
+    const modalPenPreviewStroke = document.getElementById("modal-pen-preview-stroke");
+    const modalCustomColorPicker = document.getElementById("modal-custom-color-picker");
+    const modalTypedSigPreview = document.getElementById("modal-typed-sig-preview");
+    const modalSigUploadDrop = document.getElementById("modal-sig-upload-drop");
+    const modalSigImageInput = document.getElementById("modal-sig-image-input");
+    const modalRemoveBgToggle = document.getElementById("modal-remove-bg-toggle");
+    const modalUploadedSigPreview = document.getElementById("modal-uploaded-sig-preview");
+    const modalUploadedSigImg = document.getElementById("modal-uploaded-sig-img");
+
+    const modalInitialsCanvas = document.getElementById("modal-initials-canvas");
+    const clearInitialsModalBtn = document.getElementById("clear-initials-modal-btn");
+    const modalStampUploadDrop = document.getElementById("modal-stamp-upload-drop");
+    const modalStampImageInput = document.getElementById("modal-stamp-image-input");
+    const modalStampPreview = document.getElementById("modal-stamp-preview");
+    const modalStampImg = document.getElementById("modal-stamp-img");
+
+    // Modal Canvas Contexts
+    const ctxSig = modalSigCanvas ? modalSigCanvas.getContext('2d') : null;
+    if (ctxSig) {
+      ctxSig.lineCap = 'round';
+      ctxSig.lineJoin = 'round';
+      ctxSig.lineWidth = penWidth;
+      ctxSig.strokeStyle = inkColor;
     }
 
-    // Pen stroke thickness slider
-    if (penWidthSlider) {
-      penWidthSlider.addEventListener('input', () => {
-        penWidth = parseFloat(penWidthSlider.value) || 2.5;
-        if (penWidthDisplay) penWidthDisplay.textContent = penWidth.toFixed(1) + ' px';
-        if (penPreviewStroke) penPreviewStroke.style.height = penWidth + 'px';
-        if (ctx) ctx.lineWidth = penWidth;
-      });
+    const ctxInitials = modalInitialsCanvas ? modalInitialsCanvas.getContext('2d') : null;
+    if (ctxInitials) {
+      ctxInitials.lineCap = 'round';
+      ctxInitials.lineJoin = 'round';
+      ctxInitials.lineWidth = penWidth;
+      ctxInitials.strokeStyle = inkColor;
     }
 
-    // Color selection
-    document.querySelectorAll('.color-dot').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.color-dot').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        inkColor = btn.getAttribute('data-color');
-        updateActiveInk(inkColor);
-      });
-    });
-
-    if (customColorPicker) {
-      customColorPicker.addEventListener('input', () => {
-        document.querySelectorAll('.color-dot').forEach(b => b.classList.remove('active'));
-        inkColor = customColorPicker.value;
-        updateActiveInk(inkColor);
-      });
+    // =========================================================================
+    // Signature & Profile Generators
+    // =========================================================================
+    function getSignatureDataUrl() {
+      if (signatureMode === 'draw') {
+        if (!hasSignatureDrawn) {
+          return generateCursiveTextDataUrl(signerFullName, 500, 160, 48);
+        }
+        return modalSigCanvas.toDataURL('image/png');
+      } else if (signatureMode === 'type') {
+        return generateCursiveTextDataUrl(signerFullName, 500, 160, 48);
+      } else if (signatureMode === 'upload') {
+        if (uploadedSigDataUrl) return uploadedSigDataUrl;
+        return generateCursiveTextDataUrl(signerFullName, 500, 160, 48);
+      }
+      return generateCursiveTextDataUrl(signerFullName, 500, 160, 48);
     }
 
-    function updateActiveInk(color) {
-      if (ctx) ctx.strokeStyle = color;
-      if (penPreviewStroke) penPreviewStroke.style.background = color;
-      if (typedSigPreview) typedSigPreview.style.color = color;
-      if (signatureMode === 'type') {
-        autoUpdateSignatureOnPage();
+    function getInitialsDataUrl() {
+      if (hasInitialsDrawn && modalInitialsCanvas) {
+        return modalInitialsCanvas.toDataURL('image/png');
+      }
+      return generateCursiveTextDataUrl(signerInitials, 260, 140, 52);
+    }
+
+    function getStampDataUrl() {
+      if (uploadedStampDataUrl) return uploadedStampDataUrl;
+      // Generate clean official circular seal
+      const sCanvas = document.createElement('canvas');
+      sCanvas.width = 240;
+      sCanvas.height = 240;
+      const sCtx = sCanvas.getContext('2d');
+      sCtx.clearRect(0, 0, 240, 240);
+
+      // Outer & Inner Rings
+      sCtx.strokeStyle = '#DC2626';
+      sCtx.lineWidth = 4;
+      sCtx.beginPath();
+      sCtx.arc(120, 120, 110, 0, Math.PI * 2);
+      sCtx.stroke();
+
+      sCtx.lineWidth = 1.5;
+      sCtx.beginPath();
+      sCtx.arc(120, 120, 98, 0, Math.PI * 2);
+      sCtx.stroke();
+
+      // Center Text
+      sCtx.fillStyle = '#DC2626';
+      sCtx.font = 'bold 15px sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.textBaseline = 'middle';
+      sCtx.fillText('LOCALDOC', 120, 95);
+      sCtx.font = 'bold 22px sans-serif';
+      sCtx.fillText('VERIFIED', 120, 122);
+      sCtx.font = 'bold 12px monospace';
+      sCtx.fillText(todayDateStr, 120, 146);
+
+      return sCanvas.toDataURL('image/png');
+    }
+
+    function generateCursiveTextDataUrl(text, width = 450, height = 150, fontSize = 46) {
+      const c = document.createElement('canvas');
+      c.width = width;
+      c.height = height;
+      const cx = c.getContext('2d');
+      cx.font = `italic ${fontSize}px 'Brush Script MT', 'Segoe Script', cursive, sans-serif`;
+      cx.fillStyle = inkColor;
+      cx.textBaseline = 'middle';
+      cx.textAlign = 'center';
+      cx.fillText(text || 'Signature', width / 2, height / 2);
+      return c.toDataURL('image/png');
+    }
+
+    function updateProfileCard() {
+      const sigUrl = getSignatureDataUrl();
+      const initialsUrl = getInitialsDataUrl();
+
+      if (profileSigRender) {
+        profileSigRender.innerHTML = `<img src="${sigUrl}" style="max-height:36px; max-width:100%; object-fit:contain;" alt="Signature">`;
+      }
+      if (profileInitialsRender) {
+        profileInitialsRender.innerHTML = `<img src="${initialsUrl}" style="max-height:36px; max-width:100%; object-fit:contain;" alt="Initials">`;
       }
     }
 
-    // Tabs: Draw vs Type vs Upload
-    tabDrawBtn.addEventListener("click", () => {
-      signatureMode = 'draw';
-      tabDrawBtn.classList.add("active");
-      tabTypeBtn.classList.remove("active");
-      if (tabUploadBtn) tabUploadBtn.classList.remove("active");
-      sigDrawPane.style.display = "block";
-      sigTypePane.style.display = "none";
-      if (sigUploadPane) sigUploadPane.style.display = "none";
-      if (hasSignatureDrawn) autoUpdateSignatureOnPage();
-    });
+    // =========================================================================
+    // Modal Interaction & Drawing Engine
+    // =========================================================================
+    function openSigDetailsModal() {
+      if (modalFullNameInput) modalFullNameInput.value = signerFullName;
+      if (modalInitialsInput) modalInitialsInput.value = signerInitials;
+      if (modalTypedSigPreview) modalTypedSigPreview.textContent = signerFullName;
+      if (sigModal) sigModal.classList.add("open");
+    }
 
-    tabTypeBtn.addEventListener("click", () => {
-      signatureMode = 'type';
-      tabTypeBtn.classList.add("active");
-      tabDrawBtn.classList.remove("active");
-      if (tabUploadBtn) tabUploadBtn.classList.remove("active");
-      sigTypePane.style.display = "block";
-      sigDrawPane.style.display = "none";
-      if (sigUploadPane) sigUploadPane.style.display = "none";
-      autoUpdateSignatureOnPage();
-    });
+    function closeSigDetailsModal() {
+      if (sigModal) sigModal.classList.remove("open");
+    }
 
-    if (tabUploadBtn) {
-      tabUploadBtn.addEventListener("click", () => {
+    if (btnOpenSigModal) btnOpenSigModal.addEventListener('click', openSigDetailsModal);
+    if (profilePreviewCard) profilePreviewCard.addEventListener('click', openSigDetailsModal);
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeSigDetailsModal);
+    if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeSigDetailsModal);
+
+    if (sigModal) {
+      sigModal.addEventListener('click', (e) => {
+        if (e.target === sigModal) closeSigDetailsModal();
+      });
+    }
+
+    // Modal Main Tabs (Signature vs Initials vs Company Stamp)
+    if (modalTabSig) {
+      modalTabSig.addEventListener('click', () => {
+        modalTabSig.classList.add('active');
+        modalTabInitials.classList.remove('active');
+        modalTabStamp.classList.remove('active');
+        modalPanelSig.style.display = 'block';
+        modalPanelInitials.style.display = 'none';
+        modalPanelStamp.style.display = 'none';
+      });
+    }
+    if (modalTabInitials) {
+      modalTabInitials.addEventListener('click', () => {
+        modalTabInitials.classList.add('active');
+        modalTabSig.classList.remove('active');
+        modalTabStamp.classList.remove('active');
+        modalPanelInitials.style.display = 'block';
+        modalPanelSig.style.display = 'none';
+        modalPanelStamp.style.display = 'none';
+      });
+    }
+    if (modalTabStamp) {
+      modalTabStamp.addEventListener('click', () => {
+        modalTabStamp.classList.add('active');
+        modalTabSig.classList.remove('active');
+        modalTabInitials.classList.remove('active');
+        modalPanelStamp.style.display = 'block';
+        modalPanelSig.style.display = 'none';
+        modalPanelInitials.style.display = 'none';
+      });
+    }
+
+    // Modal Signature Sub-Modes (Draw | Type | Upload)
+    if (sigModeDrawBtn) {
+      sigModeDrawBtn.addEventListener('click', () => {
+        signatureMode = 'draw';
+        sigModeDrawBtn.classList.add('active');
+        sigModeTypeBtn.classList.remove('active');
+        sigModeUploadBtn.classList.remove('active');
+        modalSigDrawPane.style.display = 'block';
+        modalSigTypePane.style.display = 'none';
+        modalSigUploadPane.style.display = 'none';
+      });
+    }
+    if (sigModeTypeBtn) {
+      sigModeTypeBtn.addEventListener('click', () => {
+        signatureMode = 'type';
+        sigModeTypeBtn.classList.add('active');
+        sigModeDrawBtn.classList.remove('active');
+        sigModeUploadBtn.classList.remove('active');
+        modalSigTypePane.style.display = 'block';
+        modalSigDrawPane.style.display = 'none';
+        modalSigUploadPane.style.display = 'none';
+      });
+    }
+    if (sigModeUploadBtn) {
+      sigModeUploadBtn.addEventListener('click', () => {
         signatureMode = 'upload';
-        tabUploadBtn.classList.add("active");
-        tabDrawBtn.classList.remove("active");
-        tabTypeBtn.classList.remove("active");
-        if (sigUploadPane) sigUploadPane.style.display = "block";
-        sigDrawPane.style.display = "none";
-        sigTypePane.style.display = "none";
-        if (uploadedSigDataUrl) autoUpdateSignatureOnPage();
+        sigModeUploadBtn.classList.add('active');
+        sigModeDrawBtn.classList.remove('active');
+        sigModeTypeBtn.classList.remove('active');
+        modalSigUploadPane.style.display = 'block';
+        modalSigDrawPane.style.display = 'none';
+        modalSigTypePane.style.display = 'none';
       });
     }
 
-    // Upload Signature Image Handling
-    if (sigUploadDrop && sigImageInput) {
-      sigUploadDrop.addEventListener('click', () => sigImageInput.click());
-      sigImageInput.addEventListener('change', function(e) {
-        if (this.files && this.files[0]) {
-          handleSignatureImageUpload(this.files[0]);
-        }
-      });
-
-      sigUploadDrop.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        sigUploadDrop.style.borderColor = 'var(--primary)';
-      });
-      sigUploadDrop.addEventListener('dragleave', () => {
-        sigUploadDrop.style.borderColor = 'var(--line)';
-      });
-      sigUploadDrop.addEventListener('drop', (e) => {
-        e.preventDefault();
-        sigUploadDrop.style.borderColor = 'var(--line)';
-        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
-          handleSignatureImageUpload(e.dataTransfer.files[0]);
+    // Modal Name Inputs Live Sync
+    if (modalFullNameInput) {
+      modalFullNameInput.addEventListener('input', () => {
+        const val = modalFullNameInput.value.trim() || 'Your Signature';
+        if (modalTypedSigPreview) modalTypedSigPreview.textContent = val;
+        // Auto-generate initials if initials empty
+        if (modalInitialsInput && (!modalInitialsInput.value || modalInitialsInput.value === 'AM')) {
+          const parts = val.split(' ').filter(Boolean);
+          const inits = parts.map(p => p[0].toUpperCase()).join('').slice(0, 3);
+          if (inits) modalInitialsInput.value = inits;
         }
       });
     }
 
-    if (removeBgToggle) {
-      removeBgToggle.addEventListener('change', () => {
-        if (rawUploadedImage) renderUploadedSignature();
-      });
-    }
-
-    function handleSignatureImageUpload(file) {
-      if (!file || !file.type.startsWith('image/')) {
-        UIUtils.showToast("Please select a valid image file (PNG, JPG, WEBP)", "warning");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          rawUploadedImage = img;
-          renderUploadedSignature();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function renderUploadedSignature() {
-      if (!rawUploadedImage) return;
-      const removeBg = removeBgToggle ? removeBgToggle.checked : true;
-      uploadedSigDataUrl = processUploadedSignature(rawUploadedImage, removeBg);
-
-      if (uploadedSigImg) uploadedSigImg.src = uploadedSigDataUrl;
-      if (uploadedSigPreviewWrap) uploadedSigPreviewWrap.style.display = "flex";
-      autoUpdateSignatureOnPage();
-      UIUtils.showToast("Signature image processed and placed on contract!", "success");
-    }
-
-    function processUploadedSignature(imgElement, removeBackground) {
-      const canvas = document.createElement('canvas');
-      let w = imgElement.naturalWidth || imgElement.width || 400;
-      let h = imgElement.naturalHeight || imgElement.height || 160;
-      const maxDim = 800;
-      if (w > maxDim || h > maxDim) {
-        if (w > h) {
-          h = Math.round(h * (maxDim / w));
-          w = maxDim;
-        } else {
-          w = Math.round(w * (maxDim / h));
-          h = maxDim;
-        }
-      }
-      canvas.width = Math.max(1, w);
-      canvas.height = Math.max(1, h);
-      const cx = canvas.getContext('2d');
-      cx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
-
-      if (removeBackground) {
-        const imgData = cx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imgData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i+1];
-          const b = data[i+2];
-          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-          if (lum > 205) {
-            data[i+3] = 0; // Pure background -> 100% transparent
-          } else if (lum > 145) {
-            const factor = (205 - lum) / 60;
-            data[i+3] = Math.round(data[i+3] * factor);
-          }
-        }
-        cx.putImageData(imgData, 0, 0);
-      }
-      return canvas.toDataURL('image/png');
-    }
-
-    if (signerNameInput) {
-      signerNameInput.addEventListener("input", () => {
-        const val = signerNameInput.value.trim() || 'Your Signature';
-        typedSigPreview.textContent = val;
-        autoUpdateSignatureOnPage();
-      });
-    }
-
-    function getCanvasCoordinates(e) {
-      const rect = sigCanvas.getBoundingClientRect();
-      const scaleX = sigCanvas.width / rect.width;
-      const scaleY = sigCanvas.height / rect.height;
-
+    // Drawing Logic on Signature Canvas
+    let isSigDrawing = false;
+    function getCanvasPos(canvas, e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
       if (e.touches && e.touches.length > 0) {
         return {
           x: (e.touches[0].clientX - rect.left) * scaleX,
@@ -1281,130 +1588,344 @@
       };
     }
 
-    function startDrawing(e) {
-      e.preventDefault();
-      isDrawing = true;
-      hasSignatureDrawn = true;
-      const coords = getCanvasCoordinates(e);
-      ctx.beginPath();
-      ctx.moveTo(coords.x, coords.y);
-      ctx.strokeStyle = inkColor;
-      ctx.lineWidth = penWidth;
-    }
+    if (modalSigCanvas) {
+      modalSigCanvas.addEventListener('pointerdown', (e) => {
+        isSigDrawing = true;
+        hasSignatureDrawn = true;
+        const pos = getCanvasPos(modalSigCanvas, e);
+        ctxSig.beginPath();
+        ctxSig.moveTo(pos.x, pos.y);
+        ctxSig.strokeStyle = inkColor;
+        ctxSig.lineWidth = penWidth;
+        try { modalSigCanvas.setPointerCapture(e.pointerId); } catch(ex){}
+      });
 
-    function draw(e) {
-      if (!isDrawing) return;
-      e.preventDefault();
-      const coords = getCanvasCoordinates(e);
-      ctx.lineTo(coords.x, coords.y);
-      ctx.stroke();
-    }
+      modalSigCanvas.addEventListener('pointermove', (e) => {
+        if (!isSigDrawing) return;
+        const pos = getCanvasPos(modalSigCanvas, e);
+        ctxSig.lineTo(pos.x, pos.y);
+        ctxSig.stroke();
+      });
 
-    function stopDrawing() {
-      if (isDrawing) {
-        ctx.closePath();
-        isDrawing = false;
-        // AUTO-STAMP: As soon as user signs in box, signature appears live on document page!
-        autoUpdateSignatureOnPage();
-      }
-    }
-
-    if (sigCanvas) {
-      sigCanvas.addEventListener('mousedown', startDrawing);
-      sigCanvas.addEventListener('mousemove', draw);
-      sigCanvas.addEventListener('mouseup', stopDrawing);
-      sigCanvas.addEventListener('mouseleave', stopDrawing);
-
-      sigCanvas.addEventListener('touchstart', startDrawing, { passive: false });
-      sigCanvas.addEventListener('touchmove', draw, { passive: false });
-      sigCanvas.addEventListener('touchend', stopDrawing);
-    }
-
-    if (clearSigBtn) {
-      clearSigBtn.addEventListener('click', () => {
-        if (ctx) ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
-        hasSignatureDrawn = false;
-        // Also clear the signature annotation on the current page
-        if (pageAnnotations[currentPage]) {
-          pageAnnotations[currentPage] = pageAnnotations[currentPage].filter(a => a.type !== 'signature');
-          renderOverlayAnnotations(currentPage);
+      modalSigCanvas.addEventListener('pointerup', (e) => {
+        if (isSigDrawing) {
+          ctxSig.closePath();
+          isSigDrawing = false;
+          try { modalSigCanvas.releasePointerCapture(e.pointerId); } catch(ex){}
         }
+      });
+    }
+
+    if (clearSigModalBtn) {
+      clearSigModalBtn.addEventListener('click', () => {
+        if (ctxSig) ctxSig.clearRect(0, 0, modalSigCanvas.width, modalSigCanvas.height);
+        hasSignatureDrawn = false;
         UIUtils.showToast("Signature pad cleared", "info");
       });
     }
 
-    // =========================================================================
-    // Auto-Stamp Signature onto Live Document Viewport
-    // Signature automatically appears as user draws, types, or uploads
-    // =========================================================================
-    function getSignatureDataUrl() {
-      if (signatureMode === 'draw') {
-        if (!hasSignatureDrawn) return null;
-        return sigCanvas.toDataURL('image/png');
-      } else if (signatureMode === 'type') {
-        const nameVal = (signerNameInput ? signerNameInput.value.trim() : '') || 'Your Signature';
-        const tCanvas = document.createElement("canvas");
-        tCanvas.width = 460;
-        tCanvas.height = 140;
-        const tCtx = tCanvas.getContext("2d");
-        tCtx.font = "italic 44px 'Brush Script MT', 'Segoe Script', cursive, sans-serif";
-        tCtx.fillStyle = inkColor;
-        tCtx.fillText(nameVal, 24, 85);
-        return tCanvas.toDataURL("image/png");
-      } else if (signatureMode === 'upload') {
-        return uploadedSigDataUrl;
-      }
-      return null;
-    }
+    // Drawing Logic on Initials Canvas
+    let isInitialsDrawing = false;
+    if (modalInitialsCanvas) {
+      modalInitialsCanvas.addEventListener('pointerdown', (e) => {
+        isInitialsDrawing = true;
+        hasInitialsDrawn = true;
+        const pos = getCanvasPos(modalInitialsCanvas, e);
+        ctxInitials.beginPath();
+        ctxInitials.moveTo(pos.x, pos.y);
+        ctxInitials.strokeStyle = inkColor;
+        ctxInitials.lineWidth = penWidth;
+        try { modalInitialsCanvas.setPointerCapture(e.pointerId); } catch(ex){}
+      });
 
-    function autoUpdateSignatureOnPage() {
-      if (!pdfDoc) return; // Wait until file is loaded
-      const dataUrl = getSignatureDataUrl();
-      if (!dataUrl) return;
+      modalInitialsCanvas.addEventListener('pointermove', (e) => {
+        if (!isInitialsDrawing) return;
+        const pos = getCanvasPos(modalInitialsCanvas, e);
+        ctxInitials.lineTo(pos.x, pos.y);
+        ctxInitials.stroke();
+      });
 
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-
-      // Check if signature already exists on this page
-      let sigAnno = pageAnnotations[currentPage].find(a => a.type === 'signature');
-      const cW = overlayLayer.offsetWidth || 600;
-      const cH = overlayLayer.offsetHeight || 800;
-
-      if (sigAnno) {
-        // Update existing signature's image in-place
-        sigAnno.dataUrl = dataUrl;
-        const el = document.getElementById(`anno-${sigAnno.id}`);
-        if (el) {
-          const img = el.querySelector('img');
-          if (img) img.src = dataUrl;
+      modalInitialsCanvas.addEventListener('pointerup', (e) => {
+        if (isInitialsDrawing) {
+          ctxInitials.closePath();
+          isInitialsDrawing = false;
+          try { modalInitialsCanvas.releasePointerCapture(e.pointerId); } catch(ex){}
         }
-      } else {
-        // Create new signature annotation on page (default bottom-right above margin)
-        const width = 170;
-        const height = 70;
-        const x = Math.max(20, cW - 200);
-        const y = Math.max(20, cH - 110);
-        const newAnno = {
-          id: 'sig-' + Date.now(),
-          type: 'signature',
-          x: x,
-          y: y,
-          width: width,
-          height: height,
-          containerW: cW,
-          containerH: cH,
-          relX: x / cW,
-          relY: y / cH,
-          relW: width / cW,
-          relH: height / cH,
-          dataUrl: dataUrl
+      });
+    }
+
+    if (clearInitialsModalBtn) {
+      clearInitialsModalBtn.addEventListener('click', () => {
+        if (ctxInitials) ctxInitials.clearRect(0, 0, modalInitialsCanvas.width, modalInitialsCanvas.height);
+        hasInitialsDrawn = false;
+        UIUtils.showToast("Initials pad cleared", "info");
+      });
+    }
+
+    // Stroke Thickness Slider
+    if (modalPenWidthSlider) {
+      modalPenWidthSlider.addEventListener('input', () => {
+        penWidth = parseFloat(modalPenWidthSlider.value) || 2.5;
+        if (modalPenWidthDisplay) modalPenWidthDisplay.textContent = penWidth.toFixed(1) + ' px';
+        if (modalPenPreviewStroke) modalPenPreviewStroke.style.height = penWidth + 'px';
+        if (ctxSig) ctxSig.lineWidth = penWidth;
+        if (ctxInitials) ctxInitials.lineWidth = penWidth;
+      });
+    }
+
+    // Color Dots Palette
+    document.querySelectorAll('.color-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        inkColor = dot.getAttribute('data-color') || '#000000';
+        updateInkColor(inkColor);
+      });
+    });
+
+    if (modalCustomColorPicker) {
+      modalCustomColorPicker.addEventListener('input', () => {
+        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        inkColor = modalCustomColorPicker.value;
+        updateInkColor(inkColor);
+      });
+    }
+
+    function updateInkColor(color) {
+      if (ctxSig) ctxSig.strokeStyle = color;
+      if (ctxInitials) ctxInitials.strokeStyle = color;
+      if (modalPenPreviewStroke) modalPenPreviewStroke.style.background = color;
+      if (modalTypedSigPreview) modalTypedSigPreview.style.color = color;
+    }
+
+    // Upload Signature Image Handling
+    if (modalSigUploadDrop && modalSigImageInput) {
+      modalSigUploadDrop.addEventListener('click', () => modalSigImageInput.click());
+      modalSigImageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) processUploadedFile(this.files[0]);
+      });
+
+      modalSigUploadDrop.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        modalSigUploadDrop.style.borderColor = 'var(--primary)';
+      });
+      modalSigUploadDrop.addEventListener('dragleave', () => {
+        modalSigUploadDrop.style.borderColor = 'var(--line)';
+      });
+      modalSigUploadDrop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        modalSigUploadDrop.style.borderColor = 'var(--line)';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          processUploadedFile(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    function processUploadedFile(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        UIUtils.showToast("Please choose an image file (PNG, JPG, WEBP)", "warning");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          rawUploadedImage = img;
+          const removeBg = modalRemoveBgToggle ? modalRemoveBgToggle.checked : true;
+          uploadedSigDataUrl = processWhiteBackgroundRemoval(rawUploadedImage, removeBg);
+          if (modalUploadedSigImg) modalUploadedSigImg.src = uploadedSigDataUrl;
+          if (modalUploadedSigPreview) modalUploadedSigPreview.style.display = 'flex';
+          UIUtils.showToast("Signature photo processed with transparent background!", "success");
         };
-        pageAnnotations[currentPage].push(newAnno);
-        renderOverlayAnnotations(currentPage);
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function processWhiteBackgroundRemoval(img, removeBg) {
+      const c = document.createElement('canvas');
+      let w = img.naturalWidth || 400;
+      let h = img.naturalHeight || 160;
+      const maxDim = 800;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+        else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      }
+      c.width = Math.max(1, w);
+      c.height = Math.max(1, h);
+      const cx = c.getContext('2d');
+      cx.drawImage(img, 0, 0, c.width, c.height);
+
+      if (removeBg) {
+        const imgData = cx.getImageData(0, 0, c.width, c.height);
+        const d = imgData.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const lum = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+          if (lum > 205) {
+            d[i+3] = 0;
+          } else if (lum > 145) {
+            d[i+3] = Math.round(d[i+3] * ((205 - lum) / 60));
+          }
+        }
+        cx.putImageData(imgData, 0, 0);
+      }
+      return c.toDataURL('image/png');
+    }
+
+    // Modal Stamp Upload
+    if (modalStampUploadDrop && modalStampImageInput) {
+      modalStampUploadDrop.addEventListener('click', () => modalStampImageInput.click());
+      modalStampImageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedStampDataUrl = e.target.result;
+            if (modalStampImg) modalStampImg.src = uploadedStampDataUrl;
+            if (modalStampPreview) modalStampPreview.style.display = 'flex';
+            UIUtils.showToast("Company stamp image loaded!", "success");
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+    }
+
+    // Apply & Save Details from Modal
+    if (modalApplyBtn) {
+      modalApplyBtn.addEventListener('click', () => {
+        if (modalFullNameInput && modalFullNameInput.value.trim()) {
+          signerFullName = modalFullNameInput.value.trim();
+        }
+        if (modalInitialsInput && modalInitialsInput.value.trim()) {
+          signerInitials = modalInitialsInput.value.trim();
+        }
+        updateProfileCard();
+
+        // Update signature image on current page if one exists
+        if (pageAnnotations[currentPage]) {
+          const sigAnno = pageAnnotations[currentPage].find(a => a.type === 'signature');
+          if (sigAnno) {
+            sigAnno.dataUrl = getSignatureDataUrl();
+            const el = document.getElementById(`anno-${sigAnno.id}`);
+            if (el) {
+              const img = el.querySelector('img');
+              if (img) img.src = sigAnno.dataUrl;
+            }
+          }
+          const initAnno = pageAnnotations[currentPage].find(a => a.type === 'initials');
+          if (initAnno) {
+            initAnno.dataUrl = getInitialsDataUrl();
+            const el = document.getElementById(`anno-${initAnno.id}`);
+            if (el) {
+              const img = el.querySelector('img');
+              if (img) img.src = initAnno.dataUrl;
+            }
+          }
+        }
+
+        closeSigDetailsModal();
+        UIUtils.showToast("Signature & Initials details saved!", "success");
+      });
+    }
+
+    // =========================================================================
+    // Thumbnails Sidebar Generator & Navigator (iLovePDF Style)
+    // =========================================================================
+    async function generateThumbnails(pdf) {
+      if (!thumbList) return;
+      thumbList.innerHTML = '';
+      if (thumbTotalBadge) thumbTotalBadge.textContent = pdf.numPages;
+
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const item = document.createElement('div');
+        item.className = 'thumb-item' + (p === currentPage ? ' active' : '');
+        item.id = `thumb-item-${p}`;
+        item.setAttribute('role', 'button');
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('aria-label', `Go to page ${p}`);
+
+        const canvasWrap = document.createElement('div');
+        canvasWrap.className = 'thumb-canvas-wrap';
+
+        const tCanvas = document.createElement('canvas');
+        tCanvas.className = 'thumb-canvas';
+        tCanvas.id = `thumb-canvas-${p}`;
+        canvasWrap.appendChild(tCanvas);
+        item.appendChild(canvasWrap);
+
+        const meta = document.createElement('div');
+        meta.className = 'thumb-meta';
+
+        const num = document.createElement('span');
+        num.className = 'thumb-num';
+        num.textContent = `Page ${p}`;
+        meta.appendChild(num);
+
+        const badge = document.createElement('span');
+        badge.className = 'thumb-badge';
+        badge.id = `thumb-badge-${p}`;
+        badge.textContent = '✓ 1';
+        meta.appendChild(badge);
+
+        item.appendChild(meta);
+
+        // Click handler jumps to that page immediately
+        item.addEventListener('click', () => {
+          if (currentPage !== p) {
+            currentPage = p;
+            renderVisualPage(currentPage);
+          }
+        });
+
+        thumbList.appendChild(item);
+
+        // Render thumbnail canvas asynchronously
+        renderSingleThumbnail(pdf, p, tCanvas);
+      }
+    }
+
+    async function renderSingleThumbnail(pdf, pageNumber, canvas) {
+      try {
+        const page = await pdf.getPage(pageNumber);
+        const unscaledViewport = page.getViewport({ scale: 1.0 });
+        const scale = 88 / unscaledViewport.width; // Fits perfectly in 90px card
+        const viewport = page.getViewport({ scale: scale });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      } catch (err) {
+        console.warn(`Thumbnail render error for page ${pageNumber}:`, err);
+      }
+    }
+
+    function updateThumbnailBadges() {
+      if (!pdfDoc) return;
+      for (let p = 1; p <= totalPages; p++) {
+        const badge = document.getElementById(`thumb-badge-${p}`);
+        if (!badge) continue;
+        const count = (pageAnnotations[p] || []).length;
+        if (count > 0) {
+          badge.textContent = `✓ ${count}`;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    function updateActiveThumbnail(pageNumber) {
+      document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`thumb-item-${pageNumber}`);
+      if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
 
     // =========================================================================
-    // PDF Rendering Engine (PDF.js)
+    // Core Document Viewport & Annotation Manager
+    // Normalized coordinates (relX, relY, relW, relH) guarantee zero drift
     // =========================================================================
     async function loadAndRenderPdf(buffer) {
       try {
@@ -1413,7 +1934,9 @@
         pdfDoc = await loadingTask.promise;
         totalPages = pdfDoc.numPages;
         currentPage = 1;
-        totalPagesSpan.textContent = totalPages;
+
+        if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+        if (thumbTotalBadge) thumbTotalBadge.textContent = totalPages;
 
         if (window.innerWidth <= 768) {
           const availWidth = Math.max(260, window.innerWidth - 64);
@@ -1424,14 +1947,16 @@
           if (zoomLevelSpan) zoomLevelSpan.textContent = '115%';
         }
 
+        updateProfileCard();
         await renderVisualPage(currentPage);
+
+        // Generate Thumbnails in background
+        generateThumbnails(pdfDoc);
+
       } catch (err) {
         console.error("PDF preview error:", err);
         if (err && (err.name === 'PasswordException' || String(err).toLowerCase().includes('password'))) {
-          if (encryptedPdfWarning) {
-            encryptedPdfWarning.style.display = "block";
-            encryptedPdfWarning.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
+          if (encryptedPdfWarning) encryptedPdfWarning.style.display = "block";
           dropZone.style.display = "none";
           fileQueue.style.display = "block";
           studioWrap.style.display = "none";
@@ -1439,22 +1964,22 @@
           UIUtils.showToast("This PDF is password-protected. Please unlock it first.", "error", 4000);
           return;
         }
-        UIUtils.showToast("Could not preview PDF pages visually, but document is ready for processing", "info");
+        UIUtils.showToast("Could not preview PDF visually, but document is ready for processing.", "info");
       }
     }
 
-    let currentRenderTask = null;
-
     async function renderVisualPage(pageNumber) {
       if (!pdfDoc) return;
-      curPageSpan.textContent = pageNumber;
-      btnPrev.disabled = pageNumber <= 1;
-      btnNext.disabled = pageNumber >= totalPages;
+      if (curPageSpan) curPageSpan.textContent = pageNumber;
+      if (toolboxCurPage) toolboxCurPage.textContent = pageNumber;
+      if (clearPageNum) clearPageNum.textContent = pageNumber;
+      if (btnPrev) btnPrev.disabled = pageNumber <= 1;
+      if (btnNext) btnNext.disabled = pageNumber >= totalPages;
+
+      updateActiveThumbnail(pageNumber);
 
       if (currentRenderTask) {
-        try {
-          currentRenderTask.cancel();
-        } catch (e) {}
+        try { currentRenderTask.cancel(); } catch (e) {}
         currentRenderTask = null;
       }
 
@@ -1474,32 +1999,25 @@
 
         renderOverlayAnnotations(pageNumber);
       } catch (err) {
-        if (err && err.name === 'RenderingCancelledException') {
-          return;
-        }
+        if (err && err.name === 'RenderingCancelledException') return;
         console.error("renderVisualPage error:", err);
       }
     }
 
-    // =========================================================================
-    // Interactive Draggable Overlay Manager (Move Signature to Any Area)
-    // Normalized relative coordinates (0.0 to 1.0) prevent any zoom drift
-    // =========================================================================
     function renderOverlayAnnotations(pageNumber) {
       overlayLayer.innerHTML = '';
       const list = pageAnnotations[pageNumber] || [];
-
       list.forEach(anno => {
         const el = createAnnotationElement(anno, pageNumber);
         overlayLayer.appendChild(el);
       });
+      updateThumbnailBadges();
     }
 
     function createAnnotationElement(anno, pageNumber) {
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
 
-      // Recalculate pixel dimensions from relative coordinates if available
       if (anno.relX !== undefined) {
         anno.x = Math.round(anno.relX * cW);
         anno.y = Math.round(anno.relY * cH);
@@ -1522,19 +2040,19 @@
       box.style.width = anno.width + 'px';
       box.style.height = anno.height + 'px';
 
-      // Delete button
+      // Delete Button
       const delBtn = document.createElement('button');
       delBtn.className = 'del-anno-btn';
       delBtn.innerHTML = '&#10005;';
-      delBtn.title = 'Remove';
+      delBtn.title = 'Remove item';
       delBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         removeAnnotation(pageNumber, anno.id);
       });
       box.appendChild(delBtn);
 
-      // Scale buttons (+ / - size)
-      if (anno.type === 'signature') {
+      // Scale buttons (+ / -) for image elements (signature, initials, stamp)
+      if (anno.type === 'signature' || anno.type === 'initials' || anno.type === 'stamp') {
         const scaleGroup = document.createElement('div');
         scaleGroup.className = 'scale-btn-group';
 
@@ -1566,14 +2084,16 @@
         img.style.height = '100%';
         img.style.objectFit = 'contain';
         box.appendChild(img);
+
       } else if (anno.type === 'text') {
         const input = document.createElement('input');
         input.type = 'text';
-        input.value = anno.text || 'Signer Name';
+        input.value = anno.text || signerFullName;
         input.addEventListener('input', (e) => {
           anno.text = e.target.value;
         });
         box.appendChild(input);
+
       } else if (anno.type === 'date') {
         const span = document.createElement('span');
         span.className = 'visual-anno-date';
@@ -1581,17 +2101,15 @@
         box.appendChild(span);
       }
 
-      // Dragging with Pointer Events (Desktop & Mobile Touch)
       makeDraggable(box, anno);
-
       return box;
     }
 
     function scaleAnnotation(anno, factor) {
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
-      anno.width = Math.max(60, Math.min(cW * 0.9, Math.round(anno.width * factor)));
-      anno.height = Math.max(25, Math.min(cH * 0.6, Math.round(anno.height * factor)));
+      anno.width = Math.max(50, Math.min(cW * 0.9, Math.round(anno.width * factor)));
+      anno.height = Math.max(20, Math.min(cH * 0.6, Math.round(anno.height * factor)));
       anno.relW = anno.width / cW;
       anno.relH = anno.height / cH;
       const el = document.getElementById(`anno-${anno.id}`);
@@ -1654,182 +2172,246 @@
       pageAnnotations[pageNumber] = pageAnnotations[pageNumber].filter(a => a.id !== id);
       const el = document.getElementById(`anno-${id}`);
       if (el) el.remove();
+      updateThumbnailBadges();
     }
 
-    // Button to place an additional signature manually
-    btnPlaceSig.addEventListener('click', () => {
+    // =========================================================================
+    // Placing Items & ⚡ Multi-Page Batch Stamping (Our Killer Feature!)
+    // =========================================================================
+    function addSignatureToPage(pageNum, relX = 0.65, relY = 0.83, relW = 0.28, relH = 0.10) {
+      if (!pageAnnotations[pageNum]) pageAnnotations[pageNum] = [];
       const dataUrl = getSignatureDataUrl();
-      if (!dataUrl) {
-        UIUtils.showToast("Please draw, type, or upload your signature first!", "info");
-        return;
-      }
-
       const cW = overlayLayer.offsetWidth || 600;
       const cH = overlayLayer.offsetHeight || 800;
-      const width = 170;
-      const height = 70;
-      const x = Math.max(20, cW - 220);
-      const y = Math.max(20, cH - 130);
 
-      const anno = {
-        id: 'sig-' + Date.now(),
+      pageAnnotations[pageNum].push({
+        id: 'sig-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
         type: 'signature',
-        x: x,
-        y: y,
-        width: width,
-        height: height,
-        containerW: cW,
-        containerH: cH,
-        relX: x / cW,
-        relY: y / cH,
-        relW: width / cW,
-        relH: height / cH,
+        relX: relX,
+        relY: relY,
+        relW: relW,
+        relH: relH,
+        x: Math.round(relX * cW),
+        y: Math.round(relY * cH),
+        width: Math.round(relW * cW),
+        height: Math.round(relH * cH),
         dataUrl: dataUrl
-      };
-
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-      pageAnnotations[currentPage].push(anno);
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Signature placed! Drag it anywhere on the document.", "success");
-    });
-
-    // Add Text Box Button
-    btnAddText.addEventListener('click', () => {
-      const cW = overlayLayer.offsetWidth || 600;
-      const cH = overlayLayer.offsetHeight || 800;
-      const width = 180;
-      const height = 38;
-      const x = 40;
-      const y = 40;
-      const anno = {
-        id: 'txt-' + Date.now(),
-        type: 'text',
-        x: x,
-        y: y,
-        width: width,
-        height: height,
-        containerW: cW,
-        containerH: cH,
-        relX: x / cW,
-        relY: y / cH,
-        relW: width / cW,
-        relH: height / cH,
-        text: 'Signer Name / Title',
-        color: '#0F172A',
-        fontSize: 12
-      };
-
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-      pageAnnotations[currentPage].push(anno);
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Text box added to page! Drag to desired position.", "success");
-    });
-
-    // Add Date Seal Button (Date Only)
-    btnAddDate.addEventListener('click', () => {
-      const cW = overlayLayer.offsetWidth || 600;
-      const cH = overlayLayer.offsetHeight || 800;
-      const width = 160;
-      const height = 32;
-      const x = 40;
-      const y = Math.max(20, cH - 60);
-      const anno = {
-        id: 'date-' + Date.now(),
-        type: 'date',
-        x: x,
-        y: y,
-        width: width,
-        height: height,
-        containerW: cW,
-        containerH: cH,
-        relX: x / cW,
-        relY: y / cH,
-        relW: width / cW,
-        relH: height / cH,
-        text: `Signed: ${todayDateStr}`,
-        fontSize: 10
-      };
-
-      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-      pageAnnotations[currentPage].push(anno);
-      renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Date seal added! Drag it beside your signature.", "success");
-    });
-
-    // Add Date & Time Seal Button
-    if (btnAddDateTime) {
-      btnAddDateTime.addEventListener('click', () => {
-        const cW = overlayLayer.offsetWidth || 600;
-        const cH = overlayLayer.offsetHeight || 800;
-        const width = 220;
-        const height = 32;
-        const x = 40;
-        const y = Math.max(20, cH - 60);
-        const anno = {
-          id: 'date-' + Date.now(),
-          type: 'date',
-          x: x,
-          y: y,
-          width: width,
-          height: height,
-          containerW: cW,
-          containerH: cH,
-          relX: x / cW,
-          relY: y / cH,
-          relW: width / cW,
-          relH: height / cH,
-          text: `Signed: ${todayDateTimeStr}`,
-          fontSize: 10
-        };
-
-        if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
-        pageAnnotations[currentPage].push(anno);
-        renderOverlayAnnotations(currentPage);
-        UIUtils.showToast("Certified Date & Time seal added! Drag to position.", "success");
       });
     }
 
-    // Clear Page Annotations
-    btnClearPageAnnos.addEventListener('click', () => {
-      pageAnnotations[currentPage] = [];
+    function addInitialsToPage(pageNum, relX = 0.82, relY = 0.91, relW = 0.14, relH = 0.06) {
+      if (!pageAnnotations[pageNum]) pageAnnotations[pageNum] = [];
+      const dataUrl = getInitialsDataUrl();
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+
+      pageAnnotations[pageNum].push({
+        id: 'init-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+        type: 'initials',
+        relX: relX,
+        relY: relY,
+        relW: relW,
+        relH: relH,
+        x: Math.round(relX * cW),
+        y: Math.round(relY * cH),
+        width: Math.round(relW * cW),
+        height: Math.round(relH * cH),
+        dataUrl: dataUrl
+      });
+    }
+
+    // Place Signature (Quick Pill & Toolbox Button)
+    function handlePlaceSig() {
+      addSignatureToPage(currentPage);
       renderOverlayAnnotations(currentPage);
-      UIUtils.showToast("Cleared items on page " + currentPage, "info");
-    });
+      UIUtils.showToast(`Signature placed on page ${currentPage}! Drag to adjust.`, "success");
+    }
+    if (quickAddSig) quickAddSig.addEventListener('click', handlePlaceSig);
+    if (btnAddSigField) btnAddSigField.addEventListener('click', handlePlaceSig);
 
-    // Page Navigation
-    btnPrev.addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderVisualPage(currentPage);
-      }
-    });
+    // Place Initials (Quick Pill & Toolbox Button)
+    function handlePlaceInitials() {
+      addInitialsToPage(currentPage);
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast(`Initials placed on page ${currentPage}! Drag to position.`, "success");
+    }
+    if (quickAddInitials) quickAddInitials.addEventListener('click', handlePlaceInitials);
+    if (btnAddInitialsField) btnAddInitialsField.addEventListener('click', handlePlaceInitials);
 
-    btnNext.addEventListener('click', () => {
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderVisualPage(currentPage);
-      }
-    });
+    // Place Date Seal
+    function handlePlaceDate() {
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+      const relX = 0.10, relY = 0.91, relW = 0.22, relH = 0.05;
+
+      pageAnnotations[currentPage].push({
+        id: 'date-' + Date.now(),
+        type: 'date',
+        relX: relX,
+        relY: relY,
+        relW: relW,
+        relH: relH,
+        x: Math.round(relX * cW),
+        y: Math.round(relY * cH),
+        width: Math.round(relW * cW),
+        height: Math.round(relH * cH),
+        text: `Signed: ${todayDateStr}`,
+        fontSize: 10
+      });
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Date seal added to page! Drag beside signature.", "success");
+    }
+    if (quickAddDate) quickAddDate.addEventListener('click', handlePlaceDate);
+    if (btnAddDateField) btnAddDateField.addEventListener('click', handlePlaceDate);
+
+    // Place Signer Name
+    function handlePlaceName() {
+      if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+      const cW = overlayLayer.offsetWidth || 600;
+      const cH = overlayLayer.offsetHeight || 800;
+      const relX = 0.10, relY = 0.84, relW = 0.24, relH = 0.05;
+
+      pageAnnotations[currentPage].push({
+        id: 'txt-' + Date.now(),
+        type: 'text',
+        relX: relX,
+        relY: relY,
+        relW: relW,
+        relH: relH,
+        x: Math.round(relX * cW),
+        y: Math.round(relY * cH),
+        width: Math.round(relW * cW),
+        height: Math.round(relH * cH),
+        text: signerFullName,
+        color: '#0F172A',
+        fontSize: 12
+      });
+      renderOverlayAnnotations(currentPage);
+      UIUtils.showToast("Signer name added to page! Drag into position.", "success");
+    }
+    if (quickAddName) quickAddName.addEventListener('click', handlePlaceName);
+    if (btnAddNameField) btnAddNameField.addEventListener('click', handlePlaceName);
+
+    // Place Company Stamp
+    if (btnAddStampField) {
+      btnAddStampField.addEventListener('click', () => {
+        if (!pageAnnotations[currentPage]) pageAnnotations[currentPage] = [];
+        const cW = overlayLayer.offsetWidth || 600;
+        const cH = overlayLayer.offsetHeight || 800;
+        const relX = 0.40, relY = 0.80, relW = 0.18, relH = 0.14;
+
+        pageAnnotations[currentPage].push({
+          id: 'stamp-' + Date.now(),
+          type: 'stamp',
+          relX: relX,
+          relY: relY,
+          relW: relW,
+          relH: relH,
+          x: Math.round(relX * cW),
+          y: Math.round(relY * cH),
+          width: Math.round(relW * cW),
+          height: Math.round(relH * cH),
+          dataUrl: getStampDataUrl()
+        });
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast("Company stamp seal added to page!", "success");
+      });
+    }
+
+    // ⚡ BATCH ACTION 1: Stamp Initials on ALL Pages (Footer)
+    if (btnBatchInitialsAll) {
+      btnBatchInitialsAll.addEventListener('click', () => {
+        if (!pdfDoc) return;
+        for (let p = 1; p <= totalPages; p++) {
+          // Remove existing initials on page p to avoid duplicate stacking
+          if (pageAnnotations[p]) {
+            pageAnnotations[p] = pageAnnotations[p].filter(a => a.type !== 'initials');
+          }
+          addInitialsToPage(p, 0.82, 0.91, 0.14, 0.06);
+        }
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast(`⚡ Initials stamped on footers across all ${totalPages} pages!`, "success", 4000);
+      });
+    }
+
+    // ⚡ BATCH ACTION 2: Stamp Signature on ALL Pages
+    if (btnBatchSigAll) {
+      btnBatchSigAll.addEventListener('click', () => {
+        if (!pdfDoc) return;
+        for (let p = 1; p <= totalPages; p++) {
+          if (pageAnnotations[p]) {
+            pageAnnotations[p] = pageAnnotations[p].filter(a => a.type !== 'signature');
+          }
+          addSignatureToPage(p, 0.65, 0.83, 0.28, 0.10);
+        }
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast(`⚡ Signature stamped across all ${totalPages} pages!`, "success", 4000);
+      });
+    }
+
+    // Clear Current Page
+    if (btnClearPageAnnos) {
+      btnClearPageAnnos.addEventListener('click', () => {
+        pageAnnotations[currentPage] = [];
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast(`Cleared all items on page ${currentPage}`, "info");
+      });
+    }
+
+    // Clear All Pages
+    if (btnClearAllAnnos) {
+      btnClearAllAnnos.addEventListener('click', () => {
+        for (let p = 1; p <= totalPages; p++) {
+          pageAnnotations[p] = [];
+        }
+        renderOverlayAnnotations(currentPage);
+        UIUtils.showToast("Reset all pages. All annotations cleared.", "info");
+      });
+    }
+
+    // Navigation Controls
+    if (btnPrev) {
+      btnPrev.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderVisualPage(currentPage);
+        }
+      });
+    }
+
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderVisualPage(currentPage);
+        }
+      });
+    }
 
     // Zoom Controls
-    btnZoomIn.addEventListener('click', () => {
-      if (currentScale < 2.0) {
-        currentScale += 0.15;
-        zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
-        renderVisualPage(currentPage);
-      }
-    });
+    if (btnZoomIn) {
+      btnZoomIn.addEventListener('click', () => {
+        if (currentScale < 2.2) {
+          currentScale += 0.15;
+          if (zoomLevelSpan) zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
+          renderVisualPage(currentPage);
+        }
+      });
+    }
 
-    btnZoomOut.addEventListener('click', () => {
-      if (currentScale > 0.6) {
-        currentScale -= 0.15;
-        zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
-        renderVisualPage(currentPage);
-      }
-    });
+    if (btnZoomOut) {
+      btnZoomOut.addEventListener('click', () => {
+        if (currentScale > 0.55) {
+          currentScale -= 0.15;
+          if (zoomLevelSpan) zoomLevelSpan.textContent = Math.round(currentScale * 100) + '%';
+          renderVisualPage(currentPage);
+        }
+      });
+    }
 
     // =========================================================================
-    // Core File Handling & Upload
+    // Core File Handling & Workflow
     // =========================================================================
     async function handleFiles(files) {
       if (!files || files.length === 0) return;
@@ -1840,13 +2422,13 @@
         return;
       }
       selectedFile = pdf;
-      queueName.textContent = selectedFile.name;
-      queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
+      if (queueName) queueName.textContent = selectedFile.name;
+      if (queueSize) queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
       dropZone.style.display = "none";
       if (encryptedPdfWarning) encryptedPdfWarning.style.display = "none";
       fileQueue.style.display = "block";
       studioWrap.style.display = "block";
-      actionBar.style.display = "flex";
+      if (actionBar) actionBar.style.display = "flex";
       resultCard.style.display = "none";
       UIUtils.showToast("Loaded " + selectedFile.name + " into RAM", "info");
 
@@ -1854,19 +2436,20 @@
       await loadAndRenderPdf(selectedFileBuffer);
       studioWrap.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      // If user had already drawn or typed signature, auto-appear on page 1!
+      // Automatically place initial signature on page 1 if none exists
       setTimeout(() => {
-        if (hasSignatureDrawn || (signerNameInput && signerNameInput.value.trim().length > 0) || uploadedSigDataUrl) {
-          autoUpdateSignatureOnPage();
+        if ((!pageAnnotations[1] || pageAnnotations[1].length === 0)) {
+          addSignatureToPage(1);
+          renderOverlayAnnotations(1);
         }
-      }, 400);
+      }, 500);
     }
 
     window.handleSignPdfFile = handleFiles;
 
     if (fileInput) {
       fileInput.__localdoc_handler = handleFiles;
-      fileInput.addEventListener('change', function(e) {
+      fileInput.addEventListener('change', function() {
         handleFiles(this.files);
       });
     }
@@ -1883,7 +2466,7 @@
       if (encryptedPdfWarning) encryptedPdfWarning.style.display = "none";
       fileQueue.style.display = "none";
       studioWrap.style.display = "none";
-      actionBar.style.display = "none";
+      if (actionBar) actionBar.style.display = "none";
       resultCard.style.display = "none";
       const wf = document.getElementById("workflow-progress");
       if (wf) wf.style.display = "none";
@@ -1895,30 +2478,23 @@
     }
 
     // =========================================================================
-    // Apply Signature & Export (Resilient Coordinate Conversion)
+    // Apply Signature & Export (Resilient Multi-Page Burn-In)
     // =========================================================================
-    processBtn.addEventListener("click", async function() {
+    async function executeSignExport() {
       if (!selectedFile) return;
 
       try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(0, 15, "Initializing local signature engine...");
+        if (processBtn) processBtn.disabled = true;
+        if (mobileProcessBtn) mobileProcessBtn.disabled = true;
+        UIUtils.setWorkflowStep(0, 15, "Initializing local vector signature engine...");
 
-        // Re-read fresh buffer from selectedFile to guarantee zero detachment
         const freshBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
         selectedFileBuffer = freshBuffer;
 
-        // Auto-place signature if user signed on pad but hasn't placed it
-        if ((!pageAnnotations[currentPage] || pageAnnotations[currentPage].length === 0) && (hasSignatureDrawn || (signerNameInput && signerNameInput.value.trim().length > 0) || uploadedSigDataUrl)) {
-          autoUpdateSignatureOnPage();
-        }
-
-        // Collect all visual annotations across pages
+        // Collect all annotations across all pages
         const visualAnnotationsToBurn = [];
         const overlayW = overlayLayer.offsetWidth || 600;
         const overlayH = overlayLayer.offsetHeight || 800;
-
-        // Obtain native unscaled page sizes from PDF.js (Safe, never throws parser errors!)
         const numPdfPages = pdfDoc ? pdfDoc.numPages : 1;
 
         for (const [pNum, annos] of Object.entries(pageAnnotations)) {
@@ -1968,8 +2544,9 @@
 
         let signatureDataUrl = getSignatureDataUrl();
         if (visualAnnotationsToBurn.length === 0 && !signatureDataUrl) {
-          UIUtils.showToast("Please draw or type your signature first!", "warning");
-          processBtn.disabled = false;
+          UIUtils.showToast("Please place a signature or initials on the document first!", "warning");
+          if (processBtn) processBtn.disabled = false;
+          if (mobileProcessBtn) mobileProcessBtn.disabled = false;
           return;
         }
 
@@ -1980,7 +2557,7 @@
           targetPages: 'last',
           includeDate: true,
           dateString: todayDateStr,
-          pdfJsDoc: pdfDoc // Pass PDF.js document for 100% resilient fallback
+          pdfJsDoc: pdfDoc
         };
 
         const res = await PDFEdit.processBatchEdit(freshBuffer, options, progressCb);
@@ -1999,9 +2576,13 @@
         console.error("Signing error:", err);
         UIUtils.showToast(err.message || "Failed to sign PDF", "error");
       } finally {
-        processBtn.disabled = false;
+        if (processBtn) processBtn.disabled = false;
+        if (mobileProcessBtn) mobileProcessBtn.disabled = false;
       }
-    });
+    }
+
+    if (processBtn) processBtn.addEventListener("click", executeSignExport);
+    if (mobileProcessBtn) mobileProcessBtn.addEventListener("click", executeSignExport);
 
     downloadBtn.addEventListener("click", () => {
       if (resultBlob) {
@@ -2009,6 +2590,150 @@
       }
     });
   </script>
+
+  
+  <!-- Set Your Signature Details Modal (iLovePDF Style Dialog) -->
+  <div id="sig-details-modal" class="sig-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-sig-title">
+    <div class="sig-modal-dialog">
+      <div class="sig-modal-header">
+        <h3 id="modal-sig-title" style="margin:0; font-size:1.1rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+          <span>&#9998; Set your signature details</span>
+        </h3>
+        <button type="button" id="modal-close-btn" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer; padding:0 4px; line-height:1;" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="sig-modal-body">
+        <!-- Name & Initials Top Row -->
+        <div style="display:grid; grid-template-columns:1fr 140px; gap:12px;">
+          <div>
+            <label for="modal-full-name-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Full name:</label>
+            <input type="text" id="modal-full-name-input" value="Amaad Mazari" placeholder="Your name (e.g. Amaad Mazari)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+          </div>
+          <div>
+            <label for="modal-initials-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Initials:</label>
+            <input type="text" id="modal-initials-input" value="AM" placeholder="Initials (e.g. AM)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+          </div>
+        </div>
+
+        <!-- Detail Tabs (Signature | Initials | Company Stamp) -->
+        <div style="display:flex; gap:8px; border-bottom:1px solid var(--line); padding-bottom:8px;">
+          <button type="button" class="sig-tab-btn active" id="modal-tab-sig">&#9997; Signature</button>
+          <button type="button" class="sig-tab-btn" id="modal-tab-initials">&#128394; Initials</button>
+          <button type="button" class="sig-tab-btn" id="modal-tab-stamp">&#127970; Company Stamp</button>
+        </div>
+
+        <!-- Signature Panel -->
+        <div id="modal-panel-sig">
+          <!-- Creation Sub-modes (Draw | Type | Upload) -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="sig-tab-btn active" id="sig-mode-draw-btn">Draw</button>
+              <button type="button" class="sig-tab-btn" id="sig-mode-type-btn">Type</button>
+              <button type="button" class="sig-tab-btn" id="sig-mode-upload-btn">Upload</button>
+            </div>
+            <button type="button" class="btn btn-outline" id="clear-sig-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
+          </div>
+
+          <!-- Draw Mode -->
+          <div id="modal-sig-draw-pane">
+            <div class="sig-canvas-wrap">
+              <canvas id="modal-sig-canvas" class="sig-canvas" width="540" height="155"></canvas>
+            </div>
+
+            <!-- Pen Stroke Thickness & Ink Palette -->
+            <div style="background:var(--bg-body); padding:8px 12px; border-radius:8px; border:1px solid var(--line); margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Pen Stroke Thickness:</span>
+                <span id="modal-pen-width-display" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:var(--primary);">2.5 px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <input type="range" id="modal-pen-width-slider" min="1" max="8" value="2.5" step="0.5" style="flex:1; cursor:pointer;" aria-label="Pen stroke thickness">
+                <div style="width:26px; height:20px; display:flex; align-items:center; justify-content:center;">
+                  <div id="modal-pen-preview-stroke" style="width:22px; height:2.5px; background:#000000; border-radius:2px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Ink Color:</span>
+                <button type="button" class="color-dot active" data-color="#000000" style="background:#000000;" title="Black"></button>
+                <button type="button" class="color-dot" data-color="#0F172A" style="background:#0F172A;" title="Dark Slate"></button>
+                <button type="button" class="color-dot" data-color="#1E3A8A" style="background:#1E3A8A;" title="Classic Navy"></button>
+                <button type="button" class="color-dot" data-color="#2563EB" style="background:#2563EB;" title="Royal Blue"></button>
+                <button type="button" class="color-dot" data-color="#DC2626" style="background:#DC2626;" title="Contract Red"></button>
+                <button type="button" class="color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
+                <label style="position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; border:2px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Choose Custom Color">
+                  <input type="color" id="modal-custom-color-picker" value="#000000" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
+                  <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red); font-size:9px;"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Type Mode -->
+          <div id="modal-sig-type-pane" style="display:none;">
+            <div style="border:1px dashed var(--line); border-radius:8px; padding:18px; text-align:center; background:#FFF; min-height:85px; display:flex; align-items:center; justify-content:center;">
+              <span id="modal-typed-sig-preview" style="font-family:'Brush Script MT', cursive, sans-serif; font-size:2.2rem; color:#000000; font-style:italic;">Amaad Mazari</span>
+            </div>
+          </div>
+
+          <!-- Upload Mode -->
+          <div id="modal-sig-upload-pane" style="display:none;">
+            <div class="sig-upload-drop" id="modal-sig-upload-drop" style="border:2px dashed var(--line); border-radius:8px; padding:18px 14px; text-align:center; background:var(--bg-body); cursor:pointer; margin-bottom:10px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Signature Image</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Click or drop PNG, JPG, or WEBP photo of signature</div>
+              <input type="file" id="modal-sig-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            </div>
+            <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block;">Transparent Paper Background</span>
+                <span style="font-size:0.72rem; color:var(--text-muted);">Strips white paper background, leaving clean ink</span>
+              </div>
+              <input type="checkbox" id="modal-remove-bg-toggle" checked style="width:18px; height:18px; cursor:pointer; accent-color:var(--primary);">
+            </div>
+            <div id="modal-uploaded-sig-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:8px; text-align:center; background:#FFF; min-height:60px; max-height:100px; display:flex; align-items:center; justify-content:center;">
+              <img id="modal-uploaded-sig-img" src="" alt="Uploaded Signature" style="max-height:80px; max-width:100%; object-fit:contain;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Initials Panel -->
+        <div id="modal-panel-initials" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Draw or preview your initials:</span>
+            <button type="button" class="btn btn-outline" id="clear-initials-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
+          </div>
+          <div class="sig-canvas-wrap">
+            <canvas id="modal-initials-canvas" class="sig-canvas" width="400" height="140"></canvas>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">
+            &#128161; Your initials will be stamped on page footers when using the 1-click batch button.
+          </div>
+        </div>
+
+        <!-- Company Stamp Panel -->
+        <div id="modal-panel-stamp" style="display:none;">
+          <div style="border:2px dashed var(--line); border-radius:8px; padding:20px; text-align:center; background:var(--bg-body); cursor:pointer;" id="modal-stamp-upload-drop">
+            <span style="font-size:2rem; display:block; margin-bottom:6px;">&#127970;</span>
+            <div style="font-size:0.86rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Company Stamp / Seal Image</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">PNG with transparent background recommended</div>
+            <input type="file" id="modal-stamp-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+          </div>
+          <div id="modal-stamp-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:10px; text-align:center; background:#FFF; margin-top:10px; align-items:center; justify-content:center;">
+            <img id="modal-stamp-img" src="" alt="Company Stamp" style="max-height:90px; max-width:100%; object-fit:contain;">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sig-modal-footer">
+        <button type="button" class="btn btn-outline" id="modal-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-apply-btn">Apply &amp; Save Details</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Global Search Modal -->
   <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">

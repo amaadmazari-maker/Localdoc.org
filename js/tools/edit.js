@@ -117,7 +117,7 @@ const PDFEdit = {
         const pageAnnos = annotations.filter(a => a.pageIndex === pIndex);
 
         for (const anno of pageAnnos) {
-          if (anno.type === 'signature' && anno.dataUrl) {
+          if ((anno.type === 'signature' || anno.type === 'initials' || anno.type === 'stamp') && anno.dataUrl) {
             let sigImage;
             try {
               if (anno.dataUrl.startsWith('data:image/jpeg') || anno.dataUrl.startsWith('data:image/jpg')) {
@@ -208,7 +208,7 @@ const PDFEdit = {
         const page = pages[pIdx];
         const { width: pWidth, height: pHeight } = page.getSize();
 
-        if (anno.type === 'signature' && anno.dataUrl) {
+        if ((anno.type === 'signature' || anno.type === 'initials' || anno.type === 'stamp') && anno.dataUrl) {
           let sigImage;
           try {
             if (anno.dataUrl.startsWith('data:image/jpeg') || anno.dataUrl.startsWith('data:image/jpg')) {
