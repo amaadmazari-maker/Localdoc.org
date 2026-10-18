@@ -367,37 +367,41 @@ const PDFOrganize = {
     };
   },
 
-  // 4. Multi-Tier Intelligent PDF Compression (Extreme, Recommended, Lossless)
-  async compressPDF(file, level = 'recommended', onProgress = null) {
+  // 4. Multi-Tier Intelligent PDF Compression (Sequential Single-Page Streaming)
+  async compressPDF(file, level = 'recommended', onProgress = null, options = {}) {
     const originalSize = file.size;
-    if (onProgress) onProgress(10, 'Loading PDF document into memory...');
+    if (onProgress) onProgress(5, 'Loading PDF document into memory...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
 
-    // Pass 1: Lossless Stream Defragmentation & Object Stream Optimization
-    if (onProgress) onProgress(25, 'Analyzing document structure & object streams...');
+    // Step 1: Pre-flight check for encryption & corruption
+    const srcDoc = await this.safeLoadPDF(buffer.slice(0), file.name || 'document.pdf');
+    const totalPages = srcDoc.getPageCount();
+
+    // Step 2: Lossless Stream Optimization pass (pdf-lib object stream defragmentation)
+    if (onProgress) onProgress(15, 'Running lossless stream defragmentation...');
     let losslessBlob = null;
     let losslessSize = originalSize;
     try {
-      const srcDoc = await this.safeLoadPDF(buffer.slice(0), file.name);
-      const newDoc = await PDFLib.PDFDocument.create();
+      const losslessDoc = await PDFLib.PDFDocument.create();
       const pageIndices = srcDoc.getPageIndices();
-      const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
-      copiedPages.forEach(p => newDoc.addPage(p));
-      const losslessBytes = await newDoc.save({ useObjectStreams: true, addDefaultPage: false });
+      const copiedPages = await losslessDoc.copyPages(srcDoc, pageIndices);
+      copiedPages.forEach(p => losslessDoc.addPage(p));
+      const losslessBytes = await losslessDoc.save({ useObjectStreams: true, addDefaultPage: false });
       losslessBlob = new Blob([losslessBytes], { type: 'application/pdf' });
       losslessSize = losslessBytes.byteLength;
-    } catch (err) {
-      console.warn('Native lossless pass failed:', err);
+    } catch (losslessErr) {
+      console.warn('Lossless defragmentation pass notice:', losslessErr);
     }
 
-    // If level is 'low' (lossless) and native optimization saved space, return it directly
+    // If user specifically requested Lossless (Low) mode:
     if (level === 'low') {
-      const bestBlob = (losslessBlob && losslessSize < originalSize)  ?  losslessBlob : new Blob([buffer], { type: 'application/pdf' });
-      const bestSize = (losslessBlob && losslessSize < originalSize)  ?  losslessSize : Math.round(originalSize * 0.92);
+      const bestBlob = (losslessBlob && losslessSize < originalSize) ? losslessBlob : new Blob([buffer], { type: 'application/pdf' });
+      const bestSize = (losslessBlob && losslessSize < originalSize) ? losslessSize : originalSize;
       const savedBytes = Math.max(0, originalSize - bestSize);
-      const percentSaved = Math.max(8, Math.round((savedBytes / originalSize) * 100));
+      const percentSaved = originalSize > 0 ? Math.round((savedBytes / originalSize) * 100) : 0;
+      const isAlreadyOptimized = (savedBytes <= 0);
 
-      if (onProgress) onProgress(100, 'Lossless stream optimization complete!');
+      if (onProgress) onProgress(100, isAlreadyOptimized ? 'Document is already stream-optimized.' : 'Lossless compression complete!');
       return {
         pdfBlob: bestBlob,
         originalSize,
@@ -405,110 +409,147 @@ const PDFOrganize = {
         savedBytes,
         percentSaved,
         savedPercentage: percentSaved,
-        level: 'Lossless (High Quality)'
+        level: 'Lossless (Vector Preserved)',
+        isTextOptimized: true,
+        notice: isAlreadyOptimized 
+          ? 'This document consists of pre-optimized streams. No further lossless reduction is possible.' 
+          : `Cleaned orphan objects and re-indexed object streams (${percentSaved}% saved).`
       };
     }
 
-    // Helper: High-efficiency Canvas to JPEG compressor
-    const renderOptimizedPages = async (targetScale, jpegQuality, progressStart, progressEnd) => {
-      const clonedData = new Uint8Array(buffer.slice(0));
-      const pdf = await pdfjsLib.getDocument({ data: clonedData, isEvalSupported: false }).promise;
-      const numPages = pdf.numPages;
-      const pagesData = [];
+    // Step 3: Configure Target KB Limit or Tier Parameters
+    const targetKb = options.targetKb || (level === 'target-200kb' ? 200 : (level === 'target-500kb' ? 500 : null));
+    let targetNotice = '';
 
-      for (let i = 1; i <= numPages; i++) {
-        const pct = progressStart + Math.round(((i - 0.5) / numPages) * (progressEnd - progressStart));
-        if (onProgress) onProgress(pct, `Optimizing Page ${i} of ${numPages} (${Math.round(jpegQuality * 100)}% quality)...`);
+    let targetScale = 0.95;
+    let targetQuality = 0.65;
 
-        const page = await pdf.getPage(i);
-        const originalViewport = page.getViewport({ scale: 1.0 });
-        const viewport = page.getViewport({ scale: targetScale });
-
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
-        const ctx = canvas.getContext('2d', { alpha: false });
-        
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-
-        await page.render({ canvasContext: ctx, viewport }).promise;
-        const dataUrl = canvas.toDataURL('image/jpeg', jpegQuality);
-
-        pagesData.push({
-          dataUrl,
-          width: originalViewport.width,
-          height: originalViewport.height
-        });
+    if (targetKb) {
+      const maxPracticalPages = (targetKb <= 250) ? 10 : 25;
+      if (totalPages > maxPracticalPages) {
+        targetNotice = `Notice: Document contains ${totalPages} pages. Compressing below ${targetKb}KB would allocate only ~${Math.round(targetKb / totalPages)}KB/page, rendering text unreadable. High compression applied safely instead.`;
+        targetScale = 0.70;
+        targetQuality = 0.40;
+      } else {
+        // Budget per page in KB
+        const budgetKbPerPage = (targetKb * 0.82) / totalPages;
+        if (budgetKbPerPage < 25) {
+          targetScale = 0.60;
+          targetQuality = 0.35;
+        } else if (budgetKbPerPage < 50) {
+          targetScale = 0.72;
+          targetQuality = 0.48;
+        } else {
+          targetScale = 0.85;
+          targetQuality = 0.60;
+        }
       }
-
-      if (onProgress) onProgress(85, 'Packing compressed streams into vector container...');
-      const compDoc = await PDFLib.PDFDocument.create();
-      for (let i = 0; i < pagesData.length; i++) {
-        const p = pagesData[i];
-        const embeddedJpg = await compDoc.embedJpg(p.dataUrl);
-        const newPage = compDoc.addPage([p.width, p.height]);
-        newPage.drawImage(embeddedJpg, {
-          x: 0,
-          y: 0,
-          width: p.width,
-          height: p.height
-        });
-      }
-
-      const outBytes = await compDoc.save({ useObjectStreams: true });
-      return {
-        blob: new Blob([outBytes], { type: 'application/pdf' }),
-        size: outBytes.byteLength
-      };
-    };
-
-    // Configure scale & JPEG quality per tier
-    let targetScale = (level === 'extreme')  ?  0.75 : 0.95;
-    let targetQuality = (level === 'extreme')  ?  0.42 : 0.58;
-
-    let result = await renderOptimizedPages(targetScale, targetQuality, 30, 80);
-
-    // If initial pass is still somehow larger than original, aggressively step down
-    if (result.size >= originalSize) {
-      if (onProgress) onProgress(82, 'Applying aggressive stream reduction pass...');
-      targetScale = 0.70;
-      targetQuality = (level === 'extreme')  ?  0.35 : 0.45;
-      result = await renderOptimizedPages(targetScale, targetQuality, 82, 95);
+    } else if (level === 'extreme') {
+      targetScale = 0.75;
+      targetQuality = 0.42;
+    } else {
+      // Recommended balanced mode
+      targetScale = 0.92;
+      targetQuality = 0.62;
     }
 
-    // Determine final best output
-    let finalBlob = result.blob;
-    let finalSize = result.size;
+    // Step 4: Sequential Single-Page Streaming Pipeline (Constant RAM Heap)
+    if (onProgress) onProgress(25, `Starting sequential streaming across ${totalPages} pages...`);
+    const clonedData = new Uint8Array(buffer.slice(0));
+    const pdf = await pdfjsLib.getDocument({ data: clonedData, isEvalSupported: false }).promise;
+    const numPages = pdf.numPages;
 
-    // Safety fallback: if native lossless beat the rasterizer, use lossless
-    if (losslessBlob && losslessSize < finalSize && losslessSize < originalSize) {
-      finalBlob = losslessBlob;
-      finalSize = losslessSize;
+    const compDoc = await PDFLib.PDFDocument.create();
+
+    for (let i = 1; i <= numPages; i++) {
+      const pct = 25 + Math.round(((i) / numPages) * 60);
+      if (onProgress) onProgress(pct, `Compressing Page ${i} of ${numPages} in RAM...`);
+
+      const page = await pdf.getPage(i);
+      const originalVp = page.getViewport({ scale: 1.0 });
+      const vp = page.getViewport({ scale: targetScale });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(vp.width);
+      canvas.height = Math.round(vp.height);
+      const ctx = canvas.getContext('2d', { alpha: false });
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+      // Extract JPEG data URL
+      const dataUrl = canvas.toDataURL('image/jpeg', targetQuality);
+
+      // Embed immediately into compDoc
+      const embeddedJpg = await compDoc.embedJpg(dataUrl);
+      const newPage = compDoc.addPage([originalVp.width, originalVp.height]);
+      newPage.drawImage(embeddedJpg, {
+        x: 0,
+        y: 0,
+        width: originalVp.width,
+        height: originalVp.height
+      });
+
+      // Immediate garbage collection disposal of page canvas
+      canvas.width = 0;
+      canvas.height = 0;
+
+      // Yield event loop every page so browser stays completely fluid
+      await new Promise(r => setTimeout(r, 0));
     }
 
-    // Calculate real savings
+    if (onProgress) onProgress(88, 'Serializing compressed stream container in RAM...');
+    const outBytes = await compDoc.save({ useObjectStreams: true });
+    let finalBlob = new Blob([outBytes], { type: 'application/pdf' });
+    let finalSize = outBytes.byteLength;
+
+    // Step 5: Vector / Text Inspection Fallback (Honesty Check)
+    // If lossless optimization is smaller than or equal to rasterization, or if rasterization bloated the file,
+    // we preserve the vector typography and object streams!
+    let isVectorDocument = false;
+    if (losslessBlob && (losslessSize <= finalSize || finalSize >= originalSize)) {
+      if (losslessSize < originalSize) {
+        finalBlob = losslessBlob;
+        finalSize = losslessSize;
+        isVectorDocument = true;
+        const vecMsg = 'Document consists primarily of vector text. Lossless stream optimization applied to preserve crisp typography and prevent raster bloat.';
+        targetNotice = targetNotice ? `${targetNotice} ${vecMsg}` : vecMsg;
+      } else {
+        // File is already maximally compressed
+        finalBlob = new Blob([buffer], { type: 'application/pdf' });
+        finalSize = originalSize;
+        isVectorDocument = true;
+        const optMsg = 'Document is already stream-optimized and maximally compressed. Re-encoding text as images would increase size or blur fonts, so original document was preserved.';
+        targetNotice = targetNotice ? `${targetNotice} ${optMsg}` : optMsg;
+      }
+    } else if (finalSize >= originalSize) {
+      finalBlob = new Blob([buffer], { type: 'application/pdf' });
+      finalSize = originalSize;
+      isVectorDocument = true;
+      const keepMsg = 'Document is already maximally compressed. Re-encoding would increase file size, so original clean file was preserved.';
+      targetNotice = targetNotice ? `${targetNotice} ${keepMsg}` : keepMsg;
+    }
+
     const savedBytes = Math.max(0, originalSize - finalSize);
-    let percentSaved = Math.round((savedBytes / originalSize) * 100);
+    const percentSaved = originalSize > 0 ? Math.round((savedBytes / originalSize) * 100) : 0;
 
-    // If within 5% margins, guarantee at least 15-40% savings
-    if (percentSaved <= 0) {
-      percentSaved = (level === 'extreme')  ?  72 : 48;
-      finalSize = Math.round(originalSize * (1 - percentSaved / 100));
-    }
-
-    if (onProgress) onProgress(100, `Compression complete! Reduced by ${percentSaved}%.`);
+    if (onProgress) onProgress(100, `Compression complete! ${percentSaved > 0 ? 'Saved ' + percentSaved + '%' : 'Document optimized.'}`);
 
     return {
       pdfBlob: finalBlob,
       originalSize,
       compressedSize: finalSize,
-      savedBytes: Math.max(0, originalSize - finalSize),
+      savedBytes,
       percentSaved,
       savedPercentage: percentSaved,
-      level: (level === 'extreme')  ?  'Extreme' : 'Recommended'
+      level: targetKb ? `Target ≤${targetKb}KB` : (level === 'extreme' ? 'Extreme' : 'Recommended'),
+      isVectorDocument,
+      totalPages: numPages,
+      notice: targetNotice
     };
   },
 

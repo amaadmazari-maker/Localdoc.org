@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -232,8 +232,8 @@
           <p>Or click to browse from your device. Single file or multi-file batch queue. 100% in-browser private execution.</p>
         </div>
         <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null" type="button">Select PDF Document(s)</button>
-        <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
+      <input type="file" id="file-input" accept=".pdf,application/pdf" multiple style="position:absolute; width:1px; height:1px; opacity:0.01; clip:rect(0,0,0,0); overflow:hidden;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
 
       <!-- File Queue Item & Batch List -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
@@ -287,13 +287,10 @@
           <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
             <button type="button" class="btn btn-outline target-pill-btn active" data-kb="none" onclick="setTargetKb(null)" style="padding:5px 12px; font-size:0.82rem;">None (Standard)</button>
             <button type="button" class="btn btn-outline target-pill-btn" data-kb="200" onclick="setTargetKb(200)" style="padding:5px 12px; font-size:0.82rem;">&le; 200 KB (UPSC / FPSC / Exams)</button>
-            <button type="button" class="btn btn-outline target-pill-btn" data-kb="100" onclick="setTargetKb(100)" style="padding:5px 12px; font-size:0.82rem;">&le; 100 KB (Strict Portals)</button>
-            <button type="button" class="btn btn-outline target-pill-btn" data-kb="500" onclick="setTargetKb(500)" style="padding:5px 12px; font-size:0.82rem;">&le; 500 KB (Admissions)</button>
-            <div style="display:inline-flex; align-items:center; gap:6px; margin-left:auto;">
-              <span style="font-size:0.8rem; color:var(--text-secondary);">Custom:</span>
-              <input type="number" id="custom-target-kb" placeholder="KB" min="20" max="10000" style="width:75px; padding:3px 6px; border:1px solid var(--line); border-radius:4px; font-size:0.82rem; background:var(--bg-body); color:var(--text-primary);" onchange="setTargetKb(parseInt(this.value, 10))">
-              <span style="font-size:0.8rem; color:var(--text-secondary);">KB</span>
-            </div>
+            <button type="button" class="btn btn-outline target-pill-btn" data-kb="500" onclick="setTargetKb(500)" style="padding:5px 12px; font-size:0.82rem;">&le; 500 KB (Admissions / Portals)</button>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-muted); margin-top:8px; line-height:1.45;">
+            💡 <em>Strict &le;200KB and &le;500KB ceilings are designed for 1–10 page forms, certificates, and resumes. Large multi-page binders (&gt;10 pages) automatically receive safe balanced compression to keep typography readable.</em>
           </div>
         </div>
       </div>
@@ -347,6 +344,8 @@
             <span class="stat-pill-val highlight" id="stat-savings">-0%</span>
           </div>
         </div>
+
+        <div id="compression-notice-banner" style="display:none; background:rgba(2, 132, 199, 0.08); border:1px solid var(--primary); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; font-size:0.85rem; color:var(--text-secondary); text-align:left;"></div>
 
         <div class="result-card" style="margin-top:16px;">
           <div class="result-details">
@@ -775,12 +774,18 @@
     }
     parseQueryParams();
 
-    function handleFiles(files) {
-      ensurePdfEnginesLoaded().catch(() => {});
+    async function handleFiles(files) {
+      await ensurePdfEnginesLoaded().catch(() => {});
       if (!files || files.length === 0) return;
       selectedFiles = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
       if (selectedFiles.length === 0) {
         UIUtils.showToast("Please select valid PDF document(s).", "warning");
+        return;
+      }
+
+      const emptyFile = selectedFiles.find(f => f.size === 0);
+      if (emptyFile) {
+        UIUtils.showToast(`"${emptyFile.name}" is an empty file (0 bytes).`, "error");
         return;
       }
 
@@ -797,6 +802,17 @@
         queueSize.textContent = UIUtils.formatBytes(selectedFiles[0].size);
         batchFileList.style.display = "none";
         processBtn.querySelector("span").textContent = "Compress PDF Now";
+
+        // Pre-flight check password encryption
+        try {
+          const buf = await UIUtils.readFileAsArrayBuffer(selectedFiles[0]);
+          if (typeof window.LocalDocPDFValidator !== 'undefined') {
+            const check = await window.LocalDocPDFValidator.validatePdfBytes(buf);
+            if (!check.valid && check.reason === 'locked') {
+              UIUtils.showToast(`"${selectedFiles[0].name}" is password-protected. Please decrypt it first.`, "warning", 5000);
+            }
+          }
+        } catch(e) {}
       } else {
         queueName.textContent = "Batch Queue (" + selectedFiles.length + " PDF documents)";
         queueSize.textContent = "Total: " + UIUtils.formatBytes(totalSize);
@@ -833,6 +849,11 @@
       tiersContainer.style.display = "none";
       actionBar.style.display = "none";
       resultCard.style.display = "none";
+      const noticeBanner = document.getElementById("compression-notice-banner");
+      if (noticeBanner) {
+        noticeBanner.style.display = "none";
+        noticeBanner.innerHTML = "";
+      }
       document.getElementById("workflow-progress").style.display = "none";
     });
 
@@ -861,10 +882,18 @@
             fileStatusEl.textContent = "Compressing in RAM...";
           }
 
-          const pct = Math.round(((i + 0.5) / selectedFiles.length) * 80);
-          UIUtils.setWorkflowStep(2, pct, "Compressing (" + (i + 1) + "/" + selectedFiles.length + "): " + currentFile.name);
+          const res = await PDFOrganize.compressPDF(
+            currentFile,
+            selectedTier,
+            (pagePct, statusText) => {
+              const currentDocBase = (i / selectedFiles.length) * 80;
+              const currentDocSpan = (1 / selectedFiles.length) * 80;
+              const totalPct = 10 + Math.round(currentDocBase + (pagePct / 100) * currentDocSpan);
+              UIUtils.setWorkflowStep(2, totalPct, `[${i + 1}/${selectedFiles.length}] ${statusText}`);
+            },
+            { targetKb: window.targetKbLimit }
+          );
 
-          const res = await PDFOrganize.compressPDF(currentFile, selectedTier);
           const baseName = currentFile.name.replace(/\.[^/.]+$/, "");
           const outFilename = baseName + "-compressed.pdf";
 
@@ -874,6 +903,8 @@
             originalSize: res.originalSize,
             compressedSize: res.compressedSize,
             savedPercentage: res.savedPercentage,
+            notice: res.notice,
+            level: res.level,
             filename: outFilename
           });
 
@@ -881,15 +912,47 @@
           totalCompressed += res.compressedSize;
 
           if (fileStatusEl) {
-            fileStatusEl.innerHTML = '<span style="color:var(--success); font-weight:700;">-' + res.savedPercentage + '% (' + UIUtils.formatBytes(res.compressedSize) + ')</span>';
+            if (res.savedPercentage > 0) {
+              fileStatusEl.innerHTML = '<span style="color:var(--success); font-weight:700;">-' + res.savedPercentage + '% (' + UIUtils.formatBytes(res.compressedSize) + ')</span>';
+            } else {
+              fileStatusEl.innerHTML = '<span style="color:var(--primary); font-weight:700;">Stream-Cleaned (' + UIUtils.formatBytes(res.compressedSize) + ')</span>';
+            }
           }
         }
 
-        const totalSavedPct = totalOriginal > 0  ?  Math.max(0, Math.round(((totalOriginal - totalCompressed) / totalOriginal) * 100)) : 0;
+        const totalSavedPct = totalOriginal > 0 ? Math.max(0, Math.round(((totalOriginal - totalCompressed) / totalOriginal) * 100)) : 0;
 
         document.getElementById("stat-orig-size").textContent = UIUtils.formatBytes(totalOriginal);
         document.getElementById("stat-comp-size").textContent = UIUtils.formatBytes(totalCompressed);
-        document.getElementById("stat-savings").textContent = "-" + totalSavedPct + "%";
+        if (totalSavedPct > 0) {
+          document.getElementById("stat-savings").textContent = "-" + totalSavedPct + "%";
+          document.getElementById("stat-savings").className = "stat-pill-val highlight";
+        } else {
+          document.getElementById("stat-savings").textContent = "0% (Optimized)";
+          document.getElementById("stat-savings").className = "stat-pill-val";
+        }
+
+        // Render honest compression integrity notices
+        const noticeBanner = document.getElementById("compression-notice-banner");
+        if (noticeBanner) {
+          const notices = processedResults.map(r => r.notice).filter(Boolean);
+          if (notices.length > 0) {
+            noticeBanner.innerHTML = `
+              <div style="display:flex; align-items:flex-start; gap:10px;">
+                <span style="font-size:1.15rem; line-height:1.2;">ℹ️</span>
+                <div style="flex:1;">
+                  <strong style="color:var(--text-primary); font-size:0.88rem;">Compression Integrity &amp; Transparency Report:</strong>
+                  <div style="margin-top:4px; line-height:1.45; font-size:0.83rem; color:var(--text-secondary);">
+                    ${notices.map(n => `<p style="margin:3px 0;">${n}</p>`).join('')}
+                  </div>
+                </div>
+              </div>`;
+            noticeBanner.style.display = "block";
+          } else {
+            noticeBanner.style.display = "none";
+            noticeBanner.innerHTML = "";
+          }
+        }
 
         if (processedResults.length === 1) {
           singleResultBlob = processedResults[0].blob;
@@ -911,7 +974,7 @@
                 <div style="color:var(--text-primary); font-weight:600; font-size:0.88rem;">${item.filename}</div>
                 <div style="color:var(--text-muted); font-size:0.78rem;">
                   ${UIUtils.formatBytes(item.originalSize)} &rarr; ${UIUtils.formatBytes(item.compressedSize)} 
-                  <strong style="color:var(--success);">(-${item.savedPercentage}%)</strong>
+                  <strong style="color:var(--success);">${item.savedPercentage > 0 ? '(-' + item.savedPercentage + '%)' : '(Stream-Cleaned)'}</strong>
                 </div>
               </div>
               <button type="button" class="btn btn-outline btn-sm" onclick="downloadIndividualResult(${idx})" style="padding:4px 10px; font-size:0.8rem;">

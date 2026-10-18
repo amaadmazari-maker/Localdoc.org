@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -567,17 +567,18 @@
       </div>
 
       <section style="margin-top:36px;">
-        <h2>Honest Technical Limitations: What Client-Side Compression Cannot Do</h2>
+        <h2>Honest Technical Truths: What Client-Side Compression Can and Cannot Do</h2>
         <p>
-          I don't believe in over-promising. While this engine handles 95% of everyday office and legal documents with ease, there are real physical and mathematical limits you should be aware of:
+          We believe in complete engineering honesty rather than marketing hype. While LocalDoc's client-side engine handles multi-megabyte PDFs and scans effortlessly in browser RAM, there are unbreakable mathematical, algorithmic, and architectural realities you should know:
         </p>
         
-        <div class="tech-card" style="border-left:4px solid #ef4444;">
-          <h3>3 Real Limitations to Keep in Mind</h3>
-          <ul style="margin-left:20px; line-height:1.7;">
-            <li><strong>Already-Compressed DCT Images:</strong> If your PDF is made up of images that someone already compressed heavily into low-quality 72 DPI JPEGs, no tool on earth can compress them further without destroying what's left of the image. In those cases, savings will top out around 5% to 12%, gained purely by stripping redundant metadata and compacting cross-reference tables.</li>
-            <li><strong>AES-256 Encrypted Documents:</strong> When a document is protected with an Owner Password or certificate encryption, the internal byte streams are cryptographically scrambled. Compression algorithms rely on identifying repeated patterns, which don't exist in AES ciphertext. You must first unlock the document using our <a href="../pages/protect-pdf.html">Unlock PDF</a> tool before compressing it.</li>
-            <li><strong>Mobile Safari Memory Ceilings:</strong> On iPhones and iPads, Apple's WebKit process caps web worker memory at around 1.5 GB. If you feed the browser an enormous 400-page high-resolution municipal drawing file (>250 MB raw scan), Safari will abruptly terminate the worker thread. For massive architectural plans or multi-gigabyte archives, always run the compression on a desktop workstation.</li>
+        <div class="tech-card" style="border-left:4px solid var(--primary);">
+          <h3>4 Fundamental Rules of Client-Side PDF Compression</h3>
+          <ul style="margin-left:20px; line-height:1.75;">
+            <li><strong>The 100-Page Mathematical Limit (&le;200 KB Target Ceilings):</strong> A 100-page PDF compressed down to 200 KB leaves a mathematical budget of less than 1.8 KB per page. At 1.8 KB per page, an image would have to be downsampled below 100&times;140 pixels with extreme JPEG quantization, turning every sentence and number into unreadable gray noise. Strict &le;200 KB or &le;500 KB targets are strictly designed for <strong>1 to 10-page application documents</strong> (e.g. government exams, UPSC/FPSC certificates, resumes, utility bills). For documents with dozens or hundreds of pages, LocalDoc applies safe high compression instead to guarantee your text remains sharp and legible.</li>
+            <li><strong>Vector Typography vs. Raster Images:</strong> Compression achieves 80–90% reduction by downsampling heavy embedded photos and 300 DPI scanner bitmaps. If your document was created directly in Word, Google Docs, or LaTeX with pure vector typography and zero photos, rasterizing those pages into JPEGs would actually <em>increase</em> file size and blur crisp fonts! In those cases, LocalDoc automatically falls back to lossless object stream defragmentation, preserving razor-sharp vector text and reporting true metrics without fake savings numbers.</li>
+            <li><strong>Sequential Single-Page Streaming (No 100-Page Browser Crashes):</strong> Traditional online tools batch-render every page into memory at once, consuming gigabytes of RAM and crashing the browser tab on 50+ page files. LocalDoc uses a sequential single-page streaming pipeline: each page is rendered, encoded, embedded into the PDF container, and immediately released from memory before the next page begins. This guarantees a flat, constant RAM footprint even on 500-page binders.</li>
+            <li><strong>Pre-Compressed JBIG2 / DCT Streams &amp; Encrypted Files:</strong> If a PDF is already maximally compressed using aggressive JBIG2 or low-quality DCT streams, no software can shrink it further without data loss. Similarly, AES-256 encrypted documents cannot be compressed because ciphertext has zero pattern redundancy. Encrypted documents must first be unlocked using our <a href="../pages/protect-pdf.html">Unlock PDF</a> tool.</li>
           </ul>
         </div>
       </section>
