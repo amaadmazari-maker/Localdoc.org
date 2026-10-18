@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v63-phase3-offline';
+const CACHE_NAME = 'localdoc-v64-sign-pdf-realtime';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

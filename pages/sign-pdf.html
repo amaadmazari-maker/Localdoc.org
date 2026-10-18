@@ -875,6 +875,22 @@
         </div>
       </div>
 
+      <!-- Interactive Feature Callout Strip -->
+      <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px;">
+        <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(5, 150, 105, 0.12); color:#059669; border:1px solid rgba(5, 150, 105, 0.3); padding:4px 12px; border-radius:999px; font-size:0.78rem; font-weight:700;">
+          &#9998; Real-Time Live Signing
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(2, 132, 199, 0.12); color:#0284C7; border:1px solid rgba(2, 132, 199, 0.3); padding:4px 12px; border-radius:999px; font-size:0.78rem; font-weight:700;">
+          &#8635; 360&deg; Rotation
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(124, 58, 237, 0.12); color:#7C3AED; border:1px solid rgba(124, 58, 237, 0.3); padding:4px 12px; border-radius:999px; font-size:0.78rem; font-weight:700;">
+          &#10010; Signature + Text Combo
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(217, 119, 6, 0.12); color:#D97706; border:1px solid rgba(217, 119, 6, 0.3); padding:4px 12px; border-radius:999px; font-size:0.78rem; font-weight:700;">
+          &#128196; Multi-Page Target &amp; Exclude
+        </span>
+      </div>
+
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
@@ -884,7 +900,12 @@
           <h3>Drop your PDF file here to add signature</h3>
           <p>Or click to browse from device. Contracts, agreements, leases, invoices, and forms supported.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" type="button" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:center; margin-top:8px;">
+          <button class="btn btn-primary btn-lg" id="browse-btn" type="button" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
+          <button class="btn btn-outline btn-lg" id="sample-contract-btn" type="button" onclick="event.stopPropagation(); if(window.loadSampleSignContract){window.loadSampleSignContract();}" style="background:var(--bg-surface); border-color:#059669; color:#059669; font-weight:700;">
+            &#9889; Try 3-Page Sample Contract
+          </button>
+        </div>
         <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="if(window.handleSignPdfFile){window.handleSignPdfFile(this.files);}else if(window.handleLocalDocFileInput){window.handleLocalDocFileInput(this);}">
       </div>
 
@@ -1382,12 +1403,12 @@
     </div>
   </footer>
 
-  <script src="../js/core/i18n.js?v=20260921-v26"></script>
-  <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
-  <script src="../js/core/pdf-validator.js?v=20260921-v26"></script>
-  <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
-  <script src="../js/tools/edit.js?v=20260921-v26"></script>
+  <script src="../js/core/i18n.js?v=20261018-v64"></script>
+  <script src="../js/core/ui-utils.js?v=20261018-v64"></script>
+  <script src="../js/core/pdf-validator.js?v=20261018-v64"></script>
+  <script src="../js/lib/pdf.min.js?v=20261018-v64"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20261018-v64"></script>
+  <script src="../js/tools/edit.js?v=20261018-v64"></script>
 
   <script>
     if (typeof pdfjsLib !== 'undefined') {
@@ -2844,6 +2865,66 @@
     }
 
     window.handleSignPdfFile = handleFiles;
+
+    window.loadSampleSignContract = async function() {
+      try {
+        UIUtils.showToast("Generating 3-page sample contract in RAM...", "info");
+        const sampleDoc = await PDFLib.PDFDocument.create();
+        const font = await sampleDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const boldFont = await sampleDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+        
+        // Page 1: Cover Page / NDA Summary (Cover page to test "All Except Page 1" feature!)
+        const p1 = sampleDoc.addPage([595, 842]);
+        p1.drawText("STANDARD MUTUAL NON-DISCLOSURE AGREEMENT", { x: 50, y: 770, size: 16, font: boldFont, color: PDFLib.rgb(0.06, 0.09, 0.16) });
+        p1.drawText("Document Ref: LD-2026-NDA-DEMO  •  Status: Awaiting Execution", { x: 50, y: 745, size: 10, font: font, color: PDFLib.rgb(0.3, 0.4, 0.5) });
+        p1.drawLine({ start: { x: 50, y: 735 }, end: { x: 545, y: 735 }, thickness: 1, color: PDFLib.rgb(0.8, 0.85, 0.9) });
+        
+        p1.drawText("PAGE 1: COVER PAGE & SUMMARY (EXCLUSION TEST PAGE)", { x: 50, y: 700, size: 12, font: boldFont, color: PDFLib.rgb(0.8, 0.2, 0.2) });
+        p1.drawText("This cover page summarizes the terms. In legal contracts, cover pages are usually NOT signed.", { x: 50, y: 675, size: 10, font });
+        p1.drawText("Use the 'All Except...' multi-page targeting button to stamp Pages 2 & 3 while leaving Page 1 clean!", { x: 50, y: 655, size: 10, font: boldFont, color: PDFLib.rgb(0.02, 0.5, 0.35) });
+        
+        p1.drawText("PARTIES TO THIS AGREEMENT:", { x: 50, y: 600, size: 11, font: boldFont });
+        p1.drawText("• Disclosing Party: LocalDoc Security Systems Corp.", { x: 60, y: 580, size: 10, font });
+        p1.drawText("• Receiving Party: Verified Commercial Partner / Signer", { x: 60, y: 560, size: 10, font });
+        p1.drawText("• Effective Date: " + todayDateStr, { x: 60, y: 540, size: 10, font });
+
+        // Page 2: Terms & Conditions (Page to test Initials / Checkbox)
+        const p2 = sampleDoc.addPage([595, 842]);
+        p2.drawText("SECTION 2: CONFIDENTIALITY OBLIGATIONS & RESTRICTIONS", { x: 50, y: 770, size: 14, font: boldFont });
+        p2.drawLine({ start: { x: 50, y: 755 }, end: { x: 545, y: 755 }, thickness: 1, color: PDFLib.rgb(0.8, 0.85, 0.9) });
+        p2.drawText("1. Standard of Care. The receiving party agrees to exercise reasonable commercial care.", { x: 50, y: 720, size: 10, font });
+        p2.drawText("2. Client-Side Security. All processing occurs strictly in volatile device memory.", { x: 50, y: 695, size: 10, font });
+        p2.drawText("3. Term & Termination. This agreement remains binding for a period of three (3) years.", { x: 50, y: 670, size: 10, font });
+        
+        p2.drawRectangle({ x: 50, y: 560, width: 260, height: 60, borderColor: PDFLib.rgb(0.02, 0.5, 0.35), borderWidth: 1.5 });
+        p2.drawText("PLEASE INITIAL HERE [PAGE 2 FOOTER]:", { x: 60, y: 600, size: 9, font: boldFont, color: PDFLib.rgb(0.02, 0.5, 0.35) });
+        p2.drawText("Click '+ Initials' or live-sign to test placement", { x: 60, y: 580, size: 8, font, color: PDFLib.rgb(0.5, 0.55, 0.6) });
+
+        // Page 3: Official Signature Block (Page to test Signature + Text Combo & 360° Rotation)
+        const p3 = sampleDoc.addPage([595, 842]);
+        p3.drawText("SECTION 3: EXECUTION & SIGNATURE ACCEPTANCE", { x: 50, y: 770, size: 14, font: boldFont });
+        p3.drawLine({ start: { x: 50, y: 755 }, end: { x: 545, y: 755 }, thickness: 1, color: PDFLib.rgb(0.8, 0.85, 0.9) });
+        p3.drawText("IN WITNESS WHEREOF, the parties execute this Agreement as of the date indicated below.", { x: 50, y: 725, size: 10, font });
+        
+        p3.drawRectangle({ x: 50, y: 540, width: 280, height: 95, borderColor: PDFLib.rgb(0.05, 0.45, 0.8), borderWidth: 1.5 });
+        p3.drawText("AUTHORIZED SIGNATURE & PRINTED NAME [PAGE 3]:", { x: 60, y: 615, size: 9, font: boldFont, color: PDFLib.rgb(0.05, 0.45, 0.8) });
+        p3.drawText("• Click '+ Signature & Text Combo' to drop both simultaneously", { x: 60, y: 595, size: 8, font, color: PDFLib.rgb(0.4, 0.45, 0.5) });
+        p3.drawText("• Drag the green rotation handle to angle your signature", { x: 60, y: 578, size: 8, font, color: PDFLib.rgb(0.4, 0.45, 0.5) });
+        p3.drawText("• Watch real-time ink appear live on this page as you sign!", { x: 60, y: 561, size: 8, font: boldFont, color: PDFLib.rgb(0.05, 0.45, 0.8) });
+
+        p3.drawRectangle({ x: 350, y: 540, width: 195, height: 95, borderColor: PDFLib.rgb(0.7, 0.75, 0.8), borderWidth: 1 });
+        p3.drawText("EXECUTION DATE SEAL:", { x: 360, y: 615, size: 9, font: boldFont, color: PDFLib.rgb(0.3, 0.35, 0.4) });
+        p3.drawText("• Click '+ Date Seal'", { x: 360, y: 595, size: 8, font, color: PDFLib.rgb(0.4, 0.45, 0.5) });
+
+        const bytes = await sampleDoc.save();
+        const sampleBlob = new Blob([bytes], { type: "application/pdf" });
+        const sampleFile = new File([sampleBlob], "Sample-Contract-Agreement-3Pages.pdf", { type: "application/pdf" });
+        await handleFiles([sampleFile]);
+      } catch (err) {
+        console.error("loadSampleSignContract error:", err);
+        UIUtils.showToast("Could not generate sample contract: " + err.message, "error");
+      }
+    };
 
     if (fileInput) {
       fileInput.__localdoc_handler = handleFiles;
