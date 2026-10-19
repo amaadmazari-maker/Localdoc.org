@@ -389,13 +389,13 @@
           </label>
           <div class="control-btn-group" id="split-mode-toggle" style="display:flex; flex-wrap:wrap; gap:8px;">
             <button type="button" class="control-btn-opt active" data-val="range">
-              📂 Extract Selected Pages (Single PDF)
+              📂 Split Selected Pages (Separate PDFs &amp; ZIP)
             </button>
             <button type="button" class="control-btn-opt" data-val="remove">
               🗑️ Remove Selected Pages (Save Remaining)
             </button>
             <button type="button" class="control-btn-opt" data-val="burst">
-              📄 Burst Every Page (1-Click ZIP)
+              📄 Burst Every Page (Separate PDFs &amp; ZIP)
             </button>
             <button type="button" class="control-btn-opt" data-val="size">
               ✉️ Split by File Size (Email-Ready)
@@ -414,6 +414,17 @@
               <span style="font-size:0.8rem; color:var(--text-muted);">Live 2-way sync with thumbnails below</span>
             </div>
             <input type="text" class="control-input" id="range-input" placeholder="e.g. 1-3, 5, 8-10, 12-" style="width:100%;">
+            <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);">
+              <span style="font-weight:700; font-size:0.84rem; color:var(--text-secondary);">Preferred Format:</span>
+              <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; cursor:pointer; color:var(--text-primary);">
+                <input type="radio" name="range-split-type" id="split-format-separate" value="separate" checked>
+                <span><strong>Separate PDFs</strong> (1 PDF per page &bull; 1-click download or ZIP)</span>
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; cursor:pointer; color:var(--text-primary);">
+                <input type="radio" name="range-split-type" id="split-format-merged" value="merged">
+                <span><strong>Single Combined PDF</strong> (Merge selected pages into 1 document)</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -525,19 +536,39 @@
           <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
         </div>
         <div class="result-actions" style="justify-content:center; gap:12px; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-lg" id="download-btn">
+          <!-- 1-Click Separate PDFs Download (Direct PDFs, No ZIP needed) -->
+          <button class="btn btn-primary btn-lg" id="download-all-pdfs-btn" type="button" style="display:inline-flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            <span id="download-all-pdfs-btn-text">Download All as Separate PDFs (1-Click)</span>
+          </button>
+
+          <!-- 1-Click ZIP Download -->
+          <button class="btn btn-outline btn-lg" id="download-btn" type="button" style="display:inline-flex; align-items:center; gap:8px;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span id="download-btn-text">Download All as ZIP (.zip)</span>
           </button>
+
+          <!-- Combined Single PDF Download (Optional) -->
+          <button class="btn btn-outline btn-lg" id="download-merged-pdf-btn" type="button" style="display:none; align-items:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span id="download-merged-pdf-btn-text">Download Combined PDF (1 File)</span>
+          </button>
+
+          <!-- WhatsApp & Native Mobile Share -->
           <button class="btn btn-lg share-whatsapp-btn" id="share-whatsapp-btn" type="button" title="Send directly via WhatsApp or Native Mobile Share">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             <span>Share Document</span>
           </button>
         </div>
-        <div id="split-items-container" style="display:none; margin-top:12px; width:100%; border-top:1px solid var(--line); padding-top:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-            <h4 style="font-size:0.92rem; font-weight:700; color:var(--text-primary); margin:0;" id="split-items-title">Individual Files Generated:</h4>
-            <span id="split-items-count" style="font-size:0.8rem; color:var(--text-muted);"></span>
+        <div id="split-items-container" style="display:none; margin-top:16px; width:100%; border-top:1px solid var(--line); padding-top:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+            <div>
+              <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;" id="split-items-title">Individual Files Generated:</h4>
+              <span id="split-items-count" style="font-size:0.8rem; color:var(--text-muted);"></span>
+            </div>
+            <button type="button" class="btn btn-outline" id="btn-download-all-separate-list" style="padding:6px 14px; font-size:0.82rem; font-weight:700;">
+              ⬇ Download All Separate PDFs
+            </button>
           </div>
           <div id="split-items-list" style="max-height:350px; overflow-y:auto; padding-right:4px;"></div>
         </div>
@@ -900,11 +931,21 @@
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
     const downloadBtnText = document.getElementById("download-btn-text");
+    const downloadAllPdfsBtn = document.getElementById("download-all-pdfs-btn");
+    const downloadAllPdfsBtnText = document.getElementById("download-all-pdfs-btn-text");
+    const downloadMergedPdfBtn = document.getElementById("download-merged-pdf-btn");
+    const downloadMergedPdfBtnText = document.getElementById("download-merged-pdf-btn-text");
+    const btnDownloadAllSeparateList = document.getElementById("btn-download-all-separate-list");
     const shareWhatsAppBtn = document.getElementById("share-whatsapp-btn");
     const splitItemsContainer = document.getElementById("split-items-container");
     const splitItemsTitle = document.getElementById("split-items-title");
     const splitItemsCount = document.getElementById("split-items-count");
     const splitItemsList = document.getElementById("split-items-list");
+    const splitFormatSeparateRadio = document.getElementById("split-format-separate");
+    const splitFormatMergedRadio = document.getElementById("split-format-merged");
+
+    let currentMergedPdfBlob = null;
+    let currentMergedFilename = null;
 
     // Mode Toggle
     document.querySelectorAll("#split-mode-toggle button").forEach(btn => {
@@ -976,21 +1017,21 @@
     function updateModeUI() {
       if (splitMode === 'range') {
         rangeInputGroup.style.display = 'flex';
-        rangeInputLabel.textContent = 'Page Range to Extract into Single PDF:';
+        rangeInputLabel.textContent = 'Page Range to Split (e.g. 1-3, 5, 8-10):';
         sizeOptionsPanel.style.display = 'none';
         chunksOptionsPanel.style.display = 'none';
-        modeDescBanner.innerHTML = '💡 <strong>Extract to Single PDF:</strong> Combines only the selected pages below into a clean new document. Ideal for chapters or certificates.';
+        modeDescBanner.innerHTML = '💡 <strong>Split Selected Pages:</strong> Splits your chosen pages into separate PDF files. Download all pages separately in 1-click, as a single ZIP, or merged into 1 document.';
       } else if (splitMode === 'remove') {
         rangeInputGroup.style.display = 'flex';
         rangeInputLabel.textContent = 'Pages to Delete / Discard (Rest Will Be Saved):';
         sizeOptionsPanel.style.display = 'none';
         chunksOptionsPanel.style.display = 'none';
-        modeDescBanner.innerHTML = '💡 <strong>Remove Selected Pages:</strong> Discards selected/highlighted pages and compiles all other pages into a clean PDF. Ideal for stripping covers or blank pages.';
+        modeDescBanner.innerHTML = '💡 <strong>Remove Selected Pages:</strong> Discards selected pages and compiles all remaining pages into a clean document, plus individual parts.';
       } else if (splitMode === 'burst') {
         rangeInputGroup.style.display = 'none';
         sizeOptionsPanel.style.display = 'none';
         chunksOptionsPanel.style.display = 'none';
-        modeDescBanner.innerHTML = '💡 <strong>Burst Every Page Mode:</strong> Generates a separate single-page PDF for every page below, bundled into a 1-click ZIP archive.';
+        modeDescBanner.innerHTML = '💡 <strong>Burst Every Page Mode:</strong> Generates a separate single-page PDF for every page, with 1-click download of all separate PDFs or a single ZIP.';
       } else if (splitMode === 'size') {
         rangeInputGroup.style.display = 'none';
         sizeOptionsPanel.style.display = 'flex';
@@ -1001,9 +1042,14 @@
         rangeInputGroup.style.display = 'none';
         sizeOptionsPanel.style.display = 'none';
         chunksOptionsPanel.style.display = 'flex';
-        modeDescBanner.innerHTML = '💡 <strong>Fixed Chunks Mode:</strong> Groups pages into fixed intervals (e.g. 2 pages per pair). Each group becomes a separate PDF, bundled into 1 ZIP.';
+        modeDescBanner.innerHTML = '💡 <strong>Fixed Chunks Mode:</strong> Groups pages into fixed intervals (e.g. 2 pages per pair). Download all parts separately in 1 click or as a ZIP.';
       }
       updateSelectionUI();
+    }
+
+    if (splitFormatSeparateRadio && splitFormatMergedRadio) {
+      splitFormatSeparateRadio.addEventListener('change', updateSelectionUI);
+      splitFormatMergedRadio.addEventListener('change', updateSelectionUI);
     }
 
     // Two-Way Sync: Typed Range Input
@@ -1260,17 +1306,20 @@
 
       // Update process button label
       if (splitMode === 'range') {
-        processBtnText.textContent = `Extract ${activeList.length} Pages into Single PDF`;
+        const isMerged = splitFormatMergedRadio && splitFormatMergedRadio.checked;
+        processBtnText.textContent = isMerged
+          ? `Extract ${activeList.length} Pages into 1 Single PDF`
+          : `Split ${activeList.length} Pages into Separate PDFs (1-Click & ZIP)`;
       } else if (splitMode === 'remove') {
         const remaining = totalDocPages - activeList.length;
         processBtnText.textContent = `Remove ${activeList.length} Pages (Save ${remaining} Pages)`;
       } else if (splitMode === 'burst') {
-        processBtnText.textContent = `Burst ${activeList.length} Pages into 1-Click ZIP`;
+        processBtnText.textContent = `Burst ${activeList.length} Pages into Separate PDFs (1-Click & ZIP)`;
       } else if (splitMode === 'size') {
-        processBtnText.textContent = `Split into Parts Under ${splitSizeMB} MB (ZIP)`;
+        processBtnText.textContent = `Split into Parts Under ${splitSizeMB} MB`;
       } else if (splitMode === 'chunks') {
         const numChunks = Math.ceil(activeList.length / chunkSize);
-        processBtnText.textContent = `Split into ${numChunks} Parts (${chunkSize} Pgs/Part) (ZIP)`;
+        processBtnText.textContent = `Split into ${numChunks} Parts (${chunkSize} Pgs/Part)`;
       }
     }
 
@@ -1366,37 +1415,123 @@
         generatedItems = [];
 
         if (splitMode === 'range') {
-          // Mode A: Extract to Single PDF
-          const res = await PDFOrganize.splitPDF(selectedFile, activeList, progressCb);
-          resultBlob = res.pdfBlob;
-          resultFilename = res.filename;
-          downloadBtnText.textContent = `Download Extracted PDF (${activeList.length} Pages)`;
-          document.getElementById("result-title").textContent = `Extraction Complete!`;
-          document.getElementById("result-meta").innerHTML = `Extracted <strong>${activeList.length} pages</strong> into a single new document &bull; Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+          // Mode A: Split Selected Pages (Generate BOTH Separate PDFs + Merged PDF)
+          const burstRes = await PDFOrganize.splitSelectedPagesToZip(selectedFile, activeList, progressCb);
+          resultBlob = burstRes.zipBlob;
+          resultFilename = burstRes.filename;
+          generatedItems = burstRes.files || [];
 
-          splitItemsContainer.style.display = "none";
-          splitItemsList.innerHTML = '';
+          // Also generate combined PDF in memory
+          currentMergedPdfBlob = null;
+          currentMergedFilename = null;
+          try {
+            const mergedRes = await PDFOrganize.splitPDF(selectedFile, activeList);
+            currentMergedPdfBlob = mergedRes.pdfBlob;
+            currentMergedFilename = mergedRes.filename;
+          } catch (mErr) {
+            console.warn('Merged PDF generation skipped:', mErr);
+          }
+
+          const isMergedPreferred = splitFormatMergedRadio && splitFormatMergedRadio.checked;
+
+          if (isMergedPreferred && currentMergedPdfBlob) {
+            document.getElementById("result-title").textContent = `Extraction Complete! (${activeList.length} Pages)`;
+            document.getElementById("result-meta").innerHTML = `Combined <strong>${activeList.length} pages</strong> into 1 new PDF &bull; Size: ${UIUtils.formatBytes(currentMergedPdfBlob.size)} &bull; 100% In-Browser RAM`;
+
+            downloadMergedPdfBtn.className = "btn btn-primary btn-lg";
+            downloadMergedPdfBtn.style.display = "inline-flex";
+            downloadMergedPdfBtnText.textContent = `Download Combined PDF (${activeList.length} Pages in 1 File)`;
+
+            downloadAllPdfsBtn.className = "btn btn-outline btn-lg";
+            downloadAllPdfsBtn.style.display = "inline-flex";
+            downloadAllPdfsBtnText.textContent = `Download All (${activeList.length}) Separate PDFs (1-Click)`;
+
+            downloadBtn.style.display = "inline-flex";
+            downloadBtnText.textContent = `Download All (${activeList.length} Pages) as ZIP (.zip)`;
+          } else {
+            document.getElementById("result-title").textContent = `Successfully Split into ${activeList.length} Separate PDF Files!`;
+            document.getElementById("result-meta").innerHTML = `Divided into <strong>${activeList.length} separate PDF files</strong> + 1 combined document &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+            downloadAllPdfsBtn.className = "btn btn-primary btn-lg";
+            downloadAllPdfsBtn.style.display = "inline-flex";
+            downloadAllPdfsBtnText.textContent = `Download All (${activeList.length}) Separate PDFs (1-Click)`;
+
+            downloadBtn.style.display = "inline-flex";
+            downloadBtnText.textContent = `Download All (${activeList.length} Pages) as ZIP (.zip)`;
+
+            if (currentMergedPdfBlob) {
+              downloadMergedPdfBtn.className = "btn btn-outline btn-lg";
+              downloadMergedPdfBtn.style.display = "inline-flex";
+              downloadMergedPdfBtnText.textContent = `Download Combined PDF (${activeList.length} Pages in 1 File)`;
+            } else {
+              downloadMergedPdfBtn.style.display = "none";
+            }
+          }
+
+          renderGeneratedItemsList(generatedItems, `Individual PDF Pages (${activeList.length} Files):`);
         } else if (splitMode === 'remove') {
           // Mode B: Remove Selected Pages
           const res = await PDFOrganize.removePagesPDF(selectedFile, activeList, progressCb);
-          resultBlob = res.pdfBlob;
-          resultFilename = res.filename;
-          downloadBtnText.textContent = `Download Cleaned PDF (${res.remainingPagesCount} Pages)`;
-          document.getElementById("result-title").textContent = `Removed ${res.removedPagesCount} Pages Successfully!`;
-          document.getElementById("result-meta").innerHTML = `Saved <strong>${res.remainingPagesCount} pages</strong> &bull; Excluded: ${res.removedPagesCount} page(s) &bull; Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+          currentMergedPdfBlob = res.pdfBlob;
+          currentMergedFilename = res.filename;
 
-          splitItemsContainer.style.display = "none";
-          splitItemsList.innerHTML = '';
+          // Generate separate individual parts for the remaining pages
+          const remainingPages = [];
+          for (let p = 1; p <= totalDocPages; p++) {
+            if (!activeList.includes(p)) remainingPages.push(p);
+          }
+
+          try {
+            const burstRes = await PDFOrganize.splitSelectedPagesToZip(selectedFile, remainingPages);
+            resultBlob = burstRes.zipBlob;
+            resultFilename = burstRes.filename;
+            generatedItems = burstRes.files || [];
+          } catch (e) {
+            resultBlob = currentMergedPdfBlob;
+            resultFilename = currentMergedFilename;
+            generatedItems = [];
+          }
+
+          document.getElementById("result-title").textContent = `Removed ${res.removedPagesCount} Pages Successfully!`;
+          document.getElementById("result-meta").innerHTML = `Saved <strong>${res.remainingPagesCount} pages</strong> &bull; Excluded: ${res.removedPagesCount} page(s) &bull; Cleaned PDF: ${UIUtils.formatBytes(currentMergedPdfBlob.size)} &bull; 100% In-Browser RAM`;
+
+          downloadMergedPdfBtn.className = "btn btn-primary btn-lg";
+          downloadMergedPdfBtn.style.display = "inline-flex";
+          downloadMergedPdfBtnText.textContent = `Download Cleaned PDF (${res.remainingPagesCount} Pages in 1 File)`;
+
+          if (generatedItems.length > 0) {
+            downloadAllPdfsBtn.className = "btn btn-outline btn-lg";
+            downloadAllPdfsBtn.style.display = "inline-flex";
+            downloadAllPdfsBtnText.textContent = `Download Remaining as Separate PDFs (${res.remainingPagesCount} Files)`;
+
+            downloadBtn.style.display = "inline-flex";
+            downloadBtnText.textContent = `Download All as ZIP (.zip)`;
+
+            renderGeneratedItemsList(generatedItems, `Remaining Individual Pages (${res.remainingPagesCount} Files):`);
+          } else {
+            downloadAllPdfsBtn.style.display = "none";
+            downloadBtn.style.display = "none";
+            splitItemsContainer.style.display = "none";
+          }
         } else if (splitMode === 'burst') {
-          // Mode C: Burst Every Page to ZIP
+          // Mode C: Burst Every Page
           const res = await PDFOrganize.splitSelectedPagesToZip(selectedFile, activeList, progressCb);
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           generatedItems = res.files || [];
+          currentMergedPdfBlob = null;
 
-          downloadBtnText.textContent = `Download All (${res.totalExtracted} Pages) as ZIP (.zip)`;
           document.getElementById("result-title").textContent = `Successfully Burst into ${res.totalExtracted} Individual PDFs!`;
           document.getElementById("result-meta").innerHTML = `Generated <strong>${res.totalExtracted} single-page PDFs</strong> &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          downloadAllPdfsBtn.className = "btn btn-primary btn-lg";
+          downloadAllPdfsBtn.style.display = "inline-flex";
+          downloadAllPdfsBtnText.textContent = `Download All (${res.totalExtracted}) Separate PDFs (1-Click)`;
+
+          downloadBtn.style.display = "inline-flex";
+          downloadBtnText.textContent = `Download All (${res.totalExtracted} Pages) as ZIP (.zip)`;
+
+          downloadMergedPdfBtn.style.display = "none";
 
           renderGeneratedItemsList(generatedItems, 'Individual Single-Page PDFs:');
         } else if (splitMode === 'size') {
@@ -1406,10 +1541,19 @@
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           generatedItems = res.chunks || [];
+          currentMergedPdfBlob = null;
 
-          downloadBtnText.textContent = `Download All (${res.totalChunks} Parts) as ZIP (.zip)`;
           document.getElementById("result-title").textContent = `Successfully Split into ${res.totalChunks} Email-Ready Parts!`;
           document.getElementById("result-meta").innerHTML = `Divided into <strong>${res.totalChunks} files</strong> under ${splitSizeMB} MB &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          downloadAllPdfsBtn.className = "btn btn-primary btn-lg";
+          downloadAllPdfsBtn.style.display = "inline-flex";
+          downloadAllPdfsBtnText.textContent = `Download All (${res.totalChunks}) Separate Parts (1-Click)`;
+
+          downloadBtn.style.display = "inline-flex";
+          downloadBtnText.textContent = `Download All (${res.totalChunks} Parts) as ZIP (.zip)`;
+
+          downloadMergedPdfBtn.style.display = "none";
 
           renderGeneratedItemsList(generatedItems, 'Generated Size-Optimized Parts:');
         } else if (splitMode === 'chunks') {
@@ -1418,10 +1562,19 @@
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           generatedItems = res.chunks || [];
+          currentMergedPdfBlob = null;
 
-          downloadBtnText.textContent = `Download All (${res.totalChunks} Parts) as ZIP (.zip)`;
           document.getElementById("result-title").textContent = `Successfully Split into ${res.totalChunks} Parts!`;
           document.getElementById("result-meta").innerHTML = `Divided into <strong>${res.totalChunks} separate PDF files</strong> (${chunkSize} pages/part) &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          downloadAllPdfsBtn.className = "btn btn-primary btn-lg";
+          downloadAllPdfsBtn.style.display = "inline-flex";
+          downloadAllPdfsBtnText.textContent = `Download All (${res.totalChunks}) Separate Parts (1-Click)`;
+
+          downloadBtn.style.display = "inline-flex";
+          downloadBtnText.textContent = `Download All (${res.totalChunks} Parts) as ZIP (.zip)`;
+
+          downloadMergedPdfBtn.style.display = "none";
 
           renderGeneratedItemsList(generatedItems, 'Generated Split Parts:');
         }
@@ -1480,6 +1633,42 @@
         UIUtils.downloadBlob(resultBlob, resultFilename);
       }
     });
+
+    async function triggerDownloadAllSeparatePDFs() {
+      if (!generatedItems || generatedItems.length === 0) {
+        UIUtils.showToast("No separate PDF files available to download.", "warning");
+        return;
+      }
+      const count = generatedItems.length;
+      UIUtils.showToast(`Starting 1-click download of ${count} separate PDF files...`, "info");
+
+      for (let i = 0; i < count; i++) {
+        const item = generatedItems[i];
+        if (i > 0) {
+          // Stagger downloads by 250ms so browser allows multi-file download smoothly
+          await new Promise(r => setTimeout(r, 250));
+        }
+        UIUtils.downloadBlob(item.blob, item.filename);
+      }
+
+      setTimeout(() => {
+        UIUtils.showToast(`All ${count} separate PDF files downloaded successfully!`, "success");
+      }, 400);
+    }
+
+    if (downloadAllPdfsBtn) {
+      downloadAllPdfsBtn.addEventListener("click", triggerDownloadAllSeparatePDFs);
+    }
+    if (btnDownloadAllSeparateList) {
+      btnDownloadAllSeparateList.addEventListener("click", triggerDownloadAllSeparatePDFs);
+    }
+    if (downloadMergedPdfBtn) {
+      downloadMergedPdfBtn.addEventListener("click", function() {
+        if (currentMergedPdfBlob) {
+          UIUtils.downloadBlob(currentMergedPdfBlob, currentMergedFilename || "combined-document.pdf");
+        }
+      });
+    }
 
     // Native Mobile Share & WhatsApp Dispatch
     if (shareWhatsAppBtn) {
