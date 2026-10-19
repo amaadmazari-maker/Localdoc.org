@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -65,8 +65,8 @@
     },
     {
       "@type": "Article",
-      "headline": "Combining Multiple JPG Photos into a Single Printable PDF with Zero Cloud Transmission",
-      "description": "Comprehensive engineering guide explaining how to package smartphone photos, receipts, and claim scans into standardized A4 PDF documents with EXIF normalization and calibrated compression inside local browser RAM.",
+      "headline": "Combining Multiple JPG & HEIC Photos into a Single Printable PDF with Zero Cloud Transmission",
+      "description": "Comprehensive engineering guide explaining how to package smartphone photos, iPhone HEIC images, receipts, and claim scans into standardized A4 or original-dimension PDF documents with EXIF normalization, natural numerical auto-sorting, and WhatsApp sharing inside local browser RAM.",
       "author": {
         "@type": "Person",
         "name": "Amaad Mazari",
@@ -82,7 +82,7 @@
         }
       },
       "datePublished": "2026-08-31",
-      "dateModified": "2026-09-30"
+      "dateModified": "2026-10-19"
     },
     {
       "@type": "HowTo",
@@ -336,16 +336,16 @@
   </style>
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="JPG to PDF Converter — Combine Photos into PDF">
-  <meta property="og:description" content="Convert JPG, PNG or WebP images to PDF instantly in your browser. Merge multiple photos into one PDF — free, private, no upload.">
+  <meta property="og:title" content="JPG &amp; HEIC to PDF Master Guide — Combine Photos into PDF">
+  <meta property="og:description" content="Convert JPG, PNG, WebP, and iPhone HEIC photos to PDF in your browser. Natural numerical smart sorting, original dimensions, and WhatsApp sharing.">
   <meta property="og:url" content="https://localdoc.org/blog/jpg-to-pdf-guide.html">
   <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="JPG to PDF Converter — Combine Photos into PDF">
-  <meta name="twitter:description" content="Convert JPG, PNG or WebP images to PDF instantly in your browser. Merge multiple photos into one PDF — free, private, no upload.">
+  <meta name="twitter:title" content="JPG &amp; HEIC to PDF Master Guide — Combine Photos into PDF">
+  <meta name="twitter:description" content="Convert JPG, PNG, WebP, and iPhone HEIC photos to PDF in your browser. Natural numerical smart sorting, original dimensions, and WhatsApp sharing.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
 
 </head>
@@ -425,9 +425,11 @@
       <div class="exec-summary-box">
         <h3>Executive Takeaways</h3>
         <ul>
+          <li><strong>Universal Multi-Format Support:</strong> Ingests JPG, PNG, WebP, AVIF, and iPhone HEIC/HEIF photos directly in local browser RAM without third-party converters.</li>
+          <li><strong>Smart Natural &amp; Date Sorting:</strong> Eliminates chaotic phone gallery uploads using <code>Intl.Collator</code> natural numerical sorting (1, 2, 10) and binary EXIF <code>DateTimeOriginal</code> camera timestamps.</li>
+          <li><strong>Original Dimensions vs A4 Fit:</strong> Preserves exact 1:1 image bounds without white letterbox borders, or scales cleanly onto standard printable A4 sheets.</li>
+          <li><strong>1-Click WhatsApp &amp; Mobile Sharing:</strong> Direct integration with the Web Share API (<code>navigator.share</code>) to send generated PDF dossiers straight to WhatsApp, Slack, or email.</li>
           <li><strong>Zero Network Transmission:</strong> Private photos of medical bills, insurance claims, and personal receipts are compiled entirely in device RAM without cloud exposure.</li>
-          <li><strong>EXIF Orientation Normalization:</strong> Reads digital camera metadata tags to auto-rotate portrait and landscape images, eliminating sideways and inverted pages.</li>
-          <li><strong>Calibrated Payload Compression:</strong> Shrinks multi-megabyte raw smartphone photos down to email-compliant PDF bundles while preserving high-contrast readability.</li>
         </ul>
       </div>
 
@@ -449,6 +451,20 @@
         <li><strong>Standardized Page Geometry:</strong> The rotated image is mapped onto an International ISO A4 canvas (595.28 &times; 841.89 pt) or US Letter canvas (612 &times; 792 pt). The engine calculates proportional scale factors with 28 pt safety gutters to prevent laser printers from clipping margins.</li>
         <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tags &mdash; such as GPS coordinates, camera serial numbers, and exposure times &mdash; are stripped from the binary streams, protecting user privacy.</li>
       </ol>
+
+      <h2>2b. Smart Auto-Sorting: Solving the Mobile Filename &amp; Timeline Chaos</h2>
+      <p>When selecting images on mobile phones, modern operating systems often return files in non-intuitive orders. Standard computer string sorting sorts <code>photo_10.jpg</code> directly after <code>photo_1.jpg</code> and before <code>photo_2.jpg</code>, ruining sequential document flows. LocalDoc solves this with dual automated sorting algorithms:</p>
+      <ul>
+        <li><strong>Natural Numerical Sorting:</strong> Powered by <code>Intl.Collator(undefined, { numeric: true })</code>, file names with numbers (e.g. <code>scan1</code>, <code>scan2</code>, ... <code>scan10</code>) are ordered with natural human logic rather than ASCII byte order.</li>
+        <li><strong>EXIF Chronological Sorting:</strong> Reads the camera sensor timestamp (<code>DateTimeOriginal</code>) from the APP1 segment to order photographs by the exact real-world second they were snapped.</li>
+      </ul>
+
+      <h2>2c. Layout Geometry: Standard A4 vs 1:1 Original Photo Dimensions</h2>
+      <p>Traditional PDF creators force every photo onto a standardized A4 page, surrounding square Instagram photos, panorama shots, and receipts with awkward white letterbox bars. LocalDoc introduces dynamic layout geometry:</p>
+      <ul>
+        <li><strong>Fit to Standard A4 / Letter:</strong> Fits each image within printable paper bounds with adjustable margin gutters (0pt, 20pt, 40pt) &mdash; ideal for formal job applications, tax declarations, and office printers.</li>
+        <li><strong>Original Photo Dimensions:</strong> Dynamically calculates each PDF page width and height to match the exact pixel dimensions of each image with zero margins &mdash; delivering pristine 1:1 digital portfolios and borderless image presentations.</li>
+      </ul>
 
       <h2>3. Under the Hood: Lossless DCT Passthrough vs Smart Resampling</h2>
       <p>LocalDoc utilizes a dual-path pipeline to balance execution speed, visual quality, and output file size:</p>

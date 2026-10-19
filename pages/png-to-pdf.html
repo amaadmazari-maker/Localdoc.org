@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -204,17 +204,26 @@
           <img src="../assets/icons/png-to-pdf.svg" alt="PNG to PDF Converter Online Icon" width="48" height="48" loading="lazy" decoding="async">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your PNG images here</h3>
-          <p>Or click to browse multiple images. 100% in-browser private execution.</p>
+          <h3>Drop your PNG &amp; image graphics here</h3>
+          <p>Supports PNG (with transparency), JPG, WebP, AVIF, and iPhone HEIC. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select PNG Images</button>
-        <input type="file" id="file-input" accept=".png,image/png,image/*" multiple style="display:none;">
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PNG &amp; Images</button>
+        <input type="file" id="file-input" accept=".png,.jpg,.jpeg,.webp,.avif,.heic,.heif,image/*" multiple style="display:none;">
       </div>
 
       <!-- Controls Bar -->
-      <div class="tool-controls-bar" id="tool-controls-bar" style="display:none;">
+      <div class="tool-controls-bar" id="tool-controls-bar" style="display:none; flex-wrap:wrap; gap:16px; align-items:flex-end;">
         <div class="control-group">
-          <span class="control-label">Orientation:</span>
+          <label class="control-label" for="page-size-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Page Layout &amp; Size:</label>
+          <select class="control-select" id="page-size-select">
+            <option value="a4" selected>Fit to Standard A4 (Recommended for Printing)</option>
+            <option value="original">Original Graphic Dimensions (1:1 Ratio &bull; No Padding)</option>
+            <option value="letter">US Letter (8.5 &times; 11 in)</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="orientation-group">
+          <label class="control-label" for="orientation-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Orientation:</label>
           <select class="control-select" id="orientation-select">
             <option value="auto" selected>Auto-Fit Each Page</option>
             <option value="portrait">Portrait</option>
@@ -222,23 +231,33 @@
           </select>
         </div>
 
-        <div class="control-group">
-          <span class="control-label">Margins:</span>
+        <div class="control-group" id="margin-group">
+          <label class="control-label" for="margin-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Margins:</label>
           <select class="control-select" id="margin-select">
             <option value="20" selected>Normal Margin (20pt)</option>
-            <option value="0">No Margin (Border to Border)</option>
+            <option value="0">No Margin (Full Bleed)</option>
             <option value="40">Wide Margin (40pt)</option>
           </select>
         </div>
 
-        <button class="btn btn-outline" id="add-more-btn" style="padding:6px 14px; font-size:0.85rem;">+ Add More PNGs</button>
+        <button class="btn btn-outline" id="add-more-btn" style="padding:8px 16px; font-size:0.85rem; height:38px; display:inline-flex; align-items:center;">+ Add More PNGs</button>
       </div>
 
-      <!-- Reorderable Gallery Grid -->
+      <!-- Reorderable Gallery Grid with Smart Auto-Sort Toolbar -->
       <div id="gallery-wrap" style="display:none; margin-top:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h4 style="font-size:0.95rem; font-weight:700;">Selected Images (<span id="image-count">0</span>)</h4>
-          <button class="btn btn-outline" id="clear-all-btn" style="padding:4px 10px; font-size:0.78rem;"><span data-i18n="queue_clear_all">Clear All</span></button>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; background:var(--bg-surface); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin:0; color:var(--text-primary);">Selected Images (<span id="image-count">0</span>)</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted);">(Drag arrows to arrange, or use auto-sort)</span>
+          </div>
+          <div class="sort-toolbar" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Auto-Sort:</span>
+            <button type="button" class="btn btn-outline" id="sort-name-btn" style="padding:4px 10px; font-size:0.78rem;" title="Natural numerical sort (e.g. image_1, image_2, image_10)">Name (1-10)</button>
+            <button type="button" class="btn btn-outline" id="sort-date-btn" style="padding:4px 10px; font-size:0.78rem;" title="Sort chronologically by capture/creation timestamp (oldest first)">Date &uarr;</button>
+            <button type="button" class="btn btn-outline" id="sort-date-desc-btn" style="padding:4px 10px; font-size:0.78rem;" title="Sort chronologically by capture/creation timestamp (newest first)">Date &darr;</button>
+            <button type="button" class="btn btn-outline" id="sort-reverse-btn" style="padding:4px 10px; font-size:0.78rem;" title="Reverse current page sequence">&#8646; Reverse</button>
+            <button type="button" class="btn btn-outline" id="clear-all-btn" style="padding:4px 10px; font-size:0.78rem; color:var(--danger); border-color:var(--danger);"><span data-i18n="queue_clear_all">Clear All</span></button>
+          </div>
         </div>
         <div class="page-thumbnail-grid" id="image-grid"></div>
       </div>
@@ -276,15 +295,19 @@
       </div>
 
       <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
+      <div class="result-card" id="result-card" style="display:none; flex-direction:column; gap:16px;">
+        <div class="result-details" style="text-align:center;">
           <h3 id="result-title">PDF Document Ready!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+          <p id="result-meta">Ready for instant download or 1-click sharing. Zero bytes transmitted.</p>
         </div>
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" id="download-btn">
+        <div class="result-actions" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-lg" id="download-btn" style="min-width:210px; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span>Download .PDF File</span>
+          </button>
+          <button class="btn btn-lg" id="share-whatsapp-btn" style="background:#25D366; color:#ffffff; border:none; font-weight:600; min-width:200px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; padding:10px 20px; border-radius:var(--radius-sm);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.696c1.006.577 1.764.887 2.806.887 3.182 0 5.768-2.586 5.768-5.766.001-3.18-2.585-5.77-5.768-5.77zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.635.074-1.802-.412-1.467-.61-2.404-2.102-2.477-2.2-.073-.098-.59-0.785-.59-1.498 0-.713.375-1.064.509-1.21.133-.146.291-.182.388-.182.097 0 .194.001.279.005.091.004.212-.034.331.252.124.298.424 1.034.461 1.109.036.074.06.161.012.257-.048.096-.073.156-.145.241-.073.085-.153.19-.219.255-.073.072-.149.15-.064.296.085.146.377.622.809 1.007.557.496 1.026.65 1.172.723.146.073.23.061.315-.037.085-.097.364-.424.461-.57.097-.145.194-.121.327-.073.133.049.849.4 1.001.476.152.076.255.113.291.177.036.064.036.37-.108.775zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.306C8.423 21.53 10.153 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.273c-1.636 0-3.156-.474-4.436-1.291l-.318-.204-2.96.776.79-2.884-.208-.332C3.99 15.02 3.455 13.565 3.455 12c0-4.712 3.833-8.545 8.545-8.545 4.713 0 8.545 3.833 8.545 8.545 0 4.713-3.832 8.545-8.545 8.545z"/></svg>
+            <span>Share PDF (WhatsApp)</span>
           </button>
         </div>
       </div>
@@ -598,6 +621,7 @@
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
+  <script src="../js/lib/heic2any.min.js?v=20260921-v26"></script>
   <script src="../js/tools/convert.js?v=20260921-v26"></script>
 
   <script>
@@ -607,37 +631,111 @@
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
     const controlsBar = document.getElementById("tool-controls-bar");
+    const pageSizeSelect = document.getElementById("page-size-select");
     const orientationSelect = document.getElementById("orientation-select");
     const marginSelect = document.getElementById("margin-select");
+    const orientationGroup = document.getElementById("orientation-group");
+    const marginGroup = document.getElementById("margin-group");
     const addMoreBtn = document.getElementById("add-more-btn");
     const galleryWrap = document.getElementById("gallery-wrap");
     const imageCount = document.getElementById("image-count");
     const imageGrid = document.getElementById("image-grid");
     const clearAllBtn = document.getElementById("clear-all-btn");
+    const sortNameBtn = document.getElementById("sort-name-btn");
+    const sortDateBtn = document.getElementById("sort-date-btn");
+    const sortDateDescBtn = document.getElementById("sort-date-desc-btn");
+    const sortReverseBtn = document.getElementById("sort-reverse-btn");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
+    const shareWhatsappBtn = document.getElementById("share-whatsapp-btn");
 
     addMoreBtn.addEventListener("click", () => fileInput.click());
 
+    // Page layout select changes
+    pageSizeSelect.addEventListener("change", () => {
+      const isOriginal = pageSizeSelect.value === 'original';
+      if (isOriginal) {
+        orientationGroup.style.opacity = '0.4';
+        orientationGroup.title = 'Orientation is auto-set to match original graphic dimensions';
+        marginGroup.style.opacity = '0.4';
+        marginGroup.title = 'Margins are zero for 1:1 original graphic dimensions';
+      } else {
+        orientationGroup.style.opacity = '1';
+        orientationGroup.title = '';
+        marginGroup.style.opacity = '1';
+        marginGroup.title = '';
+      }
+    });
+
     UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
       if (files.length > 0) {
+        let loadedCount = 0;
         for (const file of files) {
-          const dataUrl = await UIUtils.readFileAsDataURL(file);
-          uploadedImages.push({
-            file: file,
-            dataUrl: dataUrl,
-            name: file.name,
-            rotation: 0
-          });
+          try {
+            const fileName = file.name || 'image';
+            const lowerName = fileName.toLowerCase();
+            const isHeic = lowerName.endsWith('.heic') || lowerName.endsWith('.heif') || file.type === 'image/heic' || file.type === 'image/heif';
+
+            let dataUrl = null;
+            let captureDate = null;
+
+            // Extract EXIF date & orientation for JPEG
+            if (lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || file.type === 'image/jpeg') {
+              try {
+                const buffer = await UIUtils.readFileAsArrayBuffer(file);
+                const exif = PDFConvert.parseExif(buffer);
+                if (exif && exif.dateStr) {
+                  captureDate = exif.dateStr;
+                }
+              } catch (e) {}
+            }
+
+            // Generate thumbnail dataUrl
+            if (isHeic && typeof heic2any !== 'undefined') {
+              try {
+                const converted = await heic2any({
+                  blob: file,
+                  toType: 'image/jpeg',
+                  quality: 0.8
+                });
+                const heicBlob = Array.isArray(converted) ? converted[0] : converted;
+                dataUrl = await UIUtils.readFileAsDataURL(heicBlob);
+              } catch (e) {
+                console.warn('HEIC preview conversion fallback:', e);
+              }
+            }
+
+            if (!dataUrl) {
+              dataUrl = await UIUtils.readFileAsDataURL(file);
+            }
+
+            uploadedImages.push({
+              file: file,
+              dataUrl: dataUrl,
+              name: fileName,
+              captureDate: captureDate,
+              rotation: 0
+            });
+            loadedCount++;
+          } catch (err) {
+            console.error('Failed to read image:', err);
+            UIUtils.showToast("Could not read this image format. Please try PNG or JPG.", "error");
+          }
         }
-        renderGallery();
+        if (loadedCount > 0) {
+          dropZone.style.display = "none";
+          renderGallery();
+          UIUtils.showToast("Added " + loadedCount + " image(s) into RAM", "info");
+          galleryWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
     });
 
     function renderGallery() {
       if (uploadedImages.length === 0) {
+        dropZone.style.display = "block";
         galleryWrap.style.display = "none";
         controlsBar.style.display = "none";
         actionBar.style.display = "none";
@@ -665,8 +763,8 @@
         footer.innerHTML = `
           <span>#${idx + 1}</span>
           <div class="page-thumb-actions">
-            <button class="page-thumb-btn" onclick="moveImage(${idx}, -1)" ${idx === 0  ?  'disabled' : ''}>&larr;</button>
-            <button class="page-thumb-btn" onclick="moveImage(${idx}, 1)" ${idx === uploadedImages.length - 1  ?  'disabled' : ''}>&rarr;</button>
+            <button class="page-thumb-btn" onclick="moveImage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>&larr;</button>
+            <button class="page-thumb-btn" onclick="moveImage(${idx}, 1)" ${idx === uploadedImages.length - 1 ? 'disabled' : ''}>&rarr;</button>
             <button class="page-thumb-btn" onclick="rotateImage(${idx})">&#8635;</button>
             <button class="page-thumb-btn" onclick="removeImage(${idx})" style="color:var(--danger);">&#10005;</button>
           </div>`;
@@ -681,6 +779,31 @@
       actionBar.style.display = "flex";
       resultCard.style.display = "none";
     }
+
+    // Auto-Sort Toolbar Handlers
+    sortNameBtn.addEventListener("click", () => {
+      uploadedImages = PDFConvert.sortImages(uploadedImages, 'name');
+      renderGallery();
+      UIUtils.showToast("Sorted naturally by name (1-10)", "info");
+    });
+
+    sortDateBtn.addEventListener("click", () => {
+      uploadedImages = PDFConvert.sortImages(uploadedImages, 'date');
+      renderGallery();
+      UIUtils.showToast("Sorted by capture date (Oldest first)", "info");
+    });
+
+    sortDateDescBtn.addEventListener("click", () => {
+      uploadedImages = PDFConvert.sortImages(uploadedImages, 'date-desc');
+      renderGallery();
+      UIUtils.showToast("Sorted by capture date (Newest first)", "info");
+    });
+
+    sortReverseBtn.addEventListener("click", () => {
+      uploadedImages.reverse();
+      renderGallery();
+      UIUtils.showToast("Reversed page order", "info");
+    });
 
     window.moveImage = function(idx, dir) {
       const target = idx + dir;
@@ -710,7 +833,7 @@
     });
 
     function progressCb(pct, status) {
-      const step = pct < 40  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
@@ -719,46 +842,28 @@
       try {
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        // Prepare rotated image files if needed
-        const filesToProcess = [];
-        for (const imgObj of uploadedImages) {
-          if (imgObj.rotation !== 0) {
-            const img = await UIUtils.loadImage(imgObj.dataUrl);
-            const c = document.createElement('canvas');
-            if (imgObj.rotation % 180 === 0) {
-              c.width = img.width;
-              c.height = img.height;
-            } else {
-              c.width = img.height;
-              c.height = img.width;
-            }
-            const ctx = c.getContext('2d');
-            ctx.translate(c.width / 2, c.height / 2);
-            ctx.rotate((imgObj.rotation * Math.PI) / 180);
-            ctx.drawImage(img, -img.width / 2, -img.height / 2);
-            const rotatedBlob = await new Promise(res => c.toBlob(res, 'image/png'));
-            filesToProcess.push(new File([rotatedBlob], imgObj.name, { type: 'image/png' }));
-          } else {
-            filesToProcess.push(imgObj.file);
-          }
-        }
 
         const options = {
+          pageSize: pageSizeSelect.value,
           orientation: orientationSelect.value,
           margin: parseInt(marginSelect.value, 10)
         };
 
-        resultBlob = await PDFConvert.imagesToPDF(filesToProcess, options, progressCb);
+        const items = uploadedImages.map(img => ({
+          file: img.file,
+          rotation: img.rotation
+        }));
+
+        resultBlob = await PDFConvert.imagesToPDF(items, options, progressCb);
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
         UIUtils.renderQuickActions(resultCard, resultBlob, "localdoc-converted.pdf");
-        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; ${uploadedImages.length} Image Page(s) &bull; Portable Document Format (.pdf)`;
+        document.getElementById("result-meta").textContent = `Size: ${UIUtils.formatBytes(resultBlob.size)} • ${uploadedImages.length} Image Page(s) • PDF Document`;
         UIUtils.showToast("PNG images converted to PDF document successfully!", "success");
       } catch (err) {
         console.error(err);
-        UIUtils.showToast(err.message || "Operation failed", "error");
+        UIUtils.showToast(err.message || "Could not read this image format. Please try PNG or JPG.", "error");
       } finally {
         processBtn.disabled = false;
       }
@@ -767,6 +872,30 @@
     downloadBtn.addEventListener("click", function() {
       if (resultBlob) {
         UIUtils.downloadBlob(resultBlob, "localdoc-combined-graphics.pdf");
+      }
+    });
+
+    // 1-Click WhatsApp / Native Mobile Share
+    shareWhatsappBtn.addEventListener("click", async function() {
+      if (!resultBlob) return;
+      try {
+        const pdfFile = new File([resultBlob], "localdoc-graphics.pdf", { type: "application/pdf" });
+        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+          await navigator.share({
+            files: [pdfFile],
+            title: "Combined Graphics PDF",
+            text: "Combined PNG document created privately in RAM with LocalDoc."
+          });
+        } else {
+          const text = encodeURIComponent(`I combined graphics into a clean PDF using LocalDoc (100% Private): https://localdoc.org/pages/png-to-pdf.html`);
+          window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+          UIUtils.showToast("Opening WhatsApp. Use 'Download .PDF File' to attach your document to any chat.", "info");
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          UIUtils.showToast("Could not share directly: " + err.message, "error");
+        }
       }
     });
   </script>
