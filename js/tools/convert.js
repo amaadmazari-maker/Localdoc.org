@@ -540,11 +540,35 @@ const PDFConvert = {
     return new File([blob], "Sample-Consulting-Agreement.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
   },
 
-  // 4. Word (.docx) to PDF — High-Fidelity Client-Side Pipeline (Mammoth + A4 Container + html2pdf + Canvas Fallback)
-  async wordToPDF(file, onProgress = null) {
+    // 4. Word (.docx) to PDF — Professional-Grade In-RAM Pipeline (Mammoth + Metric Fonts + Smart Tables + Landscape + html2pdf + Vector Stamping)
+  async wordToPDF(file, onProgress = null, options = {}) {
     if (onProgress) onProgress(15, 'Reading Word Document XML Structure in RAM...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
     
+    // Landscape Auto-Detection via DOCX OpenXML
+    let isLandscape = false;
+    if (typeof JSZip !== 'undefined') {
+      try {
+        const zip = await JSZip.loadAsync(arrayBuffer);
+        const docXmlFile = zip.file("word/document.xml");
+        if (docXmlFile) {
+          const docXml = await docXmlFile.async("string");
+          if (/w:orient="landscape"/i.test(docXml)) {
+            isLandscape = true;
+          } else {
+            const pgSzMatch = docXml.match(/<w:pgSz\s+[^>]*w:w="(\d+)"[^>]*w:h="(\d+)"/i) || docXml.match(/<w:pgSz\s+[^>]*w:h="(\d+)"[^>]*w:w="(\d+)"/i);
+            if (pgSzMatch) {
+              const w = parseInt(pgSzMatch[1], 10);
+              const h = parseInt(pgSzMatch[2], 10);
+              if (w > h) isLandscape = true;
+            }
+          }
+        }
+      } catch (orientErr) {
+        console.warn("Landscape auto-detection fallback to portrait:", orientErr);
+      }
+    }
+
     // Parse complete HTML structure from DOCX with Mammoth (with inline image data URL conversion)
     let mammothResult;
     try {
@@ -570,26 +594,32 @@ const PDFConvert = {
     // Primary High-Fidelity Pipeline: Render in styled A4 off-screen DOM with html2pdf
     if (typeof html2pdf !== 'undefined') {
       try {
-        if (onProgress) onProgress(45, 'Applying A4 Layout, Typography & Table Wrapping...');
+        if (onProgress) onProgress(45, isLandscape ? 'Applying Landscape A4 Layout & Metric Typography...' : 'Applying Portrait A4 Layout & Metric Typography...');
 
         const stage = document.createElement('div');
         stage.id = 'word-offscreen-render-stage';
+        
+        // Exact A4 dimensions @ 96 DPI: Portrait 794x1123px, Landscape 1123x794px
+        const stageW = isLandscape ? 1123 : 794;
+        const stageH = isLandscape ? 794 : 1123;
+        
         stage.style.cssText = `
           position: fixed;
           top: -99999px;
           left: -99999px;
-          width: 794px; /* Standard A4 at 96 DPI: 210mm */
-          min-height: 1123px; /* 297mm */
+          width: ${stageW}px;
+          min-height: ${stageH}px;
           padding: 44px 52px;
           background: #ffffff;
           color: #1e293b;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          font-family: 'Carlito', Calibri, 'Arimo', Arial, 'Tinos', 'Times New Roman', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           font-size: 11pt;
           line-height: 1.6;
           box-sizing: border-box;
           z-index: -9999;
         `;
 
+        // Smart Table Pagination & Metric Font rules
         stage.innerHTML = `
           <style>
             #word-offscreen-render-stage * {
@@ -616,12 +646,20 @@ const PDFConvert = {
               line-height: 1.6;
               word-break: break-word;
             }
+            /* Smart Table Pagination: allow long tables to flow, break only at row boundary */
             #word-offscreen-render-stage table {
               width: 100% !important;
               max-width: 100% !important;
               table-layout: fixed !important;
               border-collapse: collapse !important;
               margin: 16px 0 !important;
+              page-break-inside: auto !important;
+              break-inside: auto !important;
+            }
+            #word-offscreen-render-stage thead {
+              display: table-header-group !important;
+            }
+            #word-offscreen-render-stage tr {
               page-break-inside: avoid !important;
               break-inside: avoid !important;
             }
@@ -670,11 +708,11 @@ const PDFConvert = {
 
         document.body.appendChild(stage);
 
-        if (onProgress) onProgress(75, 'Generating Standard A4 PDF Pages...');
+        if (onProgress) onProgress(75, 'Compiling Vector-Quality A4 PDF Pages...');
 
         const opt = {
           margin: [10, 10, 10, 10],
-          filename: (file.name || 'document').replace(/\\.[^/.]+$/, '') + '.pdf',
+          filename: (file.name || 'document').replace(/\.[^/.]+$/, '') + '.pdf',
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: {
             scale: 2,
@@ -685,7 +723,7 @@ const PDFConvert = {
           jsPDF: {
             unit: 'mm',
             format: 'a4',
-            orientation: 'portrait'
+            orientation: isLandscape ? 'landscape' : 'portrait'
           },
           pagebreak: {
             mode: ['avoid-all', 'css', 'legacy']
@@ -695,16 +733,67 @@ const PDFConvert = {
         const worker = html2pdf().from(stage).set(opt);
         const pdf = await worker.toPdf().get('pdf');
         const pageCount = pdf.internal.getNumberOfPages() || 1;
-        const pdfBlob = pdf.output('blob');
+        let pdfBlob = pdf.output('blob');
 
         document.body.removeChild(stage);
+
+        // Vector Stamping for Formatting Toggles (Page Numbers & Watermark)
+        if ((options.addPageNumbers || options.addWatermark) && typeof PDFLib !== 'undefined') {
+          try {
+            if (onProgress) onProgress(90, 'Injecting Vector Page Numbers & Confidential Watermark...');
+            const pdfBytes = await pdfBlob.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+            const boldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+            const pages = pdfDoc.getPages();
+            const total = pages.length;
+
+            for (let i = 0; i < total; i++) {
+              const p = pages[i];
+              const { width, height } = p.getSize();
+
+              // Watermark Overlay
+              if (options.addWatermark) {
+                const watermarkText = (options.watermarkText || 'CONFIDENTIAL').toUpperCase();
+                const textWidth = boldFont.widthOfTextAtSize(watermarkText, 52);
+                p.drawText(watermarkText, {
+                  x: width / 2 - (textWidth / 2) * 0.7,
+                  y: height / 2 - 20,
+                  size: 52,
+                  font: boldFont,
+                  color: PDFLib.rgb(0.7, 0.75, 0.8),
+                  opacity: 0.16,
+                  rotate: PDFLib.degrees(38)
+                });
+              }
+
+              // Centered Running Page Number Footer
+              if (options.addPageNumbers) {
+                const pageText = `Page ${i + 1} of ${total}`;
+                const textWidth = font.widthOfTextAtSize(pageText, 9);
+                p.drawText(pageText, {
+                  x: width / 2 - textWidth / 2,
+                  y: 18,
+                  size: 9,
+                  font: font,
+                  color: PDFLib.rgb(0.45, 0.5, 0.55)
+                });
+              }
+            }
+            const stampedBytes = await pdfDoc.save();
+            pdfBlob = new Blob([stampedBytes], { type: 'application/pdf' });
+          } catch (stampErr) {
+            console.warn('Vector stamping issue, continuing with base PDF:', stampErr);
+          }
+        }
 
         if (onProgress) onProgress(100, 'Conversion Complete!');
 
         return {
           pdfBlob: pdfBlob,
           htmlPreview: docHtml,
-          pageCount: pageCount
+          pageCount: pageCount,
+          isLandscape: isLandscape
         };
       } catch (pipelineErr) {
         console.warn('html2pdf pipeline encountered an issue, running canvas fallback:', pipelineErr);

@@ -41,7 +41,10 @@
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
 
 
-  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,600;0,700;1,400&family=Carlito:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
@@ -320,6 +323,18 @@
         </div>
       </div>
 
+            <!-- Formatting Toggles (Page Numbers & Watermark) -->
+      <div class="word-formatting-toggles" style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:0 auto 20px; max-width:850px;">
+        <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:0.88rem; font-weight:600; color:var(--text-primary); user-select:none; background:var(--bg-surface); border:1px solid var(--line); padding:8px 14px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+          <input type="checkbox" id="toggle-page-numbers" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+          <span>Add Page Numbers</span>
+        </label>
+        <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:0.88rem; font-weight:600; color:var(--text-primary); user-select:none; background:var(--bg-surface); border:1px solid var(--line); padding:8px 14px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+          <input type="checkbox" id="toggle-watermark" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+          <span>Add Confidential Watermark</span>
+        </label>
+      </div>
+
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
@@ -336,7 +351,7 @@
             <span>⚡ Try Sample Agreement (.docx)</span>
           </button>
         </div>
-        <input type="file" id="file-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
+        <input type="file" id="file-input" multiple accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- File Queue Item -->
@@ -722,6 +737,7 @@
 
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <script src="../js/lib/jszip.min.js?v=20260921-v26"></script>
   <script src="../js/lib/mammoth.browser.min.js?v=20260921-v26"></script>
   <script src="../js/lib/html2pdf.bundle.min.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
@@ -745,6 +761,16 @@
     const previewContent = document.getElementById("doc-preview-content");
     const sampleDocxBtn = document.getElementById("sample-docx-btn");
     const workflowProgress = document.getElementById("workflow-progress");
+    const togglePageNumbers = document.getElementById("toggle-page-numbers");
+    const toggleWatermark = document.getElementById("toggle-watermark");
+
+    function getConversionOptions() {
+      return {
+        addPageNumbers: togglePageNumbers ? togglePageNumbers.checked : true,
+        addWatermark: toggleWatermark ? toggleWatermark.checked : false,
+        watermarkText: 'CONFIDENTIAL'
+      };
+    }
 
     function resetConverter() {
       selectedFile = null;
@@ -776,9 +802,11 @@
       previewCard.style.display = "none";
       workflowProgress.style.display = "block";
 
+      const options = getConversionOptions();
+
       try {
         UIUtils.setWorkflowStep(1, 15, "Reading Word Document XML in RAM...");
-        resultData = await PDFConvert.wordToPDF(selectedFile, progressCb);
+        resultData = await PDFConvert.wordToPDF(selectedFile, progressCb, options);
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         setTimeout(() => {
@@ -788,12 +816,18 @@
         resultCard.style.display = "flex";
         const baseName = (selectedFile.name ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output");
         UIUtils.renderQuickActions(resultCard, resultData.pdfBlob, baseName + ".pdf");
-        document.getElementById("result-meta").innerHTML = `Size: <strong>${UIUtils.formatBytes(resultData.pdfBlob.size)}</strong> &bull; <strong>${resultData.pageCount} Page(s)</strong> &bull; 100% In-RAM Execution`;
+        
+        const orientationLabel = resultData.isLandscape ? " &bull; <strong>Landscape A4</strong>" : "";
+        document.getElementById("result-meta").innerHTML = `Size: <strong>${UIUtils.formatBytes(resultData.pdfBlob.size)}</strong> &bull; <strong>${resultData.pageCount} Page(s)</strong>${orientationLabel} &bull; 100% In-RAM Execution`;
 
         if (resultData.htmlPreview) {
           previewContent.innerHTML = resultData.htmlPreview;
           previewCard.style.display = "block";
         }
+
+        downloadBtn.onclick = function() {
+          UIUtils.downloadBlob(resultData.pdfBlob, baseName + ".pdf");
+        };
 
         // Automatic 1-Click Download
         UIUtils.downloadBlob(resultData.pdfBlob, baseName + ".pdf");
@@ -805,8 +839,72 @@
       }
     }
 
+    async function executeBatchConversion(files) {
+      if (!files || files.length === 0) return;
+      if (files.length === 1) {
+        executeFastConversion(files[0]);
+        return;
+      }
+
+      dropZone.style.display = "none";
+      fileQueue.style.display = "block";
+      queueName.textContent = `Batch Queue (${files.length} Word Documents)`;
+      queueSize.textContent = UIUtils.formatBytes(Array.from(files).reduce((acc, f) => acc + f.size, 0));
+      resultCard.style.display = "none";
+      previewCard.style.display = "none";
+      workflowProgress.style.display = "block";
+
+      const zip = typeof JSZip !== 'undefined' ? new JSZip() : null;
+      const options = getConversionOptions();
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const pct = Math.round((i / files.length) * 100);
+          UIUtils.setWorkflowStep(2, pct, `Converting file ${i + 1} of ${files.length}: ${file.name}...`);
+          
+          const res = await PDFConvert.wordToPDF(file, null, options);
+          const pdfBaseName = (file.name ? file.name.replace(/\.[^/.]+$/, "") : `document-${i + 1}`) + ".pdf";
+          
+          if (zip) {
+            zip.file(pdfBaseName, res.pdfBlob);
+          } else {
+            UIUtils.downloadBlob(res.pdfBlob, pdfBaseName);
+          }
+        }
+
+        if (zip) {
+          UIUtils.setWorkflowStep(3, 95, "Bundling converted PDFs into ZIP archive...");
+          const zipBlob = await zip.generateAsync({ type: "blob" });
+          UIUtils.setWorkflowStep(3, 100, "Batch complete!");
+          setTimeout(() => { workflowProgress.style.display = "none"; }, 500);
+
+          resultCard.style.display = "flex";
+          document.getElementById("result-title").textContent = `✓ ${files.length} Documents Converted!`;
+          document.getElementById("result-meta").innerHTML = `ZIP Size: <strong>${UIUtils.formatBytes(zipBlob.size)}</strong> &bull; <strong>${files.length} PDFs Bundled</strong> &bull; 100% In-RAM Execution`;
+          
+          downloadBtn.onclick = function() {
+            UIUtils.downloadBlob(zipBlob, "localdoc-converted-pdfs.zip");
+          };
+          UIUtils.downloadBlob(zipBlob, "localdoc-converted-pdfs.zip");
+          UIUtils.showToast(`Successfully converted ${files.length} Word files into ZIP archive!`, "success");
+        } else {
+          workflowProgress.style.display = "none";
+          resultCard.style.display = "flex";
+          document.getElementById("result-title").textContent = `✓ ${files.length} Documents Converted!`;
+          UIUtils.showToast(`Downloaded ${files.length} converted PDF documents!`, "success");
+        }
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast("Batch conversion failed: " + err.message, "error");
+        workflowProgress.style.display = "none";
+      }
+    }
+
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
+      if (files.length > 1) {
+        executeBatchConversion(files);
+      } else if (files.length === 1) {
         executeFastConversion(files[0]);
       }
     });
@@ -823,13 +921,6 @@
         }
       });
     }
-
-    downloadBtn.addEventListener("click", function() {
-      if (resultData && resultData.pdfBlob) {
-        const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "localdoc-output";
-        UIUtils.downloadBlob(resultData.pdfBlob, baseName + ".pdf");
-      }
-    });
   </script>
 
   <!-- Global Search Modal -->
