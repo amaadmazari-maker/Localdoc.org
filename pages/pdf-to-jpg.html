@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>PDF to JPG Converter — 300 DPI | LocalDoc</title>
-  <meta name="description" content="Convert PDF pages to high-resolution JPG images at 300 DPI. Export every page individually or as a ZIP file. 100% private with zero server uploads.">
+  <title>PDF to Picture Converter (JPG &amp; PNG) &mdash; Convert Pages or Extract Photos | LocalDoc</title>
+  <meta name="description" content="Convert PDF to picture on mobile &amp; desktop. Save PDF pages as JPG photos directly to your camera roll, or extract original embedded images. Share to WhatsApp with 100% private in-browser RAM processing.">
   <link rel="canonical" href="https://localdoc.org/pages/pdf-to-jpg.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -178,14 +178,14 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% Client-Side RAM Processing</span>
         </div>
-        <h1>PDF to Image (JPG & PNG) Converter</h1>
-        <p class="tool-desc">Render PDF pages into high-definition JPEG (300 DPI) or lossless transparent PNG images. Preview thumbnails in browser RAM and download single images or a ZIP archive.</p>
+        <h1>PDF to Picture Converter (JPG &amp; PNG)</h1>
+        <p class="tool-desc">Convert PDF to picture on mobile &amp; desktop. Save PDF pages as high-resolution JPG or lossless transparent PNG photos directly to your camera roll, or extract original embedded images. Perfect for saving PDF pages to your phone gallery or sharing on WhatsApp.</p>
       </div>
 
       <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
       <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">Drop your PDF file, choose your output rendering scale (150 DPI or 300 DPI Ultra-HD), and export individual crystal-clear JPGs or a bundled ZIP archive:</strong> Drop your PDF file, choose your output rendering scale (150 DPI or 300 DPI Ultra-HD), and export individual crystal-clear JPGs or a bundled ZIP archive.
+          <strong style="color:var(--text-primary);">Convert PDF to picture on mobile:</strong> Render entire PDF pages into crystal-clear 300 DPI JPG photos or extract original embedded images at native camera resolution. Save pictures straight to your phone gallery with zero server uploads and instant WhatsApp sharing.
         </p>
       </div>
 
@@ -217,28 +217,39 @@
       </div>
 
       <!-- Controls Bar -->
-      <div class="tool-controls-bar" id="tool-controls-bar" style="display:none;">
+      <div class="tool-controls-bar" id="tool-controls-bar" style="display:none; flex-wrap:wrap; gap:16px; align-items:flex-end;">
         <div class="control-group">
-          <span class="control-label">Output Format:</span>
+          <label class="control-label" for="mode-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Conversion Mode:</label>
+          <select class="control-select" id="mode-select">
+            <option value="render" selected>Render Full Pages (Entire page layout &amp; text)</option>
+            <option value="extract">Extract Original Photos (Native camera sensor quality)</option>
+          </select>
+        </div>
+        <div class="control-group" id="format-group">
+          <label class="control-label" for="format-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Output Format:</label>
           <select class="control-select" id="format-select">
-            <option value="image/jpeg" selected>JPEG (.jpg) &mdash; 300 DPI High-Res</option>
+            <option value="image/jpeg" selected>JPEG (.jpg) &mdash; High-Res Photo</option>
             <option value="image/png">PNG (.png) &mdash; Lossless Transparent</option>
           </select>
         </div>
-        <div class="control-group">
-          <span class="control-label">Image Resolution:</span>
+        <div class="control-group" id="dpi-group">
+          <label class="control-label" for="dpi-select" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Image Resolution:</label>
           <select class="control-select" id="dpi-select">
             <option value="2.0" selected>150 DPI &mdash; High Definition (Standard)</option>
             <option value="3.0">300 DPI &mdash; Ultra Print Quality</option>
-            <option value="1.0">72 DPI &mdash; Compact Web Size</option>
+            <option value="1.0">72 DPI &mdash; Compact Web / Mobile</option>
           </select>
+        </div>
+        <div class="control-group" id="range-group">
+          <label class="control-label" for="page-range-input" style="display:block; margin-bottom:4px; font-weight:600; font-size:0.85rem;">Page Range:</label>
+          <input type="text" class="control-select" id="page-range-input" value="All" placeholder="e.g. 1-5, 8 or All" style="min-width:140px; padding:6px 12px; height:38px;">
         </div>
       </div>
 
       <!-- Action Bar -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:20px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Render Document Images</span> &rarr;
+          <span id="process-btn-text">Convert PDF to Pictures</span> &rarr;
         </button>
       </div>
 
@@ -268,15 +279,19 @@
       </div>
 
       <!-- Result Card & Batch Download -->
-      <div class="result-card" id="result-card" style="display:none;">
-        <div class="result-details">
-          <h3 id="result-title">JPG Images Rendered!</h3>
-          <p id="result-meta">Ready for instant download. Zero bytes transmitted.</p>
+      <div class="result-card" id="result-card" style="display:none; flex-direction:column; gap:16px;">
+        <div class="result-details" style="text-align:center;">
+          <h3 id="result-title">Pictures Ready!</h3>
+          <p id="result-meta">Ready for instant download directly to your camera roll or photo gallery. Zero bytes transmitted.</p>
         </div>
-        <div class="result-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-lg" id="download-zip-btn">
+        <div class="result-actions" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-lg" id="download-all-btn" style="min-width:210px; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download All as ZIP</span>
+            <span id="download-all-btn-text">Download All Images</span>
+          </button>
+          <button class="btn btn-lg" id="share-whatsapp-btn" style="background:#25D366; color:#ffffff; border:none; font-weight:600; min-width:190px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; padding:10px 20px; border-radius:var(--radius-sm);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.696c1.006.577 1.764.887 2.806.887 3.182 0 5.768-2.586 5.768-5.766.001-3.18-2.585-5.77-5.768-5.77zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.635.074-1.802-.412-1.467-.61-2.404-2.102-2.477-2.2-.073-.098-.59-0.785-.59-1.498 0-.713.375-1.064.509-1.21.133-.146.291-.182.388-.182.097 0 .194.001.279.005.091.004.212-.034.331.252.124.298.424 1.034.461 1.109.036.074.06.161.012.257-.048.096-.073.156-.145.241-.073.085-.153.19-.219.255-.073.072-.149.15-.064.296.085.146.377.622.809 1.007.557.496 1.026.65 1.172.723.146.073.23.061.315-.037.085-.097.364-.424.461-.57.097-.145.194-.121.327-.073.133.049.849.4 1.001.476.152.076.255.113.291.177.036.064.036.37-.108.775zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.306C8.423 21.53 10.153 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.273c-1.636 0-3.156-.474-4.436-1.291l-.318-.204-2.96.776.79-2.884-.208-.332C3.99 15.02 3.455 13.565 3.455 12c0-4.712 3.833-8.545 8.545-8.545 4.713 0 8.545 3.833 8.545 8.545 0 4.713-3.832 8.545-8.545 8.545z"/></svg>
+            <span>Share to WhatsApp</span>
           </button>
         </div>
       </div>
@@ -314,36 +329,39 @@
 
     <!-- Educational Guide & FAQ Section -->
     <section class="tool-guide-section" style="max-width:860px; margin:40px auto 20px;">
-      <h2 style="font-size:1.4rem; color:var(--text-primary); margin-bottom:16px;">Key Features of LocalDoc PDF to JPG Converter</h2>
+      <h2 style="font-size:1.4rem; color:var(--text-primary); margin-bottom:16px;">Convert PDF to Picture on Mobile &amp; Desktop</h2>
+      <p style="color:var(--text-secondary); font-size:0.92rem; line-height:1.6; margin-bottom:20px;">
+        Need to turn a PDF document into high-resolution pictures for sharing? Whether you want to <strong>convert PDF to picture on mobile</strong>, <strong>save PDF pages as photos to your phone gallery</strong>, or send clean document pages to a friend via <strong>PDF to JPG for WhatsApp</strong>, LocalDoc delivers crystal-clear raster images without cloud uploads or privacy risks.
+      </p>
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:32px;">
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px;">
-          <div style="font-size:1.4rem; margin-bottom:8px;">🖼️</div>
-          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">High-Resolution Rasterization</h3>
-          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Convert PDF pages into crystal-clear 150 DPI or 300 DPI JPEG images with sharp vector font rendering and accurate color reproduction.</p>
+          <div style="font-size:1.4rem; margin-bottom:8px;">📱</div>
+          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">Mobile Gallery &amp; Camera Roll Ready</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Downloads images directly into your iPhone Camera Roll or Android Photos gallery without clumsy ZIP archives that get lost in downloads.</p>
         </div>
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px;">
-          <div style="font-size:1.4rem; margin-bottom:8px;">📦</div>
-          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">Automated ZIP Archive Packaging</h3>
-          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Multi-page documents are compiled into organized, sequentially numbered images packaged inside a convenient ZIP file downloaded in a single click.</p>
+          <div style="font-size:1.4rem; margin-bottom:8px;">💬</div>
+          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">1-Click Share to WhatsApp</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Send converted document pages or extracted photos straight to WhatsApp contacts and chats using native mobile sharing sheets.</p>
         </div>
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px;">
-          <div style="font-size:1.4rem; margin-bottom:8px;">⚡</div>
-          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">Instant In-Memory Rendering</h3>
-          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Powered by modern WebAssembly and HTML5 Canvas, conversion processes hundreds of pages locally without network upload wait times.</p>
+          <div style="font-size:1.4rem; margin-bottom:8px;">🔍</div>
+          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">Extract Images from PDF Online</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Switch to Extract Mode to isolate embedded photographs and figures at original native sensor resolution without page frames.</p>
         </div>
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px;">
           <div style="font-size:1.4rem; margin-bottom:8px;">🔒</div>
-          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">Zero Server Exposure</h3>
-          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">Your confidential financial statements, medical records, and legal briefs remain strictly inside your browser sandbox with 0 bytes transmitted online.</p>
+          <h3 style="font-size:0.95rem; margin-bottom:6px; color:var(--text-primary);">100% In-Browser Privacy</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">All rendering and extraction happens in your browser RAM using WebAssembly and HTML5 Canvas. Zero bytes uploaded to external servers.</p>
         </div>
       </div>
 
-      <h2 style="font-size:1.3rem; color:var(--text-primary); margin-bottom:16px;">How to Convert PDF to JPG Images — Step by Step</h2>
+      <h2 style="font-size:1.3rem; color:var(--text-primary); margin-bottom:16px;">How to Convert PDF to Picture on Mobile &mdash; Step by Step</h2>
       <ol style="color:var(--text-secondary); font-size:0.9rem; line-height:2; padding-left:20px; margin-bottom:28px;">
-        <li><strong style="color:var(--text-primary);">Drop your PDF</strong> — Drag your target PDF file into the drop zone above, or click "Select PDF Document".</li>
-        <li><strong style="color:var(--text-primary);">Choose rendering quality</strong> — Select standard web quality (150 DPI) or ultra-high print clarity (300 DPI).</li>
-        <li><strong style="color:var(--text-primary);">Preview page thumbnails</strong> — Verify rendered pages visually in real-time as they process.</li>
-        <li><strong style="color:var(--text-primary);">Download images or ZIP</strong> — Download individual page images or grab the entire batch as an organized ZIP archive.</li>
+        <li><strong style="color:var(--text-primary);">Select your PDF</strong> &mdash; Tap "Select PDF Document" or drop your document into the box above.</li>
+        <li><strong style="color:var(--text-primary);">Choose your mode</strong> &mdash; Select "Render Full Pages" to convert the page layout into photos, or "Extract Original Photos" to grab only embedded images.</li>
+        <li><strong style="color:var(--text-primary);">Pick format &amp; resolution</strong> &mdash; Select JPG (standard) or PNG (transparent background) and 150/300 DPI resolution.</li>
+        <li><strong style="color:var(--text-primary);">Download or Share</strong> &mdash; Tap "Download All Images" to save photos directly to your camera roll, or tap "Share to WhatsApp".</li>
       </ol>
 
       <h2 style="font-size:1.3rem; color:var(--text-primary); margin-bottom:16px;">Frequently Asked Questions</h2>
@@ -617,7 +635,7 @@
   <script>
     let selectedFile = null;
     let renderedImages = [];
-    let resultData = null;
+    let isExtractMode = false;
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
@@ -625,18 +643,37 @@
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
     const controlsBar = document.getElementById("tool-controls-bar");
+    const modeSelect = document.getElementById("mode-select");
+    const formatSelect = document.getElementById("format-select");
+    const dpiGroup = document.getElementById("dpi-group");
     const dpiSelect = document.getElementById("dpi-select");
+    const pageRangeInput = document.getElementById("page-range-input");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
+    const processBtnText = document.getElementById("process-btn-text");
     const clearBtn = document.getElementById("clear-btn");
     const resultCard = document.getElementById("result-card");
-    const downloadZipBtn = document.getElementById("download-zip-btn");
+    const downloadAllBtn = document.getElementById("download-all-btn");
+    const downloadAllBtnText = document.getElementById("download-all-btn-text");
+    const shareWhatsappBtn = document.getElementById("share-whatsapp-btn");
     const galleryWrap = document.getElementById("gallery-wrap");
     const galleryCount = document.getElementById("gallery-count");
     const thumbnailGrid = document.getElementById("thumbnail-grid");
     const lightboxModal = document.getElementById("lightbox-modal");
     const lightboxImg = document.getElementById("lightbox-img");
     const lightboxClose = document.getElementById("lightbox-close");
+
+    // Toggle DPI controls when switching between Page Render and Image Extraction
+    modeSelect.addEventListener("change", function() {
+      isExtractMode = (modeSelect.value === 'extract');
+      if (isExtractMode) {
+        dpiGroup.style.display = "none";
+        processBtnText.textContent = "Extract Original Photos";
+      } else {
+        dpiGroup.style.display = "block";
+        processBtnText.textContent = "Convert PDF to Pictures";
+      }
+    });
 
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
@@ -680,15 +717,22 @@
 
         const imageEl = document.createElement("img");
         imageEl.src = img.dataUrl;
-        imageEl.alt = `Page ${img.pageNumber}`;
+        imageEl.alt = img.label || `Page ${img.pageNumber}`;
         imgWrap.appendChild(imageEl);
 
         const footer = document.createElement("div");
         footer.className = "page-thumb-footer";
         footer.innerHTML = `
-          <span><strong>Page ${img.pageNumber}</strong> (${img.width}x${img.height})</span>
-          <div class="page-thumb-actions">
-            <button class="page-thumb-btn" onclick="downloadSingleImage(${idx})">Download</button>
+          <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; display:block; margin-bottom:6px;">${img.label || ('Page ' + img.pageNumber)}</span>
+          <div class="page-thumb-actions" style="display:flex; gap:6px;">
+            <button class="page-thumb-btn" onclick="downloadSingleImage(${idx})" style="flex:1; font-size:0.75rem; padding:4px 8px;" title="Download photo to device">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Save
+            </button>
+            <button class="page-thumb-btn" onclick="shareSingleImage(${idx})" style="flex:1; font-size:0.75rem; padding:4px 8px; border-color:#25D366; color:#25D366;" title="Share photo to WhatsApp">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:2px;"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.696c1.006.577 1.764.887 2.806.887 3.182 0 5.768-2.586 5.768-5.766.001-3.18-2.585-5.77-5.768-5.77zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.635.074-1.802-.412-1.467-.61-2.404-2.102-2.477-2.2-.073-.098-.59-0.785-.59-1.498 0-.713.375-1.064.509-1.21.133-.146.291-.182.388-.182.097 0 .194.001.279.005.091.004.212-.034.331.252.124.298.424 1.034.461 1.109.036.074.06.161.012.257-.048.096-.073.156-.145.241-.073.085-.153.19-.219.255-.073.072-.149.15-.064.296.085.146.377.622.809 1.007.557.496 1.026.65 1.172.723.146.073.23.061.315-.037.085-.097.364-.424.461-.57.097-.145.194-.121.327-.073.133.049.849.4 1.001.476.152.076.255.113.291.177.036.064.036.37-.108.775zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.306C8.423 21.53 10.153 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.273c-1.636 0-3.156-.474-4.436-1.291l-.318-.204-2.96.776.79-2.884-.208-.332C3.99 15.02 3.455 13.565 3.455 12c0-4.712 3.833-8.545 8.545-8.545 4.713 0 8.545 3.833 8.545 8.545 0 4.713-3.832 8.545-8.545 8.545z"/></svg>
+              Share
+            </button>
           </div>`;
 
         card.appendChild(imgWrap);
@@ -709,19 +753,46 @@
       if (e.target === lightboxModal) lightboxModal.classList.remove("open");
     });
 
-    const formatSelect = document.getElementById("format-select");
-
     window.downloadSingleImage = function(idx) {
       const img = renderedImages[idx];
       if (!img) return;
       const isPng = (formatSelect && formatSelect.value === 'image/png');
-      const ext = isPng  ?  'png' : 'jpg';
-      const baseName = selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "page";
-      UIUtils.downloadBlob(img.blob, `${baseName}-page-${img.pageNumber}.${ext}`);
+      const ext = isPng ? 'png' : 'jpg';
+      const baseName = selectedFile ? selectedFile.name.replace(/.[^/.]+$/, "") : "image";
+      const suffix = img.mode === 'extract' ? `-photo-${img.totalIndex || img.imageIndex}` : `-page-${img.pageNumber}`;
+      UIUtils.downloadBlob(img.blob, `${baseName}${suffix}.${ext}`);
+      UIUtils.showToast(`Downloaded ${baseName}${suffix}.${ext}`, "success");
+    };
+
+    window.shareSingleImage = async function(idx) {
+      const img = renderedImages[idx];
+      if (!img) return;
+      const isPng = (formatSelect && formatSelect.value === 'image/png');
+      const ext = isPng ? 'png' : 'jpg';
+      const baseName = selectedFile ? selectedFile.name.replace(/.[^/.]+$/, "") : "image";
+      const suffix = img.mode === 'extract' ? `-photo-${img.totalIndex || img.imageIndex}` : `-page-${img.pageNumber}`;
+      const fileName = `${baseName}${suffix}.${ext}`;
+      const file = new File([img.blob], fileName, { type: img.blob.type });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: fileName,
+            text: `Converted photo from ${selectedFile.name} via LocalDoc`
+          });
+        } catch (e) {
+          if (e.name !== 'AbortError') console.error(e);
+        }
+      } else {
+        const text = encodeURIComponent(`Converted photo from ${selectedFile.name} on LocalDoc: https://localdoc.org/pages/pdf-to-jpg.html`);
+        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        UIUtils.showToast("Opening WhatsApp. Use 'Save' button to attach photo directly to your chat.", "info");
+      }
     };
 
     function progressCb(pct, status) {
-      const step = pct < 40  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 40 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
@@ -730,22 +801,42 @@
       try {
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
-        
-        const mimeType = formatSelect  ?  formatSelect.value : 'image/jpeg';
-        const isPng = mimeType === 'image/png';
+
+        const mimeType = formatSelect ? formatSelect.value : 'image/jpeg';
+        const isPng = (mimeType === 'image/png');
+        const ext = isPng ? 'png' : 'jpg';
         const dpi = parseFloat(dpiSelect.value) || 2.0;
-        renderedImages = await PDFConvert.pdfToImages(selectedFile, mimeType, dpi, progressCb);
+        const mode = modeSelect.value || 'render';
+        const pageRange = (pageRangeInput && pageRangeInput.value.trim()) ? pageRangeInput.value.trim() : 'All';
+
+        renderedImages = await PDFConvert.pdfToImages(selectedFile, {
+          format: mimeType,
+          dpiScale: dpi,
+          mode: mode,
+          pageRange: pageRange
+        }, progressCb);
 
         UIUtils.setWorkflowStep(3, 100, "Processing complete!");
         resultCard.style.display = "flex";
+
+        const baseName = selectedFile ? selectedFile.name.replace(/.[^/.]+$/, "") : "image";
         if (renderedImages && renderedImages.length > 0) {
-          const baseName = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "page";
           UIUtils.renderQuickActions(resultCard, renderedImages[0].blob, `${baseName}-page-1.${ext}`);
         }
-        document.getElementById("result-meta").textContent = `Rendered ${renderedImages.length} High-Res ${isPng ? 'PNG' : 'JPEG'} Page(s)`;
+
+        const countText = renderedImages.length;
+        if (mode === 'extract') {
+          document.getElementById("result-title").textContent = "Original Photos Extracted!";
+          document.getElementById("result-meta").textContent = `Extracted ${countText} original photos at native camera resolution. Ready to save directly to your gallery.`;
+          downloadAllBtnText.textContent = `Download All (${countText} Photos)`;
+        } else {
+          document.getElementById("result-title").textContent = "Pictures Rendered!";
+          document.getElementById("result-meta").textContent = `Rendered ${countText} high-resolution ${isPng ? 'PNG' : 'JPEG'} picture(s). Ready to save directly to your camera roll.`;
+          downloadAllBtnText.textContent = `Download All (${countText} Pictures)`;
+        }
 
         renderThumbnailGallery();
-        UIUtils.showToast(`Extracted ${renderedImages.length} ${isPng  ?  'PNG' : 'JPG'} images successfully!`, "success");
+        UIUtils.showToast(`Processed ${countText} picture(s) successfully!`, "success");
       } catch (err) {
         console.error(err);
         UIUtils.showToast(err.message || "Operation failed", "error");
@@ -754,25 +845,74 @@
       }
     });
 
-    downloadZipBtn.addEventListener("click", async function() {
-      if (renderedImages.length === 0) return;
+    // Mobile-first staggered batch download directly to camera roll / gallery
+    downloadAllBtn.addEventListener("click", async function() {
+      if (!renderedImages || renderedImages.length === 0) return;
       try {
-        downloadZipBtn.disabled = true;
-        downloadZipBtn.textContent = "Bundling ZIP in RAM...";
+        downloadAllBtn.disabled = true;
+        const total = renderedImages.length;
         const isPng = (formatSelect && formatSelect.value === 'image/png');
-        const ext = isPng  ?  'png' : 'jpg';
-        const baseName = selectedFile  ?  selectedFile.name.replace(/\.[^/.]+$/, "") : "pages";
-        const zipBlob = await PDFConvert.createImagesZip(renderedImages, baseName, ext);
-        UIUtils.downloadBlob(zipBlob, `${baseName}-${ext}-images.zip`);
-        UIUtils.showToast("Downloaded all pages as ZIP archive!", "success");
+        const ext = isPng ? 'png' : 'jpg';
+        const baseName = selectedFile ? selectedFile.name.replace(/.[^/.]+$/, "") : "picture";
+
+        UIUtils.showToast(`Downloading ${total} image(s)... Please allow multiple downloads if prompted by your browser.`, "info");
+
+        for (let i = 0; i < total; i++) {
+          const img = renderedImages[i];
+          const suffix = img.mode === 'extract' ? `-photo-${img.totalIndex || img.imageIndex}` : `-page-${img.pageNumber}`;
+          const fileName = `${baseName}${suffix}.${ext}`;
+
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(img.blob);
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // 350ms delay between downloads to prevent mobile Safari/Chrome popup blocking
+          if (i < total - 1) {
+            await new Promise(r => setTimeout(r, 350));
+          }
+        }
+
+        UIUtils.showToast(`All ${total} images downloaded successfully to your device!`, "success");
       } catch (e) {
         console.error(e);
-        UIUtils.showToast("Failed to create ZIP archive", "error");
+        UIUtils.showToast("Failed during batch download: " + e.message, "error");
       } finally {
-        downloadZipBtn.disabled = false;
-        downloadZipBtn.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>Download All as ZIP</span>`;
+        downloadAllBtn.disabled = false;
+      }
+    });
+
+    // 1-Click WhatsApp Share
+    shareWhatsappBtn.addEventListener("click", async function() {
+      if (!renderedImages || renderedImages.length === 0) return;
+      try {
+        const isPng = (formatSelect && formatSelect.value === 'image/png');
+        const ext = isPng ? 'png' : 'jpg';
+        const baseName = selectedFile ? selectedFile.name.replace(/.[^/.]+$/, "") : "picture";
+
+        const files = renderedImages.map((img) => {
+          const suffix = img.mode === 'extract' ? `-photo-${img.totalIndex || img.imageIndex}` : `-page-${img.pageNumber}`;
+          return new File([img.blob], `${baseName}${suffix}.${ext}`, { type: img.blob.type });
+        });
+
+        if (navigator.canShare && navigator.canShare({ files: files })) {
+          await navigator.share({
+            files: files,
+            title: `${baseName} Pictures`,
+            text: `Converted ${files.length} picture(s) from ${selectedFile.name} on LocalDoc (100% Private)`
+          });
+        } else {
+          const text = encodeURIComponent(`Converted ${renderedImages.length} picture(s) from ${selectedFile.name} with LocalDoc: https://localdoc.org/pages/pdf-to-jpg.html`);
+          window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+          UIUtils.showToast("Opening WhatsApp. Use 'Download All Images' to save photos directly to your camera roll and attach them in your chat.", "info");
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          UIUtils.showToast("Could not share directly: " + err.message, "error");
+        }
       }
     });
   </script>

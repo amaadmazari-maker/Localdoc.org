@@ -35,52 +35,218 @@ const PDFConvert = {
       .replace(/[^\x00-\x7F]/g, () => '-');
   },
 
-  // 1. PDF to Images (JPG / PNG) with selectable DPI
-  async pdfToImages(file, format = 'image/jpeg', dpiScale = 2.0, onProgress = null) {
+  // Helper: Parse page ranges such as "1-3, 5, 8" into an array of page numbers
+  parsePageRange(rangeStr, totalPages) {
+    if (!rangeStr || typeof rangeStr !== 'string' || rangeStr.trim() === '' || rangeStr.toLowerCase() === 'all') {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const pages = new Set();
+    const parts = rangeStr.split(',');
+    for (let part of parts) {
+      part = part.trim();
+      if (part.includes('-')) {
+        const [startStr, endStr] = part.split('-');
+        const start = Math.max(1, parseInt(startStr, 10) || 1);
+        const end = Math.min(totalPages, parseInt(endStr, 10) || totalPages);
+        for (let p = Math.min(start, end); p <= Math.max(start, end); p++) {
+          if (p >= 1 && p <= totalPages) pages.add(p);
+        }
+      } else {
+        const p = parseInt(part, 10);
+        if (!isNaN(p) && p >= 1 && p <= totalPages) {
+          pages.add(p);
+        }
+      }
+    }
+    const result = Array.from(pages).sort((a, b) => a - b);
+    return result.length > 0 ? result : Array.from({ length: totalPages }, (_, i) => i + 1);
+  },
+
+  // 1. PDF to Images (JPG / PNG) with Dual Modes: Full Page Render OR Raw Embedded Image Extraction
+  async pdfToImages(file, options = 'image/jpeg', dpiScale = 2.0, onProgress = null) {
+    // Normalise options parameter (backwards-compatible with older signature: (file, format, dpiScale, onProgress))
+    let format = 'image/jpeg';
+    let scale = 2.0;
+    let mode = 'render'; // 'render' | 'extract'
+    let pageRange = 'all';
+    let progressCb = onProgress;
+
+    if (typeof options === 'object' && options !== null) {
+      format = options.format || 'image/jpeg';
+      scale = options.dpiScale || options.scale || 2.0;
+      mode = options.mode || 'render';
+      pageRange = options.pageRange || 'all';
+      if (typeof dpiScale === 'function') progressCb = dpiScale;
+    } else if (typeof options === 'string') {
+      format = options;
+      scale = typeof dpiScale === 'number' ? dpiScale : 2.0;
+    }
+
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
-    const numPages = pdf.numPages;
+    const totalPages = pdf.numPages;
+    const targetPages = this.parsePageRange(pageRange, totalPages);
     const images = [];
 
-    for (let i = 1; i <= numPages; i++) {
-      if (onProgress) onProgress(((i - 0.2) / numPages) * 100, `Rendering Page ${i} of ${numPages}...`);
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: dpiScale });
+    const isPng = (format === 'image/png');
+    const quality = isPng ? 1.0 : 0.92;
+
+    if (mode === 'extract') {
+      // MODE 2: Extract raw embedded photos/images at native camera resolution
+      let totalExtracted = 0;
+      for (let idx = 0; idx < targetPages.length; idx++) {
+        const pageNum = targetPages[idx];
+        if (progressCb) progressCb(((idx) / targetPages.length) * 100, `Extracting photos from Page ${pageNum} (${idx + 1}/${targetPages.length})...`);
+        const page = await pdf.getPage(pageNum);
+        const ops = await page.getOperatorList();
+        let pageImgCount = 0;
+
+        for (let i = 0; i < ops.fnArray.length; i++) {
+          const fn = ops.fnArray[i];
+          if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintInlineImageXObject) {
+            let imgObj = null;
+            if (fn === pdfjsLib.OPS.paintImageXObject) {
+              const objId = ops.argsArray[i][0];
+              imgObj = await new Promise(resolve => {
+                try {
+                  page.objs.get(objId, resolve);
+                } catch (e) {
+                  resolve(null);
+                }
+              });
+            } else {
+              imgObj = ops.argsArray[i][0];
+            }
+
+            if (!imgObj) continue;
+
+            const width = imgObj.width;
+            const height = imgObj.height;
+            if (!width || !height || width <= 1 || height <= 1) continue;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            if (!isPng) {
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, width, height);
+            }
+
+            // Draw image depending on PDF.js representation
+            if (typeof ImageBitmap !== 'undefined' && imgObj instanceof ImageBitmap) {
+              ctx.drawImage(imgObj, 0, 0);
+            } else if (imgObj.bitmap && typeof ImageBitmap !== 'undefined' && imgObj.bitmap instanceof ImageBitmap) {
+              ctx.drawImage(imgObj.bitmap, 0, 0);
+            } else if (imgObj.data) {
+              const srcData = imgObj.data;
+              const totalPixels = width * height;
+              if (srcData.length === totalPixels * 4) {
+                // RGBA 32-bit
+                const clamped = srcData instanceof Uint8ClampedArray ? srcData : new Uint8ClampedArray(srcData.buffer, srcData.byteOffset, srcData.byteLength);
+                ctx.putImageData(new ImageData(clamped, width, height), 0, 0);
+              } else if (srcData.length === totalPixels * 3) {
+                // RGB 24-bit -> RGBA
+                const rgba = new Uint8ClampedArray(totalPixels * 4);
+                let sIdx = 0, dIdx = 0;
+                for (let p = 0; p < totalPixels; p++) {
+                  rgba[dIdx++] = srcData[sIdx++];
+                  rgba[dIdx++] = srcData[sIdx++];
+                  rgba[dIdx++] = srcData[sIdx++];
+                  rgba[dIdx++] = 255;
+                }
+                ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
+              } else if (srcData.length === totalPixels) {
+                // Grayscale 8-bit -> RGBA
+                const rgba = new Uint8ClampedArray(totalPixels * 4);
+                let dIdx = 0;
+                for (let p = 0; p < totalPixels; p++) {
+                  const val = srcData[p];
+                  rgba[dIdx++] = val;
+                  rgba[dIdx++] = val;
+                  rgba[dIdx++] = val;
+                  rgba[dIdx++] = 255;
+                }
+                ctx.putImageData(new ImageData(rgba, width, height), 0, 0);
+              }
+            } else if (imgObj instanceof HTMLImageElement || (imgObj.tagName && imgObj.tagName.toLowerCase() === 'img')) {
+              ctx.drawImage(imgObj, 0, 0);
+            }
+
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, format, quality));
+            const dataUrl = canvas.toDataURL(format, quality);
+            pageImgCount++;
+            totalExtracted++;
+
+            images.push({
+              pageNumber: pageNum,
+              imageIndex: pageImgCount,
+              totalIndex: totalExtracted,
+              mode: 'extract',
+              blob: blob,
+              dataUrl: dataUrl,
+              width: width,
+              height: height,
+              label: `Page ${pageNum} — Photo #${pageImgCount} (${width}&times;${height}px)`
+            });
+          }
+        }
+      }
+
+      if (images.length === 0) {
+        throw new Error("No embedded photos or raster images were found in the selected pages. Switch to 'Render Full Pages' mode to convert the pages as images.");
+      }
+      if (progressCb) progressCb(100, `Extracted ${images.length} original photos!`);
+      return images;
+    }
+
+    // MODE 1: Render full page layout onto high-DPI canvas
+    for (let idx = 0; idx < targetPages.length; idx++) {
+      const pageNum = targetPages[idx];
+      if (progressCb) progressCb(((idx + 0.1) / targetPages.length) * 100, `Rendering Page ${pageNum} (${idx + 1}/${targetPages.length})...`);
+      const page = await pdf.getPage(pageNum);
+      const viewport = page.getViewport({ scale: scale });
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { alpha: isPng });
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      // Fill white background for JPEGs
-      if (format === 'image/jpeg') {
+      if (!isPng) {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-      const quality = format === 'image/png'  ?  1.0 : 0.92;
       const blob = await new Promise(resolve => canvas.toBlob(resolve, format, quality));
       const dataUrl = canvas.toDataURL(format, quality);
 
       images.push({
-        pageNumber: i,
+        pageNumber: pageNum,
+        imageIndex: 1,
+        totalIndex: idx + 1,
+        mode: 'render',
         blob: blob,
         dataUrl: dataUrl,
-        width: viewport.width,
-        height: viewport.height
+        width: Math.round(viewport.width),
+        height: Math.round(viewport.height),
+        label: `Page ${pageNum} (${Math.round(viewport.width)}&times;${Math.round(viewport.height)}px)`
       });
-      if (onProgress) onProgress((i / numPages) * 100, `Completed Page ${i} of ${numPages}`);
+
+      if (progressCb) progressCb(((idx + 1) / targetPages.length) * 100, `Rendered Page ${pageNum}`);
     }
+
     return images;
   },
 
-  // 1b. Create ZIP of all images
+  // 1b. Create ZIP of all images (Legacy/utility helper)
   async createImagesZip(images, baseName = 'page', ext = 'jpg') {
-    const zip = typeof MiniZip !== 'undefined'  ?  new MiniZip() : null;
+    const zip = typeof MiniZip !== 'undefined' ? new MiniZip() : null;
     if (!zip) throw new Error("MiniZip encoder library not found.");
     for (const img of images) {
-      const fileName = `${baseName}-page-${String(img.pageNumber).padStart(2, '0')}.${ext}`;
+      const suffix = img.mode === 'extract' ? `-photo-${img.totalIndex || img.imageIndex}` : `-page-${String(img.pageNumber).padStart(2, '0')}`;
+      const fileName = `${baseName}${suffix}.${ext}`;
       const buffer = await img.blob.arrayBuffer();
       zip.addFile(fileName, new Uint8Array(buffer));
     }
