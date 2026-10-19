@@ -155,98 +155,290 @@ const PDFOrganize = {
     }
   },
 
-  // 2. Split PDF Document by Page Ranges or Selection
-  async splitPDF(file, pageRangeString, onProgress = null) {
-    if (onProgress) onProgress(20, 'Loading PDF document structure into RAM...');
-    const buffer = await UIUtils.readFileAsArrayBuffer(file);
-    const srcDoc = await this.safeLoadPDF(buffer, file.name);
-    const totalPages = srcDoc.getPageCount();
+  // --- SPLIT PDF RANGE PARSER & HELPERS ---
+  parseRangeString(rangeInput, totalPages) {
+    if (!totalPages || totalPages < 1) totalPages = 1;
+    const targetPages = new Set();
 
-    // Parse ranges e.g. "1-3, 5, 8-10" or array of numbers
-    const targetIndices = new Set();
-
-    if (Array.isArray(pageRangeString)) {
-      pageRangeString.forEach(p => {
+    if (Array.isArray(rangeInput)) {
+      rangeInput.forEach(p => {
         const num = parseInt(p, 10);
         if (!isNaN(num) && num >= 1 && num <= totalPages) {
-          targetIndices.add(num - 1);
+          targetPages.add(num);
         }
       });
-    } else {
-      const parts = String(pageRangeString || '').split(',');
-      for (const part of parts) {
-        const clean = part.trim();
-        if (clean.includes('-')) {
-          const [start, end] = clean.split('-').map(n => parseInt(n.trim(), 10));
+      return Array.from(targetPages).sort((a, b) => a - b);
+    }
+
+    const raw = String(rangeInput || '').trim();
+    if (!raw) return [];
+
+    const parts = raw.split(/[,;\s]+/).filter(Boolean);
+    for (const part of parts) {
+      const clean = part.trim();
+      if (!clean) continue;
+
+      if (clean.includes('-')) {
+        const segs = clean.split('-');
+        if (segs.length === 2) {
+          let startStr = segs[0].trim();
+          let endStr = segs[1].trim();
+
+          let start = startStr === '' ? 1 : parseInt(startStr, 10);
+          let end = endStr === '' ? totalPages : parseInt(endStr, 10);
+
           if (!isNaN(start) && !isNaN(end)) {
             const minP = Math.max(1, Math.min(start, end));
             const maxP = Math.min(totalPages, Math.max(start, end));
             for (let p = minP; p <= maxP; p++) {
-              targetIndices.add(p - 1);
+              targetPages.add(p);
             }
           }
-        } else {
-          const p = parseInt(clean, 10);
-          if (!isNaN(p) && p >= 1 && p <= totalPages) {
-            targetIndices.add(p - 1);
-          }
+        }
+      } else {
+        const p = parseInt(clean, 10);
+        if (!isNaN(p) && p >= 1 && p <= totalPages) {
+          targetPages.add(p);
         }
       }
     }
 
-    if (targetIndices.size === 0) {
+    return Array.from(targetPages).sort((a, b) => a - b);
+  },
+
+  formatRangeString(pagesArray) {
+    if (!pagesArray || pagesArray.length === 0) return '';
+    const sorted = Array.from(new Set(pagesArray.map(p => parseInt(p, 10)).filter(p => !isNaN(p) && p >= 1))).sort((a, b) => a - b);
+    if (sorted.length === 0) return '';
+
+    const ranges = [];
+    let start = sorted[0];
+    let prev = sorted[0];
+
+    for (let i = 1; i < sorted.length; i++) {
+      const cur = sorted[i];
+      if (cur === prev + 1) {
+        prev = cur;
+      } else {
+        ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+        start = cur;
+        prev = cur;
+      }
+    }
+    ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+    return ranges.join(', ');
+  },
+
+  // Web Worker Management
+  _splitWorker: null,
+  getSplitWorker() {
+    if (typeof window === 'undefined' || typeof Worker === 'undefined') return null;
+    if (!this._splitWorker) {
+      try {
+        this._splitWorker = new Worker('../js/workers/split-worker.js');
+      } catch (e1) {
+        try {
+          this._splitWorker = new Worker('/js/workers/split-worker.js');
+        } catch (e2) {
+          this._splitWorker = null;
+        }
+      }
+    }
+    return this._splitWorker;
+  },
+
+  async runWorkerAction(action, payload, onProgress = null) {
+    const worker = this.getSplitWorker();
+    if (!worker) return null;
+
+    return new Promise((resolve, reject) => {
+      const id = 'split_' + Math.random().toString(36).substring(2, 9);
+      const listener = (e) => {
+        const msg = e.data || {};
+        if (msg.id !== id) return;
+
+        if (msg.type === 'PROGRESS') {
+          if (onProgress) onProgress(msg.pct, msg.status);
+        } else if (msg.type === 'SUCCESS') {
+          worker.removeEventListener('message', listener);
+          worker.removeEventListener('error', errListener);
+          resolve(msg.result);
+        } else if (msg.type === 'ERROR') {
+          worker.removeEventListener('message', listener);
+          worker.removeEventListener('error', errListener);
+          reject(new Error(msg.error || 'Worker execution failed'));
+        }
+      };
+
+      const errListener = (err) => {
+        worker.removeEventListener('message', listener);
+        worker.removeEventListener('error', errListener);
+        reject(err);
+      };
+
+      worker.addEventListener('message', listener);
+      worker.addEventListener('error', errListener);
+
+      try {
+        const transfer = [];
+        if (payload.buffer && payload.buffer instanceof ArrayBuffer) {
+          const cloned = payload.buffer.slice(0);
+          payload.buffer = cloned;
+          transfer.push(cloned);
+        }
+        worker.postMessage({ action, id, payload }, transfer);
+      } catch (postErr) {
+        worker.removeEventListener('message', listener);
+        worker.removeEventListener('error', errListener);
+        reject(postErr);
+      }
+    });
+  },
+
+  // 2. Mode A: Split PDF Document by Page Ranges or Selection (Extract to Single PDF)
+  async splitPDF(file, pageRangeString, onProgress = null) {
+    if (onProgress) onProgress(15, 'Loading PDF document structure into RAM...');
+    const buffer = await UIUtils.readFileAsArrayBuffer(file);
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
+    const totalPages = srcDoc.getPageCount();
+
+    const targetPages = this.parseRangeString(pageRangeString, totalPages);
+    if (targetPages.length === 0) {
       throw new Error(`Invalid page range. Please select valid pages between 1 and ${totalPages}.`);
     }
 
-    const sortedIndices = Array.from(targetIndices).sort((a, b) => a - b);
-    if (onProgress) onProgress(60, `Extracting ${sortedIndices.length} selected pages...`);
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+
+    // Attempt Web Worker offloading
+    try {
+      const workerRes = await this.runWorkerAction('EXTRACT', {
+        buffer,
+        targetPages,
+        baseName
+      }, onProgress);
+
+      if (workerRes && workerRes.pdfBytes) {
+        const pdfBlob = new Blob([workerRes.pdfBytes], { type: 'application/pdf' });
+        return {
+          pdfBlob,
+          filename: workerRes.filename,
+          extractedPagesCount: workerRes.extractedCount,
+          totalPages: workerRes.totalPages,
+          selectedPagesList: workerRes.selectedPages
+        };
+      }
+    } catch (workerErr) {
+      console.warn('SplitWorker error, executing cooperative in-memory fallback:', workerErr);
+    }
+
+    // In-memory fallback
+    const sortedIndices = targetPages.map(p => p - 1);
+    if (onProgress) onProgress(50, `Extracting ${sortedIndices.length} selected pages...`);
 
     const newDoc = await PDFLib.PDFDocument.create();
-    const copiedPages = await newDoc.copyPages(srcDoc, sortedIndices);
-    copiedPages.forEach(page => newDoc.addPage(page));
+    for (let i = 0; i < sortedIndices.length; i += 25) {
+      const slice = sortedIndices.slice(i, i + 25);
+      const copiedPages = await newDoc.copyPages(srcDoc, slice);
+      copiedPages.forEach(page => newDoc.addPage(page));
+      await new Promise(r => setTimeout(r, 0));
+    }
 
     if (onProgress) onProgress(90, 'Writing extracted PDF document...');
     const pdfBytes = await newDoc.save({ useObjectStreams: true });
     const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const filename = `${baseName}-extracted-${targetPages.length}pages.pdf`;
 
     return {
       pdfBlob,
-      extractedPagesCount: sortedIndices.length,
+      filename,
+      extractedPagesCount: targetPages.length,
       totalPages: totalPages,
-      selectedPagesList: sortedIndices.map(i => i + 1)
+      selectedPagesList: targetPages
     };
   },
 
-  // 3. Burst / Split Individual Pages into individual PDFs and ZIP archive
+  // 2b. Mode B: Remove Selected Pages (Invert & Save Remaining Pages)
+  async removePagesPDF(file, pagesToRemove, onProgress = null) {
+    if (onProgress) onProgress(15, 'Inspecting pages to exclude...');
+    const buffer = await UIUtils.readFileAsArrayBuffer(file);
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
+    const totalPages = srcDoc.getPageCount();
+
+    const excludedSet = new Set(this.parseRangeString(pagesToRemove, totalPages));
+    const activePages = [];
+    for (let p = 1; p <= totalPages; p++) {
+      if (!excludedSet.has(p)) {
+        activePages.push(p);
+      }
+    }
+
+    if (activePages.length === 0) {
+      throw new Error('You cannot remove all pages. Please leave at least one page.');
+    }
+
+    const res = await this.splitPDF(file, activePages, onProgress);
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    res.filename = `${baseName}-cleaned-${activePages.length}pages.pdf`;
+    res.removedPagesCount = excludedSet.size;
+    res.remainingPagesCount = activePages.length;
+    return res;
+  },
+
+  // 3. Mode C: Burst / Split Individual Pages into individual PDFs and ZIP archive
   async splitSelectedPagesToZip(file, pageNumbers = null, onProgress = null) {
     if (onProgress) onProgress(15, 'Reading PDF document structure into memory...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
     const srcDoc = await this.safeLoadPDF(buffer, file.name);
     const totalPages = srcDoc.getPageCount();
 
-    // Determine target 1-based page numbers
-    let pagesToExtract = [];
-    if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
-      pagesToExtract = pageNumbers
-        .map(p => parseInt(p, 10))
-        .filter(p => !isNaN(p) && p >= 1 && p <= totalPages)
-        .sort((a, b) => a - b);
-    } else {
-      for (let i = 1; i <= totalPages; i++) pagesToExtract.push(i);
+    let targetPages = this.parseRangeString(pageNumbers, totalPages);
+    if (!targetPages || targetPages.length === 0) {
+      for (let i = 1; i <= totalPages; i++) targetPages.push(i);
     }
 
-    if (pagesToExtract.length === 0) {
+    if (targetPages.length === 0) {
       throw new Error('Please select at least one valid page to split.');
     }
 
     const baseName = file.name.replace(/\.[^/.]+$/, '');
+
+    // Attempt Web Worker offloading
+    try {
+      const workerRes = await this.runWorkerAction('BURST_ZIP', {
+        buffer,
+        targetPages,
+        baseName
+      }, onProgress);
+
+      if (workerRes && workerRes.zipBytes) {
+        const zipBlob = new Blob([workerRes.zipBytes], { type: 'application/zip' });
+        const fileList = (workerRes.files || []).map(f => ({
+          pageNumber: f.pageNumber,
+          filename: f.filename,
+          blob: new Blob([f.bytes], { type: 'application/pdf' }),
+          size: f.size
+        }));
+
+        return {
+          zipBlob,
+          filename: workerRes.filename,
+          files: fileList,
+          totalPages: workerRes.totalPages,
+          totalExtracted: fileList.length
+        };
+      }
+    } catch (workerErr) {
+      console.warn('SplitWorker burst error, using cooperative in-memory fallback:', workerErr);
+    }
+
+    // In-memory fallback
     const pagesData = [];
     const fileList = [];
 
-    for (let idx = 0; idx < pagesToExtract.length; idx++) {
-      const pageNum = pagesToExtract[idx];
-      const pct = 20 + Math.round(((idx + 1) / pagesToExtract.length) * 65);
-      if (onProgress) onProgress(pct, `Extracting Page ${pageNum} (${idx + 1} of ${pagesToExtract.length})...`);
+    for (let idx = 0; idx < targetPages.length; idx++) {
+      const pageNum = targetPages[idx];
+      const pct = 20 + Math.round(((idx + 1) / targetPages.length) * 65);
+      if (onProgress) onProgress(pct, `Extracting Page ${pageNum} (${idx + 1} of ${targetPages.length})...`);
 
       const singleDoc = await PDFLib.PDFDocument.create();
       const [copiedPage] = await singleDoc.copyPages(srcDoc, [pageNum - 1]);
@@ -267,6 +459,8 @@ const PDFOrganize = {
         blob: blob,
         size: singleBytes.byteLength
       });
+
+      await new Promise(r => setTimeout(r, 0));
     }
 
     if (onProgress) onProgress(90, 'Bundling all individual PDFs into 1-click ZIP archive...');
@@ -287,37 +481,179 @@ const PDFOrganize = {
     return this.splitSelectedPagesToZip(file, null, onProgress);
   },
 
-  // 3b. Split Document into Equal Page Chunks or Pairs (e.g. 2, 3, 5, up to 10 pages per PDF)
+  // 3b. Mode D: Split by Target File Size / Email-Friendly Chunks (< 10MB / 25MB)
+  async splitPDFBySize(file, maxBytesPerChunk = (10 * 1024 * 1024), onProgress = null) {
+    if (onProgress) onProgress(15, 'Analyzing document page sizes for email splitting...');
+    const buffer = await UIUtils.readFileAsArrayBuffer(file);
+    const srcDoc = await this.safeLoadPDF(buffer, file.name);
+    const totalPages = srcDoc.getPageCount();
+
+    const maxLimit = Math.max(1024, parseInt(maxBytesPerChunk, 10) || (10 * 1024 * 1024));
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+
+    // Attempt Web Worker offloading
+    try {
+      const workerRes = await this.runWorkerAction('SPLIT_BY_SIZE', {
+        buffer,
+        maxBytes: maxLimit,
+        baseName
+      }, onProgress);
+
+      if (workerRes && workerRes.zipBytes) {
+        const zipBlob = new Blob([workerRes.zipBytes], { type: 'application/zip' });
+        const chunkList = (workerRes.chunks || []).map(c => ({
+          partIndex: c.partIndex,
+          rangeLabel: c.rangeLabel,
+          filename: c.filename,
+          blob: new Blob([c.bytes], { type: 'application/pdf' }),
+          size: c.size,
+          pages: c.pages
+        }));
+
+        return {
+          zipBlob,
+          filename: workerRes.filename,
+          chunks: chunkList,
+          totalChunks: chunkList.length,
+          totalPages: workerRes.totalPages
+        };
+      }
+    } catch (workerErr) {
+      console.warn('SplitWorker size error, executing in-memory fallback:', workerErr);
+    }
+
+    // In-memory fallback
+    const chunks = [];
+    let currentChunkPages = [];
+
+    for (let p = 1; p <= totalPages; p++) {
+      const pct = 15 + Math.round((p / totalPages) * 65);
+      if (onProgress) onProgress(pct, `Calculating size profile for Page ${p} of ${totalPages}...`);
+
+      const testDoc = await PDFLib.PDFDocument.create();
+      const testIndices = [...currentChunkPages, p].map(n => n - 1);
+      const copied = await testDoc.copyPages(srcDoc, testIndices);
+      copied.forEach(pg => testDoc.addPage(pg));
+      const testBytes = await testDoc.save({ useObjectStreams: true });
+
+      if (testBytes.byteLength > maxLimit && currentChunkPages.length > 0) {
+        chunks.push([...currentChunkPages]);
+        currentChunkPages = [p];
+      } else {
+        currentChunkPages.push(p);
+      }
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    if (currentChunkPages.length > 0) {
+      chunks.push([...currentChunkPages]);
+    }
+
+    if (onProgress) onProgress(85, `Writing ${chunks.length} size-optimized parts...`);
+    const chunkList = [];
+    const pagesData = [];
+
+    for (let cIdx = 0; cIdx < chunks.length; cIdx++) {
+      const chunk = chunks[cIdx];
+      const chunkDoc = await PDFLib.PDFDocument.create();
+      const copied = await chunkDoc.copyPages(srcDoc, chunk.map(n => n - 1));
+      copied.forEach(pg => chunkDoc.addPage(pg));
+      const bytes = await chunkDoc.save({ useObjectStreams: true });
+
+      const rangeLabel = chunk.length === 1
+        ? `Page ${chunk[0]}`
+        : `Pages ${chunk[0]}-${chunk[chunk.length - 1]}`;
+
+      const fname = chunk.length === 1
+        ? `${baseName}-part-${cIdx + 1}-page-${chunk[0]}.pdf`
+        : `${baseName}-part-${cIdx + 1}-pages-${chunk[0]}-${chunk[chunk.length - 1]}.pdf`;
+
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      pagesData.push({ filename: fname, bytes });
+      chunkList.push({
+        partIndex: cIdx + 1,
+        rangeLabel,
+        filename: fname,
+        blob,
+        size: bytes.byteLength,
+        pages: chunk
+      });
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    if (onProgress) onProgress(95, 'Bundling email-ready parts into ZIP...');
+    const ZipClass = window.MiniZip || (window.UIUtils && window.UIUtils.Zip) || LocalZip;
+    const rawZip = ZipClass.createZip(pagesData);
+    const zipBlob = (typeof Blob !== 'undefined' && rawZip instanceof Blob) ? rawZip : new Blob([rawZip], { type: 'application/zip' });
+    const limitMB = Math.round(maxLimit / (1024 * 1024));
+
+    return {
+      zipBlob,
+      filename: `${baseName}-parts-under-${limitMB}MB.zip`,
+      chunks: chunkList,
+      totalChunks: chunkList.length,
+      totalPages: totalPages
+    };
+  },
+
+  // 3c. Split Document into Equal Page Chunks or Pairs (e.g. 2, 3, 5, up to 10 pages per PDF)
   async splitPagesToChunks(file, pageNumbers = null, chunkSize = 2, onProgress = null) {
     if (onProgress) onProgress(15, 'Reading PDF document pages...');
     const buffer = await UIUtils.readFileAsArrayBuffer(file);
     const srcDoc = await this.safeLoadPDF(buffer, file.name);
     const totalPages = srcDoc.getPageCount();
 
-    const cleanChunkSize = Math.max(1, Math.min(10, parseInt(chunkSize, 10) || 2));
-
-    // Determine target 1-based page numbers
-    let pagesToExtract = [];
-    if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
-      pagesToExtract = pageNumbers
-        .map(p => parseInt(p, 10))
-        .filter(p => !isNaN(p) && p >= 1 && p <= totalPages)
-        .sort((a, b) => a - b);
-    } else {
-      for (let i = 1; i <= totalPages; i++) pagesToExtract.push(i);
+    const cleanChunkSize = Math.max(1, Math.min(25, parseInt(chunkSize, 10) || 2));
+    let targetPages = this.parseRangeString(pageNumbers, totalPages);
+    if (!targetPages || targetPages.length === 0) {
+      for (let i = 1; i <= totalPages; i++) targetPages.push(i);
     }
 
-    if (pagesToExtract.length === 0) {
+    if (targetPages.length === 0) {
       throw new Error('Please select at least one valid page to split.');
     }
 
-    // Partition into chunks of cleanChunkSize
-    const chunks = [];
-    for (let i = 0; i < pagesToExtract.length; i += cleanChunkSize) {
-      chunks.push(pagesToExtract.slice(i, i + cleanChunkSize));
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+
+    // Attempt Web Worker offloading
+    try {
+      const workerRes = await this.runWorkerAction('SPLIT_CHUNKS', {
+        buffer,
+        targetPages,
+        chunkSize: cleanChunkSize,
+        baseName
+      }, onProgress);
+
+      if (workerRes && workerRes.zipBytes) {
+        const zipBlob = new Blob([workerRes.zipBytes], { type: 'application/zip' });
+        const chunkList = (workerRes.chunks || []).map(c => ({
+          partIndex: c.partIndex,
+          rangeLabel: c.rangeLabel,
+          filename: c.filename,
+          blob: new Blob([c.bytes], { type: 'application/pdf' }),
+          size: c.size,
+          pages: c.pages
+        }));
+
+        return {
+          zipBlob,
+          filename: workerRes.filename,
+          chunks: chunkList,
+          totalChunks: chunkList.length,
+          chunkSize: cleanChunkSize,
+          totalPages: workerRes.totalPages
+        };
+      }
+    } catch (workerErr) {
+      console.warn('SplitWorker chunks error, executing in-memory fallback:', workerErr);
     }
 
-    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    // In-memory fallback
+    const chunks = [];
+    for (let i = 0; i < targetPages.length; i += cleanChunkSize) {
+      chunks.push(targetPages.slice(i, i + cleanChunkSize));
+    }
+
     const pagesData = [];
     const chunkList = [];
 
@@ -351,6 +687,7 @@ const PDFOrganize = {
         size: chunkBytes.byteLength,
         pageCount: chunk.length
       });
+      await new Promise(r => setTimeout(r, 0));
     }
 
     if (onProgress) onProgress(90, 'Packaging all parts into 1-click ZIP archive...');
