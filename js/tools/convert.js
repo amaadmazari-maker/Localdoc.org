@@ -253,11 +253,108 @@ const PDFConvert = {
     return zip.generateBlob('application/zip');
   },
 
-  // 2. Images to PDF with layout controls
-  async imagesToPDF(files, options = {}, onProgress = null) {
-    const orientation = options.orientation || 'auto';
-    const margin = options.margin !== undefined  ?  options.margin : 20;
-    const pageSize = options.pageSize || 'a4';
+  // Helper: Read EXIF metadata (Orientation & DateTimeOriginal) directly from JPEG header buffer
+  parseExif(arrayBuffer) {
+    try {
+      const view = new DataView(arrayBuffer);
+      if (view.byteLength < 16) return null;
+      // JPEG SOI marker: 0xFFD8
+      if (view.getUint16(0, false) !== 0xFFD8) return null;
+
+      let offset = 2;
+      while (offset < view.byteLength - 2) {
+        const marker = view.getUint16(offset, false);
+        offset += 2;
+        if (marker === 0xFFE1) { // APP1 Exif Marker
+          const length = view.getUint16(offset, false);
+          offset += 2;
+          // Check for 'Exif\0\0'
+          if (view.getUint32(offset, false) === 0x45786966 && view.getUint16(offset + 4, false) === 0x0000) {
+            const tiffOffset = offset + 6;
+            const isLittleEndian = (view.getUint16(tiffOffset, false) === 0x4949);
+            const firstIfdOffset = view.getUint32(tiffOffset + 4, isLittleEndian);
+
+            let dateStr = null;
+            let orientation = 1;
+
+            const parseIFD = (ifdOffset) => {
+              if (ifdOffset + 2 > view.byteLength - tiffOffset) return;
+              const entries = view.getUint16(tiffOffset + ifdOffset, isLittleEndian);
+              let p = tiffOffset + ifdOffset + 2;
+              let subIfdOffset = null;
+
+              for (let i = 0; i < entries; i++) {
+                if (p + 12 > view.byteLength) break;
+                const tag = view.getUint16(p, isLittleEndian);
+                const type = view.getUint16(p + 2, isLittleEndian);
+                const count = view.getUint32(p + 4, isLittleEndian);
+
+                if (tag === 0x0112) { // Orientation
+                  orientation = view.getUint16(p + 8, isLittleEndian);
+                } else if (tag === 0x8769) { // Exif IFD Pointer
+                  subIfdOffset = view.getUint32(p + 8, isLittleEndian);
+                } else if (tag === 0x9003 || tag === 0x0132) { // DateTimeOriginal or DateTime
+                  const valOffset = view.getUint32(p + 8, isLittleEndian);
+                  if (tiffOffset + valOffset + count <= view.byteLength) {
+                    let s = '';
+                    for (let k = 0; k < count - 1; k++) {
+                      s += String.fromCharCode(view.getUint8(tiffOffset + valOffset + k));
+                    }
+                    if (s.trim()) dateStr = s.trim();
+                  }
+                }
+                p += 12;
+              }
+              if (subIfdOffset && !dateStr) {
+                parseIFD(subIfdOffset);
+              }
+            };
+
+            parseIFD(firstIfdOffset);
+            return { dateStr, orientation };
+          }
+        } else if ((marker & 0xFF00) === 0xFF00) {
+          offset += view.getUint16(offset, false);
+        } else {
+          break;
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  },
+
+  // Helper: Natural sort images by name or EXIF capture date
+  sortImages(images, mode = 'name') {
+    const list = [...images];
+    if (mode === 'name') {
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      list.sort((a, b) => collator.compare(a.name || '', b.name || ''));
+    } else if (mode === 'name-desc') {
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      list.sort((a, b) => collator.compare(b.name || '', a.name || ''));
+    } else if (mode === 'date') {
+      list.sort((a, b) => {
+        const timeA = a.captureDate ? new Date(a.captureDate.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')).getTime() : (a.file ? a.file.lastModified : 0);
+        const timeB = b.captureDate ? new Date(b.captureDate.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')).getTime() : (b.file ? b.file.lastModified : 0);
+        return (timeA || 0) - (timeB || 0);
+      });
+    } else if (mode === 'date-desc') {
+      list.sort((a, b) => {
+        const timeA = a.captureDate ? new Date(a.captureDate.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')).getTime() : (a.file ? a.file.lastModified : 0);
+        const timeB = b.captureDate ? new Date(b.captureDate.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')).getTime() : (b.file ? b.file.lastModified : 0);
+        return (timeB || 0) - (timeA || 0);
+      });
+    }
+    return list;
+  },
+
+  // 2. Universal Images to PDF: JPG, PNG, WebP, AVIF, HEIC/HEIF with Layout & Margin Controls
+  async imagesToPDF(items, options = {}, onProgress = null) {
+    const orientation = options.orientation || 'auto'; // 'auto' | 'portrait' | 'landscape'
+    const pageSize = options.pageSize || 'a4'; // 'a4' | 'letter' | 'original'
+    const margin = (pageSize === 'original') ? 0 : (options.margin !== undefined ? options.margin : 20);
 
     const baseSizes = {
       a4: { w: 595.28, h: 841.89 },
@@ -267,61 +364,163 @@ const PDFConvert = {
 
     const pdfDoc = await PDFLib.PDFDocument.create();
 
-    for (let i = 0; i < files.length; i++) {
-      if (onProgress) onProgress(((i + 1) / files.length) * 100, `Embedding image ${i + 1} of ${files.length}...`);
-      const file = files[i];
-      const buffer = await UIUtils.readFileAsArrayBuffer(file);
-      let embeddedImage;
+    for (let i = 0; i < items.length; i++) {
+      if (onProgress) onProgress(((i + 0.1) / items.length) * 100, `Converting & embedding image ${i + 1} of ${items.length}...`);
 
-      const isPng = file.type === 'image/png' || (file.name && file.name.toLowerCase().endsWith('.png'));
-      if (isPng) {
-        try {
-          embeddedImage = await pdfDoc.embedPng(buffer);
-        } catch (e) {
-          const dataUrl = await UIUtils.readFileAsDataURL(file);
-          const img = await UIUtils.loadImage(dataUrl);
-          const c = document.createElement('canvas');
-          c.width = img.width;
-          c.height = img.height;
-          const ctx = c.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const jpgBlob = await new Promise(res => c.toBlob(res, 'image/jpeg', 0.95));
-          const jpgBuf = await jpgBlob.arrayBuffer();
-          embeddedImage = await pdfDoc.embedJpg(jpgBuf);
+      // items can be a File, Blob, or an object { file, rotation }
+      const item = items[i];
+      const file = item.file || item;
+      const rotation = (item.rotation || 0) % 360;
+
+      const fileName = file.name || 'image';
+      const fileType = file.type || '';
+      const isHeic = fileType === 'image/heic' || fileType === 'image/heif' || /\.(heic|heif)$/i.test(fileName);
+      const isPng = fileType === 'image/png' || /\.png$/i.test(fileName);
+      const isJpg = fileType === 'image/jpeg' || /\.(jpg|jpeg)$/i.test(fileName);
+
+      let embeddedImage = null;
+
+      try {
+        if (isHeic) {
+          // HEIC / HEIF decoding
+          if (typeof heic2any !== 'undefined') {
+            const converted = await heic2any({
+              blob: file,
+              toType: 'image/jpeg',
+              quality: 0.92
+            });
+            const heicBlob = Array.isArray(converted) ? converted[0] : converted;
+            if (rotation !== 0) {
+              embeddedImage = await this._renderBlobWithRotation(pdfDoc, heicBlob, rotation);
+            } else {
+              const heicBuf = await heicBlob.arrayBuffer();
+              embeddedImage = await pdfDoc.embedJpg(heicBuf);
+            }
+          } else {
+            embeddedImage = await this._renderBlobWithRotation(pdfDoc, file, rotation);
+          }
+        } else if (isJpg && rotation === 0) {
+          const buffer = await UIUtils.readFileAsArrayBuffer(file);
+          try {
+            embeddedImage = await pdfDoc.embedJpg(buffer);
+          } catch (e) {
+            embeddedImage = await this._renderBlobWithRotation(pdfDoc, file, 0);
+          }
+        } else if (isPng && rotation === 0) {
+          const buffer = await UIUtils.readFileAsArrayBuffer(file);
+          try {
+            embeddedImage = await pdfDoc.embedPng(buffer);
+          } catch (e) {
+            embeddedImage = await this._renderBlobWithRotation(pdfDoc, file, 0);
+          }
+        } else {
+          // WebP, AVIF, rotated JPG/PNG, BMP, etc.
+          embeddedImage = await this._renderBlobWithRotation(pdfDoc, file, rotation);
         }
-      } else {
-        embeddedImage = await pdfDoc.embedJpg(buffer);
+      } catch (err) {
+        console.error(`Error embedding ${fileName}:`, err);
+        throw new Error(`Could not decode image "${fileName}". Please try JPG, PNG, or standard formats.`);
+      }
+
+      if (!embeddedImage) {
+        throw new Error(`Failed to process image "${fileName}".`);
       }
 
       const imgWidth = embeddedImage.width;
       const imgHeight = embeddedImage.height;
 
-      let pageW = defaultDims.w;
-      let pageH = defaultDims.h;
+      let pageW, pageH;
 
-      if (orientation === 'landscape' || (orientation === 'auto' && imgWidth > imgHeight)) {
-        pageW = defaultDims.h;
-        pageH = defaultDims.w;
+      if (pageSize === 'original') {
+        // Original Photo Dimensions (1:1 borderless aspect ratio)
+        pageW = imgWidth;
+        pageH = imgHeight;
+        const pdfPage = pdfDoc.addPage([pageW, pageH]);
+        pdfPage.drawImage(embeddedImage, {
+          x: 0,
+          y: 0,
+          width: pageW,
+          height: pageH
+        });
+      } else {
+        // Standard paper size (A4 / Letter) with Margins
+        pageW = defaultDims.w;
+        pageH = defaultDims.h;
+
+        if (orientation === 'landscape' || (orientation === 'auto' && imgWidth > imgHeight)) {
+          pageW = defaultDims.h;
+          pageH = defaultDims.w;
+        }
+
+        const pdfPage = pdfDoc.addPage([pageW, pageH]);
+        const availW = pageW - margin * 2;
+        const availH = pageH - margin * 2;
+
+        const scale = Math.min(availW / imgWidth, availH / imgHeight, 1.0);
+        const drawW = imgWidth * scale;
+        const drawH = imgHeight * scale;
+
+        pdfPage.drawImage(embeddedImage, {
+          x: margin + (availW - drawW) / 2,
+          y: margin + (availH - drawH) / 2,
+          width: drawW,
+          height: drawH
+        });
       }
 
-      const pdfPage = pdfDoc.addPage([pageW, pageH]);
-      const availW = pageW - margin * 2;
-      const availH = pageH - margin * 2;
-
-      const scale = Math.min(availW / imgWidth, availH / imgHeight, 1.0);
-      const drawW = imgWidth * scale;
-      const drawH = imgHeight * scale;
-
-      pdfPage.drawImage(embeddedImage, {
-        x: margin + (availW - drawW) / 2,
-        y: margin + (availH - drawH) / 2,
-        width: drawW,
-        height: drawH
-      });
+      if (onProgress) onProgress(((i + 1) / items.length) * 100, `Embedded image ${i + 1} of ${items.length}`);
     }
 
     const pdfBytes = await pdfDoc.save();
     return new Blob([pdfBytes], { type: 'application/pdf' });
+  },
+
+  // Helper: Decode any image via Canvas and apply rotation, returning embedded pdf-lib JPG
+  async _renderBlobWithRotation(pdfDoc, fileOrBlob, rotation = 0) {
+    const dataUrl = await UIUtils.readFileAsDataURL(fileOrBlob);
+    const img = await UIUtils.loadImage(dataUrl);
+
+    const canvas = document.createElement('canvas');
+    const rot = (rotation || 0) % 360;
+
+    if (rot === 90 || rot === 270) {
+      canvas.width = img.height;
+      canvas.height = img.width;
+    } else {
+      canvas.width = img.width;
+      canvas.height = img.height;
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (rot !== 0) {
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((rot * Math.PI) / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    } else {
+      ctx.drawImage(img, 0, 0);
+    }
+
+    const isPng = fileOrBlob.type === 'image/png';
+    const mime = isPng ? 'image/png' : 'image/jpeg';
+    const blob = await new Promise(res => canvas.toBlob(res, mime, 0.92));
+    const buf = await blob.arrayBuffer();
+
+    // Release canvas memory immediately
+    canvas.width = 1;
+    canvas.height = 1;
+
+    if (isPng) {
+      try {
+        return await pdfDoc.embedPng(buf);
+      } catch (e) {
+        return await pdfDoc.embedJpg(buf);
+      }
+    } else {
+      return await pdfDoc.embedJpg(buf);
+    }
   },
 
   // 3. PDF to Word (.docx) — Enhanced Style, Multi-Column, Table & RTL Extractor
