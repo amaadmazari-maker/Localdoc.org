@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v69-universal-image-to-pdf';
+const CACHE_NAME = 'localdoc-v70-split-pdf-worker';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -29,6 +29,7 @@ const ASSETS_TO_CACHE = [
   '/js/lib/pdf.min.js',
   '/js/lib/pdf.worker.min.js',
   '/js/workers/scan-worker.js',
+  '/js/workers/split-worker.js',
   '/js/lib/docx.min.js',
   '/js/lib/jszip.min.js',
   '/js/lib/mammoth.browser.min.js',

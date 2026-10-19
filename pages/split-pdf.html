@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Split PDF Online Free — Separate & Extract PDF Pages | LocalDoc</title>
-  <meta name="description" content="Split PDF documents into individual pages or extract custom page ranges as a ZIP file. 100% private in-browser tool with zero uploads and no file limits.">
+  <title>Split PDF Online Free — Extract Pages, Remove Pages, Burst to ZIP | LocalDoc</title>
+  <meta name="description" content="Split PDF documents online for free. Extract custom page ranges, delete unwanted pages, burst every page into a 1-click ZIP, or split by email file size. 100% private in-browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/split-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -28,18 +28,17 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Split PDF Files Online &mdash; 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Extract ranges or split every page into a ZIP archive in browser RAM.">
+  <meta property="og:title" content="Split PDF Online Free — Extract, Remove Pages & Burst to ZIP | LocalDoc">
+  <meta property="og:description" content="Visual touch page picker, email size splitter, and 1-click ZIP burst directly in browser RAM with zero uploads.">
   <meta property="og:url" content="https://localdoc.org/pages/split-pdf.html">
   <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-merge.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Split PDF Online Free (Extract Pages & Burst to ZIP in RAM) | LocalDoc">
-  <meta name="twitter:description" content="Extract specific page ranges or burst all pages into individual PDFs as a ZIP archive. 100% client-side zero-upload execution. Fast, free, and secure.">
+  <meta name="twitter:title" content="Split PDF Online Free — Extract, Remove Pages & Burst to ZIP | LocalDoc">
+  <meta name="twitter:description" content="Extract custom ranges, remove unwanted pages, burst to ZIP, or split by file size for email attachments. 100% client-side zero-upload execution.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-merge.webp">
-
 
   <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +49,29 @@
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
 
   <style>
+    .page-select-card {
+      position: relative;
+      background: var(--bg-surface);
+      border: 2px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      user-select: none;
+    }
+    .page-select-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+    }
+    .page-select-card.selected {
+      border-color: var(--primary);
+      background: rgba(2, 132, 199, 0.04);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25);
+    }
     .page-card-del-btn {
       position: absolute;
       top: 6px;
@@ -85,7 +107,34 @@
     .page-select-card.page-deleted .page-card-del-btn {
       background: #64748B;
     }
-    .chunk-pill.active {
+    .page-select-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 2px 4px;
+    }
+    .page-check-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 1.5px solid var(--line);
+      background: var(--bg-surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.15s ease;
+    }
+    .page-select-card.selected .page-check-indicator {
+      background: #10B981;
+      border-color: #10B981;
+      color: #FFFFFF;
+    }
+    .chunk-pill.active, .size-pill.active {
       background: var(--primary) !important;
       color: #FFFFFF !important;
       border-color: var(--primary) !important;
@@ -101,6 +150,21 @@
       border-radius: var(--radius-sm);
       margin-bottom: 8px;
       gap: 10px;
+    }
+    .share-whatsapp-btn {
+      background: #25D366;
+      color: #FFFFFF;
+      border: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .share-whatsapp-btn:hover {
+      background: #1EBE5D;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
     }
     @media (max-width: 540px) {
       .split-item-row {
@@ -269,24 +333,24 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <span>100% Client-Side RAM Processing</span>
         </div>
-        <h1>Split PDF Files Online</h1>
-        <p class="tool-desc">Extract custom page ranges into a new document or burst every single page into individual PDF files bundled as a ZIP archive.</p>
+        <h1>Split PDF Files Online Free</h1>
+        <p class="tool-desc">Extract custom page ranges into a single document, remove unwanted pages, burst every page into a 1-click ZIP, or split into email-ready files by MB size.</p>
 
       <!-- Keyword Synonyms Bar -->
       <div class="keyword-synonyms-bar" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; margin:14px auto 18px; max-width:850px;">
-        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:4px;">PDF Actions:</span>
-        <span class="synonym-pill active" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--primary-subtle); border:1px solid var(--primary); color:var(--primary); font-weight:600;">Split PDF</span>
-        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Separate PDF</span>
-        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Extract PDF Pages</span>
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:4px;">Split Workflows:</span>
+        <span class="synonym-pill active" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--primary-subtle); border:1px solid var(--primary); color:var(--primary); font-weight:600;">Extract Pages</span>
+        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Remove Unwanted Pages</span>
+        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Burst to 1-Click ZIP</span>
+        <span class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary);">Split by File Size (Email)</span>
         <a href="merge-pdf.html" class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary); text-decoration:none;">Merge PDF</a>
-        <a href="organize-pdf.html" class="synonym-pill" style="font-size:0.8rem; padding:4px 10px; border-radius:999px; background:var(--bg-elevated); border:1px solid var(--line); color:var(--text-secondary); text-decoration:none;">Organize PDF</a>
       </div>
       </div>
 
       <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
       <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">Upload your PDF, visually select individual page thumbnails or type page ranges, and download your extracted PDF or full page-by-page ZIP bundle instantly:</strong> Upload your PDF, visually select individual page thumbnails or type page ranges, and download your extracted PDF or full page-by-page ZIP bundle instantly.
+          <strong style="color:var(--text-primary);">How to split a PDF locally:</strong> Upload your PDF document into LocalDoc. Visually tap pages to extract or remove, or type a custom range (e.g. 1-3, 5, 8-10). Choose between assembling a new single PDF, bursting all pages into an instant 1-click ZIP archive, or splitting into email-friendly parts under 10MB or 25MB. All processing occurs 100% inside your device RAM with zero server uploads.
         </p>
       </div>
 
@@ -299,7 +363,7 @@
           <h3>Drop your PDF document here</h3>
           <p data-i18n="drop_sub_pdf">Or click to browse from your device. 100% in-browser private execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select PDF Document</button>
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
         <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
@@ -321,22 +385,59 @@
       <div class="tool-controls-bar" id="tool-controls-bar" style="display:none; flex-direction:column; gap:16px; width:100%; max-width:850px; margin:20px auto 0;">
         <div style="display:flex; flex-direction:column; gap:8px;">
           <label style="font-weight:700; font-size:0.92rem; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-            <span>Choose How to Split:</span>
+            <span>Choose Splitting Strategy:</span>
           </label>
           <div class="control-btn-group" id="split-mode-toggle" style="display:flex; flex-wrap:wrap; gap:8px;">
-            <button type="button" class="control-btn-opt active" data-val="burst">
-              📄 Individual Pages (1-Click ZIP)
+            <button type="button" class="control-btn-opt active" data-val="range">
+              📂 Extract Selected Pages (Single PDF)
+            </button>
+            <button type="button" class="control-btn-opt" data-val="remove">
+              🗑️ Remove Selected Pages (Save Remaining)
+            </button>
+            <button type="button" class="control-btn-opt" data-val="burst">
+              📄 Burst Every Page (1-Click ZIP)
+            </button>
+            <button type="button" class="control-btn-opt" data-val="size">
+              ✉️ Split by File Size (Email-Ready)
             </button>
             <button type="button" class="control-btn-opt" data-val="chunks">
-              📑 Split in Pairs / Chunks (2–10 Pages)
-            </button>
-            <button type="button" class="control-btn-opt" data-val="range">
-              📂 Extract to Single PDF
+              📑 Split in Chunks (2–10 Pages)
             </button>
           </div>
         </div>
 
-        <!-- Chunks Options Panel -->
+        <!-- Range Input Group -->
+        <div class="control-group" id="range-input-group" style="display:flex; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px;">
+          <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span class="control-label" id="range-input-label" style="font-weight:700;">Page Range to Extract:</span>
+              <span style="font-size:0.8rem; color:var(--text-muted);">Live 2-way sync with thumbnails below</span>
+            </div>
+            <input type="text" class="control-input" id="range-input" placeholder="e.g. 1-3, 5, 8-10, 12-" style="width:100%;">
+          </div>
+        </div>
+
+        <!-- Size Options Panel (Mode D) -->
+        <div id="size-options-panel" style="display:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 18px; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span style="font-size:0.88rem; font-weight:700; color:var(--text-primary);">Maximum File Size per Part:</span>
+            <div class="size-pill-group" id="size-pills-bar" style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-outline size-pill active" data-mb="10">10 MB (Outlook / Standard)</button>
+              <button type="button" class="btn btn-outline size-pill" data-mb="20">20 MB (Pro)</button>
+              <button type="button" class="btn btn-outline size-pill" data-mb="25">25 MB (Gmail / Yahoo)</button>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; font-size:0.85rem; color:var(--text-secondary);">
+            <span>Or custom size:</span>
+            <input type="number" id="size-custom-input" min="1" max="100" value="10" class="control-input" style="width:70px; padding:4px 8px; text-align:center;">
+            <span>MB per split file</span>
+          </div>
+          <div id="size-preview-readout" style="font-size:0.85rem; color:var(--primary); font-weight:600; background:rgba(2,132,199,0.06); padding:8px 12px; border-radius:4px; border-left:3px solid var(--primary);">
+            Ready to split document into email-friendly parts under 10 MB...
+          </div>
+        </div>
+
+        <!-- Chunks Options Panel (Fixed page intervals) -->
         <div id="chunks-options-panel" style="display:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 18px; flex-direction:column; gap:12px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <span style="font-size:0.88rem; font-weight:700; color:var(--text-primary);">Pages per Split File:</span>
@@ -358,20 +459,9 @@
           </div>
         </div>
 
-        <!-- Range Input Group -->
-        <div class="control-group" id="range-input-group" style="display:none; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px;">
-          <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span class="control-label" style="font-weight:700;">Page Range to Combine:</span>
-              <span style="font-size:0.8rem; color:var(--text-muted);">Synced with checkboxes below</span>
-            </div>
-            <input type="text" class="control-input" id="range-input" placeholder="e.g. 1-3, 5, 8-10" style="width:100%;">
-          </div>
-        </div>
-
         <!-- Mode description banner -->
         <div id="mode-desc-banner" style="font-size:0.84rem; color:var(--text-secondary); line-height:1.5; padding:4px 2px;">
-          💡 <strong>Individual Pages Mode:</strong> Generates a separate PDF for every selected page below. Download all in 1 click as a ZIP file, or download individual pages.
+          💡 <strong>Extract to Single PDF:</strong> Combines only the selected pages below into a clean new document.
         </div>
       </div>
 
@@ -380,15 +470,16 @@
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
             <h4 style="font-size:0.95rem; font-weight:700; margin:0;">
-              Page Management (<span id="selected-count">0</span> / <span id="total-pages-count">0</span> pages active)
+              Page Management (<span id="selected-count">0</span> / <span id="total-pages-count">0</span> pages selected)
             </h4>
-            <span id="removed-count-note" style="font-size:0.78rem; color:var(--text-muted);">Click any card to select/deselect, or ✕ to delete.</span>
+            <span id="removed-count-note" style="font-size:0.78rem; color:var(--text-muted);">Tap any card to select/deselect, or ✕ to delete.</span>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <button type="button" class="btn btn-outline" id="btn-select-all" style="padding:4px 9px; font-size:0.75rem;">All</button>
             <button type="button" class="btn btn-outline" id="btn-deselect-all" style="padding:4px 9px; font-size:0.75rem;">None</button>
             <button type="button" class="btn btn-outline" id="btn-select-odd" style="padding:4px 9px; font-size:0.75rem;">Odd</button>
             <button type="button" class="btn btn-outline" id="btn-select-even" style="padding:4px 9px; font-size:0.75rem;">Even</button>
+            <button type="button" class="btn btn-outline" id="btn-invert-selection" style="padding:4px 9px; font-size:0.75rem;" title="Invert selection">⇄ Invert</button>
             <button type="button" class="btn btn-outline" id="btn-restore-all" style="padding:4px 9px; font-size:0.75rem; display:none;" title="Restore all deleted pages">↺ Restore All</button>
           </div>
         </div>
@@ -398,7 +489,7 @@
       <!-- Action Bar -->
       <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
         <button class="btn btn-primary btn-lg" id="process-btn">
-          <span id="process-btn-text">Split Selected Pages</span> &rarr;
+          <span id="process-btn-text">Extract Selected Pages</span> &rarr;
         </button>
       </div>
 
@@ -437,6 +528,10 @@
           <button class="btn btn-primary btn-lg" id="download-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span id="download-btn-text">Download All as ZIP (.zip)</span>
+          </button>
+          <button class="btn btn-lg share-whatsapp-btn" id="share-whatsapp-btn" type="button" title="Send directly via WhatsApp or Native Mobile Share">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>Share Document</span>
           </button>
         </div>
         <div id="split-items-container" style="display:none; margin-top:12px; width:100%; border-top:1px solid var(--line); padding-top:16px;">
@@ -755,7 +850,6 @@
   <script src="../js/core/pdf-validator.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
-  <script src="../js/lib/docx.min.js?v=20260921-v26"></script>
   <script src="../js/tools/convert.js?v=20260921-v26"></script>
   <script src="../js/tools/organize.js?v=20260921-v26"></script>
 
@@ -768,11 +862,13 @@
     let totalDocPages = 0;
     let selectedPagesSet = new Set();
     let deletedPagesSet = new Set();
-    let splitMode = 'burst'; // 'burst' (individual), 'chunks' (pairs/n-pages), 'range' (single combined)
+    let splitMode = 'range'; // 'range' (extract), 'remove' (delete), 'burst' (all to ZIP), 'size' (email MB), 'chunks' (pairs/fixed)
+    let splitSizeMB = 10; // default 10MB
     let chunkSize = 2; // default 2 pages (pairs)
     let resultBlob = null;
-    let resultFilename = 'localdoc-split.zip';
+    let resultFilename = 'localdoc-split.pdf';
     let generatedItems = [];
+    let isRangeInputActive = false;
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
@@ -780,11 +876,15 @@
     const queueName = document.getElementById("queue-file-name");
     const queueSize = document.getElementById("queue-file-size");
     const controlsBar = document.getElementById("tool-controls-bar");
+    const rangeInputGroup = document.getElementById("range-input-group");
+    const rangeInputLabel = document.getElementById("range-input-label");
+    const rangeInput = document.getElementById("range-input");
+    const sizeOptionsPanel = document.getElementById("size-options-panel");
+    const sizeCustomInput = document.getElementById("size-custom-input");
+    const sizePreviewReadout = document.getElementById("size-preview-readout");
     const chunksOptionsPanel = document.getElementById("chunks-options-panel");
     const chunkCustomInput = document.getElementById("chunk-custom-input");
     const chunkPreviewReadout = document.getElementById("chunk-preview-readout");
-    const rangeInputGroup = document.getElementById("range-input-group");
-    const rangeInput = document.getElementById("range-input");
     const modeDescBanner = document.getElementById("mode-desc-banner");
     const selectionGridWrap = document.getElementById("selection-grid-wrap");
     const pageGrid = document.getElementById("page-grid");
@@ -792,6 +892,7 @@
     const totalPagesCountEl = document.getElementById("total-pages-count");
     const removedCountNote = document.getElementById("removed-count-note");
     const btnRestoreAll = document.getElementById("btn-restore-all");
+    const btnInvert = document.getElementById("btn-invert-selection");
     const actionBar = document.getElementById("action-bar");
     const processBtn = document.getElementById("process-btn");
     const processBtnText = document.getElementById("process-btn-text");
@@ -799,12 +900,13 @@
     const resultCard = document.getElementById("result-card");
     const downloadBtn = document.getElementById("download-btn");
     const downloadBtnText = document.getElementById("download-btn-text");
+    const shareWhatsAppBtn = document.getElementById("share-whatsapp-btn");
     const splitItemsContainer = document.getElementById("split-items-container");
     const splitItemsTitle = document.getElementById("split-items-title");
     const splitItemsCount = document.getElementById("split-items-count");
     const splitItemsList = document.getElementById("split-items-list");
 
-    // Mode toggle
+    // Mode Toggle
     document.querySelectorAll("#split-mode-toggle button").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll("#split-mode-toggle button").forEach(b => b.classList.remove("active"));
@@ -813,6 +915,39 @@
         updateModeUI();
       });
     });
+
+    // Size Pills & Custom Input
+    document.querySelectorAll("#size-pills-bar button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#size-pills-bar button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        splitSizeMB = parseInt(btn.getAttribute("data-mb"), 10) || 10;
+        if (sizeCustomInput) sizeCustomInput.value = splitSizeMB;
+        updateSizePreview();
+      });
+    });
+
+    if (sizeCustomInput) {
+      sizeCustomInput.addEventListener("input", () => {
+        let val = parseInt(sizeCustomInput.value, 10);
+        if (isNaN(val) || val < 1) val = 1;
+        if (val > 100) val = 100;
+        splitSizeMB = val;
+        document.querySelectorAll("#size-pills-bar button").forEach(b => {
+          b.classList.toggle("active", parseInt(b.getAttribute("data-mb"), 10) === splitSizeMB);
+        });
+        updateSizePreview();
+      });
+    }
+
+    function updateSizePreview() {
+      if (sizePreviewReadout) {
+        sizePreviewReadout.innerHTML = `Will divide PDF into sequential volumes guaranteed <strong>≤ ${splitSizeMB} MB</strong> for email attachment limits.`;
+      }
+      if (splitMode === 'size' && processBtnText) {
+        processBtnText.textContent = `Split into Parts Under ${splitSizeMB} MB (ZIP)`;
+      }
+    }
 
     // Chunk size pills
     document.querySelectorAll("#chunk-pills-bar button").forEach(btn => {
@@ -839,20 +974,57 @@
     }
 
     function updateModeUI() {
-      if (splitMode === 'burst') {
-        chunksOptionsPanel.style.display = 'none';
-        rangeInputGroup.style.display = 'none';
-        modeDescBanner.innerHTML = '💡 <strong>Individual Pages Mode:</strong> Generates a separate PDF for every selected page below. Download all in 1 click as a ZIP file, or download individual pages.';
-      } else if (splitMode === 'chunks') {
-        chunksOptionsPanel.style.display = 'flex';
-        rangeInputGroup.style.display = 'none';
-        modeDescBanner.innerHTML = '💡 <strong>Pairs &amp; Chunks Mode:</strong> Groups pages into fixed intervals (e.g. 2 pages per pair). Each group becomes a separate PDF, bundled into 1 ZIP.';
-      } else {
-        chunksOptionsPanel.style.display = 'none';
+      if (splitMode === 'range') {
         rangeInputGroup.style.display = 'flex';
-        modeDescBanner.innerHTML = '💡 <strong>Extract to Single PDF:</strong> Combines all selected pages below into a single new PDF document.';
+        rangeInputLabel.textContent = 'Page Range to Extract into Single PDF:';
+        sizeOptionsPanel.style.display = 'none';
+        chunksOptionsPanel.style.display = 'none';
+        modeDescBanner.innerHTML = '💡 <strong>Extract to Single PDF:</strong> Combines only the selected pages below into a clean new document. Ideal for chapters or certificates.';
+      } else if (splitMode === 'remove') {
+        rangeInputGroup.style.display = 'flex';
+        rangeInputLabel.textContent = 'Pages to Delete / Discard (Rest Will Be Saved):';
+        sizeOptionsPanel.style.display = 'none';
+        chunksOptionsPanel.style.display = 'none';
+        modeDescBanner.innerHTML = '💡 <strong>Remove Selected Pages:</strong> Discards selected/highlighted pages and compiles all other pages into a clean PDF. Ideal for stripping covers or blank pages.';
+      } else if (splitMode === 'burst') {
+        rangeInputGroup.style.display = 'none';
+        sizeOptionsPanel.style.display = 'none';
+        chunksOptionsPanel.style.display = 'none';
+        modeDescBanner.innerHTML = '💡 <strong>Burst Every Page Mode:</strong> Generates a separate single-page PDF for every page below, bundled into a 1-click ZIP archive.';
+      } else if (splitMode === 'size') {
+        rangeInputGroup.style.display = 'none';
+        sizeOptionsPanel.style.display = 'flex';
+        chunksOptionsPanel.style.display = 'none';
+        updateSizePreview();
+        modeDescBanner.innerHTML = '💡 <strong>Split by File Size:</strong> Groups pages into sequential PDF parts guaranteed under your selected MB limit for Gmail, Outlook, or Yahoo email attachments.';
+      } else if (splitMode === 'chunks') {
+        rangeInputGroup.style.display = 'none';
+        sizeOptionsPanel.style.display = 'none';
+        chunksOptionsPanel.style.display = 'flex';
+        modeDescBanner.innerHTML = '💡 <strong>Fixed Chunks Mode:</strong> Groups pages into fixed intervals (e.g. 2 pages per pair). Each group becomes a separate PDF, bundled into 1 ZIP.';
       }
       updateSelectionUI();
+    }
+
+    // Two-Way Sync: Typed Range Input
+    if (rangeInput) {
+      let rangeDebounce = null;
+      rangeInput.addEventListener("input", () => {
+        isRangeInputActive = true;
+        clearTimeout(rangeDebounce);
+        rangeDebounce = setTimeout(() => {
+          if (!totalDocPages) return;
+          const parsed = PDFOrganize.parseRangeString(rangeInput.value, totalDocPages);
+          selectedPagesSet = new Set(parsed);
+          updateCardsVisualsOnly();
+          isRangeInputActive = false;
+        }, 120);
+      });
+
+      rangeInput.addEventListener("blur", () => {
+        isRangeInputActive = false;
+        updateSelectionUI();
+      });
     }
 
     UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
@@ -863,7 +1035,11 @@
           if (typeof window.LocalDocPDFValidator !== 'undefined') {
             const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
             if (!check.valid) {
-              window.LocalDocPDFValidator.showPdfError(check.reason, selectedFile.name);
+              if (check.reason === 'locked') {
+                UIUtils.showToast("This PDF is password-protected. Please unlock it using Unlock PDF.", "error");
+              } else {
+                window.LocalDocPDFValidator.showPdfError(check.reason, selectedFile.name);
+              }
               selectedFile = null;
               return;
             }
@@ -890,7 +1066,19 @@
     async function loadDocumentThumbnails() {
       try {
         const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        const pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
+        let pdf;
+        try {
+          pdf = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
+        } catch (encErr) {
+          const msg = (encErr && encErr.message) ? encErr.message.toLowerCase() : '';
+          if (msg.includes('password') || msg.includes('encrypt') || encErr.name === 'PasswordException') {
+            UIUtils.showToast("This PDF is password-protected. Please unlock it first.", "error");
+            if (clearBtn) clearBtn.click();
+            return;
+          }
+          throw encErr;
+        }
+
         totalDocPages = pdf.numPages;
         totalPagesCountEl.textContent = totalDocPages;
 
@@ -913,8 +1101,11 @@
               <canvas id="split-canvas-${p}" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.1); background:#fff;"></canvas>
             </div>
             <div class="page-select-badge">
-              <input type="checkbox" id="chk-p-${p}" checked onclick="event.stopPropagation(); togglePageSelection(${p});">
-              <span>Page ${p}</span>
+              <span style="display:flex; align-items:center; gap:6px;">
+                <span class="page-check-indicator" id="chk-ind-${p}">✓</span>
+                <span>Page ${p}</span>
+              </span>
+              <span id="card-status-${p}" style="font-size:0.75rem; color:var(--text-muted);"></span>
             </div>`;
 
           pageGrid.appendChild(card);
@@ -922,7 +1113,7 @@
 
         selectionGridWrap.style.display = 'block';
 
-        // Render real visual content on each page canvas
+        // Render real visual content on each page canvas cooperatively
         for (let p = 1; p <= totalDocPages; p++) {
           const page = await pdf.getPage(p);
           const viewport = page.getViewport({ scale: 0.35 });
@@ -935,20 +1126,13 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             await page.render({ canvasContext: ctx, viewport }).promise;
           }
+          if (p % 4 === 0) {
+            await new Promise(r => setTimeout(r, 0));
+          }
         }
       } catch (e) {
         console.error("Failed to load PDF pages for split view:", e);
-        if (typeof window.LocalDocPDFValidator !== 'undefined') {
-          try {
-            const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-            const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
-            window.LocalDocPDFValidator.showPdfError(check.valid ? 'corrupt' : check.reason, selectedFile.name);
-          } catch(e2) {
-            UIUtils.handleToolError(e);
-          }
-        } else {
-          UIUtils.handleToolError(e);
-        }
+        UIUtils.handleToolError(e);
         if (clearBtn) clearBtn.click();
       }
     }
@@ -965,7 +1149,6 @@
 
     function togglePageSelection(p) {
       if (deletedPagesSet.has(p)) {
-        // Restore page if clicked while deleted
         deletedPagesSet.delete(p);
         selectedPagesSet.add(p);
       } else {
@@ -996,25 +1179,46 @@
       UIUtils.showToast("All deleted pages restored.", "info");
     }
 
-    function formatRanges(pages) {
-      if (!pages || pages.length === 0) return '';
-      const sorted = Array.from(pages).sort((a, b) => a - b);
-      const ranges = [];
-      let start = sorted[0];
-      let prev = sorted[0];
+    function updateCardsVisualsOnly() {
+      const activeList = getActivePages();
+      selectedCountEl.textContent = activeList.length;
 
-      for (let i = 1; i < sorted.length; i++) {
-        const cur = sorted[i];
-        if (cur === prev + 1) {
-          prev = cur;
-        } else {
-          ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
-          start = cur;
-          prev = cur;
+      for (let p = 1; p <= totalDocPages; p++) {
+        const card = document.getElementById(`page-card-${p}`);
+        const delBtn = document.getElementById(`del-btn-${p}`);
+        const chkInd = document.getElementById(`chk-ind-${p}`);
+        const statusEl = document.getElementById(`card-status-${p}`);
+
+        if (card) {
+          if (deletedPagesSet.has(p)) {
+            card.classList.remove("selected");
+            card.classList.add("page-deleted");
+            card.title = `Page ${p} Deleted (Click to restore)`;
+            if (delBtn) {
+              delBtn.innerHTML = '↺';
+              delBtn.title = `Restore Page ${p}`;
+            }
+            if (statusEl) statusEl.textContent = 'Excluded';
+          } else if (selectedPagesSet.has(p)) {
+            card.classList.remove("page-deleted");
+            card.classList.add("selected");
+            card.title = `Page ${p} Selected`;
+            if (delBtn) {
+              delBtn.innerHTML = '&times;';
+              delBtn.title = `Delete Page ${p}`;
+            }
+            if (statusEl) statusEl.textContent = splitMode === 'remove' ? 'Will Delete' : 'Selected';
+          } else {
+            card.classList.remove("selected", "page-deleted");
+            card.title = `Page ${p} Unselected`;
+            if (delBtn) {
+              delBtn.innerHTML = '&times;';
+              delBtn.title = `Delete Page ${p}`;
+            }
+            if (statusEl) statusEl.textContent = splitMode === 'remove' ? 'Will Keep' : '';
+          }
         }
       }
-      ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
-      return ranges.join(', ');
     }
 
     function updateSelectionUI() {
@@ -1022,54 +1226,20 @@
       selectedCountEl.textContent = activeList.length;
 
       if (deletedPagesSet.size > 0) {
-        removedCountNote.textContent = `(${deletedPagesSet.size} page(s) removed • Click card or ↺ to restore)`;
+        removedCountNote.textContent = `(${deletedPagesSet.size} page(s) excluded • Click card or ↺ to restore)`;
         removedCountNote.style.color = '#EF4444';
         if (btnRestoreAll) btnRestoreAll.style.display = 'inline-block';
       } else {
-        removedCountNote.textContent = 'Click any card to select/deselect, or ✕ to delete.';
+        removedCountNote.textContent = 'Tap any card to select/deselect, or ✕ to delete.';
         removedCountNote.style.color = 'var(--text-muted)';
         if (btnRestoreAll) btnRestoreAll.style.display = 'none';
       }
 
-      rangeInput.value = formatRanges(activeList);
-
-      for (let p = 1; p <= totalDocPages; p++) {
-        const card = document.getElementById(`page-card-${p}`);
-        const chk = document.getElementById(`chk-p-${p}`);
-        const delBtn = document.getElementById(`del-btn-${p}`);
-        if (card && chk) {
-          if (deletedPagesSet.has(p)) {
-            card.classList.remove("selected");
-            card.classList.add("page-deleted");
-            card.title = `Page ${p} Deleted (Click to restore)`;
-            chk.checked = false;
-            chk.disabled = true;
-            if (delBtn) {
-              delBtn.innerHTML = '↺';
-              delBtn.title = `Restore Page ${p}`;
-            }
-          } else if (selectedPagesSet.has(p)) {
-            card.classList.remove("page-deleted");
-            card.classList.add("selected");
-            card.title = `Page ${p} Selected`;
-            chk.checked = true;
-            chk.disabled = false;
-            if (delBtn) {
-              delBtn.innerHTML = '&times;';
-              delBtn.title = `Delete Page ${p}`;
-            }
-          } else {
-            card.classList.remove("selected", "page-deleted");
-            card.title = `Page ${p} Unselected`;
-            chk.checked = false;
-            chk.disabled = false;
-            if (delBtn) {
-              delBtn.innerHTML = '&times;';
-              delBtn.title = `Delete Page ${p}`;
-            }
-          }
-        }
+      if (!isRangeInputActive && rangeInput) {
+        rangeInput.value = PDFOrganize.formatRangeString(activeList);
       }
+
+      updateCardsVisualsOnly();
 
       // Update chunk preview readout
       if (splitMode === 'chunks') {
@@ -1089,13 +1259,18 @@
       }
 
       // Update process button label
-      if (splitMode === 'burst') {
-        processBtnText.textContent = `Split ${activeList.length} Individual Page PDFs (1-Click ZIP)`;
+      if (splitMode === 'range') {
+        processBtnText.textContent = `Extract ${activeList.length} Pages into Single PDF`;
+      } else if (splitMode === 'remove') {
+        const remaining = totalDocPages - activeList.length;
+        processBtnText.textContent = `Remove ${activeList.length} Pages (Save ${remaining} Pages)`;
+      } else if (splitMode === 'burst') {
+        processBtnText.textContent = `Burst ${activeList.length} Pages into 1-Click ZIP`;
+      } else if (splitMode === 'size') {
+        processBtnText.textContent = `Split into Parts Under ${splitSizeMB} MB (ZIP)`;
       } else if (splitMode === 'chunks') {
         const numChunks = Math.ceil(activeList.length / chunkSize);
         processBtnText.textContent = `Split into ${numChunks} Parts (${chunkSize} Pgs/Part) (ZIP)`;
-      } else {
-        processBtnText.textContent = `Extract ${activeList.length} Pages into Single PDF`;
       }
     }
 
@@ -1123,6 +1298,20 @@
       }
       updateSelectionUI();
     };
+    if (btnInvert) {
+      btnInvert.onclick = () => {
+        for (let i = 1; i <= totalDocPages; i++) {
+          if (deletedPagesSet.has(i)) continue;
+          if (selectedPagesSet.has(i)) {
+            selectedPagesSet.delete(i);
+          } else {
+            selectedPagesSet.add(i);
+          }
+        }
+        updateSelectionUI();
+        UIUtils.showToast("Page selection inverted.", "info");
+      };
+    }
     if (btnRestoreAll) {
       btnRestoreAll.onclick = restoreAllPages;
     }
@@ -1161,8 +1350,13 @@
       if (!selectedFile) return;
 
       const activeList = getActivePages();
-      if (activeList.length === 0) {
-        UIUtils.showToast("Please select at least 1 page to split.", "error");
+      if (splitMode !== 'size' && activeList.length === 0) {
+        UIUtils.showToast("Please select at least 1 page to proceed.", "error");
+        return;
+      }
+
+      if (splitMode === 'remove' && activeList.length === totalDocPages) {
+        UIUtils.showToast("You cannot remove all pages. Please leave at least one page.", "error");
         return;
       }
 
@@ -1171,19 +1365,55 @@
         UIUtils.setWorkflowStep(0, 15, "Initializing local memory worker...");
         generatedItems = [];
 
-        if (splitMode === 'burst') {
+        if (splitMode === 'range') {
+          // Mode A: Extract to Single PDF
+          const res = await PDFOrganize.splitPDF(selectedFile, activeList, progressCb);
+          resultBlob = res.pdfBlob;
+          resultFilename = res.filename;
+          downloadBtnText.textContent = `Download Extracted PDF (${activeList.length} Pages)`;
+          document.getElementById("result-title").textContent = `Extraction Complete!`;
+          document.getElementById("result-meta").innerHTML = `Extracted <strong>${activeList.length} pages</strong> into a single new document &bull; Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          splitItemsContainer.style.display = "none";
+          splitItemsList.innerHTML = '';
+        } else if (splitMode === 'remove') {
+          // Mode B: Remove Selected Pages
+          const res = await PDFOrganize.removePagesPDF(selectedFile, activeList, progressCb);
+          resultBlob = res.pdfBlob;
+          resultFilename = res.filename;
+          downloadBtnText.textContent = `Download Cleaned PDF (${res.remainingPagesCount} Pages)`;
+          document.getElementById("result-title").textContent = `Removed ${res.removedPagesCount} Pages Successfully!`;
+          document.getElementById("result-meta").innerHTML = `Saved <strong>${res.remainingPagesCount} pages</strong> &bull; Excluded: ${res.removedPagesCount} page(s) &bull; Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          splitItemsContainer.style.display = "none";
+          splitItemsList.innerHTML = '';
+        } else if (splitMode === 'burst') {
+          // Mode C: Burst Every Page to ZIP
           const res = await PDFOrganize.splitSelectedPagesToZip(selectedFile, activeList, progressCb);
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
           generatedItems = res.files || [];
 
           downloadBtnText.textContent = `Download All (${res.totalExtracted} Pages) as ZIP (.zip)`;
-          document.getElementById("result-title").textContent = `Successfully Split into ${res.totalExtracted} Individual PDFs!`;
+          document.getElementById("result-title").textContent = `Successfully Burst into ${res.totalExtracted} Individual PDFs!`;
           document.getElementById("result-meta").innerHTML = `Generated <strong>${res.totalExtracted} single-page PDFs</strong> &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
 
-          // Render itemized list
           renderGeneratedItemsList(generatedItems, 'Individual Single-Page PDFs:');
+        } else if (splitMode === 'size') {
+          // Mode D: Split by Target File Size
+          const maxBytes = splitSizeMB * 1024 * 1024;
+          const res = await PDFOrganize.splitPDFBySize(selectedFile, maxBytes, progressCb);
+          resultBlob = res.zipBlob;
+          resultFilename = res.filename;
+          generatedItems = res.chunks || [];
+
+          downloadBtnText.textContent = `Download All (${res.totalChunks} Parts) as ZIP (.zip)`;
+          document.getElementById("result-title").textContent = `Successfully Split into ${res.totalChunks} Email-Ready Parts!`;
+          document.getElementById("result-meta").innerHTML = `Divided into <strong>${res.totalChunks} files</strong> under ${splitSizeMB} MB &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
+
+          renderGeneratedItemsList(generatedItems, 'Generated Size-Optimized Parts:');
         } else if (splitMode === 'chunks') {
+          // Fixed Chunks Mode
           const res = await PDFOrganize.splitPagesToChunks(selectedFile, activeList, chunkSize, progressCb);
           resultBlob = res.zipBlob;
           resultFilename = res.filename;
@@ -1193,20 +1423,7 @@
           document.getElementById("result-title").textContent = `Successfully Split into ${res.totalChunks} Parts!`;
           document.getElementById("result-meta").innerHTML = `Divided into <strong>${res.totalChunks} separate PDF files</strong> (${chunkSize} pages/part) &bull; Total ZIP: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
 
-          // Render itemized list
           renderGeneratedItemsList(generatedItems, 'Generated Split Parts:');
-        } else {
-          // Range mode -> single combined PDF
-          const res = await PDFOrganize.splitPDF(selectedFile, activeList, progressCb);
-          resultBlob = res.pdfBlob;
-          const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-          resultFilename = `${baseName}-extracted-${activeList.length}pages.pdf`;
-          downloadBtnText.textContent = `Download Extracted PDF (${activeList.length} Pages)`;
-          document.getElementById("result-title").textContent = `Extraction Complete!`;
-          document.getElementById("result-meta").innerHTML = `Extracted <strong>${activeList.length} pages</strong> into a single new document &bull; Size: ${UIUtils.formatBytes(resultBlob.size)} &bull; 100% In-Browser RAM`;
-
-          splitItemsContainer.style.display = "none";
-          splitItemsList.innerHTML = '';
         }
 
         UIUtils.setWorkflowStep(3, 100, "Split completed successfully!");
@@ -1216,7 +1433,7 @@
         resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (err) {
         console.error(err);
-        UIUtils.handleToolError(err, splitProcessBtn || null);
+        UIUtils.handleToolError(err);
       } finally {
         processBtn.disabled = false;
       }
@@ -1263,6 +1480,32 @@
         UIUtils.downloadBlob(resultBlob, resultFilename);
       }
     });
+
+    // Native Mobile Share & WhatsApp Dispatch
+    if (shareWhatsAppBtn) {
+      shareWhatsAppBtn.addEventListener("click", async function() {
+        if (!resultBlob) return;
+        const mimeType = resultBlob.type || (resultFilename.endsWith('.zip') ? 'application/zip' : 'application/pdf');
+        const shareFile = new File([resultBlob], resultFilename, { type: mimeType });
+
+        if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
+          try {
+            await navigator.share({
+              files: [shareFile],
+              title: resultFilename,
+              text: `Here is my document split privately in browser RAM with LocalDoc: https://localdoc.org/pages/split-pdf.html`
+            });
+            return;
+          } catch (err) {
+            if (err.name !== 'AbortError') console.warn('Native share failed:', err);
+          }
+        }
+
+        const shareUrl = encodeURIComponent(`https://localdoc.org/pages/split-pdf.html`);
+        const text = encodeURIComponent(`I split and extracted "${resultFilename}" 100% locally with zero server uploads: `);
+        window.open(`https://api.whatsapp.com/send?text=${text}${shareUrl}`, '_blank');
+      });
+    }
   </script>
 
   <!-- Global Search Modal -->
