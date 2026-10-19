@@ -19,25 +19,26 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Universal Document Reader — PDF, DOCX | LocalDoc</title>
-  <meta name="description" content="View PDF, Word, Excel, and PowerPoint files directly in your browser with zero uploads. Open multiple file types instantly without installing any software.">
+  <title>Document Reader — View &amp; Annotate PDF, DOCX, XLSX Offline | LocalDoc</title>
+  <meta name="description" content="Mobile-first offline document reader and annotation workspace. View and annotate PDF and Word (.docx) with freehand pen, highlighter, dark mode, text-to-speech read aloud, and multi-doc tabs. 100% private in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/document-reader.html">
+  <meta name="keywords" content="read pdf on phone without app, annotate pdf online free, open word document without microsoft word, offline pdf reader pwa, listen to pdf read aloud, night mode pdf reader, view docx in browser, view excel sheets online, document annotation workspace">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
   <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Universal Document Reader Online &mdash; PDF, Word & Excel | LocalDoc">
-  <meta property="og:description" content="Open and read any PDF, Word, or Excel document in your web browser with zero uploads and complete privacy.">
+  <meta property="og:title" content="Document Reader — View &amp; Annotate PDF, DOCX Offline | LocalDoc">
+  <meta property="og:description" content="Offline document reader &amp; annotation workspace. Pen, highlighter, night mode, text-to-speech read aloud, and multi-doc tabs. 100% zero uploads.">
   <meta property="og:url" content="https://localdoc.org/pages/document-reader.html">
   <meta property="og:image" content="https://localdoc.org/assets/images/og/og-scanner-ocr.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Universal Document Reader &mdash; View PDF, DOCX, XLSX | LocalDoc">
-  <meta name="twitter:description" content="Read and view PDF, DOCX, XLSX, and image files directly in your browser with night mode, zoom, and text search. 100% private, zero uploads.">
+  <meta name="twitter:title" content="Document Reader — View &amp; Annotate PDF, DOCX Offline | LocalDoc">
+  <meta name="twitter:description" content="Read, annotate, and listen to PDF and Word documents offline. 100% private in device RAM.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-scanner-ocr.webp">
 
 
@@ -78,7 +79,7 @@
     },
     {
       "@type": "SoftwareApplication",
-      "name": "LocalDoc Universal Document Reader",
+      "name": "LocalDoc Universal Document Reader & Annotation Workspace",
       "applicationCategory": "ProductivityApplication",
       "operatingSystem": "All modern browsers (Chrome, Edge, Firefox, Safari)",
       "offers": {
@@ -86,11 +87,43 @@
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "Zero-upload client-side Document Reader and in-browser viewer for PDF, Word (.docx), Excel (.xlsx, .csv), and Markdown files. 100% private in-browser memory."
+      "description": "Mobile-first offline document reader and annotation workspace for PDF, Word (.docx), and Excel (.xlsx) with freehand pen, highlighter, dark mode, text-to-speech read aloud, and multi-doc tabs. 100% private in browser RAM."
     },
     {
       "@type": "FAQPage",
       "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I highlight, draw, and annotate on documents without installing software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! LocalDoc includes an on-device annotation layer with a Pen (in red, blue, black, or green), a semi-transparent Highlighter, and an Eraser. All annotations automatically save to local IndexedDB and can be downloaded as an annotated PDF."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can LocalDoc read documents aloud with text-to-speech?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Simply click '▶ Read Aloud' in the toolbar. LocalDoc extracts text from your current PDF or Word page and vocalizes it using the native Web Speech API directly on your device with zero cloud lag or server data transfer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the document reader support Dark / Night Mode for night reading?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Choose between Default, Dark (smart color inversion to eliminate white screen glare), and Sepia (warm paperback tone that reduces eye strain), plus custom brightness and contrast controls."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I open multiple documents at the same time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. LocalDoc features a browser-style multi-document tab bar. You can open multiple PDFs, Word documents, or spreadsheets and switch between them instantly while preserving your annotations and reading position."
+          }
+        },
         {
           "@type": "Question",
           "name": "Can I open password-protected PDF or Word documents?",
@@ -325,6 +358,278 @@
         min-height: 36px;
       }
     }
+  
+    /* Multi-Document Tabs Strip */
+    .reader-tabs-bar {
+      background: #0F172A;
+      padding: 6px 14px 0;
+      display: none;
+      gap: 6px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 66px;
+      z-index: 101;
+    }
+    .reader-tab-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #94A3B8;
+      border-radius: 8px 8px 0 0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      max-width: 220px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .reader-tab-item:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #F8FAFC;
+    }
+    .reader-tab-item.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--line);
+      border-bottom: 1px solid var(--bg-surface);
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+    }
+    .reader-tab-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .reader-tab-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .reader-tab-close {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 0 4px;
+      border-radius: 50%;
+      line-height: 1;
+      opacity: 0.6;
+      transition: all 0.15s ease;
+    }
+    .reader-tab-close:hover {
+      opacity: 1;
+      color: #EF4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .reader-tab-add-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      color: #94A3B8;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 4px;
+      align-self: center;
+      transition: all 0.15s ease;
+    }
+    .reader-tab-add-btn:hover {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-style: solid;
+      border-color: var(--primary);
+    }
+
+    /* Floating Annotation Palette (Mobile-First Touch Optimized) */
+    .reader-annot-palette {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      z-index: 250;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      flex-wrap: nowrap;
+    }
+    .annot-tool-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .annot-tool-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .annot-tool-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45);
+    }
+    .annot-color-swatches {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding-left: 8px;
+      border-left: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .annot-color-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .annot-color-swatch:hover {
+      transform: scale(1.25);
+    }
+    .annot-color-swatch.active {
+      border-color: #FFFFFF;
+      transform: scale(1.25);
+    }
+
+    /* Reading Comfort Themes & Sliders */
+    .reader-theme-sepia .reader-scroll-canvas {
+      background: #EFE7D8 !important;
+    }
+    .reader-theme-dark .reader-scroll-canvas {
+      background: #0B0F19 !important;
+    }
+    .reader-theme-btn {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--bg-surface);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+    .reader-theme-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    /* Thumbnail Filmstrip Scrubber Drawer */
+    .reader-thumbnails-drawer {
+      display: none;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--line);
+      padding: 10px 16px;
+      overflow-x: auto;
+      gap: 12px;
+      align-items: center;
+      max-height: 140px;
+      position: sticky;
+      bottom: 0;
+      z-index: 95;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    }
+    .scrubber-thumb-card {
+      flex-shrink: 0;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.15s ease;
+      padding: 4px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+    }
+    .scrubber-thumb-card:hover {
+      transform: translateY(-2px);
+    }
+    .scrubber-thumb-card.active {
+      border-color: var(--primary);
+      background: rgba(2, 132, 199, 0.08);
+    }
+    .thumb-canvas-wrap {
+      aspect-ratio: 1 / 1.414;
+      height: 75px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-canvas-wrap canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .thumb-page-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* Password Modal */
+    .reader-password-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .reader-password-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .reader-annot-palette {
+        bottom: 16px;
+        padding: 5px 10px;
+        gap: 4px;
+        max-width: 95vw;
+        overflow-x: auto;
+      }
+      .annot-tool-btn {
+        padding: 6px 9px;
+        font-size: 0.75rem;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -395,8 +700,8 @@
       <div style="width:68px; height:68px; border-radius:16px; background:#EFF6FF; color:#2563EB; display:inline-flex; align-items:center; justify-content:center; margin-bottom:18px;">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="12" cy="14" r="3"></circle><path d="M7 14c1.5-2.5 3.5-3.5 5-3.5s3.5 1 5 3.5"></path></svg>
       </div>
-      <h1 style="font-size:clamp(1.5rem, 5vw, 2.4rem); font-weight:800; color:var(--text-primary); margin-bottom:12px; letter-spacing:-0.02em;">Universal Document Reader & Viewer</h1>
-      <p style="font-size:1.1rem; color:var(--text-secondary); margin-bottom:30px; line-height:1.6;">Open and read <strong>PDF, Word (.docx), and Excel (.xlsx, .csv)</strong> documents instantly in your browser. Completely private, offline-capable, with zero cloud uploads or third-party apps.</p>
+      <h1 style="font-size:clamp(1.5rem, 5vw, 2.4rem); font-weight:800; color:var(--text-primary); margin-bottom:12px; letter-spacing:-0.02em;">Document Reader — View, Annotate &amp; Listen to PDF &amp; DOCX Offline</h1>
+      <p style="font-size:1.1rem; color:var(--text-secondary); margin-bottom:30px; line-height:1.6;">Mobile-first offline document workspace. View, highlight, draw annotations with pen/eraser, listen with text-to-speech read aloud, toggle night mode, and manage multi-document tabs. 100% private in browser RAM.</p>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="reader-drop-zone" style="max-width:680px; margin:0 auto 24px; cursor:pointer;">
@@ -626,6 +931,9 @@
 
     <!-- Active Viewer Workspace -->
     <div id="reader-workspace" class="reader-workspace-area">
+      <!-- Multi-Document Tabs Strip -->
+      <div class="reader-tabs-bar" id="reader-tabs-bar"></div>
+
       <!-- Top Action Toolbar -->
       <div class="reader-toolbar">
         <div class="reader-toolbar-group">
@@ -656,11 +964,34 @@
           <button class="reader-tool-btn" id="reader-rotate-btn" title="Rotate 90&deg;">&#128260;</button>
         </div>
 
+        <!-- Reading Comfort & Audio Controls -->
+        <div class="reader-toolbar-group">
+          <!-- Text-to-Speech Player Bar -->
+          <button class="reader-tool-btn" id="speech-play-btn" title="Listen to current page text" style="color:var(--primary); font-weight:700;">
+            ▶ Read Aloud
+          </button>
+          <button class="reader-tool-btn" id="speech-stop-btn" title="Stop speech" style="padding:6px 8px;">⏹</button>
+          <button class="reader-tool-btn" id="speech-speed-btn" title="Playback speed" style="padding:6px 8px; font-size:0.78rem;">1.0x</button>
+        </div>
+
+        <div class="reader-toolbar-group">
+          <!-- Reading Themes -->
+          <button class="reader-theme-btn active" id="theme-btn-default" title="Normal Daylight Reading">☀️ Light</button>
+          <button class="reader-theme-btn" id="theme-btn-dark" title="Night Mode (Invert white screen glare)">🌙 Night</button>
+          <button class="reader-theme-btn" id="theme-btn-sepia" title="Sepia Mode (Kindle warm tone)">📖 Sepia</button>
+          <button class="reader-tool-btn" id="reader-scrubber-toggle" title="Toggle Page Filmstrip Scrubber">📑 Thumbnails</button>
+        </div>
+
         <!-- Actions Group -->
         <div class="reader-toolbar-group">
           <button class="reader-tool-btn" id="reader-fullscreen-btn" title="Toggle Fullscreen">⛶</button>
           <button class="reader-tool-btn" id="reader-print-btn" title="Print Document">&#128424; Print</button>
-          <button class="reader-tool-btn" id="reader-download-btn" title="Download Document" style="background:#2563EB; color:#FFF; border-color:#2563EB;">&#128190; Download</button>
+          <button class="reader-tool-btn" id="reader-download-annotated-btn" title="Download document with embedded annotations" style="background:var(--accent-emerald, #059669); color:#FFF; border-color:var(--accent-emerald, #059669); font-weight:700;">
+            ✏️ Save Annotated
+          </button>
+          <button class="reader-tool-btn" id="reader-download-btn" title="Download Original Document" style="background:#2563EB; color:#FFF; border-color:#2563EB;">
+            &#128190; Original
+          </button>
         </div>
       </div>
 
@@ -669,6 +1000,55 @@
 
       <!-- Excel Sheet Tabs (Shown only for spreadsheets) -->
       <div class="sheet-tabs-container" id="reader-sheet-tabs" style="display:none;"></div>
+
+      <!-- Thumbnail Filmstrip Scrubber Drawer -->
+      <div class="reader-thumbnails-drawer" id="reader-thumbnails-drawer">
+        <div id="reader-thumbnails-strip" style="display:flex; gap:10px; align-items:center;"></div>
+      </div>
+    </div>
+
+    <!-- Floating Mobile Annotation Palette -->
+    <div class="reader-annot-palette" id="reader-annot-palette">
+      <button type="button" class="annot-tool-btn active" id="annot-tool-cursor" title="Select / Pan (Cursor)">
+        👆 Pan
+      </button>
+      <button type="button" class="annot-tool-btn" id="annot-tool-pen" title="Ballpoint Pen Drawing">
+        🖊 Pen
+      </button>
+      <button type="button" class="annot-tool-btn" id="annot-tool-highlighter" title="Semi-Transparent Highlighter">
+        🖍 Highlight
+      </button>
+      <button type="button" class="annot-tool-btn" id="annot-tool-eraser" title="Eraser">
+        🧹 Eraser
+      </button>
+      <button type="button" class="annot-tool-btn" id="annot-tool-undo" title="Undo Stroke">
+        ↺ Undo
+      </button>
+      <button type="button" class="annot-tool-btn" id="annot-tool-clear" title="Clear page drawings">
+        🗑 Clear
+      </button>
+
+      <div class="annot-color-swatches" id="annot-swatches-box">
+        <span class="annot-color-swatch active" data-color="#EF4444" style="background:#EF4444;" title="Red"></span>
+        <span class="annot-color-swatch" data-color="#2563EB" style="background:#2563EB;" title="Blue"></span>
+        <span class="annot-color-swatch" data-color="#10B981" style="background:#10B981;" title="Emerald Green"></span>
+        <span class="annot-color-swatch" data-color="#FACC15" style="background:#FACC15;" title="Highlighter Yellow"></span>
+      </div>
+    </div>
+
+    <!-- Password Decryption Modal -->
+    <div class="reader-password-modal" id="reader-password-modal">
+      <div class="reader-password-card">
+        <div style="font-size:2.2rem; margin-bottom:12px;">🔒</div>
+        <h3 style="font-size:1.2rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Document is Locked</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:18px; line-height:1.5;">This file is encrypted. Enter the password to decrypt directly in browser RAM with zero network requests.</p>
+        <div id="reader-password-error" style="display:none; color:#EF4444; font-size:0.82rem; font-weight:700; margin-bottom:10px;">Incorrect password. Please try again.</div>
+        <input type="password" id="reader-password-input" class="control-input" placeholder="Enter document password" style="width:100%; margin-bottom:16px; padding:10px 14px; text-align:center;">
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button type="button" class="btn btn-outline" id="reader-password-cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" id="reader-password-submit">Unlock Document</button>
+        </div>
+      </div>
     </div>
   
     <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
@@ -816,6 +1196,7 @@
   <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
   <script src="../js/lib/mammoth.browser.min.js?v=20260921-v26"></script>
   <script src="../js/lib/sheetjs.min.js?v=20260921-v26"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
   <script src="../js/tools/reader.js?v=20260921-v26"></script>
 
   <!-- Global Search Modal -->
