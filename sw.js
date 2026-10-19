@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v65-streamlined-sign-studio';
+const CACHE_NAME = 'localdoc-v66-fast-word-to-pdf';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -29,6 +29,8 @@ const ASSETS_TO_CACHE = [
   '/js/lib/pdf.worker.min.js',
   '/js/workers/scan-worker.js',
   '/js/lib/docx.min.js',
+  '/js/lib/mammoth.browser.min.js',
+  '/js/lib/html2pdf.bundle.min.js',
   '/js/lib/sheetjs.min.js',
   '/js/lib/tesseract.min.js',
   '/js/lib/mediapipe/selfie_segmentation.js',

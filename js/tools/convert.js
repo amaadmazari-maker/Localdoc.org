@@ -506,15 +506,59 @@ const PDFConvert = {
     };
   },
 
-  // 4. Word (.docx) to PDF — Native Canvas 2D Typesetting Engine (100% Origin-Clean, Zero Canvas Tainting)
+  // Create a realistic sample Word (.docx) document in browser memory for 1-click testing
+  createSampleWordDocument() {
+    if (typeof DocxBuilder === 'undefined' || !DocxBuilder.createDocxFromContent) return null;
+    const sampleParagraphs = [
+      { text: "INDEPENDENT CONSULTING AGREEMENT", bold: true, fontSize: 30, color: "0284C7", type: "heading", headingLevel: 1 },
+      { text: "Confidential Execution Copy — Processed Locally in RAM", italic: true, fontSize: 18, color: "64748B" },
+      { type: "divider" },
+      { text: "1. PARTIES & ENGAGEMENT", bold: true, fontSize: 22, color: "0F172A", type: "heading", headingLevel: 2 },
+      { text: "This Independent Consulting Agreement (\"Agreement\") is entered into between Apex Digital Technologies Corp (\"Client\") and Vertex Solutions LLC (\"Consultant\"). Both parties agree that all project data, codebases, and financial calculations remain strictly confidential under local client-side processing policies." },
+      { text: "2. SCOPE OF WORK & KEY MILESTONES", bold: true, fontSize: 22, color: "0F172A", type: "heading", headingLevel: 2 },
+      { text: "Consultant shall execute the following engineering milestones according to industry best practices:", spacingAfter: 80 },
+      { text: "Audit client-side document processing memory management.", isBullet: true },
+      { text: "Configure zero-upload in-memory OpenXML document compilation.", isBullet: true },
+      { text: "Deliver ISO 32000-1 conformant PDF output with auto-table wrapping.", isBullet: true },
+      { text: "3. COMPENSATION & DELIVERABLE SCHEDULE", bold: true, fontSize: 22, color: "0F172A", type: "heading", headingLevel: 2 },
+      {
+        type: "table",
+        hasHeader: true,
+        rows: [
+          ["Deliverable Phase", "Timeline", "Fee (USD)", "Verification Status"],
+          ["Phase 1: Architecture Review", "Week 1 - 2", "$3,500.00", "Approved"],
+          ["Phase 2: In-RAM Processing", "Week 3 - 4", "$5,200.00", "In Progress"],
+          ["Phase 3: Final ISO Delivery", "Week 5", "$2,800.00", "Pending Sign-off"]
+        ]
+      },
+      { type: "divider" },
+      { text: "4. PRIVACY & COMPLIANCE CERTIFICATION", bold: true, fontSize: 22, color: "0F172A", type: "heading", headingLevel: 2 },
+      { text: "The parties certify that no confidential company data, client intellectual property, or financial records were transmitted over external networks or stored in third-party cloud repositories." }
+    ];
+
+    const blob = DocxBuilder.createDocxFromContent(sampleParagraphs, { title: "Sample-Consulting-Agreement" });
+    return new File([blob], "Sample-Consulting-Agreement.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+  },
+
+  // 4. Word (.docx) to PDF — High-Fidelity Client-Side Pipeline (Mammoth + A4 Container + html2pdf + Canvas Fallback)
   async wordToPDF(file, onProgress = null) {
-    if (onProgress) onProgress(20, 'Parsing Word Document XML Structure...');
+    if (onProgress) onProgress(15, 'Reading Word Document XML Structure in RAM...');
     const arrayBuffer = await UIUtils.readFileAsArrayBuffer(file);
     
-    // Parse complete HTML structure from DOCX with Mammoth
+    // Parse complete HTML structure from DOCX with Mammoth (with inline image data URL conversion)
     let mammothResult;
     try {
-      mammothResult = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+      const mammothOptions = {};
+      if (typeof mammoth !== 'undefined' && mammoth.images && mammoth.images.imgElement) {
+        mammothOptions.convertImage = mammoth.images.imgElement(function(image) {
+          return image.read("base64").then(function(imageBuffer) {
+            return {
+              src: "data:" + image.contentType + ";base64," + imageBuffer
+            };
+          });
+        });
+      }
+      mammothResult = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, mammothOptions);
     } catch (e) {
       console.warn('Mammoth convertToHtml failed, falling back to raw text:', e);
       const rawRes = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
@@ -522,7 +566,157 @@ const PDFConvert = {
     }
 
     const docHtml = mammothResult.value || '<p>Empty Document</p>';
-    if (onProgress) onProgress(40, 'Typesetting A4 Document Pages in High-Resolution...');
+
+    // Primary High-Fidelity Pipeline: Render in styled A4 off-screen DOM with html2pdf
+    if (typeof html2pdf !== 'undefined') {
+      try {
+        if (onProgress) onProgress(45, 'Applying A4 Layout, Typography & Table Wrapping...');
+
+        const stage = document.createElement('div');
+        stage.id = 'word-offscreen-render-stage';
+        stage.style.cssText = `
+          position: fixed;
+          top: -99999px;
+          left: -99999px;
+          width: 794px; /* Standard A4 at 96 DPI: 210mm */
+          min-height: 1123px; /* 297mm */
+          padding: 44px 52px;
+          background: #ffffff;
+          color: #1e293b;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          font-size: 11pt;
+          line-height: 1.6;
+          box-sizing: border-box;
+          z-index: -9999;
+        `;
+
+        stage.innerHTML = `
+          <style>
+            #word-offscreen-render-stage * {
+              box-sizing: border-box;
+            }
+            #word-offscreen-render-stage h1,
+            #word-offscreen-render-stage h2,
+            #word-offscreen-render-stage h3,
+            #word-offscreen-render-stage h4 {
+              color: #0f172a;
+              page-break-after: avoid !important;
+              break-after: avoid !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+              margin-top: 1.2em;
+              margin-bottom: 0.5em;
+              font-weight: 700;
+            }
+            #word-offscreen-render-stage h1 { font-size: 20pt; border-bottom: 2px solid #0284c7; padding-bottom: 4px; }
+            #word-offscreen-render-stage h2 { font-size: 16pt; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; }
+            #word-offscreen-render-stage h3 { font-size: 13pt; }
+            #word-offscreen-render-stage p {
+              margin: 0 0 0.85em;
+              line-height: 1.6;
+              word-break: break-word;
+            }
+            #word-offscreen-render-stage table {
+              width: 100% !important;
+              max-width: 100% !important;
+              table-layout: fixed !important;
+              border-collapse: collapse !important;
+              margin: 16px 0 !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+            #word-offscreen-render-stage th,
+            #word-offscreen-render-stage td {
+              border: 1px solid #cbd5e1 !important;
+              padding: 8px 10px !important;
+              text-align: left !important;
+              vertical-align: top !important;
+              word-break: break-word !important;
+              font-size: 9.5pt !important;
+              line-height: 1.4 !important;
+            }
+            #word-offscreen-render-stage th {
+              background-color: #f8fafc !important;
+              color: #0f172a !important;
+              font-weight: 600 !important;
+            }
+            #word-offscreen-render-stage img {
+              max-width: 100% !important;
+              height: auto !important;
+              display: block !important;
+              margin: 14px 0 !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+            #word-offscreen-render-stage ul,
+            #word-offscreen-render-stage ol {
+              margin: 0 0 1em 1.5em;
+              padding: 0;
+            }
+            #word-offscreen-render-stage li {
+              margin-bottom: 0.35em;
+              line-height: 1.5;
+            }
+            #word-offscreen-render-stage blockquote {
+              border-left: 4px solid #0284c7;
+              padding-left: 14px;
+              margin: 1em 0;
+              color: #475569;
+              font-style: italic;
+            }
+          </style>
+          <div class="word-content-inner">${docHtml}</div>
+        `;
+
+        document.body.appendChild(stage);
+
+        if (onProgress) onProgress(75, 'Generating Standard A4 PDF Pages...');
+
+        const opt = {
+          margin: [10, 10, 10, 10],
+          filename: (file.name || 'document').replace(/\\.[^/.]+$/, '') + '.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            letterRendering: true
+          },
+          jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+          },
+          pagebreak: {
+            mode: ['avoid-all', 'css', 'legacy']
+          }
+        };
+
+        const worker = html2pdf().from(stage).set(opt);
+        const pdf = await worker.toPdf().get('pdf');
+        const pageCount = pdf.internal.getNumberOfPages() || 1;
+        const pdfBlob = pdf.output('blob');
+
+        document.body.removeChild(stage);
+
+        if (onProgress) onProgress(100, 'Conversion Complete!');
+
+        return {
+          pdfBlob: pdfBlob,
+          htmlPreview: docHtml,
+          pageCount: pageCount
+        };
+      } catch (pipelineErr) {
+        console.warn('html2pdf pipeline encountered an issue, running canvas fallback:', pipelineErr);
+        const existingStage = document.getElementById('word-offscreen-render-stage');
+        if (existingStage && existingStage.parentNode) {
+          existingStage.parentNode.removeChild(existingStage);
+        }
+        // Fall back to Canvas 2D engine below
+      }
+    }
+
+    if (onProgress) onProgress(40, 'Typesetting A4 Document Pages in High-Resolution Canvas Fallback...');
 
     // Parse HTML DOM into structured layout blocks
     const parser = new DOMParser();
