@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v73-security-suite';
+const CACHE_NAME = 'localdoc-v74-consolidate-image-to-pdf';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

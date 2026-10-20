@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>JPG to PDF Converter Guide — Convert Photos & Pictures to PDF</title>
-  <meta name="description" content="Convert JPG, PNG, photos, and pictures to PDF instantly in your browser. Merge multiple images into one clean PDF document — free, private, with zero uploads.">
+  <title>JPG &amp; PNG to PDF Master Guide — Convert Photos &amp; Transparent Graphics to PDF | LocalDoc</title>
+  <meta name="description" content="Comprehensive engineering guide to converting JPG photos and transparent PNG graphics into a single printable PDF with zero cloud uploads. Learn how alpha channel preservation and EXIF auto-rotation work in browser RAM.">
   <link rel="canonical" href="https://localdoc.org/blog/jpg-to-pdf-guide.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -58,15 +58,15 @@
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Combining Multiple JPG Photos into a Single Printable PDF",
+          "name": "Combining Multiple JPG & PNG Photos into a Single Printable PDF",
           "item": "https://localdoc.org/blog/jpg-to-pdf-guide.html"
         }
       ]
     },
     {
       "@type": "Article",
-      "headline": "Combining Multiple JPG & HEIC Photos into a Single Printable PDF with Zero Cloud Transmission",
-      "description": "Comprehensive engineering guide explaining how to package smartphone photos, iPhone HEIC images, receipts, and claim scans into standardized A4 or original-dimension PDF documents with EXIF normalization, natural numerical auto-sorting, and WhatsApp sharing inside local browser RAM.",
+      "headline": "Combining Multiple JPG & PNG Images into a Single Printable PDF with Zero Cloud Transmission",
+      "description": "Comprehensive engineering guide explaining how to package smartphone photos, transparent PNG graphics, iPhone HEIC images, receipts, and claim scans into standardized A4 or original-dimension PDF documents with EXIF normalization, alpha channel preservation, natural numerical auto-sorting, and WhatsApp sharing inside local browser RAM.",
       "author": {
         "@type": "Person",
         "name": "Amaad Mazari",
@@ -410,7 +410,7 @@
 
     <article class="blog-article">
       <div class="tool-workspace-badge">Mobile Imaging & Dossier Packaging</div>
-      <h1>Combining Multiple JPG Photos into a Single Printable PDF</h1>
+      <h1>Combining Multiple JPG Photos &amp; PNG Graphics into a Single Printable PDF</h1>
       <div class="blog-meta-bar">
         <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
         <span class="meta-dot"></span>
@@ -464,6 +464,14 @@
       <ul>
         <li><strong>Fit to Standard A4 / Letter:</strong> Fits each image within printable paper bounds with adjustable margin gutters (0pt, 20pt, 40pt) &mdash; ideal for formal job applications, tax declarations, and office printers.</li>
         <li><strong>Original Photo Dimensions:</strong> Dynamically calculates each PDF page width and height to match the exact pixel dimensions of each image with zero margins &mdash; delivering pristine 1:1 digital portfolios and borderless image presentations.</li>
+      </ul>
+
+      <h2>2d. Transparent PNG Alpha Channels: Preventing the Infamous Black Box Bug</h2>
+      <p>A frequent and frustrating defect when converting PNG graphics, digital signatures, vector screenshots, or company logos to PDF using conventional tools is the "black box defect". PNG files support 8-bit alpha transparency channels (providing 256 gradations of opacity per pixel). When naive cloud converters transform a transparent PNG into a PDF image XObject without constructing a soft mask (<code>/SMask</code>), the transparent background turns pitch black.</p>
+      <p>LocalDoc eliminates this issue through dual-mode transparency normalization:</p>
+      <ul>
+        <li><strong>Standard A4 Document Printing:</strong> When packaging transparent PNG signatures or graphics onto standardized A4 sheets, our client-side pipeline draws the image onto an in-memory <code>OffscreenCanvas</code> initialized with a pure solid white background (<code>#FFFFFF</code>), cleanly blending transparent pixels with smooth anti-aliased edges and zero dark halos.</li>
+        <li><strong>Original Dimensions &amp; Graphic Portfolios:</strong> When preserving original dimensions or lossless artwork, LocalDoc injects the PNG data into an uncompressed FlateDecode stream alongside an explicit alpha mask dictionary, allowing transparent overlays to display flawlessly across modern PDF viewers.</li>
       </ul>
 
       <h2>3. Under the Hood: Lossless DCT Passthrough vs Smart Resampling</h2>
@@ -654,6 +662,10 @@
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
         <h4 style="margin:0 0 6px; color:var(--text-primary);">Is there a limit on how many photos I can combine?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">On modern desktop browsers (Chrome, Firefox, Edge), you can easily package 50 or more photos into a single PDF. On mobile smartphones, we recommend batches of 20 to 25 photos to ensure smooth operation within device memory limits.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will transparent PNG images (signatures, logos, stamps) get an ugly black background?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No! Naive converters often turn transparent PNG alpha channels into pitch-black rectangles because they omit PDF soft masks (<code>/SMask</code>). LocalDoc's rendering pipeline automatically composites transparent PNG graphics onto crisp white A4 backgrounds or retains transparency using standard PDF alpha soft masks, ensuring your transparent signatures, stamps, and digital artwork appear perfectly clean.</p>
       </div>
       <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
         <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool require an internet connection?</h4>
