@@ -487,7 +487,7 @@ const UIUtils = {
       { name: "Document Reader (PDF/Word/Excel)", slug: "document-reader.html", category: "Viewer", keywords: "reader viewer docx xlsx preview sheets office" },
       { name: "Scientific Calculator (Casio FX)", slug: "scientific-calculator.html", category: "Calculator", keywords: "calculator math casio fx scientific deg rad fractions base-n" },
       { name: "Sign PDF Online (Digital Signature)", slug: "sign-pdf.html", category: "Sign & Edit", keywords: "sign signature draw sign stamp e-sign sign contracts fill and sign" },
-      { name: "Protect PDF (Password & Restrictions)", slug: "protect-pdf.html", category: "Security", keywords: "protect encrypt password lock permissions restrict printing aes-256" },
+      { name: "Protect & Unlock PDF (AES-256 & Passwords)", slug: "protect-pdf.html", category: "Security", keywords: "protect encrypt unlock decrypt remove password lock permissions restrict printing aes-256 sanitize" },
       { name: "Organize PDF Pages", slug: "organize-pdf.html", category: "Organize", keywords: "organize sort reorder drag drop rotate delete pages" },
       { name: "Create PDF Studio", slug: "create-pdf.html", category: "Document Builder", keywords: "create pdf blank build document multi-page combine images" },
       { name: "PDF to PowerPoint (PPTX)", slug: "pdf-to-powerpoint.html", category: "Convert", keywords: "pdf to powerpoint pptx slides presentation google slides" },

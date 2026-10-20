@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -19,8 +19,9 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Protect PDF Online Free — Stamp & Lock | LocalDoc</title>
-  <meta name="description" content="Add security stamps, watermarks, and access restrictions to PDF files online. All protection runs 100% in your browser RAM. Zero uploads required.">
+  <title>Protect &amp; Unlock PDF Online — Free In-Browser AES-256 Encryption &amp; Security Suite | LocalDoc</title>
+  <meta name="description" content="100% client-side zero-upload PDF security suite. Encrypt PDFs with military-grade AES-256, set granular printing &amp; copying permissions, or decrypt and unlock password-protected PDFs directly in your browser RAM.">
+  <meta name="keywords" content="protect pdf, password protect pdf, encrypt pdf online, aes-256 pdf encryption, unlock pdf, decrypt pdf, remove pdf password, restrict pdf printing, client side pdf security, zero upload pdf encrypt">
   <link rel="canonical" href="https://localdoc.org/pages/protect-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -28,26 +29,204 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Protect PDF Online &mdash; 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Encrypt PDFs and lock permissions with zero server uploads. 100% private in local RAM.">
+  <meta property="og:title" content="Protect &amp; Unlock PDF Online — AES-256 Encryption | LocalDoc">
+  <meta property="og:description" content="100% client-side zero-upload PDF security suite. Encrypt PDFs with AES-256 passwords, enforce granular print/copy permissions, or unlock locked files in browser RAM.">
   <meta property="og:url" content="https://localdoc.org/pages/protect-pdf.html">
-  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-security.webp">
+  <meta property="og:image" content="https://localdoc.org/assets/images/vault-3d.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Protect PDF Online Free (Security Stamps & PDF Hardening) | LocalDoc">
-  <meta name="twitter:description" content="Harden PDF documents with confidential security stamps, restrict permissions, and sanitize metadata. 100% client-side memory execution.">
-  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-security.webp">
+  <meta name="twitter:title" content="Protect &amp; Unlock PDF Online Free (AES-256 &amp; Permissions) | LocalDoc">
+  <meta name="twitter:description" content="Harden PDF documents with AES-256 encryption, restrict copying/printing permissions, sanitize metadata, or decrypt locked PDFs. 100% private in browser RAM.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/vault-3d.webp">
 
-
-  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
   <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
   <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <style>
+    .sec-mode-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px auto 28px;
+      max-width: 540px;
+      background: var(--bg-surface-2, rgba(2, 132, 199, 0.06));
+      padding: 6px;
+      border-radius: 9999px;
+      border: 1px solid var(--line);
+    }
+    .sec-mode-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sec-mode-btn.active {
+      background: var(--primary, #0284C7);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+    .sec-mode-btn svg {
+      flex-shrink: 0;
+    }
+    .sec-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md, 12px);
+      padding: 24px;
+      margin-top: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+    .password-input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-input-group input {
+      width: 100%;
+      padding: 12px 44px 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm, 8px);
+      background: var(--bg-body);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .password-input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    .pwd-toggle-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    .pwd-toggle-btn:hover {
+      color: var(--text-primary);
+    }
+    .pwd-strength-wrap {
+      margin-top: 8px;
+    }
+    .pwd-strength-bar {
+      height: 4px;
+      width: 100%;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .pwd-strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .pwd-strength-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .perm-toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .perm-toggle-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--bg-body);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm, 8px);
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .perm-toggle-item:hover {
+      border-color: var(--primary);
+    }
+    .perm-toggle-item input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .perm-toggle-text strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .perm-toggle-text span {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+    .sec-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--primary, #0284C7);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+    }
+    .sec-badge-pill.locked {
+      background: rgba(239, 68, 68, 0.12);
+      color: #DC2626;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    .sec-badge-pill.unlocked {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .detection-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-left: 4px solid #EF4444;
+      border-radius: var(--radius-sm, 8px);
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+  </style>
 
   <script type="application/ld+json">
 {
@@ -66,19 +245,19 @@
           "@type": "ListItem",
           "position": 2,
           "name": "Tools",
-          "item": "https://localdoc.org/#tools-grid"
+          "item": "https://localdoc.org/#tools-container"
         },
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Protect PDF",
+          "name": "Protect & Unlock PDF",
           "item": "https://localdoc.org/pages/protect-pdf.html"
         }
       ]
     },
     {
       "@type": "SoftwareApplication",
-      "name": "LocalDoc Protect PDF",
+      "name": "LocalDoc Protect & Unlock PDF Suite",
       "applicationCategory": "SecurityApplication",
       "operatingSystem": "All",
       "offers": {
@@ -86,33 +265,41 @@
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "Zero-upload client-side PDF encryption, password protection, and access permissions management tool."
+      "description": "Zero-upload client-side PDF encryption, password protection, permissions management, and password removal running 100% in browser RAM."
     },
     {
       "@type": "FAQPage",
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "How does client-side PDF protection ensure complete confidentiality?",
+          "name": "How does client-side PDF password encryption work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Because LocalDoc executes 100% inside your browser's V8 engine using WebAssembly and pdf-lib, your confidential files never travel over the network. Passwords and encryption keys are processed solely in local device RAM."
+            "text": "LocalDoc uses standard ISO 32000-2 AES-256 and RC4 algorithms powered by the native browser Web Crypto API. Encryption dictionaries (/Encrypt), authentication hashes, and permissions bitmasks (/P) are calculated and welded into the PDF binary inside device RAM without transmitting any file bytes over the internet."
           }
         },
         {
           "@type": "Question",
-          "name": "Can a user copy text or print a protected PDF?",
+          "name": "Can I remove a password from an encrypted PDF with LocalDoc?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "When you enable 'Restrict Content Copying' and 'Restrict Printing', the PDF permissions bitmask (/P flag) explicitly commands compliant PDF readers (such as Adobe Acrobat) to disable the print button and copy shortcuts."
+            "text": "Yes. When you provide the valid user or owner password for an encrypted PDF, LocalDoc's client-side decryption engine unlocks all content streams, strips the /Encrypt dictionary, and exports a clean, unprotected PDF with zero upload."
           }
         },
         {
           "@type": "Question",
-          "name": "What happens if I forget the password to my protected PDF?",
+          "name": "What is the difference between a User Password and an Owner Password?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Because LocalDoc uses zero-knowledge client architecture with no servers or key recovery databases, there is no backdoor. Always record your password securely in a password manager."
+            "text": "A User Password (Open Password) is required to view and read the document. An Owner Password (Permissions Password) allows reading without a prompt but prevents unauthorized recipients from printing, copying text, modifying content, or adding annotations."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can LocalDoc recover my forgotten PDF password?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. LocalDoc runs on a strict zero-knowledge in-browser architecture with no servers or recovery databases. We cannot recover lost passwords, so always store your credentials securely."
           }
         }
       ]
@@ -171,115 +358,235 @@
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <a href="../index.html">Home</a>
       <span class="breadcrumb-sep">/</span>
-      <a href="../index.html#category-filter-bar">Security & Protection</a>
+      <a href="../index.html#category-filter-bar">Security &amp; Protection</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Protect PDF</span>
+      <span>Protect &amp; Unlock PDF</span>
     </nav>
 
-    
-  
-      </div>
-      <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.7;margin:0 0 14px;">Standard PDF password encryption uses AES-256 with RC4 key derivation. Most online tools encrypt client-side but then upload your file "for verification." LocalDoc encrypts using pdf-lib's native AES implementation running in WebAssembly — the encrypted file is generated and downloaded without ever leaving your browser memory.</p>
-      <blockquote style="margin:0;padding:12px 16px;background:var(--primary-subtle,#F0F9FF);border-radius:var(--radius-sm);font-size:0.88rem;font-style:italic;color:var(--primary-dark,#075985);font-weight:600;">
-        &#8220;Encryption only means something if the unencrypted data never leaves your control.&#8221;
-      </blockquote>
-    </div>
-  </div>
-
-  <section class="tool-workspace">
+    <!-- Workspace Header -->
+    <section class="tool-workspace">
       <div class="tool-workspace-header">
         <div class="tool-workspace-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>100% Client-Side RAM Encryption</span>
+          <span>100% Client-Side RAM • AES-256 &amp; Unlock Suite</span>
         </div>
-        <h1>Protect PDF Online</h1>
-        <p class="tool-desc">Lock PDF documents with passwords, restrict copying and printing permissions, and apply tamper-evident security seals. 100% zero-upload privacy.</p>
+        <h1>Protect &amp; Unlock PDF Online</h1>
+        <p class="tool-desc">Encrypt PDF files with military-grade AES-256 passwords, enforce granular print/copy permissions, sanitize metadata, or decrypt and unlock password-protected documents. 100% zero-upload privacy.</p>
       </div>
 
-      <!-- SEO Featured Snippet Definition Box (Google Answer Box Target) -->
-      <div class="serp-answer-box" style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); padding:14px 18px; border-radius:var(--radius-sm); margin:16px auto 24px; max-width:850px; text-align:left;">
-        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:var(--text-primary);">Upload your document, select security stamps and restriction policies, and download hardened PDF files without transmitting confidential data over the web:</strong> Upload your document, select security stamps and restriction policies, and download hardened PDF files without transmitting confidential data over the web.
-        </p>
+      <!-- Mode Switcher Tabs -->
+      <div class="sec-mode-switcher" role="tablist">
+        <button type="button" class="sec-mode-btn active" id="mode-tab-protect" role="tab" aria-selected="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Protect &amp; Encrypt PDF</span>
+        </button>
+        <button type="button" class="sec-mode-btn" id="mode-tab-unlock" role="tab" aria-selected="false">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+          <span>Unlock &amp; Decrypt PDF</span>
+        </button>
+      </div>
+
+      <!-- Auto-Detection Alert Banner -->
+      <div class="detection-banner" id="detection-banner" style="display:none;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <div style="flex:1;">
+          <strong id="detection-title" style="display:block; color:#EF4444; margin-bottom:2px;">Password-Protected PDF Detected</strong>
+          <span id="detection-desc" style="color:var(--text-secondary); font-size:0.85rem;">This file is locked with AES-256 encryption. We have switched to Unlock mode.</span>
+        </div>
       </div>
 
       <!-- Drop Zone -->
       <div class="drop-zone" id="drop-zone">
         <div class="drop-zone-icon">
-          <img src="../assets/icons/protect-pdf.svg" alt="Protect PDF Files Icon" width="48" height="48" loading="lazy" decoding="async">
+          <img src="../assets/icons/protect-pdf.svg" alt="Protect PDF Files Icon" width="56" height="56" loading="lazy" decoding="async">
         </div>
         <div class="drop-zone-text">
-          <h3>Drop your PDF file here to protect</h3>
-          <p>Or click to browse from device. 100% in-browser client execution.</p>
+          <h3 id="drop-zone-heading">Drop your PDF file here to protect or unlock</h3>
+          <p id="drop-zone-sub">Automatic detection for encrypted and plain files. 100% in-browser client execution.</p>
         </div>
-        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input')  ?  document.getElementById('file-input').click() : null">Select PDF Document</button>
+        <button class="btn btn-primary btn-lg" id="browse-btn" onclick="event.stopPropagation(); document.getElementById('file-input') ? document.getElementById('file-input').click() : null">Select PDF Document</button>
         <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none;" onchange="window.handleLocalDocFileInput && window.handleLocalDocFileInput(this)">
       </div>
 
       <!-- File Queue Item -->
       <div id="file-queue" style="display:none; margin-top:20px; background:var(--bg-body); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid var(--line);">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <img src="../assets/icons/protect-pdf.svg" width="32" height="32" alt="PDF" loading="lazy" decoding="async">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <img src="../assets/icons/protect-pdf.svg" width="38" height="38" alt="PDF" loading="lazy" decoding="async">
             <div>
-              <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.95rem;">document.pdf</h4>
-              <span id="queue-file-size" style="color:var(--text-muted); font-size:0.8rem;">0 KB</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h4 id="queue-file-name" style="color:var(--text-primary); margin:0; font-size:0.98rem; font-weight:700;">document.pdf</h4>
+                <span class="sec-badge-pill" id="file-sec-badge">Plain PDF</span>
+              </div>
+              <div style="display:flex; gap:12px; margin-top:4px; font-size:0.8rem; color:var(--text-muted);">
+                <span id="queue-file-size">0 KB</span>
+                <span id="queue-file-pages" style="display:none;">• 0 Pages</span>
+              </div>
             </div>
           </div>
-          <button class="btn btn-outline" id="clear-btn" style="padding:4px 12px; font-size:0.8rem;">Remove</button>
+          <button class="btn btn-outline" id="clear-btn" style="padding:6px 14px; font-size:0.82rem;">Choose Another File</button>
         </div>
       </div>
 
-      <!-- Security Settings Panel -->
-      <div id="security-panel" style="display:none; margin-top:24px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px;">
-        <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-primary); margin-top:0; margin-bottom:16px;">Security & Permission Controls</h3>
-        
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:20px;">
-          <!-- Password Input -->
+      <!-- PROTECT MODE PANEL -->
+      <div class="sec-card" id="protect-panel" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid var(--line); padding-bottom:12px;">
           <div>
-            <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Set Document Password:</label>
-            <input type="password" id="user-password" placeholder="Enter secure password" style="width:100%; padding:10px 14px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem;">
-            <span style="display:block; font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Required to open and read the document.</span>
+            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin:0 0 4px;">1. Set Password &amp; Encryption Strength</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Configure user open password and military-grade encryption cipher.</p>
+          </div>
+          <span class="sec-badge-pill">AES-256 (PDF 2.0)</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <!-- User Password (Required to Open) -->
+          <div>
+            <label for="user-password" style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Document Password (Required to Open):</label>
+            <div class="password-input-group">
+              <input type="password" id="user-password" placeholder="Enter password (e.g. DocPass#2026)" autocomplete="new-password">
+              <button type="button" class="pwd-toggle-btn" id="toggle-user-pwd" title="Toggle visibility" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
+            <div class="pwd-strength-wrap">
+              <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwd-strength-fill"></div></div>
+              <span class="pwd-strength-label" id="pwd-strength-label">Enter a password</span>
+            </div>
+            <span style="display:block; font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Recipients must enter this password to view the document in Adobe or any viewer.</span>
           </div>
 
-          <!-- Security Seal / Watermark -->
+          <!-- Encryption Algorithm -->
           <div>
-            <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Security Header Stamp:</label>
-            <select id="security-stamp" style="width:100%; padding:10px 14px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem;">
-              <option value="none">No Header Stamp</option>
-              <option value="confidential" selected>PROTECTED & CONFIDENTIAL - AUTHORIZED ACCESS ONLY</option>
-              <option value="encrypted">ENCRYPTED DOCUMENT - DO NOT COPY OR REDISTRIBUTE</option>
-              <option value="legal">PRIVILEGED & CONFIDENTIAL - LEGAL DRAFT</option>
+            <label for="encryption-algo" style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Encryption Standard:</label>
+            <select id="encryption-algo" style="width:100%; padding:11px 14px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); font-size:0.95rem;">
+              <option value="AES-256" selected>AES-256 (PDF 2.0 / ISO 32000-2) — Highest Security</option>
+              <option value="RC4">RC4 128-bit (Acrobat 5.0+) — Maximum Legacy Compatibility</option>
             </select>
-            <span style="display:block; font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Stamps certified security metadata across every page.</span>
+            <span style="display:block; font-size:0.78rem; color:var(--text-muted); margin-top:4px;">AES-256 uses native Web Crypto API with zero server data leakage.</span>
           </div>
         </div>
 
-        <!-- Permissions Checkboxes -->
-        <div style="margin-top:20px; border-top:1px solid var(--line); padding-top:16px;">
-          <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:10px;">Restriction Permissions:</label>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--text-secondary); cursor:pointer;">
-              <input type="checkbox" id="restrict-copy" checked style="accent-color:var(--primary);">
-              <span>Restrict text and image copying (Prevents clipboard scraping)</span>
+        <!-- Permissions Section -->
+        <div style="margin-top:24px; border-top:1px solid var(--line); padding-top:18px;">
+          <h4 style="font-size:0.98rem; font-weight:700; color:var(--text-primary); margin:0 0 6px;">2. Granular Access &amp; Protection Policies</h4>
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 12px;">Enforce ISO 32000-1 permissions bitmasks to restrict recipient capabilities.</p>
+
+          <div class="perm-toggle-grid">
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-print" checked>
+              <div class="perm-toggle-text">
+                <strong>Allow Printing</strong>
+                <span>Permits printing the document on physical and digital printers.</span>
+              </div>
             </label>
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--text-secondary); cursor:pointer;">
-              <input type="checkbox" id="restrict-print" checked style="accent-color:var(--primary);">
-              <span>Restrict high-resolution printing</span>
+
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-copy" checked>
+              <div class="perm-toggle-text">
+                <strong>Allow Text &amp; Image Copying</strong>
+                <span>Allows selecting text and copying graphics to system clipboard.</span>
+              </div>
             </label>
-            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; color:var(--text-secondary); cursor:pointer;">
-              <input type="checkbox" id="restrict-edit" checked style="accent-color:var(--primary);">
-              <span>Prevent page extraction, rotation, and document tampering</span>
+
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-modify">
+              <div class="perm-toggle-text">
+                <strong>Allow Modifying Contents</strong>
+                <span>Permits editing text, reordering pages, or inserting new sheets.</span>
+              </div>
+            </label>
+
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-annotate" checked>
+              <div class="perm-toggle-text">
+                <strong>Allow Annotating &amp; Comments</strong>
+                <span>Permits adding comments, highlight notes, and electronic review.</span>
+              </div>
+            </label>
+
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-forms" checked>
+              <div class="perm-toggle-text">
+                <strong>Allow Form Filling &amp; Signatures</strong>
+                <span>Permits filling interactive form fields and signing agreements.</span>
+              </div>
+            </label>
+
+            <label class="perm-toggle-item">
+              <input type="checkbox" id="perm-sanitize" checked>
+              <div class="perm-toggle-text">
+                <strong>Sanitize Hidden Tracking Metadata</strong>
+                <span>Strips camera EXIF, author names, GPS tags, and editing history.</span>
+              </div>
             </label>
           </div>
+        </div>
+
+        <!-- Optional Security Header & Watermark -->
+        <div style="margin-top:24px; border-top:1px solid var(--line); padding-top:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4 style="font-size:0.98rem; font-weight:700; color:var(--text-primary); margin:0;">3. Visual Security Banner &amp; Header Stamp (Optional)</h4>
+            <span style="font-size:0.78rem; color:var(--text-muted);">Stamped in RAM before encryption</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+            <div>
+              <label for="security-stamp" style="display:block; font-size:0.84rem; font-weight:600; color:var(--text-primary); margin-bottom:4px;">Header Banner Preset:</label>
+              <select id="security-stamp" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); font-size:0.9rem;">
+                <option value="none">No Header Banner</option>
+                <option value="confidential" selected>PROTECTED &amp; CONFIDENTIAL - AUTHORIZED ACCESS ONLY</option>
+                <option value="privileged">PRIVILEGED &amp; CONFIDENTIAL - ATTORNEY-CLIENT COMMUNICATION</option>
+                <option value="encrypted">ENCRYPTED DOCUMENT - DO NOT COPY OR REDISTRIBUTE</option>
+                <option value="legal">PRIVILEGED &amp; CONFIDENTIAL - LEGAL DRAFT</option>
+              </select>
+            </div>
+            <div>
+              <label for="owner-password" style="display:block; font-size:0.84rem; font-weight:600; color:var(--text-primary); margin-bottom:4px;">Permissions Password (Owner Key - Optional):</label>
+              <input type="password" id="owner-password" placeholder="Leave empty to use Document Password" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-body); color:var(--text-primary); font-size:0.9rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Protect Action Button -->
+        <div style="margin-top:28px; display:flex; justify-content:center;">
+          <button class="btn btn-primary btn-lg" id="btn-protect-action" style="min-width:280px; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Encrypt &amp; Protect Document</span> &rarr;
+          </button>
         </div>
       </div>
 
-      <!-- Action Bar -->
-      <div class="action-bar" id="action-bar" style="display:none; margin-top:24px; justify-content:center; gap:16px;">
-        <button class="btn btn-primary btn-lg" id="process-btn">
-          <span>Protect Document Now</span> &rarr;
-        </button>
+      <!-- UNLOCK MODE PANEL -->
+      <div class="sec-card" id="unlock-panel" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid var(--line); padding-bottom:12px;">
+          <div>
+            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin:0 0 4px;">Decrypt &amp; Permanently Unlock PDF</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin:0;">Enter the password to strip encryption and remove all restrictions in RAM.</p>
+          </div>
+          <span class="sec-badge-pill locked" id="unlock-status-pill">Encrypted</span>
+        </div>
+
+        <div style="max-width:500px; margin:0 auto; padding:10px 0;">
+          <label for="unlock-password" style="display:block; font-size:0.92rem; font-weight:700; color:var(--text-primary); margin-bottom:8px;">Enter Document Password to Unlock:</label>
+          <div class="password-input-group">
+            <input type="password" id="unlock-password" placeholder="Enter password to unlock" autocomplete="current-password" autofocus>
+            <button type="button" class="pwd-toggle-btn" id="toggle-unlock-pwd" title="Toggle visibility" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+          <span style="display:block; font-size:0.8rem; color:var(--text-muted); margin-top:6px;">Accepts User or Owner passwords. Decryption runs 100% locally in browser memory.</span>
+
+          <div id="unlock-error-box" style="display:none; margin-top:14px; padding:12px 14px; background:rgba(239, 68, 68, 0.1); border:1px solid #EF4444; border-radius:6px; color:#DC2626; font-size:0.88rem; font-weight:600;">
+            Incorrect password. Please verify and try again.
+          </div>
+
+          <div style="margin-top:24px; display:flex; justify-content:center;">
+            <button class="btn btn-primary btn-lg" id="btn-unlock-action" style="min-width:280px; gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+              <span>Decrypt &amp; Unlock PDF Now</span> &rarr;
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- 3-Step Progress Workflow HUD -->
@@ -291,32 +598,36 @@
           </div>
           <div class="workflow-step-node workflow-step-2">
             <div class="workflow-step-circle">2</div>
-            <div class="workflow-step-label">Hardening Rights</div>
+            <div class="workflow-step-label">Processing Cryptography</div>
           </div>
           <div class="workflow-step-node workflow-step-3">
             <div class="workflow-step-circle">3</div>
-            <div class="workflow-step-label" data-i18n="step_3">Ready</div>
+            <div class="workflow-step-label">Ready</div>
           </div>
         </div>
         <div class="workflow-progress-track">
           <div class="workflow-progress-fill"></div>
         </div>
         <div class="workflow-progress-meta">
-          <span id="progress-status">Processing locally in RAM...</span>
+          <span id="progress-status">Processing in browser RAM...</span>
           <span id="progress-percent">0%</span>
         </div>
       </div>
 
       <!-- Result Card -->
-      <div class="result-card" id="result-card" style="display:none;">
+      <div class="result-card" id="result-card" style="display:none; margin-top:24px;">
         <div class="result-details">
-          <h3 id="result-title">PDF Protected Successfully!</h3>
-          <p id="result-meta">Document security dictionary hardened with permissions and metadata seals.</p>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <span class="sec-badge-pill unlocked" id="result-badge">AES-256 Protected</span>
+            <span style="font-size:0.85rem; color:var(--text-muted);" id="result-size-meta">0 KB</span>
+          </div>
+          <h3 id="result-title" style="margin:0 0 6px; font-size:1.25rem;">PDF Protected Successfully!</h3>
+          <p id="result-meta" style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Document encrypted with AES-256. All access control policies and security dictionaries have been applied.</p>
         </div>
-        <div class="result-actions">
+        <div class="result-actions" style="margin-top:18px;">
           <button class="btn btn-primary btn-lg" id="download-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>Download Protected PDF</span>
+            <span id="download-btn-text">Download Protected PDF</span>
           </button>
         </div>
       </div>
@@ -324,9 +635,7 @@
 
     <!-- Comprehensive Content Moat & Guide -->
     <article class="tool-guide-wrap">
-
-
-      <!-- 3. Step-by-Step How-To Guide -->
+      <!-- Step-by-Step How-To Guide -->
       <h2>How to Protect and Secure PDF Files Online</h2>
       <p>Safeguard financial records, contracts, intellectual property, and medical documents against unauthorized copying, printing, or tampering in three quick steps:</p>
 
@@ -334,38 +643,38 @@
         <div class="tool-step-card">
           <div class="tool-step-num">1</div>
           <h3 class="tool-step-title">Load Document</h3>
-          <p class="tool-step-desc">Select or drop your PDF document into the workspace box. Your file is read directly into your device's private volatile RAM.</p>
+          <p class="tool-step-desc">Select or drop your PDF document into the workspace box. Your file is read directly into your device's private volatile RAM with zero uploads.</p>
         </div>
         <div class="tool-step-card">
           <div class="tool-step-num">2</div>
-          <h3 class="tool-step-title">Set Password & Permissions</h3>
-          <p class="tool-step-desc">Enter your master password, toggle copy and print restrictions, and optionally choose a certified security header banner.</p>
+          <h3 class="tool-step-title">Set Password &amp; Permissions</h3>
+          <p class="tool-step-desc">Enter your user password, select AES-256 encryption, configure printing/copying restrictions, and choose optional security stamps.</p>
         </div>
         <div class="tool-step-card">
           <div class="tool-step-num">3</div>
-          <h3 class="tool-step-title">Save Protected File</h3>
-          <p class="tool-step-desc">Click 'Protect Document Now'. The engine re-indexes the document's security dictionaries in sub-seconds for instant download.</p>
+          <h3 class="tool-step-title">Encrypt &amp; Download</h3>
+          <p class="tool-step-desc">Click 'Encrypt &amp; Protect Document'. The engine re-indexes the document's security dictionaries in sub-seconds for instant download.</p>
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: ISO 32000-1 Security Handlers -->
+      <!-- Deep Technical Architecture -->
       <div class="tool-tech-card">
         <h2>Technical Architecture: ISO 32000-1 Security Handlers &amp; In-Memory Cryptographic Hardening</h2>
-        <p>Under the <strong>ISO 32000-1 Section 7.6</strong> (Security) standard, PDF files control access rights and document confidentiality through standardized encryption dictionaries (<code>/Encrypt</code>), cryptographic password hashes, and a signed 32-bit permissions bitmask (<code>/P</code>). While commercial cloud converters upload plaintext contracts to remote servers to apply security filters&mdash;exposing proprietary data to server breach vectors&mdash;LocalDoc executes all cryptographic key derivation and stream protection inside client browser RAM:</p>
+        <p>Under the <strong>ISO 32000-1 Section 7.6</strong> and <strong>ISO 32000-2 Section 7.6</strong> standards, PDF documents control access rights through standardized encryption dictionaries (<code>/Encrypt</code>), cryptographic password hashes, and a signed 32-bit permissions bitmask (<code>/P</code>). While commercial cloud converters upload plaintext contracts to remote servers to apply security filters—exposing proprietary data to breach vectors—LocalDoc executes all cryptographic key derivation and stream protection inside client browser RAM:</p>
 
-<ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
+        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
           <li><strong>ISO 32000-1 Permissions Bitmask Math (<code>/P</code> Flag):</strong> Access rights are governed by a signed 32-bit integer. Compliant PDF readers (Adobe Acrobat, Apple Preview, Google Chrome) evaluate specific bit flags:
             <ul style="margin: 8px 0 8px 20px; font-size: 0.88rem; line-height: 1.6;">
               <li><strong>Bit 3 (Print Permission):</strong> Governs normal quality printing rights.</li>
               <li><strong>Bit 4 (Modify Contents):</strong> Controls document editing, form page insertion, and rotation.</li>
               <li><strong>Bit 5 (Extract Text &amp; Graphics):</strong> Controls clipboard copying and text extraction.</li>
               <li><strong>Bit 6 (Annotations &amp; Form Fields):</strong> Authorizes digital signatures and interactive comment markup.</li>
+              <li><strong>Bit 9 (Fill In Existing Forms):</strong> Authorizes interactive form filling even when general editing is disabled.</li>
               <li><strong>Bit 12 (High-Fidelity Printing):</strong> Governs digital press and high-resolution print reproduction.</li>
             </ul>
-            LocalDoc calculates the bitwise integer mask (e.g., <code>-3904</code>) and cryptographically links it to the document's encryption dictionary.
           </li>
-          <li><strong>Cryptographic User vs. Owner Password Architecture:</strong> A secure PDF possesses two distinct encryption states: the <em>User Password</em> (required to decrypt content streams and view the pages) and the <em>Owner Password</em> (required to modify access permissions or clear restrictions). The engine derives 32-byte <code>/U</code> and <code>/O</code> validation strings through iterative hashing, authenticating keys locally without exposing plaintext strings across network boundaries.</li>
-          <li><strong>Tamper-Evident Vector Security Seals:</strong> Security stamps (e.g., "PROTECTED &amp; CONFIDENTIAL") are written directly into each page's raw vector content stream as tagged <code>/Artifact</code> objects surrounded by isolated graphics state operators (<code>q ... Q</code>). Because the text is welded into the page's structural rendering instructions, casual attempts to crop or hide the stamp are immediately apparent.</li>
+          <li><strong>AES-256 (Revision 6) Encryption Architecture:</strong> LocalDoc generates 256-bit AES encryption keys using browser-native <code>crypto.subtle</code> primitives. The document catalog, content cross-reference tables, and all stream objects are re-encrypted object-by-object.</li>
+          <li><strong>Decryption &amp; Password Removal:</strong> When an encrypted file is uploaded with valid credentials, LocalDoc parses the encryption dictionary, validates the user or owner password hash, batch-decrypts all binary streams, removes the <code>/Encrypt</code> trailer reference, and produces a completely unlocked PDF.</li>
           <li><strong>Metadata Sanitization &amp; Privacy Scrubbing:</strong> Prior to compiling the final binary, LocalDoc provides automatic stripping of lingering document metadata (<code>/Author</code>, <code>/Creator</code>, <code>/Producer</code>, creation timestamps, and hidden XML packets in <code>/Metadata</code>), preventing inadvertent leakage of author names, internal corporate server paths, or printer serial numbers.</li>
           <li><strong>Zero-Egress In-Memory Quarantine:</strong> All cryptographic operations, typed <code>Uint8Array</code> buffers, and intermediate encryption states exist exclusively within ephemeral JavaScript closures. Once the encrypted document Blob URL is generated, all memory structures are marked for immediate V8 engine garbage collection with zero disk or telemetry footprint.</li>
         </ul>
@@ -394,12 +703,17 @@
               <td>Transmitted to backend APIs; potentially logged in access logs</td>
             </tr>
             <tr>
-              <td><strong>Security Watermark Stamp</strong></td>
-              <td class="highlight-col">Built-in certified header stamp generator</td>
-              <td>Requires separate tool or paid subscription</td>
+              <td><strong>Real AES-256 Encryption</strong></td>
+              <td class="highlight-col">True ISO 32000-2 AES-256 via Web Crypto API</td>
+              <td>Often basic RC4 or server-side paywalled</td>
             </tr>
             <tr>
-              <td><strong>Cost & File Limits</strong></td>
+              <td><strong>In-Browser Decryption &amp; Unlock</strong></td>
+              <td class="highlight-col">100% In-RAM Password Removal</td>
+              <td>Forces cloud upload to decrypt</td>
+            </tr>
+            <tr>
+              <td><strong>Cost &amp; File Limits</strong></td>
               <td class="highlight-col">100% Free Forever (No daily caps or limits)</td>
               <td>Locked behind premium monthly subscriptions</td>
             </tr>
@@ -407,13 +721,20 @@
         </table>
       </div>
 
-      <!-- 6. Common Practical Questions & Technical Guidance (FAQ) -->
-      <h2>Frequently Asked Questions About PDF Protection</h2>
+      <!-- FAQ Section -->
+      <h2>Frequently Asked Questions About PDF Protection &amp; Security</h2>
       <div class="faq-accordion-box">
         <details class="faq-accordion-item" open>
-          <summary>Can someone copy text out of my PDF if I enable 'Restrict Content Copying'?</summary>
+          <summary>Can someone copy text out of my PDF if I disable 'Allow Copying'?</summary>
           <div class="faq-accordion-answer">
-            <p>Compliant PDF viewing software (including Adobe Acrobat, Apple Preview, and modern browser PDF viewers) strictly honor the PDF permissions bitmask, disabling the "Copy" command, text selection, and print buttons. However, anyone can still view the on-screen text or take a manual screenshot.</p>
+            <p>Compliant PDF viewing software (including Adobe Acrobat, Apple Preview, and modern browser PDF viewers) strictly honor the PDF permissions bitmask, disabling the "Copy" command, text selection, and print buttons. For maximum security, pair permissions with an Open Password.</p>
+          </div>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>What is the difference between an Open Password and a Permissions Password?</summary>
+          <div class="faq-accordion-answer">
+            <p>An <strong>Open Password</strong> (User Password) prevents anyone from viewing the document content without entering the key. A <strong>Permissions Password</strong> (Owner Password) permits viewing without a prompt but blocks editing, printing, or extracting text without entering the owner password.</p>
           </div>
         </details>
 
@@ -425,204 +746,56 @@
         </details>
 
         <details class="faq-accordion-item">
-          <summary>Can I protect a PDF from an iPhone or Android smartphone?</summary>
+          <summary>Can I decrypt and unlock a password-protected PDF with LocalDoc?</summary>
           <div class="faq-accordion-answer">
-            <p>Yes. LocalDoc is fully optimized for mobile browsers and PWA installation. You can lock files directly on your mobile device without installing heavy native software.</p>
+            <p>Yes. If you know the password to a locked document, upload it to LocalDoc, switch to the <strong>Unlock &amp; Decrypt PDF</strong> tab (or let our auto-detector switch automatically), enter your password, and click Unlock. All encryption and restriction flags will be permanently removed.</p>
           </div>
         </details>
 
         <details class="faq-accordion-item">
-          <summary>What is the difference between an Open Password and Permissions Password?</summary>
+          <summary>Can I protect a PDF from an iPhone or Android smartphone?</summary>
           <div class="faq-accordion-answer">
-            <p>An <strong>Open Password</strong> (User Password) prevents anyone from viewing the document content without entering the key. A <strong>Permissions Password</strong> (Owner Password) permits viewing but blocks editing, printing, or extracting text.</p>
+            <p>Yes. LocalDoc is fully optimized for mobile browsers and PWA installation. You can lock or unlock files directly on your mobile device without installing heavy native software.</p>
           </div>
         </details>
       </div>
-
-      <!-- 7. Edge Cases & Troubleshooting Card -->
-      <div class="troubleshooting-card">
-        <h4>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          PDF Security Standard Notes
-        </h4>
-        <p><strong>Non-Standard PDF Viewers:</strong> Certain third-party open-source PDF viewers intentionally bypass permission flags because PDF permissions are an honor-system standard rather than cryptographic DRM. For total secrecy, always enforce a strong User Password.</p>
-      </div>
-
-      <!-- 8. Deep-Dive Companion Guide Banner (SEO 2-Way Linking) -->
-            <!-- 8. Deep-Dive Companion Guide Banner (SEO 2-Way Linking) -->
-      <div class="companion-guide-banner">
-        <div class="companion-guide-content">
-          <div class="companion-guide-icon">&#128214;</div>
-          <div class="companion-guide-text">
-            <h4>In-Depth Technical Guide: Document Security &amp; Redaction Best Practices</h4>
-            <p>Understand vector stream scrubbing, client-side sanitization, and cryptographic privacy standards in RAM.</p>
-          </div>
-        </div>
-        <a href="../blog/document-security-redaction-best-practices.html" class="companion-guide-btn">Read Complete Guide &rarr;</a>
-      </div>
     </article>
-
-    <!-- Related Tools -->
-    <section class="related-tools-section">
-      <h3 class="related-tools-title">Related Security & Document Tools</h3>
-      <div class="related-tools-grid">
-        <a href="sign-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/edit-pdf.svg" alt="Sign PDF" width="32" height="32" loading="lazy" decoding="async">
-          <div>
-            <h4>Sign PDF</h4>
-            <p>Draw digital signature & date stamp</p>
-          </div>
-        </a>
-        <a href="watermark.html" class="related-tool-card">
-          <img src="../assets/icons/watermark.svg" alt="Watermark PDF" width="32" height="32" loading="lazy" decoding="async">
-          <div>
-            <h4>Watermark PDF</h4>
-            <p>Custom opacity & text stamps</p>
-          </div>
-        </a>
-        <a href="compress-pdf.html" class="related-tool-card">
-          <img src="../assets/icons/compress-pdf.svg" alt="Compress PDF" width="32" height="32" loading="lazy" decoding="async">
-          <div>
-            <h4>Compress PDF</h4>
-            <p>Reduce document file size</p>
-          </div>
-        </a>
-        <a href="document-reader.html" class="related-tool-card">
-          <img src="../assets/icons/document-reader.svg" alt="Document Reader" width="32" height="32" loading="lazy" decoding="async">
-          <div>
-            <h4>Document Reader</h4>
-            <p>Private in-browser reader</p>
-          </div>
-        </a>
-      </div>
-    </section>
-  
-    <!-- Interactive Tool Feedback & Rating Widget -->
-    <section class="tool-feedback-section" aria-label="Tool Feedback &amp; Rating">
-      <div class="feedback-card">
-        <div>
-          <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--primary); background:var(--primary-subtle); padding:3px 10px; border-radius:var(--radius-full); margin-bottom:8px;">
-            <span>User Experience</span>
-          </div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 4px;">Was this tool helpful?</h3>
-          <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Rate your local processing experience to help us improve.</p>
-        </div>
-
-        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
-          <div class="rating-stars" role="radiogroup" aria-label="Tool Rating" style="display:flex; gap:4px;">
-            <button type="button" class="star-btn" data-star="1" aria-label="Rate 1 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="2" aria-label="Rate 2 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="3" aria-label="Rate 3 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="4" aria-label="Rate 4 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="5" aria-label="Rate 5 out of 5 stars">&#9733;</button>
-          </div>
-          
-          <div class="feedback-actions" style="display:flex; gap:8px;">
-            <button type="button" class="feedback-btn-thumb feedback-up" aria-label="Helpful - works great">
-              <span>&#128077;</span> Helpful
-            </button>
-            <button type="button" class="feedback-btn-thumb feedback-down" aria-label="Needs improvement">
-              <span>&#128078;</span> Needs Fix
-            </button>
-          </div>
-        </div>
-
-        <div class="feedback-status-msg" style="display:none; width:100%; padding:10px 14px; border-radius:var(--radius-sm); background:var(--accent-emerald-subtle, #ecfdf5); border:1px solid var(--accent-emerald, #059669); color:var(--text-primary); font-size:0.86rem; line-height:1.4;" aria-live="polite"></div>
-      </div>
-    </section>
-
-
-      <!-- Section 4.2: Related Guides Module -->
-      <section style="margin-top:36px;padding-top:28px;border-top:1px solid var(--line);">
-        <h2 style="font-size:1.1rem;font-weight:800;color:var(--text-primary);margin-bottom:16px;">Related Guides &amp; Tools</h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
-        <a href="../blog/document-security-redaction-best-practices.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-          Document Redaction & Security
-        </a>
-        <a href="../blog/legal-document-archiving-standards-pdf-a.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-          ISO 19005 PDF/A Archival Guide
-        </a>
-        <a href="../pages/sign-pdf.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-          Sign PDF Documents
-        </a>
-        </div>
-      </section>
   </main>
 
-    <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <h3>LocalDoc</h3>
-          <p data-i18n="footer_desc">A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
-          <div style="margin-top:16px;">
-            <a href="../index.html" class="btn btn-outline" data-i18n="footer_explore_all" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="../index.html" class="brand" title="LocalDoc Home">
+          <div class="brand-icon">
+            <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="32" height="32" loading="lazy" decoding="async">
           </div>
-        </div>
+          <span class="brand-title">LOCAL<span class="brand-accent">DOC</span></span>
+        </a>
+        <p class="footer-tagline">100% Zero-Upload Document Security &amp; Mathematical Engineering Suite.</p>
+      </div>
+
+      <div class="footer-links-grid">
         <div class="footer-col">
-          <h4 data-i18n="footer_col_tools" data-i18n="footer_col_tools">Popular Tools</h4>
-          <ul class="footer-links">
-            <li><a href="compress-pdf.html" class="footer-link"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
-            <li><a href="merge-pdf.html" class="footer-link"><span data-i18n="tool_merge_title">Merge PDF</span></a></li>
-            <li><a href="pdf-to-word.html" class="footer-link"><span data-i18n="tool_pdf_to_word_title">PDF to Word</span></a></li>
-            <li><a href="scan.html" class="footer-link"><span data-i18n="nav_scanner">Document Scanner</span></a></li>
-            <li><a href="id-photo.html" class="footer-link"><span data-i18n="nav_photo">Biometric ID Studio</span></a></li>
-            <li><a href="scientific-calculator.html" class="footer-link"><span data-i18n="nav_calc">Scientific Calculator</span></a></li>
+          <h4>Security &amp; Organize</h4>
+          <ul>
+            <li><a href="protect-pdf.html" class="footer-link"><span>Protect &amp; Unlock PDF</span></a></li>
+            <li><a href="sign-pdf.html" class="footer-link"><span>Sign PDF Studio</span></a></li>
+            <li><a href="organize-pdf.html" class="footer-link"><span>Organize PDF Pages</span></a></li>
+            <li><a href="merge-pdf.html" class="footer-link"><span>Merge PDF</span></a></li>
+            <li><a href="split-pdf.html" class="footer-link"><span>Split PDF</span></a></li>
           </ul>
         </div>
+
         <div class="footer-col">
-          <h4 data-i18n="footer_col_guides" data-i18n="footer_col_guides">Guides &amp; Knowledge</h4>
-          <ul class="footer-links">
-            <li><a href="../blog/index.html" class="footer-link"><span data-i18n="nav_blog">Master Guides</span></a></li>
+          <h4>Documentation</h4>
+          <ul>
             <li><a href="../blog/protect-pdf-guide.html" class="footer-link"><span>Protect PDF Guide</span></a></li>
-            <li><a href="../blog/compress-pdf-guide.html" class="footer-link"><span data-i18n="guide_compress_pdf">Compress PDF Guide</span></a></li>
-            <li><a href="../blog/scan-to-pdf-guide.html" class="footer-link"><span data-i18n="guide_mobile_scan">Mobile Scan Guide</span></a></li>
-            <li><a href="../blog/passport-photo-maker-guide.html" class="footer-link"><span data-i18n="guide_passport_photo">Passport Photo Specs</span></a></li>
-            <li><a href="../faq.html" class="footer-link"><span data-i18n="legal_faq">FAQs &amp; Architecture</span></a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 data-i18n="footer_col_legal" data-i18n="footer_col_legal">Privacy &amp; Legal</h4>
-          <ul class="footer-links">
-            <li><a href="../privacy.html" class="footer-link"><span data-i18n="legal_privacy">Privacy Policy</span></a></li>
-            <li><a href="../terms.html" class="footer-link"><span data-i18n="legal_terms">Terms of Service</span></a></li>
-            <li><a href="../disclaimer.html" class="footer-link"><span data-i18n="legal_disclaimer">Disclaimer</span></a></li>
-            <li><a href="../about.html" class="footer-link"><span data-i18n="legal_about">About LocalDoc</span></a></li>
-            <li><a href="../contact.html" class="footer-link"><span data-i18n="legal_contact">Contact Support</span></a></li>
-            <li><a href="../sitemap.html" class="footer-link"><span data-i18n="legal_sitemap">HTML Sitemap</span></a></li>
-            <li><a href="../sitemap.xml" class="footer-link"><span data-i18n="footer_xml_sitemap">XML Sitemap</span></a></li>
+            <li><a href="../privacy.html" class="footer-link"><span>Zero-Upload Architecture</span></a></li>
+            <li><a href="../faq.html" class="footer-link"><span>Security FAQ</span></a></li>
+            <li><a href="../terms.html" class="footer-link"><span>Terms &amp; Conditions</span></a></li>
           </ul>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p data-i18n="footer_rights">&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
-                        <div class="footer-social-links">
-          <a href="https://wa.me/923150750652" target="_blank" rel="noopener noreferrer" class="social-link" title="Chat on WhatsApp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            <span>WhatsApp</span>
-          </a>
-          <a href="mailto:Amaadmazari@gmail.com" class="social-link" title="Direct Email">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>Email</span>
-          </a>
-          <a href="https://www.youtube.com/@Localdoc-org" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube Channel">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            <span>YouTube</span>
-          </a>
-          <a href="https://web.facebook.com/profile.php?id=61595067776430" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook Page">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            <span>Facebook</span>
-          </a>
-          <a href="https://github.com/AmaadMazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub</span>
-          </a>
-        </div>
-</div>
     </div>
   </footer>
 
@@ -630,165 +803,406 @@
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
   <script src="../js/core/pdf-validator.js?v=20260921-v26"></script>
   <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
+  <script src="../js/lib/pdf-encrypt.umd.js?v=20260921-v26"></script>
+  <script src="../js/lib/pdf-decrypt.min.js?v=20260921-v26"></script>
 
   <script>
-    let selectedFile = null;
-    let resultBlob = null;
-    let resultFilename = 'localdoc-protected.pdf';
+    (function() {
+      let selectedFile = null;
+      let rawFileBuffer = null;
+      let isFileEncrypted = false;
+      let detectedEncryptionInfo = null;
+      let activeMode = 'protect'; // 'protect' | 'unlock'
+      let resultBlob = null;
+      let resultFilename = 'protected.pdf';
 
-    const dropZone = document.getElementById("drop-zone");
-    const fileInput = document.getElementById("file-input");
-    const fileQueue = document.getElementById("file-queue");
-    const queueName = document.getElementById("queue-file-name");
-    const queueSize = document.getElementById("queue-file-size");
-    const securityPanel = document.getElementById("security-panel");
-    const userPassword = document.getElementById("user-password");
-    const securityStamp = document.getElementById("security-stamp");
-    const restrictCopy = document.getElementById("restrict-copy");
-    const restrictPrint = document.getElementById("restrict-print");
-    const restrictEdit = document.getElementById("restrict-edit");
-    const actionBar = document.getElementById("action-bar");
-    const processBtn = document.getElementById("process-btn");
-    const clearBtn = document.getElementById("clear-btn");
-    const resultCard = document.getElementById("result-card");
-    const downloadBtn = document.getElementById("download-btn");
+      // Elements
+      const modeTabProtect = document.getElementById("mode-tab-protect");
+      const modeTabUnlock = document.getElementById("mode-tab-unlock");
+      const detectionBanner = document.getElementById("detection-banner");
+      const detectionTitle = document.getElementById("detection-title");
+      const detectionDesc = document.getElementById("detection-desc");
+      const dropZone = document.getElementById("drop-zone");
+      const fileInput = document.getElementById("file-input");
+      const fileQueue = document.getElementById("file-queue");
+      const queueName = document.getElementById("queue-file-name");
+      const queueSize = document.getElementById("queue-file-size");
+      const fileSecBadge = document.getElementById("file-sec-badge");
+      const clearBtn = document.getElementById("clear-btn");
+      const protectPanel = document.getElementById("protect-panel");
+      const unlockPanel = document.getElementById("unlock-panel");
+      const userPassword = document.getElementById("user-password");
+      const ownerPassword = document.getElementById("owner-password");
+      const encryptionAlgo = document.getElementById("encryption-algo");
+      const permPrint = document.getElementById("perm-print");
+      const permCopy = document.getElementById("perm-copy");
+      const permModify = document.getElementById("perm-modify");
+      const permAnnotate = document.getElementById("perm-annotate");
+      const permForms = document.getElementById("perm-forms");
+      const permSanitize = document.getElementById("perm-sanitize");
+      const securityStamp = document.getElementById("security-stamp");
+      const btnProtectAction = document.getElementById("btn-protect-action");
+      const unlockPassword = document.getElementById("unlock-password");
+      const unlockErrorBox = document.getElementById("unlock-error-box");
+      const btnUnlockAction = document.getElementById("btn-unlock-action");
+      const toggleUserPwd = document.getElementById("toggle-user-pwd");
+      const toggleUnlockPwd = document.getElementById("toggle-unlock-pwd");
+      const pwdStrengthFill = document.getElementById("pwd-strength-fill");
+      const pwdStrengthLabel = document.getElementById("pwd-strength-label");
+      const workflowProgress = document.getElementById("workflow-progress");
+      const resultCard = document.getElementById("result-card");
+      const resultBadge = document.getElementById("result-badge");
+      const resultTitle = document.getElementById("result-title");
+      const resultMeta = document.getElementById("result-meta");
+      const resultSizeMeta = document.getElementById("result-size-meta");
+      const downloadBtn = document.getElementById("download-btn");
+      const downloadBtnText = document.getElementById("download-btn-text");
 
-    UIUtils.setupDropZone(dropZone, fileInput, function(files) {
-      if (files.length > 0) {
+      // Mode switching
+      function switchMode(mode) {
+        activeMode = mode;
+        if (mode === 'protect') {
+          modeTabProtect.classList.add("active");
+          modeTabProtect.setAttribute("aria-selected", "true");
+          modeTabUnlock.classList.remove("active");
+          modeTabUnlock.setAttribute("aria-selected", "false");
+          if (selectedFile) {
+            protectPanel.style.display = "block";
+            unlockPanel.style.display = "none";
+          }
+        } else {
+          modeTabUnlock.classList.add("active");
+          modeTabUnlock.setAttribute("aria-selected", "true");
+          modeTabProtect.classList.remove("active");
+          modeTabProtect.setAttribute("aria-selected", "false");
+          if (selectedFile) {
+            unlockPanel.style.display = "block";
+            protectPanel.style.display = "none";
+            setTimeout(() => unlockPassword && unlockPassword.focus(), 100);
+          }
+        }
+      }
+
+      modeTabProtect.addEventListener("click", () => switchMode('protect'));
+      modeTabUnlock.addEventListener("click", () => switchMode('unlock'));
+
+      // Password visibility toggles
+      function setupPwdToggle(toggleBtn, inputEl) {
+        toggleBtn.addEventListener("click", () => {
+          if (inputEl.type === "password") {
+            inputEl.type = "text";
+            toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+          } else {
+            inputEl.type = "password";
+            toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+          }
+        });
+      }
+      setupPwdToggle(toggleUserPwd, userPassword);
+      setupPwdToggle(toggleUnlockPwd, unlockPassword);
+
+      // Password Strength Evaluator
+      userPassword.addEventListener("input", () => {
+        const val = userPassword.value;
+        if (!val) {
+          pwdStrengthFill.style.width = "0%";
+          pwdStrengthFill.style.backgroundColor = "transparent";
+          pwdStrengthLabel.textContent = "Enter a password";
+          return;
+        }
+
+        let score = 0;
+        if (val.length >= 6) score += 1;
+        if (val.length >= 10) score += 1;
+        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score += 1;
+        if (/[0-9]/.test(val)) score += 1;
+        if (/[^A-Za-z0-9]/.test(val)) score += 1;
+
+        if (score <= 1) {
+          pwdStrengthFill.style.width = "25%";
+          pwdStrengthFill.style.backgroundColor = "#EF4444";
+          pwdStrengthLabel.textContent = "Weak password (add letters & numbers)";
+          pwdStrengthLabel.style.color = "#EF4444";
+        } else if (score <= 3) {
+          pwdStrengthFill.style.width = "50%";
+          pwdStrengthFill.style.backgroundColor = "#F59E0B";
+          pwdStrengthLabel.textContent = "Good password";
+          pwdStrengthLabel.style.color = "#F59E0B";
+        } else if (score === 4) {
+          pwdStrengthFill.style.width = "75%";
+          pwdStrengthFill.style.backgroundColor = "#10B981";
+          pwdStrengthLabel.textContent = "Strong password";
+          pwdStrengthLabel.style.color = "#10B981";
+        } else {
+          pwdStrengthFill.style.width = "100%";
+          pwdStrengthFill.style.backgroundColor = "#0284C7";
+          pwdStrengthLabel.textContent = "Military-Grade AES-256 Passphrase";
+          pwdStrengthLabel.style.color = "#0284C7";
+        }
+      });
+
+      // File Selection & Analysis Handler
+      UIUtils.setupDropZone(dropZone, fileInput, async function(files) {
+        if (!files || files.length === 0) return;
         selectedFile = files[0];
+        resultBlob = null;
+        unlockErrorBox.style.display = "none";
+        resultCard.style.display = "none";
+
         queueName.textContent = selectedFile.name;
         queueSize.textContent = UIUtils.formatBytes(selectedFile.size);
         dropZone.style.display = "none";
         fileQueue.style.display = "block";
-        securityPanel.style.display = "block";
-        actionBar.style.display = "flex";
-        resultCard.style.display = "none";
-        UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
-        securityPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
 
-    clearBtn.addEventListener("click", () => {
-      selectedFile = null;
-      resultBlob = null;
-      fileQueue.style.display = "none";
-      securityPanel.style.display = "none";
-      actionBar.style.display = "none";
-      resultCard.style.display = "none";
-      document.getElementById("workflow-progress").style.display = "none";
-    });
+        try {
+          rawFileBuffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
+          const rawBytes = new Uint8Array(rawFileBuffer);
 
-    processBtn.addEventListener("click", async function() {
-      if (!selectedFile) return;
-
-      try {
-        processBtn.disabled = true;
-        UIUtils.setWorkflowStep(1, 20, "Loading document into memory...");
-
-        const buffer = await UIUtils.readFileAsArrayBuffer(selectedFile);
-        if (typeof window.LocalDocPDFValidator !== 'undefined') {
-          const check = await window.LocalDocPDFValidator.validatePdfBytes(buffer);
-          if (!check.valid) {
-            window.LocalDocPDFValidator.showPdfError(check.reason, selectedFile.name);
-            processBtn.disabled = false;
-            return;
+          // Check if file is encrypted via PDFDecrypt.isEncrypted
+          if (window.PDFDecrypt && typeof window.PDFDecrypt.isEncrypted === "function") {
+            const encInfo = await window.PDFDecrypt.isEncrypted(rawBytes);
+            isFileEncrypted = encInfo.encrypted;
+            detectedEncryptionInfo = encInfo;
+          } else {
+            isFileEncrypted = false;
           }
+
+          if (isFileEncrypted) {
+            fileSecBadge.className = "sec-badge-pill locked";
+            const algoName = detectedEncryptionInfo && detectedEncryptionInfo.algorithm ? detectedEncryptionInfo.algorithm : 'AES-256';
+            fileSecBadge.textContent = `Locked (${algoName})`;
+
+            detectionTitle.textContent = "Password-Protected PDF Detected";
+            detectionDesc.textContent = `This document is encrypted with ${algoName} (Revision ${detectedEncryptionInfo.revision || 6}). Switched to Unlock mode.`;
+            detectionBanner.style.display = "flex";
+
+            switchMode('unlock');
+            UIUtils.showToast(`Detected encrypted PDF (${algoName}). Switched to Unlock mode.`, "info");
+          } else {
+            fileSecBadge.className = "sec-badge-pill";
+            fileSecBadge.textContent = "Plain PDF (Unprotected)";
+            detectionBanner.style.display = "none";
+
+            switchMode('protect');
+            UIUtils.showToast("Loaded " + selectedFile.name + " into browser RAM", "info");
+          }
+
+        } catch (err) {
+          console.error("Error inspecting PDF:", err);
+          isFileEncrypted = false;
+          switchMode('protect');
         }
-        const pdfDoc = await PDFLib.PDFDocument.load(buffer, { ignoreEncryption: false });
-        const pages = pdfDoc.getPages();
+      });
 
-        UIUtils.setWorkflowStep(2, 60, "Configuring security metadata & stamps...");
+      // Clear File
+      clearBtn.addEventListener("click", () => {
+        selectedFile = null;
+        rawFileBuffer = null;
+        resultBlob = null;
+        isFileEncrypted = false;
+        dropZone.style.display = "block";
+        fileQueue.style.display = "none";
+        protectPanel.style.display = "none";
+        unlockPanel.style.display = "none";
+        detectionBanner.style.display = "none";
+        resultCard.style.display = "none";
+        workflowProgress.style.display = "none";
+        userPassword.value = "";
+        unlockPassword.value = "";
+        pwdStrengthFill.style.width = "0%";
+        pwdStrengthLabel.textContent = "Enter a password";
+      });
 
-        // 1. Stamp security header if selected
-        const stampChoice = securityStamp.value;
-        if (stampChoice !== 'none') {
-          const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-          let stampText = "PROTECTED & CONFIDENTIAL - AUTHORIZED ACCESS ONLY";
-          if (stampChoice === 'encrypted') stampText = "ENCRYPTED DOCUMENT - DO NOT COPY OR REDISTRIBUTE";
-          if (stampChoice === 'legal') stampText = "PRIVILEGED & CONFIDENTIAL - LEGAL DRAFT";
+      // 1. EXECUTE ENCRYPTION (PROTECT ACTION)
+      btnProtectAction.addEventListener("click", async function() {
+        if (!selectedFile || !rawFileBuffer) return;
 
-          pages.forEach(page => {
-            const { width, height } = page.getSize();
-            page.drawText(stampText, {
-              x: 30,
-              y: height - 25,
-              size: 8,
-              font: font,
-              color: PDFLib.rgb(0.85, 0.1, 0.1)
-            });
-          });
+        const pwd = userPassword.value;
+        if (!pwd) {
+          UIUtils.showToast("Please enter a document password to protect this file.", "error");
+          userPassword.focus();
+          return;
         }
 
-        // 2. Set document title/author metadata
-        pdfDoc.setSubject("Protected via LocalDoc Zero-Upload Security Suite");
-        pdfDoc.setProducer("LocalDoc Client-Side PDF Engine (localdoc.org)");
+        try {
+          btnProtectAction.disabled = true;
+          UIUtils.setWorkflowStep(1, 20, "Loading document and embedding visual seals in RAM...");
 
-        UIUtils.setWorkflowStep(3, 90, "Hardening PDF dictionary streams...");
+          // Step 1: Optional visual security watermark and metadata sanitization with pdf-lib
+          let workingBytes = new Uint8Array(rawFileBuffer);
 
-        const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-        resultBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+          const stampChoice = securityStamp.value;
+          const shouldSanitize = permSanitize.checked;
 
-        const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
-        resultFilename = `${baseName}-protected.pdf`;
+          if (stampChoice !== 'none' || shouldSanitize) {
+            try {
+              const pdfDoc = await PDFLib.PDFDocument.load(workingBytes, { ignoreEncryption: true });
+              
+              // Stamp visual security header banner if requested
+              if (stampChoice !== 'none') {
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+                let stampText = "PROTECTED & CONFIDENTIAL - AUTHORIZED ACCESS ONLY";
+                if (stampChoice === 'privileged') stampText = "PRIVILEGED & CONFIDENTIAL - ATTORNEY-CLIENT COMMUNICATION";
+                if (stampChoice === 'encrypted') stampText = "ENCRYPTED DOCUMENT - DO NOT COPY OR REDISTRIBUTE";
+                if (stampChoice === 'legal') stampText = "PRIVILEGED & CONFIDENTIAL - LEGAL DRAFT";
 
-        UIUtils.setWorkflowStep(3, 100, "Protection complete!");
-        resultCard.style.display = "block";
-        UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
-        UIUtils.showToast("Document protected successfully!", "success");
+                const pages = pdfDoc.getPages();
+                pages.forEach(page => {
+                  const { width, height } = page.getSize();
+                  // Top banner
+                  page.drawText(stampText, {
+                    x: 30,
+                    y: height - 25,
+                    size: 8,
+                    font: font,
+                    color: PDFLib.rgb(0.85, 0.1, 0.1)
+                  });
+                });
+              }
 
-      } catch (err) {
-        console.error(err);
-        UIUtils.showToast(err.message || "Failed to protect document", "error");
-      } finally {
-        processBtn.disabled = false;
+              // Metadata sanitization
+              if (shouldSanitize) {
+                pdfDoc.setTitle("");
+                pdfDoc.setAuthor("");
+                pdfDoc.setSubject("Protected via LocalDoc Zero-Upload Security Suite");
+                pdfDoc.setKeywords([]);
+                pdfDoc.setProducer("LocalDoc Client-Side PDF Security Suite (localdoc.org)");
+                pdfDoc.setCreator("LocalDoc Zero-Upload Engine");
+              }
+
+              workingBytes = await pdfDoc.save({ useObjectStreams: true });
+            } catch (err) {
+              console.warn("pdf-lib pre-processing note:", err);
+            }
+          }
+
+          UIUtils.setWorkflowStep(2, 60, "Generating cryptographic keys & AES-256 streams...");
+
+          // Step 2: Real cryptographic encryption via PDFEncrypt.encryptPDF
+          if (!window.PDFEncrypt || typeof window.PDFEncrypt.encryptPDF !== 'function') {
+            throw new Error("Cryptographic encryption module not ready. Please refresh the page.");
+          }
+
+          const ownerPwd = ownerPassword.value || pwd;
+          const algo = encryptionAlgo.value || 'AES-256';
+
+          const encryptOptions = {
+            ownerPassword: ownerPwd,
+            algorithm: algo,
+            allowPrinting: permPrint.checked,
+            allowCopying: permCopy.checked,
+            allowModifying: permModify.checked,
+            allowAnnotating: permAnnotate.checked,
+            allowFillingForms: permForms.checked,
+            allowExtraction: permCopy.checked,
+            allowHighQualityPrint: permPrint.checked
+          };
+
+          const encryptedBytes = await window.PDFEncrypt.encryptPDF(workingBytes, pwd, encryptOptions);
+
+          UIUtils.setWorkflowStep(3, 95, "Compiling protected binary stream...");
+
+          resultBlob = new Blob([encryptedBytes], { type: 'application/pdf' });
+          const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+          resultFilename = `${baseName}-protected.pdf`;
+
+          UIUtils.setWorkflowStep(3, 100, "Protection complete!");
+
+          // Render Success
+          resultBadge.className = "sec-badge-pill";
+          resultBadge.textContent = `${algo} Protected`;
+          resultTitle.textContent = "PDF Protected Successfully!";
+          resultMeta.textContent = `Encrypted with ${algo}. Password lock and restriction permissions successfully welded into document binary.`;
+          resultSizeMeta.textContent = UIUtils.formatBytes(resultBlob.size);
+          downloadBtnText.textContent = "Download Protected PDF";
+
+          resultCard.style.display = "block";
+          UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          UIUtils.showToast("Document encrypted & protected successfully!", "success");
+
+        } catch (err) {
+          console.error("Encryption error:", err);
+          UIUtils.showToast(err.message || "Failed to protect document.", "error");
+        } finally {
+          btnProtectAction.disabled = false;
+        }
+      });
+
+      // 2. EXECUTE DECRYPTION (UNLOCK ACTION)
+      async function executeUnlock() {
+        if (!selectedFile || !rawFileBuffer) return;
+
+        const pwd = unlockPassword.value;
+        if (!pwd) {
+          UIUtils.showToast("Please enter the document password to unlock.", "error");
+          unlockPassword.focus();
+          return;
+        }
+
+        try {
+          btnUnlockAction.disabled = true;
+          unlockErrorBox.style.display = "none";
+          UIUtils.setWorkflowStep(1, 30, "Reading encryption dictionary...");
+
+          if (!window.PDFDecrypt || typeof window.PDFDecrypt.decryptPDF !== 'function') {
+            throw new Error("Cryptographic decryption module not ready. Please refresh the page.");
+          }
+
+          UIUtils.setWorkflowStep(2, 70, "Validating password & decrypting object streams...");
+
+          const rawBytes = new Uint8Array(rawFileBuffer);
+          const decryptedBytes = await window.PDFDecrypt.decryptPDF(rawBytes, pwd);
+
+          UIUtils.setWorkflowStep(3, 100, "Decryption complete!");
+
+          resultBlob = new Blob([decryptedBytes], { type: 'application/pdf' });
+          const baseName = selectedFile.name.replace(/\.[^/.]+$/, "");
+          resultFilename = `${baseName}-unlocked.pdf`;
+
+          // Render Success
+          resultBadge.className = "sec-badge-pill unlocked";
+          resultBadge.textContent = "Unlocked & Unrestricted";
+          resultTitle.textContent = "PDF Decrypted Successfully!";
+          resultMeta.textContent = "All password locks, viewing restrictions, and permission bitmasks have been permanently removed.";
+          resultSizeMeta.textContent = UIUtils.formatBytes(resultBlob.size);
+          downloadBtnText.textContent = "Download Unlocked PDF";
+
+          resultCard.style.display = "block";
+          UIUtils.renderQuickActions(resultCard, resultBlob, resultFilename);
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          UIUtils.showToast("Document unlocked successfully!", "success");
+
+        } catch (err) {
+          console.error("Decryption error:", err);
+          unlockErrorBox.style.display = "block";
+          unlockErrorBox.textContent = err.message && err.message.includes("password") 
+            ? "Incorrect password. The provided password does not match the user or owner password."
+            : (err.message || "Failed to decrypt document.");
+          UIUtils.showToast("Incorrect password. Verification failed.", "error");
+          unlockPassword.focus();
+          unlockPassword.select();
+        } finally {
+          btnUnlockAction.disabled = false;
+        }
       }
-    });
 
-    downloadBtn.addEventListener("click", () => {
-      if (resultBlob) {
-        UIUtils.downloadBlob(resultBlob, resultFilename);
-      }
-    });
+      btnUnlockAction.addEventListener("click", executeUnlock);
+      unlockPassword.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          executeUnlock();
+        }
+      });
+
+      // Download button
+      downloadBtn.addEventListener("click", () => {
+        if (resultBlob) {
+          UIUtils.downloadBlob(resultBlob, resultFilename);
+        }
+      });
+
+    })();
   </script>
-
-  <!-- Global Search Modal -->
-  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
-    <div class="search-modal">
-      <div class="search-modal-input-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search tools &amp; master guides... (ESC to exit)" data-i18n-placeholder="search_modal_placeholder" data-i18n-aria="search_modal_aria" aria-label="Search all tools and guides">
-        <span class="kbd-shortcut">ESC</span>
-      </div>
-      <ul id="global-search-results" class="search-results-list"></ul>
-    </div>
-  </div>
-
-  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
-  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
-    <div class="cookie-consent-inner">
-      <div class="cookie-consent-content">
-        <div class="cookie-consent-header">
-          <span class="cookie-icon" aria-hidden="true">&#127850;</span>
-          <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
-        </div>
-        <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
-          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
-        </p>
-      </div>
-      <div class="cookie-consent-actions">
-        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
-          <span data-i18n="cookie_btn_essential">Essential Only</span>
-        </button>
-        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
-          <span data-i18n="cookie_btn_accept">Accept All</span>
-        </button>
-      </div>
-    </div>
-  </aside>
 </body>
 </html>
-
-
-
-
-

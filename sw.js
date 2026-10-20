@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v72-organize-edit-workspace';
+const CACHE_NAME = 'localdoc-v73-security-suite';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -25,6 +25,8 @@ const ASSETS_TO_CACHE = [
   '/js/core/motion.js',
   '/js/lib/lottie.min.js',
   '/js/lib/pdf-lib.min.js',
+  '/js/lib/pdf-encrypt.umd.js',
+  '/js/lib/pdf-decrypt.min.js',
   '/js/lib/heic2any.min.js',
   '/js/lib/pdf.min.js',
   '/js/lib/pdf.worker.min.js',
