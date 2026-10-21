@@ -19,9 +19,9 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Sign PDF Online Free — Add Signature to PDF Without Upload | LocalDoc</title>
-  <meta name="description" content="Sign PDF documents online for free. Draw, type, or upload your signature, drag it anywhere on the page, add certified date stamps, and download in seconds with 100% private in-browser RAM.">
-  <meta name="keywords" content="sign pdf, sign pdf online free, add signature to pdf, free pdf signer, electronic signature pdf, e-sign pdf free, draw signature on pdf, sign document online without docusign, add date stamp to pdf, client side pdf signer">
+  <title>Sign PDF Online Free — Add Electronic Signature, Signer Name, Date Stamps &amp; Company Seal | LocalDoc</title>
+  <meta name="description" content="Sign PDF documents online for free. Draw, type, or upload electronic signatures, add signer name &amp; title, certified live date/time stamps, and generate custom company rubber seals in 100% private in-browser RAM.">
+  <meta name="keywords" content="sign pdf, sign pdf online free, add signature to pdf, electronic signature pdf, e-sign pdf free, draw signature on pdf, signer name pdf, company stamp pdf, corporate seal generator, add date stamp to pdf, client side pdf signer">
   <link rel="canonical" href="https://localdoc.org/pages/sign-pdf.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -1402,6 +1402,208 @@
     </div>
   </footer>
 
+  <!-- Set Your Signature Details Modal (iLovePDF Style Dialog) -->
+  <div id="sig-details-modal" class="sig-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-sig-title">
+    <div class="sig-modal-dialog">
+      <div class="sig-modal-header">
+        <h3 id="modal-sig-title" style="margin:0; font-size:1.1rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+          <span>&#9998; Set your signature details</span>
+        </h3>
+        <button type="button" id="modal-close-btn" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer; padding:0 4px; line-height:1;" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="sig-modal-body">
+        <!-- Name & Initials Top Row -->
+        <div style="display:grid; grid-template-columns:1fr 140px; gap:12px;">
+          <div>
+            <label for="modal-full-name-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Full name:</label>
+            <input type="text" id="modal-full-name-input" value="Amaad Mazari" placeholder="Your name (e.g. Amaad Mazari)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+          </div>
+          <div>
+            <label for="modal-initials-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Initials:</label>
+            <input type="text" id="modal-initials-input" value="AM" placeholder="Initials (e.g. AM)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+          </div>
+        </div>
+
+        <!-- Detail Tabs (Signature | Initials | Company Stamp) -->
+        <div style="display:flex; gap:8px; border-bottom:1px solid var(--line); padding-bottom:8px;">
+          <button type="button" class="sig-tab-btn active" id="modal-tab-sig">&#9997; Signature</button>
+          <button type="button" class="sig-tab-btn" id="modal-tab-initials">&#128394; Initials</button>
+          <button type="button" class="sig-tab-btn" id="modal-tab-stamp">&#127970; Company Stamp</button>
+        </div>
+
+        <!-- Signature Panel -->
+        <div id="modal-panel-sig">
+          <!-- Creation Sub-modes (Draw | Type | Upload) -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="sig-tab-btn active" id="sig-mode-draw-btn">Draw</button>
+              <button type="button" class="sig-tab-btn" id="sig-mode-type-btn">Type</button>
+              <button type="button" class="sig-tab-btn" id="sig-mode-upload-btn">Upload</button>
+            </div>
+            <button type="button" class="btn btn-outline" id="clear-sig-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
+          </div>
+
+          <!-- Draw Mode -->
+          <div id="modal-sig-draw-pane">
+            <div class="sig-canvas-wrap">
+              <canvas id="modal-sig-canvas" class="sig-canvas" width="540" height="155"></canvas>
+            </div>
+
+            <!-- Pen Stroke Thickness & Ink Palette -->
+            <div style="background:var(--bg-body); padding:8px 12px; border-radius:8px; border:1px solid var(--line); margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Pen Stroke Thickness:</span>
+                <span id="modal-pen-width-display" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:var(--primary);">2.5 px</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <input type="range" id="modal-pen-width-slider" min="1" max="8" value="2.5" step="0.5" style="flex:1; cursor:pointer;" aria-label="Pen stroke thickness">
+                <div style="width:26px; height:20px; display:flex; align-items:center; justify-content:center;">
+                  <div id="modal-pen-preview-stroke" style="width:22px; height:2.5px; background:#000000; border-radius:2px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Ink Color:</span>
+                <button type="button" class="color-dot active" data-color="#000000" style="background:#000000;" title="Black"></button>
+                <button type="button" class="color-dot" data-color="#0F172A" style="background:#0F172A;" title="Dark Slate"></button>
+                <button type="button" class="color-dot" data-color="#1E3A8A" style="background:#1E3A8A;" title="Classic Navy"></button>
+                <button type="button" class="color-dot" data-color="#2563EB" style="background:#2563EB;" title="Royal Blue"></button>
+                <button type="button" class="color-dot" data-color="#DC2626" style="background:#DC2626;" title="Contract Red"></button>
+                <button type="button" class="color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
+                <label style="position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; border:2px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Choose Custom Color">
+                  <input type="color" id="modal-custom-color-picker" value="#000000" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
+                  <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red); font-size:9px;"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Type Mode -->
+          <div id="modal-sig-type-pane" style="display:none;">
+            <div style="border:1px dashed var(--line); border-radius:8px; padding:18px; text-align:center; background:#FFF; min-height:85px; display:flex; align-items:center; justify-content:center;">
+              <span id="modal-typed-sig-preview" style="font-family:'Brush Script MT', cursive, sans-serif; font-size:2.2rem; color:#000000; font-style:italic;">Amaad Mazari</span>
+            </div>
+          </div>
+
+          <!-- Upload Mode -->
+          <div id="modal-sig-upload-pane" style="display:none;">
+            <div class="sig-upload-drop" id="modal-sig-upload-drop" style="border:2px dashed var(--line); border-radius:8px; padding:18px 14px; text-align:center; background:var(--bg-body); cursor:pointer; margin-bottom:10px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Signature Image</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Click or drop PNG, JPG, or WEBP photo of signature</div>
+              <input type="file" id="modal-sig-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            </div>
+            <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block;">Transparent Paper Background</span>
+                <span style="font-size:0.72rem; color:var(--text-muted);">Strips white paper background, leaving clean ink</span>
+              </div>
+              <input type="checkbox" id="modal-remove-bg-toggle" checked style="width:18px; height:18px; cursor:pointer; accent-color:var(--primary);">
+            </div>
+            <div id="modal-uploaded-sig-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:8px; text-align:center; background:#FFF; min-height:60px; max-height:100px; display:flex; align-items:center; justify-content:center;">
+              <img id="modal-uploaded-sig-img" src="" alt="Uploaded Signature" style="max-height:80px; max-width:100%; object-fit:contain;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Initials Panel -->
+        <div id="modal-panel-initials" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Draw or preview your initials:</span>
+            <button type="button" class="btn btn-outline" id="clear-initials-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
+          </div>
+          <div class="sig-canvas-wrap">
+            <canvas id="modal-initials-canvas" class="sig-canvas" width="400" height="140"></canvas>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">
+            &#128161; Your initials will be stamped on page footers when using the 1-click batch button.
+          </div>
+        </div>
+
+        <!-- Company Stamp Panel (Maker Studio + Image Upload) -->
+        <div id="modal-panel-stamp" style="display:none;">
+          <div style="display:flex; gap:6px; margin-bottom:12px;">
+            <button type="button" class="sig-tab-btn active" id="stamp-subtab-maker">🏢 Corporate Rubber Stamp Maker</button>
+            <button type="button" class="sig-tab-btn" id="stamp-subtab-upload">📁 Upload Stamp Image</button>
+          </div>
+
+          <!-- Sub-pane 1: Custom Corporate Rubber Stamp Maker -->
+          <div id="stamp-maker-pane">
+            <div style="display:grid; grid-template-columns:1fr 200px; gap:14px; align-items:start;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div>
+                  <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">Stamp Style:</label>
+                  <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn btn-outline stamp-style-btn active" data-style="circular" id="stamp-btn-circular" style="flex:1; padding:5px 8px; font-size:0.76rem; font-weight:700;">⭕ Circular Seal</button>
+                    <button type="button" class="btn btn-outline stamp-style-btn" data-style="rectangular" id="stamp-btn-rectangular" style="flex:1; padding:5px 8px; font-size:0.76rem; font-weight:700;">▬ Rectangular Audit</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="stamp-company-input" style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">Company / Legal Entity Name:</label>
+                  <input type="text" id="stamp-company-input" value="LOCALDOC SECURITY SYSTEMS INC." placeholder="Company name" style="width:100%; padding:6px 10px; font-size:0.82rem; border:1px solid var(--line); border-radius:6px; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <div>
+                    <label for="stamp-reg-input" style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">Registration / Tax ID:</label>
+                    <input type="text" id="stamp-reg-input" value="REG: 2026-984210-C" placeholder="Reg ID" style="width:100%; padding:6px 10px; font-size:0.82rem; border:1px solid var(--line); border-radius:6px; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+                  </div>
+                  <div>
+                    <label for="stamp-dept-input" style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">Department / Status:</label>
+                    <input type="text" id="stamp-dept-input" value="OFFICIAL CORPORATE SEAL" placeholder="Status" style="width:100%; padding:6px 10px; font-size:0.82rem; border:1px solid var(--line); border-radius:6px; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
+                  </div>
+                </div>
+
+                <div>
+                  <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:3px;">Official Ink Color:</label>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <button type="button" class="stamp-color-dot active" data-color="#1E3A8A" style="width:20px; height:20px; border-radius:50%; background:#1E3A8A; border:2px solid #0F172A; cursor:pointer;" title="Classic Navy Blue"></button>
+                    <button type="button" class="stamp-color-dot" data-color="#DC2626" style="width:20px; height:20px; border-radius:50%; background:#DC2626; border:2px solid transparent; cursor:pointer;" title="Corporate Red"></button>
+                    <button type="button" class="stamp-color-dot" data-color="#059669" style="width:20px; height:20px; border-radius:50%; background:#059669; border:2px solid transparent; cursor:pointer;" title="Emerald Green"></button>
+                    <button type="button" class="stamp-color-dot" data-color="#0F172A" style="width:20px; height:20px; border-radius:50%; background:#0F172A; border:2px solid transparent; cursor:pointer;" title="Slate Black"></button>
+                    <button type="button" class="stamp-color-dot" data-color="#7C3AED" style="width:20px; height:20px; border-radius:50%; background:#7C3AED; border:2px solid transparent; cursor:pointer;" title="Royal Purple"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Stamp Preview Canvas -->
+              <div style="text-align:center;">
+                <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Live Stamp Preview:</label>
+                <div style="background:#FFF; border:1.5px dashed var(--line); border-radius:8px; padding:6px; display:inline-flex; align-items:center; justify-content:center; width:180px; height:180px; box-sizing:border-box;">
+                  <canvas id="stamp-preview-canvas" width="240" height="240" style="width:100%; height:100%;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-pane 2: Upload Custom Stamp Image -->
+          <div id="stamp-upload-pane" style="display:none;">
+            <div style="border:2px dashed var(--line); border-radius:8px; padding:20px; text-align:center; background:var(--bg-body); cursor:pointer;" id="modal-stamp-upload-drop">
+              <span style="font-size:2rem; display:block; margin-bottom:6px;">&#127970;</span>
+              <div style="font-size:0.86rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Company Stamp / Seal Image</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">PNG with transparent background recommended</div>
+              <input type="file" id="modal-stamp-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+            </div>
+            <div id="modal-stamp-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:10px; text-align:center; background:#FFF; margin-top:10px; align-items:center; justify-content:center;">
+              <img id="modal-stamp-img" src="" alt="Company Stamp" style="max-height:90px; max-width:100%; object-fit:contain;">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sig-modal-footer">
+        <button type="button" class="btn btn-outline" id="modal-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-apply-btn">Apply &amp; Save Details</button>
+      </div>
+    </div>
+  </div>
+
+
   <script src="../js/core/i18n.js?v=20261018-v64"></script>
   <script src="../js/core/ui-utils.js?v=20261018-v64"></script>
   <script src="../js/core/pdf-validator.js?v=20261018-v64"></script>
@@ -1631,35 +1833,175 @@
       return generateCursiveTextDataUrl(signerInitials, 260, 140, 52);
     }
 
+    // Company Rubber Stamp Maker State
+    let stampStyle = 'circular'; // 'circular' | 'rectangular'
+    let stampInkColor = '#1E3A8A'; // Navy Blue default
+    let stampCompanyName = 'LOCALDOC SECURITY SYSTEMS INC.';
+    let stampRegId = 'REG: 2026-984210-C';
+    let stampDept = 'OFFICIAL CORPORATE SEAL';
+    let stampSourceMode = 'maker'; // 'maker' | 'upload'
+
+    function renderCompanyStampOnCanvas(canvas) {
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      if (stampStyle === 'circular') {
+        const cx = w / 2;
+        const cy = h / 2;
+        const radius = Math.min(cx, cy) - 10;
+
+        ctx.save();
+        ctx.strokeStyle = stampInkColor;
+        ctx.fillStyle = stampInkColor;
+
+        // Outer heavy ring
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner fine ring
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius - 12, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Curved text along top arc (Company Name)
+        const compText = (stampCompanyName || 'LOCALDOC CORPORATION').toUpperCase();
+        drawArcText(ctx, compText, cx, cy, radius - 6, Math.PI * 0.82, Math.PI * 0.18, true);
+
+        // Curved text along bottom arc (Registration / Jurisdiction)
+        const bottomText = (stampRegId || 'REG: 2026-984210-C').toUpperCase();
+        drawArcText(ctx, bottomText, cx, cy, radius - 6, Math.PI * 1.2, Math.PI * 1.8, false);
+
+        // Center 5-Point Star Emblem
+        drawStampStar(ctx, cx, cy - 18, 5, 12, 5, stampInkColor);
+
+        // Center Status / Dept
+        ctx.font = 'bold 13px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(stampDept || 'VERIFIED & AUDITED', cx, cy + 6);
+
+        // Center Date Seal
+        ctx.font = 'bold 11px JetBrains Mono, monospace';
+        ctx.fillText(todayDateStr, cx, cy + 24);
+
+        ctx.restore();
+      } else {
+        // Rectangular Corporate Audit Stamp
+        ctx.save();
+        ctx.strokeStyle = stampInkColor;
+        ctx.fillStyle = stampInkColor;
+
+        // Outer border
+        ctx.lineWidth = 4;
+        ctx.strokeRect(8, 14, w - 16, h - 28);
+
+        // Inner border
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(14, 20, w - 28, h - 40);
+
+        // Header Company Name
+        ctx.font = 'bold 13px Plus Jakarta Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText((stampCompanyName || 'LOCALDOC SYSTEMS').toUpperCase(), w / 2, 28);
+
+        // Divider
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(22, 48);
+        ctx.lineTo(w - 22, 48);
+        ctx.stroke();
+
+        // Main Status
+        ctx.font = 'bold 15px Plus Jakarta Sans, sans-serif';
+        ctx.fillText((stampDept || 'VERIFIED & AUDITED').toUpperCase(), w / 2, 58);
+
+        // Reg ID
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillText(stampRegId || 'REG: 2026-984210-C', w / 2, 82);
+
+        // Date
+        ctx.font = 'bold 11px JetBrains Mono, monospace';
+        ctx.fillText('DATE: ' + todayDateStr, w / 2, 102);
+
+        // Signer prompt
+        ctx.font = 'italic 9px Plus Jakarta Sans, sans-serif';
+        ctx.fillText('AUTHORIZED LEGAL SIGNATURE', w / 2, 124);
+
+        ctx.restore();
+      }
+    }
+
+    function drawArcText(ctx, text, cx, cy, radius, startAngle, endAngle, isTop) {
+      ctx.save();
+      ctx.font = 'bold 11px Plus Jakarta Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const len = text.length;
+      if (len === 0) { ctx.restore(); return; }
+
+      let sweep = endAngle - startAngle;
+      if (isTop && sweep < 0) sweep += Math.PI * 2;
+      if (!isTop && sweep > 0) sweep -= Math.PI * 2;
+
+      const angleStep = sweep / Math.max(1, len);
+      let curAngle = startAngle + angleStep / 2;
+
+      for (let i = 0; i < len; i++) {
+        const x = cx + radius * Math.cos(curAngle);
+        const y = cy + radius * Math.sin(curAngle);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(curAngle + (isTop ? Math.PI / 2 : -Math.PI / 2));
+        ctx.fillText(text[i], 0, 0);
+        ctx.restore();
+        curAngle += angleStep;
+      }
+      ctx.restore();
+    }
+
+    function drawStampStar(ctx, cx, cy, spikes, outerRadius, innerRadius, color) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
     function getStampDataUrl() {
-      if (uploadedStampDataUrl) return uploadedStampDataUrl;
+      if (stampSourceMode === 'upload' && uploadedStampDataUrl) {
+        return uploadedStampDataUrl;
+      }
       const sCanvas = document.createElement('canvas');
-      sCanvas.width = 240;
-      sCanvas.height = 240;
-      const sCtx = sCanvas.getContext('2d');
-      sCtx.clearRect(0, 0, 240, 240);
-
-      sCtx.strokeStyle = '#DC2626';
-      sCtx.lineWidth = 4;
-      sCtx.beginPath();
-      sCtx.arc(120, 120, 110, 0, Math.PI * 2);
-      sCtx.stroke();
-
-      sCtx.lineWidth = 1.5;
-      sCtx.beginPath();
-      sCtx.arc(120, 120, 98, 0, Math.PI * 2);
-      sCtx.stroke();
-
-      sCtx.fillStyle = '#DC2626';
-      sCtx.font = 'bold 15px sans-serif';
-      sCtx.textAlign = 'center';
-      sCtx.textBaseline = 'middle';
-      sCtx.fillText('LOCALDOC', 120, 95);
-      sCtx.font = 'bold 22px sans-serif';
-      sCtx.fillText('VERIFIED', 120, 122);
-      sCtx.font = 'bold 12px monospace';
-      sCtx.fillText(todayDateStr, 120, 146);
-
+      sCanvas.width = 300;
+      sCanvas.height = 300;
+      renderCompanyStampOnCanvas(sCanvas);
       return sCanvas.toDataURL('image/png');
     }
 
@@ -1937,8 +2279,95 @@
         modalPanelStamp.style.display = 'block';
         modalPanelSig.style.display = 'none';
         modalPanelInitials.style.display = 'none';
+        const pCanvas = document.getElementById('stamp-preview-canvas');
+        if (pCanvas) renderCompanyStampOnCanvas(pCanvas);
       });
     }
+
+    // Rubber Stamp Sub-tabs & Inputs
+    const subtabMaker = document.getElementById('stamp-subtab-maker');
+    const subtabUpload = document.getElementById('stamp-subtab-upload');
+    const makerPane = document.getElementById('stamp-maker-pane');
+    const uploadPane = document.getElementById('stamp-upload-pane');
+    const stampBtnCircular = document.getElementById('stamp-btn-circular');
+    const stampBtnRectangular = document.getElementById('stamp-btn-rectangular');
+    const stampCompanyInput = document.getElementById('stamp-company-input');
+    const stampRegInput = document.getElementById('stamp-reg-input');
+    const stampDeptInput = document.getElementById('stamp-dept-input');
+    const stampPreviewCanvas = document.getElementById('stamp-preview-canvas');
+
+    function updateStampPreview() {
+      if (stampPreviewCanvas) renderCompanyStampOnCanvas(stampPreviewCanvas);
+    }
+
+    if (subtabMaker) {
+      subtabMaker.addEventListener('click', () => {
+        stampSourceMode = 'maker';
+        subtabMaker.classList.add('active');
+        if (subtabUpload) subtabUpload.classList.remove('active');
+        if (makerPane) makerPane.style.display = 'block';
+        if (uploadPane) uploadPane.style.display = 'none';
+        updateStampPreview();
+      });
+    }
+    if (subtabUpload) {
+      subtabUpload.addEventListener('click', () => {
+        stampSourceMode = 'upload';
+        subtabUpload.classList.add('active');
+        if (subtabMaker) subtabMaker.classList.remove('active');
+        if (uploadPane) uploadPane.style.display = 'block';
+        if (makerPane) makerPane.style.display = 'none';
+      });
+    }
+
+    if (stampBtnCircular) {
+      stampBtnCircular.addEventListener('click', () => {
+        stampStyle = 'circular';
+        stampBtnCircular.classList.add('active');
+        if (stampBtnRectangular) stampBtnRectangular.classList.remove('active');
+        updateStampPreview();
+      });
+    }
+    if (stampBtnRectangular) {
+      stampBtnRectangular.addEventListener('click', () => {
+        stampStyle = 'rectangular';
+        stampBtnRectangular.classList.add('active');
+        if (stampBtnCircular) stampBtnCircular.classList.remove('active');
+        updateStampPreview();
+      });
+    }
+
+    if (stampCompanyInput) {
+      stampCompanyInput.addEventListener('input', () => {
+        stampCompanyName = stampCompanyInput.value.trim() || 'LOCALDOC CORP';
+        updateStampPreview();
+      });
+    }
+    if (stampRegInput) {
+      stampRegInput.addEventListener('input', () => {
+        stampRegId = stampRegInput.value.trim() || 'REG: 2026-001';
+        updateStampPreview();
+      });
+    }
+    if (stampDeptInput) {
+      stampDeptInput.addEventListener('input', () => {
+        stampDept = stampDeptInput.value.trim() || 'OFFICIAL SEAL';
+        updateStampPreview();
+      });
+    }
+
+    document.querySelectorAll('.stamp-color-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        document.querySelectorAll('.stamp-color-dot').forEach(d => {
+          d.classList.remove('active');
+          d.style.borderColor = 'transparent';
+        });
+        dot.classList.add('active');
+        dot.style.borderColor = '#0F172A';
+        stampInkColor = dot.getAttribute('data-color') || '#1E3A8A';
+        updateStampPreview();
+      });
+    });
 
     if (modalApplyBtn) {
       modalApplyBtn.addEventListener('click', () => {
@@ -3183,149 +3612,6 @@
   </script>
 
   
-  <!-- Set Your Signature Details Modal (iLovePDF Style Dialog) -->
-  <div id="sig-details-modal" class="sig-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-sig-title">
-    <div class="sig-modal-dialog">
-      <div class="sig-modal-header">
-        <h3 id="modal-sig-title" style="margin:0; font-size:1.1rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-          <span>&#9998; Set your signature details</span>
-        </h3>
-        <button type="button" id="modal-close-btn" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer; padding:0 4px; line-height:1;" aria-label="Close modal">&times;</button>
-      </div>
-
-      <div class="sig-modal-body">
-        <!-- Name & Initials Top Row -->
-        <div style="display:grid; grid-template-columns:1fr 140px; gap:12px;">
-          <div>
-            <label for="modal-full-name-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Full name:</label>
-            <input type="text" id="modal-full-name-input" value="Amaad Mazari" placeholder="Your name (e.g. Amaad Mazari)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
-          </div>
-          <div>
-            <label for="modal-initials-input" style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Initials:</label>
-            <input type="text" id="modal-initials-input" value="AM" placeholder="Initials (e.g. AM)" style="width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.9rem; background:var(--bg-body); color:var(--text-primary); box-sizing:border-box;">
-          </div>
-        </div>
-
-        <!-- Detail Tabs (Signature | Initials | Company Stamp) -->
-        <div style="display:flex; gap:8px; border-bottom:1px solid var(--line); padding-bottom:8px;">
-          <button type="button" class="sig-tab-btn active" id="modal-tab-sig">&#9997; Signature</button>
-          <button type="button" class="sig-tab-btn" id="modal-tab-initials">&#128394; Initials</button>
-          <button type="button" class="sig-tab-btn" id="modal-tab-stamp">&#127970; Company Stamp</button>
-        </div>
-
-        <!-- Signature Panel -->
-        <div id="modal-panel-sig">
-          <!-- Creation Sub-modes (Draw | Type | Upload) -->
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <div style="display:flex; gap:6px;">
-              <button type="button" class="sig-tab-btn active" id="sig-mode-draw-btn">Draw</button>
-              <button type="button" class="sig-tab-btn" id="sig-mode-type-btn">Type</button>
-              <button type="button" class="sig-tab-btn" id="sig-mode-upload-btn">Upload</button>
-            </div>
-            <button type="button" class="btn btn-outline" id="clear-sig-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
-          </div>
-
-          <!-- Draw Mode -->
-          <div id="modal-sig-draw-pane">
-            <div class="sig-canvas-wrap">
-              <canvas id="modal-sig-canvas" class="sig-canvas" width="540" height="155"></canvas>
-            </div>
-
-            <!-- Pen Stroke Thickness & Ink Palette -->
-            <div style="background:var(--bg-body); padding:8px 12px; border-radius:8px; border:1px solid var(--line); margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Pen Stroke Thickness:</span>
-                <span id="modal-pen-width-display" style="font-size:0.8rem; font-family:monospace; font-weight:700; color:var(--primary);">2.5 px</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <input type="range" id="modal-pen-width-slider" min="1" max="8" value="2.5" step="0.5" style="flex:1; cursor:pointer;" aria-label="Pen stroke thickness">
-                <div style="width:26px; height:20px; display:flex; align-items:center; justify-content:center;">
-                  <div id="modal-pen-preview-stroke" style="width:22px; height:2.5px; background:#000000; border-radius:2px;"></div>
-                </div>
-              </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Ink Color:</span>
-                <button type="button" class="color-dot active" data-color="#000000" style="background:#000000;" title="Black"></button>
-                <button type="button" class="color-dot" data-color="#0F172A" style="background:#0F172A;" title="Dark Slate"></button>
-                <button type="button" class="color-dot" data-color="#1E3A8A" style="background:#1E3A8A;" title="Classic Navy"></button>
-                <button type="button" class="color-dot" data-color="#2563EB" style="background:#2563EB;" title="Royal Blue"></button>
-                <button type="button" class="color-dot" data-color="#DC2626" style="background:#DC2626;" title="Contract Red"></button>
-                <button type="button" class="color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></button>
-                <label style="position:relative; width:22px; height:22px; border-radius:50%; overflow:hidden; border:2px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Choose Custom Color">
-                  <input type="color" id="modal-custom-color-picker" value="#000000" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
-                  <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red); font-size:9px;"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Type Mode -->
-          <div id="modal-sig-type-pane" style="display:none;">
-            <div style="border:1px dashed var(--line); border-radius:8px; padding:18px; text-align:center; background:#FFF; min-height:85px; display:flex; align-items:center; justify-content:center;">
-              <span id="modal-typed-sig-preview" style="font-family:'Brush Script MT', cursive, sans-serif; font-size:2.2rem; color:#000000; font-style:italic;">Amaad Mazari</span>
-            </div>
-          </div>
-
-          <!-- Upload Mode -->
-          <div id="modal-sig-upload-pane" style="display:none;">
-            <div class="sig-upload-drop" id="modal-sig-upload-drop" style="border:2px dashed var(--line); border-radius:8px; padding:18px 14px; text-align:center; background:var(--bg-body); cursor:pointer; margin-bottom:10px;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="margin-bottom:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              <div style="font-size:0.84rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Signature Image</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Click or drop PNG, JPG, or WEBP photo of signature</div>
-              <input type="file" id="modal-sig-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
-            </div>
-            <div style="background:var(--bg-body); padding:8px 12px; border-radius:6px; border:1px solid var(--line); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:block;">Transparent Paper Background</span>
-                <span style="font-size:0.72rem; color:var(--text-muted);">Strips white paper background, leaving clean ink</span>
-              </div>
-              <input type="checkbox" id="modal-remove-bg-toggle" checked style="width:18px; height:18px; cursor:pointer; accent-color:var(--primary);">
-            </div>
-            <div id="modal-uploaded-sig-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:8px; text-align:center; background:#FFF; min-height:60px; max-height:100px; display:flex; align-items:center; justify-content:center;">
-              <img id="modal-uploaded-sig-img" src="" alt="Uploaded Signature" style="max-height:80px; max-width:100%; object-fit:contain;">
-            </div>
-          </div>
-        </div>
-
-        <!-- Initials Panel -->
-        <div id="modal-panel-initials" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">Draw or preview your initials:</span>
-            <button type="button" class="btn btn-outline" id="clear-initials-modal-btn" style="padding:3px 8px; font-size:0.75rem; color:var(--danger); border-color:var(--danger);">Clear Pad</button>
-          </div>
-          <div class="sig-canvas-wrap">
-            <canvas id="modal-initials-canvas" class="sig-canvas" width="400" height="140"></canvas>
-          </div>
-          <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">
-            &#128161; Your initials will be stamped on page footers when using the 1-click batch button.
-          </div>
-        </div>
-
-        <!-- Company Stamp Panel -->
-        <div id="modal-panel-stamp" style="display:none;">
-          <div style="border:2px dashed var(--line); border-radius:8px; padding:20px; text-align:center; background:var(--bg-body); cursor:pointer;" id="modal-stamp-upload-drop">
-            <span style="font-size:2rem; display:block; margin-bottom:6px;">&#127970;</span>
-            <div style="font-size:0.86rem; font-weight:700; color:var(--text-primary); margin-bottom:2px;">Upload Company Stamp / Seal Image</div>
-            <div style="font-size:0.75rem; color:var(--text-muted);">PNG with transparent background recommended</div>
-            <input type="file" id="modal-stamp-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
-          </div>
-          <div id="modal-stamp-preview" style="display:none; border:1px dashed var(--line); border-radius:6px; padding:10px; text-align:center; background:#FFF; margin-top:10px; align-items:center; justify-content:center;">
-            <img id="modal-stamp-img" src="" alt="Company Stamp" style="max-height:90px; max-width:100%; object-fit:contain;">
-          </div>
-        </div>
-
-      </div>
-
-      <div class="sig-modal-footer">
-        <button type="button" class="btn btn-outline" id="modal-cancel-btn">Cancel</button>
-        <button type="button" class="btn btn-primary" id="modal-apply-btn">Apply &amp; Save Details</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Global Search Modal -->
   <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
     <div class="search-modal">

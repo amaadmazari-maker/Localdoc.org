@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v74-consolidate-image-to-pdf';
+const CACHE_NAME = 'localdoc-v75-edit-sign-decoupled';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -78,6 +78,15 @@ const ASSETS_TO_CACHE = [
   '/pages/scientific-calculator.html',
   '/pages/pdf-to-powerpoint.html',
   '/pages/organize-pdf.html',
+  '/assets/icons/edit-pdf.svg',
+  '/assets/icons/sign-pdf.svg',
+  '/assets/images/guides/editpdf-step1-load-document-ram.webp',
+  '/assets/images/guides/editpdf-step2-select-text-whiteout.webp',
+  '/assets/images/guides/editpdf-step3-customize-typography.webp',
+  '/assets/images/guides/editpdf-step4-stamp-dates-highlights.webp',
+  '/assets/images/guides/editpdf-step5-export-download-pdf.webp',
+  '/blog/edit-pdf-text-guide.html',
+  '/blog/sign-pdf-guide.html',
   '/assets/icons/favicon.svg',
   '/assets/icons/brand-logo.svg',
   '/assets/icons/zero-upload-badge.svg',

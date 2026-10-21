@@ -629,6 +629,39 @@
       renderDrawStroke(ctx, currentDrawStroke);
     }
 
+    // Render crop boundary guideline if page is cropped
+    if (pageItem.crop && bgCanvas) {
+      ctx.save();
+      const dprVal = Math.min(2.0, window.devicePixelRatio || 1);
+      const scaleX = (bgCanvas.width / dprVal) / pageItem.width;
+      const scaleY = (bgCanvas.height / dprVal) / pageItem.height;
+      const cBoxX = (pageItem.crop.mLeft || 0) * scaleX;
+      const cBoxY = (pageItem.crop.mTop || 0) * scaleY;
+      const cBoxW = (pageItem.crop.width || pageItem.width) * scaleX;
+      const cBoxH = (pageItem.crop.height || pageItem.height) * scaleY;
+
+      // Darken outside cropped region
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+      ctx.fillRect(0, 0, bgCanvas.width / dprVal, cBoxY); // Top
+      ctx.fillRect(0, cBoxY + cBoxH, bgCanvas.width / dprVal, (bgCanvas.height / dprVal) - (cBoxY + cBoxH)); // Bottom
+      ctx.fillRect(0, cBoxY, cBoxX, cBoxH); // Left
+      ctx.fillRect(cBoxX + cBoxW, cBoxY, (bgCanvas.width / dprVal) - (cBoxX + cBoxW), cBoxH); // Right
+
+      // Dashed crop boundary
+      ctx.strokeStyle = '#0284C7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(cBoxX, cBoxY, cBoxW, cBoxH);
+
+      // Crop badge tag
+      ctx.fillStyle = '#0284C7';
+      ctx.fillRect(cBoxX, cBoxY, 110, 20);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 11px Plus Jakarta Sans, sans-serif';
+      ctx.fillText('✂️ Cropped Area', cBoxX + 6, cBoxY + 14);
+      ctx.restore();
+    }
+
     // Render selection bounding box & resize handles
     if (selectedObject && activeTool === 'select') {
       renderSelectionHandles(ctx, selectedObject);
@@ -668,6 +701,9 @@
 
         if (obj.isArrow) {
           drawArrowhead(ctx, obj.x1, obj.y1, obj.x2, obj.y2, obj.lineWidth || 3, obj.color || '#DC2626');
+        } else if (obj.isDoubleArrow) {
+          drawArrowhead(ctx, obj.x1, obj.y1, obj.x2, obj.y2, obj.lineWidth || 3, obj.color || '#DC2626');
+          drawArrowhead(ctx, obj.x2, obj.y2, obj.x1, obj.y1, obj.lineWidth || 3, obj.color || '#DC2626');
         }
         break;
 
@@ -724,13 +760,18 @@
     const h = obj.height;
 
     const stampConfigs = {
-      'APPROVED': { color: '#059669', bg: 'rgba(5, 150, 105, 0.08)', text: 'APPROVED' },
-      'CONFIDENTIAL': { color: '#DC2626', bg: 'rgba(220, 38, 38, 0.08)', text: 'CONFIDENTIAL' },
-      'DRAFT': { color: '#D97706', bg: 'rgba(217, 119, 6, 0.08)', text: 'DRAFT' },
-      'FINAL': { color: '#2563EB', bg: 'rgba(37, 99, 235, 0.08)', text: 'FINAL' },
-      'PAID': { color: '#16A34A', bg: 'rgba(22, 163, 74, 0.08)', text: 'PAID' },
-      'VOID': { color: '#64748B', bg: 'rgba(100, 116, 139, 0.08)', text: 'VOID' },
-      'SIGN_HERE': { color: '#EA580C', bg: '#FFEDD5', text: 'SIGN HERE ▶' }
+      'APPROVED': { color: '#059669', bg: 'rgba(5, 150, 105, 0.08)', text: '✔ APPROVED' },
+      'CONFIDENTIAL': { color: '#DC2626', bg: 'rgba(220, 38, 38, 0.08)', text: '🔒 CONFIDENTIAL' },
+      'DRAFT': { color: '#D97706', bg: 'rgba(217, 119, 6, 0.08)', text: '📝 DRAFT' },
+      'FINAL': { color: '#2563EB', bg: 'rgba(37, 99, 235, 0.08)', text: '⚖️ FINAL COPY' },
+      'PAID': { color: '#16A34A', bg: 'rgba(22, 163, 74, 0.08)', text: '💰 PAID' },
+      'URGENT': { color: '#E11D48', bg: 'rgba(225, 29, 72, 0.08)', text: '⚡ URGENT' },
+      'REJECTED': { color: '#991B1B', bg: 'rgba(153, 27, 27, 0.08)', text: '✖ REJECTED' },
+      'VOID': { color: '#64748B', bg: 'rgba(100, 116, 139, 0.08)', text: '⛔ VOID' },
+      'SIGN_HERE': { color: '#EA580C', bg: '#FFEDD5', text: '✍️ SIGN HERE ▶' },
+      'INITIAL_HERE': { color: '#7C3AED', bg: 'rgba(124, 58, 237, 0.08)', text: '🖋️ INITIAL HERE' },
+      'VERIFIED': { color: '#0D9488', bg: 'rgba(13, 148, 136, 0.08)', text: '🛡️ VERIFIED' },
+      'TOP_SECRET': { color: '#831843', bg: 'rgba(131, 24, 67, 0.08)', text: '🔐 TOP SECRET' }
     };
 
     const cfg = stampConfigs[obj.stickerType] || { color: obj.color || '#2563EB', bg: 'rgba(37, 99, 235, 0.08)', text: obj.text || 'STAMP' };
@@ -924,6 +965,119 @@
 
     const closeStickerModalBtn = document.getElementById('org-close-sticker-modal');
     if (closeStickerModalBtn) closeStickerModalBtn.addEventListener('click', closeStickerModal);
+
+    // Crop Modal Handlers
+    const cropOpenBtn = document.getElementById('org-crop-open-btn');
+    const dockCropBtn = document.getElementById('dock-crop-btn');
+    const cropModal = document.getElementById('org-crop-modal');
+    const closeCropModalBtn = document.getElementById('org-close-crop-modal');
+    const cancelCropModalBtn = document.getElementById('org-crop-cancel-btn');
+    const applyCropModalBtn = document.getElementById('org-crop-apply-btn');
+    const cropCurPageSpan = document.getElementById('crop-cur-page-num');
+    const customCropInputs = document.getElementById('org-custom-crop-inputs');
+
+    function openCropModal() {
+      if (cropCurPageSpan) cropCurPageSpan.textContent = activePageIndex + 1;
+      if (cropModal) cropModal.classList.add('open');
+    }
+    function closeCropModal() {
+      if (cropModal) cropModal.classList.remove('open');
+    }
+
+    if (cropOpenBtn) cropOpenBtn.addEventListener('click', openCropModal);
+    if (dockCropBtn) dockCropBtn.addEventListener('click', openCropModal);
+    if (closeCropModalBtn) closeCropModalBtn.addEventListener('click', closeCropModal);
+    if (cancelCropModalBtn) cancelCropModalBtn.addEventListener('click', closeCropModal);
+    if (cropModal) {
+      cropModal.addEventListener('click', (e) => {
+        if (e.target === cropModal) closeCropModal();
+      });
+    }
+
+    let selectedCropPreset = 'none';
+    document.querySelectorAll('.org-crop-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.org-crop-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCropPreset = btn.dataset.crop;
+        if (selectedCropPreset === 'custom') {
+          if (customCropInputs) customCropInputs.style.display = 'block';
+        } else {
+          if (customCropInputs) customCropInputs.style.display = 'none';
+        }
+      });
+    });
+
+    if (applyCropModalBtn) {
+      applyCropModalBtn.addEventListener('click', () => {
+        const targetRadio = document.querySelector('input[name="crop-target"]:checked');
+        const targetScope = targetRadio ? targetRadio.value : 'current';
+        
+        // 1 mm = 72 / 25.4 points ≈ 2.8346 pt
+        const mmToPt = 72 / 25.4;
+        let mLeft = 0, mRight = 0, mTop = 0, mBottom = 0;
+        let isReset = false;
+
+        if (selectedCropPreset === 'none') {
+          isReset = true;
+        } else if (selectedCropPreset === 'trim-5') {
+          mLeft = mRight = mTop = mBottom = 5 * mmToPt;
+        } else if (selectedCropPreset === 'trim-10') {
+          mLeft = mRight = mTop = mBottom = 10 * mmToPt;
+        } else if (selectedCropPreset === 'trim-20') {
+          mLeft = mRight = mTop = mBottom = 20 * mmToPt;
+        } else if (selectedCropPreset === 'custom') {
+          const lVal = parseFloat(document.getElementById('crop-margin-left').value) || 0;
+          const rVal = parseFloat(document.getElementById('crop-margin-right').value) || 0;
+          const tVal = parseFloat(document.getElementById('crop-margin-top').value) || 0;
+          const bVal = parseFloat(document.getElementById('crop-margin-bottom').value) || 0;
+          mLeft = lVal * mmToPt;
+          mRight = rVal * mmToPt;
+          mTop = tVal * mmToPt;
+          mBottom = bVal * mmToPt;
+        } else if (selectedCropPreset === 'a4') {
+          const curP = pagesList[activePageIndex];
+          if (curP) {
+            const diffW = Math.max(0, curP.width - 595.28);
+            const diffH = Math.max(0, curP.height - 841.89);
+            mLeft = mRight = diffW / 2;
+            mTop = mBottom = diffH / 2;
+          }
+        }
+
+        const applyToPage = (pItem) => {
+          if (isReset) {
+            pItem.crop = null;
+          } else {
+            const cW = Math.max(50, pItem.width - mLeft - mRight);
+            const cH = Math.max(50, pItem.height - mTop - mBottom);
+            pItem.crop = {
+              x: mLeft,
+              y: mBottom,
+              width: cW,
+              height: cH,
+              mLeft: mLeft,
+              mRight: mRight,
+              mTop: mTop,
+              mBottom: mBottom
+            };
+          }
+        };
+
+        if (targetScope === 'all') {
+          pagesList.forEach(applyToPage);
+          if (typeof UIUtils !== 'undefined') UIUtils.showToast(`Crop applied across all ${pagesList.length} pages!`, 'success');
+        } else {
+          if (pagesList[activePageIndex]) {
+            applyToPage(pagesList[activePageIndex]);
+            if (typeof UIUtils !== 'undefined') UIUtils.showToast(`Crop applied to Page ${activePageIndex + 1}!`, 'success');
+          }
+        }
+
+        closeCropModal();
+        redrawOverlay();
+      });
+    }
   }
 
   function highlightActiveTool(toolName) {
@@ -1072,7 +1226,7 @@
         redrawOverlay();
       }
       isInteracting = false;
-    } else if (activeTool === 'line' || activeTool === 'arrow') {
+    } else if (activeTool === 'line' || activeTool === 'arrow' || activeTool === 'double-arrow') {
       interactionMode = 'create-line';
       const newLineObj = {
         id: 'line_' + Date.now(),
@@ -1083,7 +1237,8 @@
         y2: coords.y + 5,
         color: strokeColor,
         lineWidth: strokeWidth,
-        isArrow: (activeTool === 'arrow')
+        isArrow: (activeTool === 'arrow'),
+        isDoubleArrow: (activeTool === 'double-arrow')
       };
       pageItem.annotations.push(newLineObj);
       selectedObject = newLineObj;
@@ -1295,6 +1450,16 @@
           const currentRot = copiedPage.getRotation().angle;
           copiedPage.setRotation(degrees((currentRot + item.rotation) % 360));
           targetPage = mergedPdf.addPage(copiedPage);
+        }
+
+        // Lossless ISO 32000-1 Page CropBox & MediaBox Injection
+        if (item.crop) {
+          try {
+            targetPage.setCropBox(item.crop.x, item.crop.y, item.crop.width, item.crop.height);
+            targetPage.setMediaBox(item.crop.x, item.crop.y, item.crop.width, item.crop.height);
+          } catch (cropErr) {
+            console.warn('Could not apply cropBox to page:', cropErr);
+          }
         }
 
         // Bake annotations if present
