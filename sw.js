@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v75-edit-sign-decoupled';
+const CACHE_NAME = 'localdoc-v76-dedicated-edit-studio';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -48,6 +48,7 @@ const ASSETS_TO_CACHE = [
   '/js/tools/photo-resizer.js',
   '/js/tools/pdf-to-pptx.js',
   '/js/tools/organize-pdf.js',
+  '/js/tools/edit-pdf.js',
   '/js/tools/calculator.js',
   '/pages/compress-pdf.html',
   '/pages/merge-pdf.html',

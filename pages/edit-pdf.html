@@ -131,28 +131,41 @@
 </script>
 
   <style>
-    .org-container {
-      max-width: 1100px;
+    /* Main Studio Container */
+    .edit-studio-main {
+      max-width: 1400px;
       width: 100%;
-      box-sizing: border-box;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 20px 16px;
+      box-sizing: border-box;
     }
-    .org-empty-box {
+
+    /* Empty Upload Hero Box */
+    .edit-empty-box {
       border: 2px dashed var(--line);
-      border-radius: var(--radius-lg);
-      padding: 50px 24px;
+      border-radius: var(--radius-lg, 16px);
+      padding: 55px 24px;
       text-align: center;
       background: var(--bg-surface);
       cursor: pointer;
       transition: all 0.2s ease;
-      margin: 24px 0;
+      margin: 24px auto;
+      max-width: 760px;
     }
-    .org-empty-box:hover, .org-empty-box.drag-active {
+    .edit-empty-box:hover, .edit-empty-box.drag-active {
       border-color: var(--primary);
       background: var(--primary-subtle);
     }
-    .org-toolbar {
+
+    /* Studio Workspace Layout (Top Bar + 2-Column Grid) */
+    .edit-workspace-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Top Action Bar */
+    .edit-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -160,267 +173,129 @@
       gap: 12px;
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 12px 18px;
-      margin-bottom: 20px;
+      border-radius: var(--radius-md, 10px);
+      padding: 10px 18px;
       box-shadow: var(--shadow-sm);
     }
-    .org-toolbar-group {
+    .edit-top-group {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-    @media (max-width: 768px) {
-      .org-container {
-        padding: 16px 12px;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-      .org-toolbar {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        padding: 12px !important;
-        gap: 10px !important;
-      }
-      .org-toolbar-group {
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-      }
-      .org-toolbar-group button,
-      .org-toolbar-group .btn {
-        flex: 1 1 calc(50% - 8px);
-        text-align: center;
-        justify-content: center;
-        padding: 10px 8px !important;
-        font-size: 0.82rem !important;
-        min-height: 44px;
-        box-sizing: border-box;
-      }
-      #org-save-btn {
-        flex: 1 1 100% !important;
-        width: 100% !important;
-        font-size: 1rem !important;
-        padding: 12px 16px !important;
-        min-height: 48px !important;
-        margin-top: 4px;
-      }
-      .org-pages-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
-      }
-    }
-    .org-pages-grid {
+
+    /* 2-Column Work Area (Sidebar + Center Viewport) */
+    .edit-stage-layout {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 16px;
-      margin-bottom: 30px;
+      grid-template-columns: 200px 1fr;
+      gap: 14px;
+      align-items: start;
     }
-    .org-page-card {
+
+    /* Left Sidebar: Collapsible Page Thumbnails */
+    .edit-sidebar-panel {
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 10px;
+      border-radius: var(--radius-md, 10px);
+      padding: 12px;
+      max-height: 80vh;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      cursor: grab;
-      position: relative;
-      transition: all 0.15s ease;
-      box-shadow: var(--shadow-sm);
-      user-select: none;
+      gap: 10px;
+      transition: all 0.2s ease;
     }
-    .org-page-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+    .edit-sidebar-panel.collapsed {
+      width: 48px;
+      overflow: hidden;
     }
-    .org-page-card.dragging {
-      opacity: 0.4;
-      cursor: grabbing;
-    }
-    .org-page-card.drag-over {
-      border: 2px dashed var(--primary);
-      background: var(--primary-subtle);
-    }
-    .org-card-header {
+    .edit-sidebar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
     }
-    .org-page-badge {
-      font-size: 0.78rem;
-      font-weight: 700;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-    .org-card-actions {
-      display: flex;
-      gap: 4px;
-    }
-    .org-btn-mini {
+    .edit-thumb-item {
       background: var(--bg-body);
-      border: 1px solid var(--line);
-      color: var(--text-secondary);
-      border-radius: 4px;
-      width: 24px;
-      height: 24px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.78rem;
-      font-weight: 700;
+      border: 1.5px solid var(--line);
+      border-radius: 6px;
+      padding: 6px;
       cursor: pointer;
-      transition: all 0.1s ease;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .org-btn-mini:hover {
+    .edit-thumb-item:hover {
       border-color: var(--primary);
-      color: var(--primary);
+      transform: translateY(-1px);
     }
-    .org-btn-delete:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-      background: #FEE2E2;
+    .edit-thumb-item.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-subtle);
+      background: var(--primary-subtle);
     }
-    .org-thumb-wrap {
+    .edit-thumb-header {
       width: 100%;
-      height: 180px;
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .edit-thumb-badge {
+      background: #0284C7;
+      color: #FFF;
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 8px;
+    }
+    .edit-thumb-wrap {
+      width: 100%;
+      height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 4px;
       overflow: hidden;
-      margin-bottom: 8px;
     }
-    .org-thumb-wrap img {
+    .edit-thumb-wrap canvas {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-      transition: transform 0.2s ease;
-    }
-    .org-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
-    }
-    .org-shift-btn {
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      color: var(--text-secondary);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 0.72rem;
-      cursor: pointer;
-    }
-    .org-shift-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-  
-    /* Dual-Mode Segmented Tabs */
-    .org-mode-bar {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .org-mode-toggle {
-      display: inline-flex;
-      background: var(--bg-surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-full, 9999px);
-      padding: 4px;
-      gap: 4px;
-      box-shadow: var(--shadow-sm);
-    }
-    .org-mode-btn {
-      padding: 8px 20px;
-      border-radius: var(--radius-full, 9999px);
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-    }
-    .org-mode-btn:hover {
-      color: var(--text-primary);
-    }
-    .org-mode-btn.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
     }
 
-    /* Thumbnail Card Enhancements */
-    .annot-count-badge {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(4px);
-      color: #38BDF8;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    /* Edit Section & Stage */
-    .org-edit-container {
-      background: var(--bg-surface);
+    /* Center Document Viewport */
+    .edit-viewport-stage {
+      background: #0F172A;
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 30px;
-    }
-    .org-edit-subbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 16px;
-    }
-    .org-stage-viewport {
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md, 10px);
       padding: 24px;
+      min-height: 600px;
+      max-height: 80vh;
+      overflow: auto;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      min-height: 580px;
-      max-height: 75vh;
-      overflow: auto;
       position: relative;
     }
-    .org-canvas-wrap {
+    .edit-stage-wrap {
       position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border-radius: 2px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
       background: #FFFFFF;
       user-select: none;
     }
-    .org-canvas-wrap canvas {
+    #edit-bg-canvas {
       display: block;
     }
-    #org-edit-overlay-canvas {
+    #edit-overlay-canvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -428,85 +303,110 @@
       touch-action: none;
     }
 
-    /* Floating Dock Annotation Toolbar */
-    .org-edit-dock {
+    /* Floating Annotation Dock (Bottom-Anchored) */
+    .edit-floating-dock {
+      position: sticky;
+      bottom: 14px;
+      margin: 12px auto 0;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: var(--radius-lg, 12px);
-      padding: 8px 12px;
-      margin-top: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      position: sticky;
-      bottom: 16px;
+      border-radius: var(--radius-full, 9999px);
+      padding: 6px 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
       z-index: 100;
+      max-width: 95%;
     }
-    .org-tool-btn {
+    .edit-dock-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 11px;
-      background: var(--bg-body);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      color: var(--text-secondary);
+      gap: 5px;
+      padding: 6px 11px;
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 20px;
       cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
+      transition: all 0.12s ease;
+      white-space: nowrap;
     }
-    .org-tool-btn:hover {
-      background: var(--primary-subtle);
-      border-color: var(--primary);
-      color: var(--primary);
+    .edit-dock-btn:hover {
+      background: var(--bg-body);
+      color: var(--text-primary);
     }
-    .org-tool-btn.active {
+    .edit-dock-btn.active {
       background: var(--primary);
-      border-color: var(--primary);
       color: #FFFFFF;
-      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
     }
-    .org-dock-sep {
+    .edit-dock-sep {
       width: 1px;
-      height: 24px;
+      height: 20px;
       background: var(--line);
       margin: 0 4px;
     }
-    .org-swatches {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .org-color-swatch {
-      width: 20px;
-      height: 20px;
+    .edit-color-dot {
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: transform 0.15s ease;
+      transition: transform 0.1s;
     }
-    .org-color-swatch:hover {
+    .edit-color-dot:hover {
       transform: scale(1.15);
     }
-    .org-color-swatch.active {
+    .edit-color-dot.active {
       border-color: #0F172A;
-      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.6);
-      transform: scale(1.15);
+      box-shadow: 0 0 0 1.5px #FFFFFF;
     }
 
-    /* Modals (Sticker & Crop & Text) */
-    .org-modal-backdrop {
+    /* Floating Property Inspector (Attached above selected text) */
+    .edit-floating-inspector {
+      position: absolute;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: #0F172A;
+      color: #F8FAFC;
+      border-radius: 8px;
+      padding: 4px 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      z-index: 200;
+      font-size: 0.78rem;
+    }
+    .edit-insp-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #F8FAFC;
+      border-radius: 4px;
+      padding: 2px 7px;
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .edit-insp-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .edit-insp-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Modals (Sticker & Crop) */
+    .edit-modal-backdrop {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(4px);
       display: none;
       align-items: center;
@@ -514,27 +414,27 @@
       z-index: 1000;
       padding: 16px;
     }
-    .org-modal-backdrop.open {
+    .edit-modal-backdrop.open {
       display: flex;
     }
-    .org-modal-card {
+    .edit-modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 24px;
-      max-width: 560px;
+      padding: 22px;
+      max-width: 580px;
       width: 100%;
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
       max-height: 90vh;
       overflow-y: auto;
     }
-    .org-sticker-grid {
+    .edit-sticker-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
       margin-top: 14px;
     }
-    .org-sticker-choice {
+    .edit-sticker-choice {
       padding: 10px 12px;
       border: 2px dashed var(--line);
       border-radius: 8px;
@@ -543,29 +443,29 @@
       transition: all 0.15s ease;
       background: var(--bg-body);
     }
-    .org-sticker-choice:hover {
+    .edit-sticker-choice:hover {
       border-color: var(--primary);
       background: var(--primary-subtle);
       transform: translateY(-2px);
     }
 
-    @media (max-width: 768px) {
-      .org-edit-dock {
+    @media (max-width: 860px) {
+      .edit-stage-layout {
+        grid-template-columns: 1fr;
+      }
+      .edit-sidebar-panel {
+        max-height: 180px;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .edit-thumb-item {
+        min-width: 90px;
+      }
+      .edit-floating-dock {
         bottom: 8px;
-        padding: 6px 8px;
-        gap: 4px;
+        padding: 5px 8px;
         overflow-x: auto;
         justify-content: flex-start;
-        max-width: 100%;
-      }
-      .org-tool-btn {
-        padding: 6px 9px;
-        font-size: 0.74rem;
-        white-space: nowrap;
-      }
-      .org-stage-viewport {
-        padding: 10px;
-        min-height: 400px;
       }
     }
   </style>
@@ -611,334 +511,315 @@
     </div>
   </header>
 
-  <main id="main-content" class="org-container">
-  <!-- Hero Title -->
-    <div style="text-align: center; margin-bottom: 24px;">
-      <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary-subtle); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Visual PDF Editor &amp; Markup Studio
+  <main id="main-content" class="edit-studio-main">
+    
+    <!-- Hero Title -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary-subtle); color: var(--primary); padding: 5px 14px; border-radius: 20px; font-weight: 700; font-size: 0.82rem; margin-bottom: 10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Direct Visual PDF Editor &amp; Markup Studio
       </div>
-      <h1 style="font-size: clamp(1.5rem, 4.5vw, 2.2rem); font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">Edit PDF Online Free — Add Text, Annotations, Arrows, Stickers &amp; Crop</h1>
-      <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.6;">Add custom text boxes, fluorescent highlights, directional arrows, straight lines, official status stickers, and company logos. Crop page sizes and trim margins directly in your browser. 100% private in local RAM.</p>
+      <h1 style="font-size: clamp(1.4rem, 4vw, 2.1rem); font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">Edit PDF Online Free — Add Text, Whiteout, Arrows, Stickers &amp; Crop</h1>
+      <p style="font-size: 1rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.5;">Type in-place text boxes, whiteout and replace outdated content, draw directional arrows, highlight passages, insert review badges, and crop margins directly in private browser RAM.</p>
     </div>
 
     <!-- Empty Upload State -->
-    <div id="org-empty-state">
-      <div class="org-empty-box" id="org-drop-zone" onclick="document.getElementById('org-file-input').click()">
-        <input type="file" id="org-file-input" accept="application/pdf,.pdf" multiple style="display: none;">
-        <div style="font-size: 3rem; margin-bottom: 12px;">&#128196;</div>
-        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-          Choose PDF file(s) or drag & drop here
+    <div id="edit-empty-state">
+      <div class="edit-empty-box" id="edit-drop-zone">
+        <input type="file" id="edit-file-input" accept="application/pdf,.pdf" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 10px;">&#128196;</div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">
+          Select a PDF document to edit
         </h3>
-        <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 16px;">
-          Select one or multiple PDF documents. Zero server uploads.
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">
+          Opens directly into the visual editor. Zero cloud uploads. 100% private in local RAM.
         </p>
-        <button class="btn btn-primary" type="button" id="org-browse-btn" onclick="event.stopPropagation(); document.getElementById('org-file-input').click();" style="padding: 10px 24px; font-weight: 700;">
-          Select PDF Files
-        </button>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-primary" type="button" id="edit-browse-btn" style="padding: 10px 22px; font-weight: 700;">
+            Select PDF File
+          </button>
+          <button class="btn btn-outline" type="button" id="edit-sample-btn" style="border-color:#059669; color:#059669; font-weight:700;">
+            ⚡ Try Sample Document
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Active Workspace -->
-    <div id="org-workspace" style="display: none;">
+    <!-- Active Visual Editor Workspace (Shown immediately upon document load) -->
+    <div id="edit-workspace" class="edit-workspace-wrap" style="display: none;">
 
-      <!-- Mode Switcher Tabs -->
-      <div class="org-mode-bar">
-        <div class="org-mode-toggle">
-          <button type="button" class="org-mode-btn" id="org-mode-organize-btn">
-            <span>📄 Organize Grid</span>
-          </button>
-          <button type="button" class="org-mode-btn active" id="org-mode-edit-btn">
-            <span>✏️ Edit &amp; Annotate Page</span>
+      <!-- Top Workspace Action Bar -->
+      <div class="edit-top-bar">
+        <div class="edit-top-group">
+          <span id="edit-doc-title" style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">document.pdf</span>
+          <span id="edit-doc-pages-badge" style="background: var(--primary-subtle); color: var(--primary); font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 10px;">1 Page</span>
+        </div>
+
+        <!-- Page Switcher & Zoom Controls -->
+        <div class="edit-top-group">
+          <button type="button" class="btn btn-outline" id="edit-prev-page" style="padding: 4px 8px; font-size: 0.8rem;">◀</button>
+          <span style="font-size: 0.82rem; color: var(--text-secondary);">Page</span>
+          <input type="number" id="edit-page-num-input" value="1" min="1" style="width: 44px; text-align: center; padding: 4px; font-weight: 700; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-body); color: var(--text-primary);">
+          <span style="font-size: 0.82rem; color: var(--text-secondary);">of <span id="edit-total-pages-span">1</span></span>
+          <button type="button" class="btn btn-outline" id="edit-next-page" style="padding: 4px 8px; font-size: 0.8rem;">▶</button>
+
+          <div style="width: 1px; height: 18px; background: var(--line); margin: 0 4px;"></div>
+
+          <div style="display: flex; align-items: center; background: var(--bg-body); border: 1px solid var(--line); border-radius: 6px; padding: 2px;">
+            <button type="button" class="btn btn-outline" id="edit-zoom-out" style="padding: 2px 7px; border: none; font-weight: 700;">-</button>
+            <span id="edit-zoom-val" style="font-size: 0.78rem; font-weight: 700; min-width: 40px; text-align: center;">125%</span>
+            <button type="button" class="btn btn-outline" id="edit-zoom-in" style="padding: 2px 7px; border: none; font-weight: 700;">+</button>
+            <button type="button" class="btn btn-outline" id="edit-zoom-fit" style="padding: 2px 6px; border: none; font-size: 0.72rem;" title="Fit Width">Fit</button>
+          </div>
+        </div>
+
+        <!-- History & Export -->
+        <div class="edit-top-group">
+          <button type="button" class="btn btn-outline" id="edit-undo-btn" title="Undo (Ctrl+Z)" style="padding: 5px 9px; font-size: 0.8rem;">↺ Undo</button>
+          <button type="button" class="btn btn-outline" id="edit-redo-btn" title="Redo (Ctrl+Y)" style="padding: 5px 9px; font-size: 0.8rem;">↻ Redo</button>
+          <button type="button" class="btn btn-outline" id="edit-rotate-page-btn" title="Rotate Page 90°" style="padding: 5px 9px; font-size: 0.8rem;">↻ Rotate</button>
+          <button type="button" class="btn btn-outline" id="edit-clear-page-btn" style="padding: 5px 9px; font-size: 0.8rem; color: var(--danger); border-color: var(--danger);" title="Clear all marks on this page">🧹 Clear</button>
+          <button type="button" class="btn btn-primary" id="edit-export-btn" style="padding: 7px 18px; font-weight: 800; font-size: 0.88rem;">
+            💾 Export &amp; Download PDF
           </button>
         </div>
       </div>
 
-      <!-- MODE 1: ORGANIZE GRID SECTION -->
-      <div id="org-grid-section">
-        <!-- Sticky/Top Toolbar -->
-        <div class="org-toolbar">
-        <div class="org-toolbar-group">
-          <span style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary);">Document Pages</span>
-          <span id="org-total-pages" style="background: var(--primary-subtle); color: var(--primary); font-size: 0.85rem; font-weight: 700; padding: 3px 10px; border-radius: 12px;">0 Pages</span>
+      <!-- Main Stage Layout (Left Thumbnails + Center Viewport) -->
+      <div class="edit-stage-layout">
+        
+        <!-- Left Thumbnails Sidebar -->
+        <aside class="edit-sidebar-panel" id="edit-sidebar">
+          <div class="edit-sidebar-header">
+            <span>Pages</span>
+            <button type="button" class="btn btn-outline" id="edit-sidebar-toggle" style="padding: 2px 6px; font-size: 0.7rem;">◀</button>
+          </div>
+          <div id="edit-thumbnail-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Generated page thumbnail cards -->
+          </div>
+        </aside>
+
+        <!-- Center Viewport Stage -->
+        <div class="edit-viewport-stage" id="edit-viewport">
+          <div class="edit-stage-wrap" id="edit-stage-wrap">
+            <canvas id="edit-bg-canvas"></canvas>
+            <canvas id="edit-overlay-canvas"></canvas>
+
+            <!-- Floating Property Inspector for Selected Text / Shape -->
+            <div class="edit-floating-inspector" id="edit-floating-inspector">
+              <select id="insp-font-family" style="background:#1E293B; color:#FFF; border:1px solid #475569; border-radius:4px; font-size:0.75rem; padding:2px 4px;">
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times Roman</option>
+                <option value="Courier">Courier</option>
+                <option value="Arial">Arial</option>
+              </select>
+              <input type="number" id="insp-font-size" value="16" min="8" max="72" style="width:38px; background:#1E293B; color:#FFF; border:1px solid #475569; border-radius:4px; font-size:0.75rem; padding:2px; text-align:center;">
+              <button type="button" class="edit-insp-btn" id="insp-btn-bold">B</button>
+              <button type="button" class="edit-insp-btn" id="insp-btn-italic"><i>I</i></button>
+              <button type="button" class="edit-insp-btn" id="insp-whiteout-toggle" title="Whiteout background behind text">Whiteout Box</button>
+              <button type="button" class="edit-insp-btn" id="insp-delete-btn" style="color:#EF4444;" title="Delete Selected">🗑️</button>
+            </div>
+          </div>
         </div>
 
-        <div class="org-toolbar-group">
-          <input type="file" id="org-add-more-input" accept="application/pdf,.pdf" multiple style="display: none;">
-          <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 7px 14px;" onclick="document.getElementById('org-add-more-input').click()">
-            &#10133; Add More Pages
-          </button>
-          <button type="button" class="btn btn-outline" id="org-insert-blank-btn" style="font-size: 0.85rem; padding: 7px 14px;">
-            📄+ Insert Blank Page
-          </button>
-          <button type="button" class="btn btn-outline" id="org-rotate-all-btn" style="font-size: 0.85rem; padding: 7px 14px;">
-            &#8635; Rotate All (90&deg;)
-          </button>
-          <button type="button" class="btn btn-outline" id="org-reset-btn" style="font-size: 0.85rem; padding: 7px 14px; color: var(--danger); border-color: var(--danger);">
-            Clear All
-          </button>
-          <button type="button" class="btn btn-primary" id="org-save-btn" style="font-size: 0.95rem; font-weight: 700; padding: 8px 20px;">
-            &#128190; Save & Download PDF
-          </button>
-        </div>
       </div>
 
-      <!-- Pages Grid -->
-      <div class="org-pages-grid" id="org-pages-grid"></div>
-      </div> <!-- End of org-grid-section -->
+      <!-- Floating Tool Dock (Canva / Acrobat Style) -->
+      <div class="edit-floating-dock" id="edit-dock">
+        <button type="button" class="edit-dock-btn active" data-tool="select" title="Select &amp; Move">
+          👆 Select
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="text" title="Click to add editable text box">
+          📝 Text
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="whiteout" title="Cover outdated text with opaque white box">
+          ⬜ Whiteout
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="highlight" title="Fluorescent translucent highlighter">
+          🖍️ Highlight
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="pen" title="Freehand ballpoint pen">
+          🖊️ Pen
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="arrow" title="Draw single directional arrow">
+          ↗️ Arrow
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="double-arrow" title="Draw double-headed dimension arrow">
+          ↔️ Double Arrow
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="line" title="Draw straight line">
+          📏 Line
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="rect" title="Draw rectangle frame">
+          ▭ Rect
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="circle" title="Draw circle">
+          ⭕ Circle
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="sticker" title="Official review stickers (APPROVED, DRAFT, etc.)">
+          🏷️ Stickers
+        </button>
+        <button type="button" class="edit-dock-btn" data-tool="image" title="Upload picture or company logo">
+          🖼️ Picture
+        </button>
+        <button type="button" class="edit-dock-btn" id="edit-crop-modal-btn" title="Crop and trim page margins">
+          ✂️ Crop Page
+        </button>
 
-      <!-- MODE 2: EDIT & ANNOTATE SECTION -->
-      <div id="org-edit-section" class="org-edit-container" style="display: none;">
-        <!-- Edit Subbar -->
-        <div class="org-edit-subbar">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <button type="button" class="btn btn-outline" id="org-edit-back-grid-btn" style="padding:6px 14px; font-size:0.84rem; font-weight:700;">
-              ◀ Return to Grid
-            </button>
-            <span style="font-size:0.85rem; color:var(--text-secondary); margin-left:6px;">Page:</span>
-            <button type="button" class="btn btn-outline" id="org-edit-prev-btn" style="padding:4px 8px; font-size:0.8rem;">◀</button>
-            <input type="number" id="org-edit-page-num" value="1" min="1" style="width:48px; text-align:center; padding:4px; font-weight:700; border:1px solid var(--line); border-radius:4px; background:var(--bg-body); color:var(--text-primary);">
-            <span style="font-size:0.85rem; color:var(--text-secondary);">of <span id="org-edit-page-total">1</span></span>
-            <button type="button" class="btn btn-outline" id="org-edit-next-btn" style="padding:4px 8px; font-size:0.8rem;">▶</button>
-          </div>
+        <div class="edit-dock-sep"></div>
 
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <div style="display:flex; align-items:center; background:var(--bg-body); border:1px solid var(--line); border-radius:6px; padding:2px;">
-              <button type="button" class="btn btn-outline" id="org-zoom-out" style="padding:2px 8px; border:none; font-weight:700;">-</button>
-              <span id="org-zoom-val" style="font-size:0.8rem; font-weight:700; min-width:44px; text-align:center;">100%</span>
-              <button type="button" class="btn btn-outline" id="org-zoom-in" style="padding:2px 8px; border:none; font-weight:700;">+</button>
-              <button type="button" class="btn btn-outline" id="org-zoom-reset" style="padding:2px 6px; border:none; font-size:0.75rem;" title="Reset Zoom">Fit</button>
-            </div>
-            <button type="button" class="btn btn-outline" id="org-crop-open-btn" style="padding:6px 11px; font-size:0.82rem; font-weight:700; color:var(--primary); border-color:var(--primary);" title="Crop & Trim Page Dimensions">
-              ✂️ Crop Page
-            </button>
-            <button type="button" class="btn btn-outline" id="org-edit-rotate-page-btn" style="padding:6px 10px; font-size:0.82rem;" title="Rotate page 90 degrees">
-              ↻ Rotate
-            </button>
-            <button type="button" class="btn btn-outline" id="org-edit-delete-page-btn" style="padding:6px 10px; font-size:0.82rem; color:var(--danger); border-color:var(--danger);" title="Delete current page">
-              🗑 Delete
-            </button>
-          </div>
+        <!-- Color Palette Dots -->
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <span class="edit-color-dot active" data-color="#DC2626" style="background:#DC2626;" title="Red"></span>
+          <span class="edit-color-dot" data-color="#2563EB" style="background:#2563EB;" title="Blue"></span>
+          <span class="edit-color-dot" data-color="#059669" style="background:#059669;" title="Emerald Green"></span>
+          <span class="edit-color-dot" data-color="#0F172A" style="background:#0F172A;" title="Black"></span>
+          <span class="edit-color-dot" data-color="#FEF08A" style="background:#FEF08A;" title="Neon Yellow"></span>
+          <span class="edit-color-dot" data-color="#EC4899" style="background:#EC4899;" title="Pink"></span>
+          <span class="edit-color-dot" data-color="#06B6D4" style="background:#06B6D4;" title="Cyan"></span>
+          
+          <label style="position:relative; width:18px; height:18px; border-radius:50%; overflow:hidden; border:1px solid var(--line); cursor:pointer; display:inline-block; margin:0;" title="Custom Color">
+            <input type="color" id="edit-custom-color-picker" value="#DC2626" style="opacity:0; position:absolute; width:100%; height:100%; cursor:pointer;">
+            <span style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:conic-gradient(red, yellow, lime, aqua, blue, magenta, red);"></span>
+          </label>
         </div>
 
-        <!-- Canvas Stage Viewport -->
-        <div class="org-stage-viewport" id="org-stage-viewport">
-          <div class="org-canvas-wrap" id="org-edit-stage-wrap">
-            <canvas id="org-edit-bg-canvas"></canvas>
-            <canvas id="org-edit-overlay-canvas"></canvas>
-          </div>
+        <div class="edit-dock-sep"></div>
+
+        <select id="edit-stroke-width-select" style="background:var(--bg-body); color:var(--text-primary); border:1px solid var(--line); border-radius:4px; font-size:0.75rem; padding:3px 6px;">
+          <option value="2">Thin (2px)</option>
+          <option value="3" selected>Regular (3px)</option>
+          <option value="5">Thick (5px)</option>
+          <option value="8">Bold (8px)</option>
+        </select>
+      </div>
+
+      <!-- Hidden input for Picture Upload -->
+      <input type="file" id="edit-image-upload-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none;">
+
+    </div>
+
+    <!-- Official Review Stickers Modal -->
+    <div id="edit-sticker-modal" class="edit-modal-backdrop">
+      <div class="edit-modal-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            <span>🏷️ Choose Official Status Sticker</span>
+          </h3>
+          <button type="button" id="edit-close-sticker-modal" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
         </div>
+        <p style="margin:0; font-size:0.84rem; color:var(--text-secondary);">Click any review badge to stamp it on the active page:</p>
 
-        <!-- Floating Annotation Tool Dock -->
-        <div class="org-edit-dock" id="org-edit-dock">
-          <button type="button" class="org-tool-btn active" data-tool="select" title="Select & Move Objects">
-            👆 Select
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="text" title="Add Text Box">
-            📝 Text
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="image" title="Upload Picture or Logo">
-            🖼️ Picture
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="line" title="Draw Straight Line">
-            📏 Line
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="arrow" title="Draw Directional Arrow">
-            ↗️ Arrow
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="double-arrow" title="Draw Double-Headed Arrow">
-            ↔️ Double Arrow
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="rect" title="Draw Rectangle (Highlight / Redact)">
-            ⬜ Rect
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="circle" title="Draw Circle">
-            ⭕ Circle
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="sticker" title="Add Official Review Stickers">
-            🏷️ Stickers
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="pen" title="Freehand Ballpoint Pen">
-            🖊️ Pen
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="highlighter" title="Fluorescent Highlighter">
-            🖍️ Highlight
-          </button>
-          <button type="button" class="org-tool-btn" id="dock-crop-btn" title="Crop & Trim Page Dimensions">
-            ✂️ Crop
-          </button>
-          <button type="button" class="org-tool-btn" data-tool="eraser" title="Erase Item">
-            🧹 Eraser
-          </button>
-
-          <div class="org-dock-sep"></div>
-
-          <!-- Color Swatches -->
-          <div class="org-swatches">
-            <span class="org-color-swatch active" data-color="#DC2626" style="background:#DC2626;" title="Red"></span>
-            <span class="org-color-swatch" data-color="#2563EB" style="background:#2563EB;" title="Blue"></span>
-            <span class="org-color-swatch" data-color="#059669" style="background:#059669;" title="Emerald Green"></span>
-            <span class="org-color-swatch" data-color="#0F172A" style="background:#0F172A;" title="Black"></span>
-            <span class="org-color-swatch" data-color="#FACC15" style="background:#FACC15;" title="Neon Yellow"></span>
-            <span class="org-color-swatch" data-color="#EC4899" style="background:#EC4899;" title="Hot Pink"></span>
-            <span class="org-color-swatch" data-color="#06B6D4" style="background:#06B6D4;" title="Cyan"></span>
-            <span class="org-color-swatch" data-color="#EA580C" style="background:#EA580C;" title="Orange"></span>
+        <div class="edit-sticker-grid">
+          <div class="edit-sticker-choice" data-sticker="APPROVED" style="border-color:#059669; color:#059669; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #059669; padding:4px 8px; border-radius:4px;">✔ APPROVED</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Verified &amp; Certified</span>
           </div>
-
-          <div class="org-dock-sep"></div>
-
-          <button type="button" class="org-tool-btn" id="org-undo-btn" title="Undo last action">
-            ↺ Undo
-          </button>
-          <button type="button" class="org-tool-btn" id="org-delete-obj-btn" style="color:var(--danger);" title="Delete selected object">
-            🗑️ Delete
-          </button>
-        </div>
-
-        <!-- Hidden input for Picture Upload -->
-        <input type="file" id="org-image-upload-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none;">
-      </div> <!-- End of org-edit-section -->
-
-      <!-- Official Stamps & Stickers Modal -->
-      <div id="org-sticker-modal" class="org-modal-backdrop">
-        <div class="org-modal-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-              <span>🏷️ Select Review Sticker or Status Stamp</span>
-            </h3>
-            <button type="button" id="org-close-sticker-modal" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+          <div class="edit-sticker-choice" data-sticker="CONFIDENTIAL" style="border-color:#DC2626; color:#DC2626; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #DC2626; padding:4px 8px; border-radius:4px;">🔒 CONFIDENTIAL</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Restricted Access</span>
           </div>
-          <p style="margin:0; font-size:0.86rem; color:var(--text-secondary);">Click any official stamp to place it directly on the active document page:</p>
-
-          <div class="org-sticker-grid">
-            <div class="org-sticker-choice" data-sticker="APPROVED" style="border-color:#059669; color:#059669; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #059669; padding:4px 8px; border-radius:4px;">✔ APPROVED</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Verified &amp; Certified</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="CONFIDENTIAL" style="border-color:#DC2626; color:#DC2626; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #DC2626; padding:4px 8px; border-radius:4px;">🔒 CONFIDENTIAL</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Restricted Access</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="DRAFT" style="border-color:#D97706; color:#D97706; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #D97706; padding:4px 8px; border-radius:4px;">📝 DRAFT</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Under Revision</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="FINAL" style="border-color:#2563EB; color:#2563EB; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #2563EB; padding:4px 8px; border-radius:4px;">⚖️ FINAL COPY</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Execution Version</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="PAID" style="border-color:#16A34A; color:#16A34A; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #16A34A; padding:4px 8px; border-radius:4px;">💰 PAID</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Invoice Cleared</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="URGENT" style="border-color:#E11D48; color:#E11D48; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #E11D48; padding:4px 8px; border-radius:4px;">⚡ URGENT</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Immediate Action</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="REJECTED" style="border-color:#991B1B; color:#991B1B; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #991B1B; padding:4px 8px; border-radius:4px;">✖ REJECTED</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Declined Submission</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="VOID" style="border-color:#64748B; color:#64748B; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #64748B; padding:4px 8px; border-radius:4px;">⛔ VOID</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Cancelled Document</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="SIGN_HERE" style="border-color:#EA580C; color:#EA580C; font-weight:800; background:#FFF7ED;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #EA580C; padding:4px 8px; border-radius:4px;">✍️ SIGN HERE ▶</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Signatory Flag</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="INITIAL_HERE" style="border-color:#7C3AED; color:#7C3AED; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #7C3AED; padding:4px 8px; border-radius:4px;">🖋️ INITIAL HERE</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Margin Initial Mark</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="VERIFIED" style="border-color:#0D9488; color:#0D9488; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #0D9488; padding:4px 8px; border-radius:4px;">🛡️ VERIFIED</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Compliance Passed</span>
-            </div>
-            <div class="org-sticker-choice" data-sticker="TOP_SECRET" style="border-color:#831843; color:#831843; font-weight:800;">
-              <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #831843; padding:4px 8px; border-radius:4px;">🔐 TOP SECRET</div>
-              <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Restricted Clearance</span>
-            </div>
+          <div class="edit-sticker-choice" data-sticker="DRAFT" style="border-color:#D97706; color:#D97706; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #D97706; padding:4px 8px; border-radius:4px;">📝 DRAFT</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Under Revision</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="FINAL" style="border-color:#2563EB; color:#2563EB; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #2563EB; padding:4px 8px; border-radius:4px;">⚖️ FINAL COPY</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Execution Version</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="PAID" style="border-color:#16A34A; color:#16A34A; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #16A34A; padding:4px 8px; border-radius:4px;">💰 PAID</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Invoice Cleared</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="URGENT" style="border-color:#E11D48; color:#E11D48; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #E11D48; padding:4px 8px; border-radius:4px;">⚡ URGENT</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Immediate Action</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="REJECTED" style="border-color:#991B1B; color:#991B1B; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #991B1B; padding:4px 8px; border-radius:4px;">✖ REJECTED</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Declined Submission</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="VOID" style="border-color:#64748B; color:#64748B; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #64748B; padding:4px 8px; border-radius:4px;">⛔ VOID</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Cancelled Document</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="SIGN_HERE" style="border-color:#EA580C; color:#EA580C; font-weight:800; background:#FFF7ED;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #EA580C; padding:4px 8px; border-radius:4px;">✍️ SIGN HERE ▶</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Signatory Flag</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="INITIAL_HERE" style="border-color:#7C3AED; color:#7C3AED; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #7C3AED; padding:4px 8px; border-radius:4px;">🖋️ INITIAL HERE</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Margin Initial Mark</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="VERIFIED" style="border-color:#0D9488; color:#0D9488; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #0D9488; padding:4px 8px; border-radius:4px;">🛡️ VERIFIED</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Compliance Passed</span>
+          </div>
+          <div class="edit-sticker-choice" data-sticker="TOP_SECRET" style="border-color:#831843; color:#831843; font-weight:800;">
+            <div style="font-size:1.05rem; letter-spacing:1px; border:2px solid #831843; padding:4px 8px; border-radius:4px;">🔐 TOP SECRET</div>
+            <span style="font-size:0.72rem; color:var(--text-secondary); margin-top:4px; display:block;">Restricted Clearance</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Interactive Page Crop Modal -->
-      <div id="org-crop-modal" class="org-modal-backdrop">
-        <div class="org-modal-card" style="max-width:480px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-              <span>✂️ Crop &amp; Resize Page Dimensions</span>
-            </h3>
-            <button type="button" id="org-close-crop-modal" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
-          </div>
-          <p style="margin:0 0 16px; font-size:0.86rem; color:var(--text-secondary); line-height:1.5;">
-            Trim outer margins or adjust page dimensions with lossless ISO 32000-1 vector /CropBox boundary injection. No pixelation or blurriness.
-          </p>
+    <!-- Lossless Page Crop Modal -->
+    <div id="edit-crop-modal" class="edit-modal-backdrop">
+      <div class="edit-modal-card" style="max-width: 480px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin:0; font-size:1.15rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            <span>✂️ Crop &amp; Resize Page Dimensions</span>
+          </h3>
+          <button type="button" id="edit-close-crop-modal" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-secondary);">&times;</button>
+        </div>
+        <p style="margin:0 0 14px; font-size:0.84rem; color:var(--text-secondary); line-height:1.5;">
+          Trim outer margins or adjust page dimensions with lossless ISO 32000-1 /CropBox geometry. Preserves TrueType vectors with zero pixel blur.
+        </p>
 
-          <div style="margin-bottom:14px;">
-            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Choose Margin Crop Preset:</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <button type="button" class="btn btn-outline org-crop-preset active" data-crop="none" style="font-size:0.82rem; padding:8px;">Original (No Crop)</button>
-              <button type="button" class="btn btn-outline org-crop-preset" data-crop="trim-5" style="font-size:0.82rem; padding:8px;">Trim 5mm Margins</button>
-              <button type="button" class="btn btn-outline org-crop-preset" data-crop="trim-10" style="font-size:0.82rem; padding:8px;">Trim 10mm Margins</button>
-              <button type="button" class="btn btn-outline org-crop-preset" data-crop="trim-20" style="font-size:0.82rem; padding:8px;">Trim 20mm (Scanner)</button>
-              <button type="button" class="btn btn-outline org-crop-preset" data-crop="custom" style="font-size:0.82rem; padding:8px;">Custom Margins</button>
-              <button type="button" class="btn btn-outline org-crop-preset" data-crop="a4" style="font-size:0.82rem; padding:8px;">Fit Standard A4</button>
-            </div>
-          </div>
-
-          <!-- Custom Margin Inputs -->
-          <div id="org-custom-crop-inputs" style="display:none; background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-              <div>
-                <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Left Margin (mm):</label>
-                <input type="number" id="crop-margin-left" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-              </div>
-              <div>
-                <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Right Margin (mm):</label>
-                <input type="number" id="crop-margin-right" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-              </div>
-              <div>
-                <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Top Margin (mm):</label>
-                <input type="number" id="crop-margin-top" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-              </div>
-              <div>
-                <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Bottom Margin (mm):</label>
-                <input type="number" id="crop-margin-bottom" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-bottom:16px;">
-            <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Target Pages:</label>
-            <div style="display:flex; gap:16px;">
-              <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; cursor:pointer;">
-                <input type="radio" name="crop-target" value="current" checked>
-                <span>Current Page (<span id="crop-cur-page-num">1</span>)</span>
-              </label>
-              <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; cursor:pointer;">
-                <input type="radio" name="crop-target" value="all">
-                <span>All Pages in Document</span>
-              </label>
-            </div>
-          </div>
-
-          <div style="display:flex; justify-content:flex-end; gap:8px;">
-            <button type="button" class="btn btn-outline" id="org-crop-cancel-btn">Cancel</button>
-            <button type="button" class="btn btn-primary" id="org-crop-apply-btn">Apply Crop</button>
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:0.76rem; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Choose Margin Crop Preset:</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button type="button" class="btn btn-outline edit-crop-preset active" data-crop="none" style="font-size:0.8rem; padding:8px;">Original (No Crop)</button>
+            <button type="button" class="btn btn-outline edit-crop-preset" data-crop="trim-5" style="font-size:0.8rem; padding:8px;">Trim 5mm Margins</button>
+            <button type="button" class="btn btn-outline edit-crop-preset" data-crop="trim-10" style="font-size:0.8rem; padding:8px;">Trim 10mm Margins</button>
+            <button type="button" class="btn btn-outline edit-crop-preset" data-crop="trim-20" style="font-size:0.8rem; padding:8px;">Trim 20mm (Scanner)</button>
+            <button type="button" class="btn btn-outline edit-crop-preset" data-crop="custom" style="font-size:0.8rem; padding:8px;">Custom Margins</button>
           </div>
         </div>
-      </div>
 
+        <!-- Custom Margin Inputs -->
+        <div id="edit-custom-crop-inputs" style="display:none; background:var(--bg-body); padding:12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+              <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Left (mm):</label>
+              <input type="number" id="edit-crop-left" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Right (mm):</label>
+              <input type="number" id="edit-crop-right" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Top (mm):</label>
+              <input type="number" id="edit-crop-top" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; font-size:0.74rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Bottom (mm):</label>
+              <input type="number" id="edit-crop-bottom" value="10" min="0" max="100" style="width:100%; padding:6px; border:1px solid var(--line); border-radius:6px; background:var(--bg-surface); color:var(--text-primary); box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-outline" id="edit-crop-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="edit-crop-apply-btn">Apply Crop</button>
+        </div>
+      </div>
     </div>
 
     <!-- Comprehensive Content Moat & Master Guide -->
     <article class="tool-guide-wrap" style="margin-top: 50px;">
-
-      <!-- 3. Step-by-Step How-To Guide -->
       <h2>How to Edit, Annotate, Highlight &amp; Crop PDF Pages Online Free</h2>
-      <p>Whether you need to mark up construction blueprints, redact sensitive financial figures with whiteout, add review status stamps, or trim scanning margins from legal contracts, follow these three steps:</p>
+      <p>Whether you need to mark up architectural drawings, whiteout outdated financial figures, highlight contracts, or crop margins from scanner feeds, follow these three steps:</p>
 
       <div class="tool-steps-grid">
         <div class="tool-step-card">
@@ -954,11 +835,10 @@
         <div class="tool-step-card">
           <div class="tool-step-num">3</div>
           <h3 class="tool-step-title">Crop &amp; Download</h3>
-          <p class="tool-step-desc">Trim margins with lossless /CropBox coordinate injection, rearrange or rotate pages, and click 'Save &amp; Download PDF' to export in milliseconds.</p>
+          <p class="tool-step-desc">Trim margins with lossless /CropBox coordinate injection, rearrange or rotate pages, and click 'Export &amp; Download PDF' to save in milliseconds.</p>
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: ISO 32000-1 Page Tree & Vector Stream Surgery -->
       <div class="tool-tech-card">
         <h2>Technical Architecture: In-Memory /CropBox Geometry &amp; Vector Stream Composition</h2>
         <p>In accordance with <strong>ISO 32000-1</strong>, a PDF document represents its layout hierarchy as an acyclic directed graph rooted at the document catalog (<code>/Catalog</code>). LocalDoc performs non-destructive page surgery in browser RAM without quality loss:</p>
@@ -971,7 +851,6 @@
         </ul>
       </div>
 
-      <!-- 5. Comparison Table: LocalDoc vs Cloud PDF Organizers -->
       <h2>LocalDoc vs Cloud PDF Editors</h2>
       <div class="tool-comparison-table-wrap">
         <table class="tool-comparison-table">
@@ -998,169 +877,76 @@
             </tr>
             <tr>
               <td><strong>Lossless Vector Cropping</strong></td>
-              <td class="highlight-col">&#10003; True ISO /CropBox Injection</td>
-              <td>&#10003; Available with paid license</td>
-              <td>Often rasterizes to lossy image</td>
+              <td class="highlight-col">Yes (ISO 32000-1 /CropBox Injection)</td>
+              <td>Yes (Native Engine)</td>
+              <td>Rasterizes to low-DPI JPEG</td>
             </tr>
             <tr>
-              <td><strong>Stickers, Arrows &amp; Logos</strong></td>
-              <td class="highlight-col">&#10003; Full Vector Markup Suite</td>
-              <td>&#10003; Available</td>
-              <td>Limited stamps / paywalled</td>
-            </tr>
-            <tr>
-              <td><strong>Offline PWA Support</strong></td>
-              <td class="highlight-col">&#10003; Works 100% Offline</td>
-              <td>Requires cloud sync &amp; account</td>
-              <td>Inoperable without internet</td>
+              <td><strong>Offline Capabilities</strong></td>
+              <td class="highlight-col">Full Service Worker Offline PWA</td>
+              <td>Desktop app required</td>
+              <td>No offline support</td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- 6. Common Practical Questions & Technical Guidance (FAQ) -->
-      <h2>Frequently Asked Questions About Editing PDFs</h2>
-      <div class="faq-accordion-box">
-        <details class="faq-accordion-item" open>
-          <summary>Does editing or adding text alter the original text layer?</summary>
-          <div class="faq-accordion-answer">
-            <p>LocalDoc overlays your new text, annotations, and shapes onto the document canvas as crisp vector streams without altering or corrupting the existing document fonts and underlying searchable text.</p>
-          </div>
-        </details>
-
-        <details class="faq-accordion-item">
-          <summary>Can I crop all pages in my document simultaneously?</summary>
-          <div class="faq-accordion-answer">
-            <p>Yes. In the Crop Page dialog, select 'All Pages in Document' and choose your preferred margin trim preset (5mm, 10mm, 20mm, or Custom). The /CropBox is applied across all pages in the PDF instantly.</p>
-          </div>
-        </details>
-
-        <details class="faq-accordion-item">
-          <summary>How do I redact or whiteout outdated figures?</summary>
-          <div class="faq-accordion-answer">
-            <p>Choose the Rectangle tool, set the stroke and fill color to White (#FFFFFF), and draw over the outdated figures or clauses. Then use the Text tool to type your updated replacement values directly over the whiteout patch.</p>
-          </div>
-        </details>
-
-        <details class="faq-accordion-item">
-          <summary>What is the difference between Edit PDF Studio and Sign PDF Studio?</summary>
-          <div class="faq-accordion-answer">
-            <p>Edit PDF Studio is designed for document markup: text boxes, fluorescent highlighting, directional arrows, geometry shapes, review status stickers, logo insertion, and page cropping. Sign PDF Studio is specifically built for legal contract execution: cursive handwriting capture, Bezier-smoothed signatures, signer name placers, live certified date/time stamps, and interactive corporate rubber seals.</p>
-          </div>
-        </details>
-      </div>
-
-      <!-- Companion Guide Banner (SEO 2-Way Internal Linking) -->
-      <div class="companion-guide-banner">
-        <div class="companion-guide-content">
-          <div class="companion-guide-icon">&#128214;</div>
-          <div class="companion-guide-text">
-            <h4>In-Depth Master Guide: How to Edit PDF Text, Annotate &amp; Crop</h4>
-            <p>Master vector text injection, fluorescent highlighting, arrows, review stickers, and lossless page cropping.</p>
-          </div>
-        </div>
-        <a href="../blog/edit-pdf-text-guide.html" class="companion-guide-btn">Read Master Guide &rarr;</a>
-      </div>
     </article>
 
-    <!-- Interactive Tool Feedback & Rating Widget -->
-    <section class="tool-feedback-section" aria-label="Tool Feedback &amp; Rating">
-      <div class="feedback-card">
-        <div>
-          <div style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--primary); background:var(--primary-subtle); padding:3px 10px; border-radius:var(--radius-full); margin-bottom:8px;">
-            <span>User Experience</span>
-          </div>
-          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin:0 0 4px;">Was this tool helpful?</h3>
-          <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Rate your local processing experience to help us improve.</p>
-        </div>
-
-        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
-          <div class="rating-stars" role="radiogroup" aria-label="Tool Rating" style="display:flex; gap:4px;">
-            <button type="button" class="star-btn" data-star="1" aria-label="Rate 1 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="2" aria-label="Rate 2 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="3" aria-label="Rate 3 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="4" aria-label="Rate 4 out of 5 stars">&#9733;</button>
-            <button type="button" class="star-btn" data-star="5" aria-label="Rate 5 out of 5 stars">&#9733;</button>
-          </div>
-          
-          <div class="feedback-actions" style="display:flex; gap:8px;">
-            <button type="button" class="feedback-btn-thumb feedback-up" aria-label="Helpful - works great">
-              <span>&#128077;</span> Helpful
-            </button>
-            <button type="button" class="feedback-btn-thumb feedback-down" aria-label="Needs improvement">
-              <span>&#128078;</span> Needs Fix
-            </button>
-          </div>
-        </div>
-
-        <div class="feedback-status-msg" style="display:none; width:100%; padding:10px 14px; border-radius:var(--radius-sm); background:var(--accent-emerald-subtle, #ecfdf5); border:1px solid var(--accent-emerald, #059669); color:var(--text-primary); font-size:0.86rem; line-height:1.4;" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <!-- Section 4.2: Related Guides Module -->
-    <section style="margin-top:36px;padding-top:28px;border-top:1px solid var(--line);">
-      <h2 style="font-size:1.1rem;font-weight:800;color:var(--text-primary);margin-bottom:16px;">Related Guides &amp; Companion Tools</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
-      <a href="../pages/sign-pdf.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        Sign PDF &amp; Corporate Stamp
-      </a>
-      <a href="../blog/edit-pdf-text-guide.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        Edit PDF Master Guide
-      </a>
-      <a href="../pages/merge-pdf.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        Merge PDF
-      </a>
-      <a href="../pages/split-pdf.html" style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-body);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--text-primary);text-decoration:none;font-size:0.88rem;font-weight:600;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--line)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        Split PDF
-      </a>
-      </div>
-    </section>
   </main>
 
-  <!-- Footer -->
+  <!-- Global Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <h3>LocalDoc</h3>
-          <p data-i18n="footer_desc">A high-precision client-side document processing platform. All processing runs 100% inside your device memory. Zero cloud uploads. Zero data harvesting.</p>
-          <div style="margin-top:16px;">
-            <a href="../index.html" class="btn btn-outline" data-i18n="footer_explore_all" style="font-size:0.8rem;padding:6px 14px;">Explore All Tools</a>
+    <div class="container footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand footer-brand">
+            <div class="brand-icon">
+              <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="32" height="32" loading="lazy">
+            </div>
+            <div class="brand-text-wrap">
+              <span class="brand-title">LOCAL<span class="brand-accent">DOC</span></span>
+              <span class="brand-badge">ZERO-UPLOAD</span>
+            </div>
           </div>
+          <p class="footer-tagline" data-i18n="footer_tagline">
+            Next-generation private document engineering. Process, edit, sign, merge, and convert files 100% locally in your browser memory.
+          </p>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer_col_tools" data-i18n="footer_col_tools">Popular Tools</h4>
+          <h4 data-i18n="footer_col_tools">Core PDF Tools</h4>
           <ul class="footer-links">
             <li><a href="edit-pdf.html" class="footer-link"><span>Edit PDF Studio</span></a></li>
             <li><a href="sign-pdf.html" class="footer-link"><span>Sign PDF Studio</span></a></li>
-            <li><a href="compress-pdf.html" class="footer-link"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
-            <li><a href="merge-pdf.html" class="footer-link"><span data-i18n="tool_merge_title">Merge PDF</span></a></li>
-            <li><a href="pdf-to-word.html" class="footer-link"><span data-i18n="tool_pdf_to_word_title">PDF to Word</span></a></li>
-            <li><a href="scan.html" class="footer-link"><span data-i18n="nav_scanner">Document Scanner</span></a></li>
+            <li><a href="merge-pdf.html" class="footer-link"><span data-i18n="nav_merge_pdf">Merge PDF</span></a></li>
+            <li><a href="split-pdf.html" class="footer-link"><span data-i18n="nav_split_pdf">Split PDF</span></a></li>
+            <li><a href="compress-pdf.html" class="footer-link"><span data-i18n="nav_compress_pdf">Compress PDF</span></a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer_col_guides" data-i18n="footer_col_guides">Guides &amp; Knowledge</h4>
+          <h4 data-i18n="footer_col_converters">Conversion Suite</h4>
+          <ul class="footer-links">
+            <li><a href="pdf-to-jpg.html" class="footer-link"><span data-i18n="nav_pdf_to_jpg">PDF to JPG</span></a></li>
+            <li><a href="jpg-to-pdf.html" class="footer-link"><span data-i18n="nav_jpg_to_pdf">JPG / Image to PDF</span></a></li>
+            <li><a href="word-to-pdf.html" class="footer-link"><span data-i18n="nav_word_to_pdf">Word to PDF</span></a></li>
+            <li><a href="scan.html" class="footer-link"><span data-i18n="nav_scanner">CamScanner App</span></a></li>
+            <li><a href="id-photo.html" class="footer-link"><span data-i18n="nav_photo">Biometric ID Studio</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_col_guides">Guides &amp; Knowledge</h4>
           <ul class="footer-links">
             <li><a href="../blog/index.html" class="footer-link"><span data-i18n="nav_blog">Master Guides</span></a></li>
             <li><a href="../blog/edit-pdf-text-guide.html" class="footer-link"><span>Edit PDF Guide</span></a></li>
             <li><a href="../blog/sign-pdf-guide.html" class="footer-link"><span>Sign PDF Guide</span></a></li>
-            <li><a href="../blog/compress-pdf-guide.html" class="footer-link"><span data-i18n="guide_compress_pdf">Compress PDF Guide</span></a></li>
             <li><a href="../faq.html" class="footer-link"><span data-i18n="legal_faq">FAQs &amp; Architecture</span></a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer_col_legal" data-i18n="footer_col_legal">Privacy &amp; Legal</h4>
+          <h4 data-i18n="footer_col_legal">Privacy &amp; Legal</h4>
           <ul class="footer-links">
             <li><a href="../privacy.html" class="footer-link"><span data-i18n="legal_privacy">Privacy Policy</span></a></li>
             <li><a href="../terms.html" class="footer-link"><span data-i18n="legal_terms">Terms of Service</span></a></li>
-            <li><a href="../disclaimer.html" class="footer-link"><span data-i18n="legal_disclaimer">Disclaimer</span></a></li>
             <li><a href="../about.html" class="footer-link"><span data-i18n="legal_about">About LocalDoc</span></a></li>
-            <li><a href="../contact.html" class="footer-link"><span data-i18n="legal_contact">Contact Support</span></a></li>
             <li><a href="../sitemap.html" class="footer-link"><span data-i18n="legal_sitemap">HTML Sitemap</span></a></li>
             <li><a href="../sitemap.xml" class="footer-link"><span data-i18n="footer_xml_sitemap">XML Sitemap</span></a></li>
           </ul>
@@ -1168,37 +954,9 @@
       </div>
       <div class="footer-bottom">
         <p data-i18n="footer_rights">&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
-        <div class="footer-social-links">
-          <a href="https://wa.me/923150750652" target="_blank" rel="noopener noreferrer" class="social-link" title="Chat on WhatsApp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            <span>WhatsApp</span>
-          </a>
-          <a href="mailto:Amaadmazari@gmail.com" class="social-link" title="Direct Email">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>Email</span>
-          </a>
-          <a href="https://www.youtube.com/@Localdoc-org" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube Channel">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            <span>YouTube</span>
-          </a>
-          <a href="https://web.facebook.com/profile.php?id=61595067776430" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook Page">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            <span>Facebook</span>
-          </a>
-          <a href="https://github.com/AmaadMazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub</span>
-          </a>
-        </div>
       </div>
     </div>
   </footer>
-
-  <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
-  <script src="../js/core/pdf-validator.js?v=20260921-v26"></script>
-  <script src="../js/lib/pdf.min.js?v=20260921-v26"></script>
-  <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
-  <script src="../js/tools/organize-pdf.js?v=20260921-v26"></script>
 
   <!-- Global Search Modal -->
   <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
@@ -1221,7 +979,7 @@
           <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
         </div>
         <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
-          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
         </p>
       </div>
       <div class="cookie-consent-actions">
@@ -1234,5 +992,13 @@
       </div>
     </div>
   </aside>
+
+  <!-- Core Scripts -->
+  <script src="../js/core/i18n.js?v=20261018-v64"></script>
+  <script src="../js/core/ui-utils.js?v=20261018-v64"></script>
+  <script src="../js/core/pdf-validator.js?v=20261018-v64"></script>
+  <script src="../js/lib/pdf.min.js?v=20261018-v64"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20261018-v64"></script>
+  <script src="../js/tools/edit-pdf.js?v=20261021-v76"></script>
 </body>
 </html>
