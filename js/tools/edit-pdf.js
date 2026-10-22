@@ -1787,6 +1787,8 @@
     changePage,
     setZoom,
     fitToWidth,
+    renderActivePage,
+    renderAnnotationsOverlay,
     exportEditedPdf
   };
 
