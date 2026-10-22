@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pro Engineering Guide: Casio fx-5800P Programming &amp; Civil Math | LocalDoc</title>
+  <meta name="description" content="Advanced engineering calculator masterclass: Casio fx-5800P &amp; fx-3650P II programming, Casio-BASIC syntax, civil surveying road curves (horizontal &amp; vertical alignments), 2x2 &amp; 3x3 matrix determinants, and complex number solvers.">
+  <meta name="keywords" content="casio fx-5800p programming guide, casio fx-3650p formulas, civil surveying calculator programs, road curve formulas calculator, matrix determinant scientific calculator, cramer rule calculator, base-n hexadecimal calculator, casio-basic syntax">
+  <link rel="canonical" href="https://localdoc.org/blog/pro-engineering-calculator-master-guide.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Pro Engineering Guide: Casio fx-5800P Programming &amp; Civil Math">
+  <meta property="og:description" content="Master Casio-BASIC syntax, programmable formulas on the fx-5800P, civil road curves (horizontal/vertical alignments), and matrix math.">
+  <meta property="og:url" content="https://localdoc.org/blog/pro-engineering-calculator-master-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-calculator.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pro Engineering Guide: Casio fx-5800P Programming &amp; Civil Math">
+  <meta name="twitter:description" content="Technical engineering manual for Casio fx-5800P programming, highway surveying algorithms, and linear algebra matrices.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-calculator.webp">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <!-- Schema.org JSON-LD Graph -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Master Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Pro Engineering Calculator Guide",
+            "item": "https://localdoc.org/blog/pro-engineering-calculator-master-guide.html"
+          }
+        ]
+      },
+      {
+        "@type": "TechArticle",
+        "headline": "Pro Engineering Guide: Casio fx-5800P Programming & Civil Math",
+        "description": "Exhaustive engineering manual detailing programmable calculator architecture, Casio-BASIC programming commands, civil surveying road curve code routines, matrix determinants, and complex number mathematics.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Computational Architect",
+          "url": "https://localdoc.org/about.html"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/favicon.svg"
+          }
+        },
+        "datePublished": "2026-10-22T20:00:00+00:00",
+        "dateModified": "2026-10-22T20:45:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/pro-engineering-calculator-master-guide.html"
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Program a Civil Highway Curve Routine in Casio-BASIC",
+        "description": "Step-by-step instructions to code and execute horizontal circular curve calculations on the Casio fx-5800P.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Enter Program Mode",
+            "text": "Press MODE followed by PROG (Mode 5) and choose NEW to name your routine (e.g., 'HCURVE')."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Prompt for Radius and Deflection Angle",
+            "text": "Input prompt commands: 'RADIUS'? -> R : 'DELTA'? -> D."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Calculate Tangent and Curve Length",
+            "text": "Program the geometric trigonometry formulas: R * tan(D / 2) -> T : (pi * R * D) / 180 -> L."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Calculate External and Long Chord",
+            "text": "Compute chord and clearance: 2 * R * sin(D / 2) -> C : R * (1 / cos(D / 2) - 1) -> E."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Output Results in Sequential Halts",
+            "text": "Display outputs with the triangle pause character: 'TANGENT=' : T (pause) : 'LENGTH=' : L (pause)."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What makes the Casio fx-5800P unique compared to other scientific calculators?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Casio fx-5800P features 28,500 bytes of non-volatile program RAM, a 4-line dot-matrix display, 128 built-in scientific formulas, and a full Casio-BASIC programming environment with conditional jumps, loops, and custom variable prompts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I solve 3x3 matrix determinants without a programmable calculator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can use standard matrix mode on scientific calculators (MODE -> MATRIX -> MAT A -> DIM 3x3 -> det(MatA)), or compute it in seconds on LocalDoc's free Web Scientific Calculator."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Casio-BASIC handle user input prompts?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In Casio-BASIC, a question mark followed by an arrow and variable name ('VARIABLE'? -> V) pauses program execution, displays the variable label on screen, and waits for the engineer to input a numerical value."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-post-page">
+  <div class="site-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="../index.html" class="brand-link">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="32" height="32" class="brand-logo">
+          <span class="brand-text">LocalDoc</span>
+        </a>
+        <nav class="site-nav">
+          <a href="../pages/scientific-calculator.html" class="nav-link">Web Calculator</a>
+          <a href="../pages/edit-pdf.html" class="nav-link">Edit PDF</a>
+          <a href="../pages/sign-pdf.html" class="nav-link">Sign PDF</a>
+          <a href="index.html" class="nav-link active">Guides</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Top Breadcrumb Strip -->
+    <div class="breadcrumb-strip">
+      <div class="breadcrumb-inner">
+        <a href="../index.html">Home</a> &rsaquo;
+        <a href="index.html">Master Guides</a> &rsaquo;
+        <span>Pro Engineering Calculator Guide</span>
+      </div>
+    </div>
+
+    <!-- Article Container -->
+    <main class="article-container">
+      <div class="guide-hero-banner" style="background:linear-gradient(135deg, #0F172A 0%, #022C22 100%); border-radius:18px; padding:36px 32px; color:#FFF; margin-bottom:32px; border:1px solid #1E3A5F; box-shadow:0 12px 36px rgba(0,0,0,0.3);">
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(16,185,129,0.25); border:1px solid #10B981; border-radius:20px; padding:6px 14px; font-size:0.8rem; font-weight:800; color:#34D399; margin-bottom:14px;">
+          📐 PRO ENGINEERING &amp; PROGRAMMING MASTER CLASS
+        </div>
+        <h1 style="font-size:2.2rem; font-weight:800; line-height:1.25; margin:0 0 14px 0; color:#FFF;">
+          Pro Engineering Guide: Casio fx-5800P Programming &amp; Civil Math
+        </h1>
+        <p style="font-size:1.05rem; line-height:1.6; color:#94A3B8; margin:0 0 20px 0; max-width:880px;">
+          The authoritative handbook on Casio-BASIC syntax, programmable formulas, civil highway curve surveying (horizontal &amp; vertical alignments), 2×2 &amp; 3×3 matrix algebra, and Base-N logic engineering.
+        </p>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:18px; font-size:0.85rem; color:#CBD5E1;">
+          <span>✍️ By Amaad Mazari (Lead Computational Architect)</span>
+          <span>•</span>
+          <span>📅 Updated October 2026</span>
+          <span>•</span>
+          <span>⏱️ 16 Min Read</span>
+          <span>•</span>
+          <span>🚜 Written for Civil Engineers, Surveyors &amp; STEM Professionals</span>
+        </div>
+      </div>
+
+      <!-- Free Interactive Tool Callout -->
+      <div style="background:#F0FDF4; border:2px solid #059669; border-radius:14px; padding:20px 24px; margin-bottom:36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div style="max-width:650px;">
+          <h4 style="margin:0 0 6px 0; font-size:1.1rem; color:#064E3B;">⚡ High-Precision Browser Calculation Engine</h4>
+          <p style="margin:0; font-size:0.9rem; color:#374151; line-height:1.5;">
+            Need to evaluate complex matrices or multi-line trigonometric chains without punching physical rubber keys in the field? Run your engineering math directly on our free web calculator.
+          </p>
+        </div>
+        <a href="../pages/scientific-calculator.html" class="btn btn-primary" style="padding:10px 22px; font-weight:800; font-size:0.92rem; background:#059669; border-color:#059669; color:#FFF; text-decoration:none; border-radius:8px;">
+          Open Web Calculator &rarr;
+        </a>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="toc-card" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:14px; padding:22px 28px; margin-bottom:40px;">
+        <h3 style="margin:0 0 14px 0; font-size:1.15rem; color:var(--text-primary);">Table of Contents</h3>
+        <ol style="margin:0; padding-left:22px; line-height:1.8; color:var(--text-secondary); font-size:0.94rem;">
+          <li><a href="#section-1" style="color:var(--primary); font-weight:600;">Hardware Architecture: Casio fx-5800P vs. Standard Scientific</a></li>
+          <li><a href="#section-2" style="color:var(--primary); font-weight:600;">Casio-BASIC Syntax &amp; Programming Fundamentals</a></li>
+          <li><a href="#section-3" style="color:var(--primary); font-weight:600;">Civil Surveying: Horizontal Circular Road Curves (With Ready-to-Run Code)</a></li>
+          <li><a href="#section-4" style="color:var(--primary); font-weight:600;">Civil Surveying: Vertical Parabolic Curves (Crest &amp; Sag Alignments)</a></li>
+          <li><a href="#section-5" style="color:var(--primary); font-weight:600;">Linear Algebra: 2×2 &amp; 3×3 Matrix Determinants, Inverses &amp; Cramer's Rule</a></li>
+          <li><a href="#section-6" style="color:var(--primary); font-weight:600;">Base-N Number Systems &amp; Bitwise Logic Gates (HEX, BIN, OCT, DEC)</a></li>
+          <li><a href="#section-7" style="color:var(--primary); font-weight:600;">Executing Engineering Workflows on LocalDoc Web Calculator</a></li>
+          <li><a href="#section-8" style="color:var(--primary); font-weight:600;">Frequently Asked Questions (FAQ)</a></li>
+        </ol>
+      </div>
+
+      <!-- Section 1 -->
+      <section id="section-1" class="guide-section" style="margin-bottom:44px;">
+        <h2>1. Hardware Architecture: Casio fx-5800P vs. Standard Scientific</h2>
+        <p>
+          While standard school calculators (such as the fx-83GTX or fx-991EX) are rigid single-line or textbook expression evaluators, the <strong>Casio fx-5800P</strong> is a dedicated portable microcomputer built for heavy field engineering, land surveying, and geodetic measurements:
+        </p>
+
+        <div style="overflow-x:auto; margin:22px 0;">
+          <table class="spec-table" style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <thead>
+              <tr style="background:#0F172A; color:#FFF; text-align:left;">
+                <th style="padding:12px 14px;">Technical Specification</th>
+                <th style="padding:12px 14px;">Standard Scientific (fx-83/85/991)</th>
+                <th style="padding:12px 14px;">Pro Programmable (fx-5800P)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:10px 14px; font-weight:700;">Program Memory</td>
+                <td style="padding:10px 14px; color:#DC2626;">None (Zero user program storage)</td>
+                <td style="padding:10px 14px; font-weight:800; color:#059669;">28,500 Bytes Non-Volatile Flash RAM</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line); background:rgba(0,0,0,0.02);">
+                <td style="padding:10px 14px; font-weight:700;">Display Matrix</td>
+                <td style="padding:10px 14px;">2-line natural display</td>
+                <td style="padding:10px 14px; font-weight:800; color:#059669;">4-line × 16-character full dot-matrix LCD</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:10px 14px; font-weight:700;">Programming Language</td>
+                <td style="padding:10px 14px; color:#DC2626;">None</td>
+                <td style="padding:10px 14px; font-weight:800; color:#059669;">Casio-BASIC (If/Then/Else, For/Next, While, Goto)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line); background:rgba(0,0,0,0.02);">
+                <td style="padding:10px 14px; font-weight:700;">Built-In Formulas</td>
+                <td style="padding:10px 14px;">0 &ndash; 12 constants</td>
+                <td style="padding:10px 14px; font-weight:800; color:#059669;">128 pre-programmed formulas + 40 scientific constants</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:10px 14px; font-weight:700;">Data Interlink Port</td>
+                <td style="padding:10px 14px; color:#DC2626;">None</td>
+                <td style="padding:10px 14px; font-weight:800; color:#059669;">3-pin serial cable (unit-to-unit code cloning)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 2 -->
+      <section id="section-2" class="guide-section" style="margin-bottom:44px;">
+        <h2>2. Casio-BASIC Syntax &amp; Programming Fundamentals</h2>
+        <p>
+          Casio-BASIC on the fx-5800P allows engineers to automate repetitive, error-prone math. You create programs by pressing <code>MODE &rarr; PROG &rarr; NEW</code>.
+        </p>
+
+        <h3>Core Syntax Operators:</h3>
+        <ul style="line-height:1.75; font-size:0.95rem; color:var(--text-secondary);">
+          <li><strong><code>"PROMPT"? &rarr; V</code>:</strong> The user input command. Displays <code>PROMPT?</code> on screen and stores the entered numerical value into memory variable <code>V</code>.</li>
+          <li><strong><code>&rarr;</code> (Assignment Arrow):</strong> The assignment operator. Evaluates the expression on the left and stores it in the variable on the right (e.g., <code>A × B &rarr; C</code>).</li>
+          <li><strong><code>:</code> (Statement Separator):</strong> Joins multiple statements on a single line to conserve memory bytes.</li>
+          <li><strong><code>◢</code> (Display Halt):</strong> The pause symbol. Halts execution, renders the value on the LCD, and waits for the engineer to press <code>EXE</code> before continuing.</li>
+          <li><strong><code>If ~ Then ~ Else ~ IfEnd</code>:</strong> Conditional logic branching.</li>
+          <li><strong><code>For 1 &rarr; I To N ~ Next</code>:</strong> Finite loop iteration.</li>
+        </ul>
+      </section>
+
+      <!-- Section 3 -->
+      <section id="section-3" class="guide-section" style="margin-bottom:44px;">
+        <h2>3. Civil Surveying: Horizontal Circular Road Curves (With Ready-to-Run Code)</h2>
+        <p>
+          When designing highway centerlines, civil engineers connect straight tangents using circular horizontal curves. Below are the governing civil surveying formulas:
+        </p>
+
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:20px; margin:20px 0; font-family:'JetBrains Mono', monospace; font-size:0.92rem; line-height:1.7;">
+          <strong>Tangent Length (T):</strong> T = R × tan(Δ / 2)<br>
+          <strong>Curve Length (L):</strong> L = (π × R × Δ) / 180<br>
+          <strong>Long Chord (C):</strong> C = 2 × R × sin(Δ / 2)<br>
+          <strong>External Distance (E):</strong> E = R × [sec(Δ / 2) - 1] = R × [(1 / cos(Δ / 2)) - 1]<br>
+          <strong>Middle Ordinate (M):</strong> M = R × [1 - cos(Δ / 2)]
+        </div>
+
+        <h3>Ready-to-Run Casio-BASIC Script: <code>HCURVE</code></h3>
+        <p>Type this program into your fx-5800P to calculate all curve geometry in 2 seconds:</p>
+
+        <pre style="background:#0F172A; color:#E2E8F0; padding:20px; border-radius:12px; overflow-x:auto; font-family:'JetBrains Mono', monospace; font-size:0.88rem; line-height:1.6; border:1px solid #334155;">
+"HORIZONTAL CURVE"
+Deg: Fix 3
+"RADIUS R"? &rarr; R
+"DEFLECTION DELTA"? &rarr; D
+
+R × tan(D ÷ 2) &rarr; T
+(π × R × D) ÷ 180 &rarr; L
+2 × R × sin(D ÷ 2) &rarr; C
+R × ((1 ÷ cos(D ÷ 2)) - 1) &rarr; E
+R × (1 - cos(D ÷ 2)) &rarr; M
+
+"TANGENT T=" : T ◢
+"LENGTH L=" : L ◢
+"CHORD C=" : C ◢
+"EXTERNAL E=" : E ◢
+"MID ORD M=" : M ◢
+"DONE"
+        </pre>
+
+        <div style="background:#F0FDF4; border-left:4px solid #059669; padding:12px 18px; border-radius:6px; margin:14px 0; font-size:0.88rem; color:#064E3B;">
+          <strong>Worked Verification Example:</strong> If Radius <code>R = 500.000m</code> and Deflection Angle <code>Δ = 42°30'</code> (42.5°):<br>
+          • Tangent <code>T = 194.437m</code> | Length <code>L = 370.883m</code> | Chord <code>C = 362.438m</code> | External <code>E = 36.529m</code> | Mid-Ord <code>M = 34.045m</code>.
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section id="section-4" class="guide-section" style="margin-bottom:44px;">
+        <h2>4. Civil Surveying: Vertical Parabolic Curves (Crest &amp; Sag Alignments)</h2>
+        <p>
+          Vertical highway curves smooth the transition between differing highway road grades (<code>g₁</code> and <code>g₂</code>) using symmetrical parabolas.
+        </p>
+
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:20px; margin:20px 0; font-family:'JetBrains Mono', monospace; font-size:0.92rem; line-height:1.7;">
+          <strong>Rate of Grade Change (r):</strong> r = (g₂ - g₁) / L<br>
+          <strong>Elevation along Curve at station x:</strong> Y(x) = Elev_BVC + (g₁ × x) + (r / 2) × x²<br>
+          <strong>Distance to Turning Point (High/Low Point):</strong> x_turn = -g₁ / r = (g₁ × L) / (g₁ - g₂)
+        </div>
+
+        <h3>Ready-to-Run Casio-BASIC Script: <code>VCURVE</code></h3>
+        <pre style="background:#0F172A; color:#E2E8F0; padding:20px; border-radius:12px; overflow-x:auto; font-family:'JetBrains Mono', monospace; font-size:0.88rem; line-height:1.6; border:1px solid #334155;">
+"VERTICAL PARABOLA"
+Fix 3
+"BVC ELEV"? &rarr; E
+"GRADE 1 (%)"? &rarr; G1
+"GRADE 2 (%)"? &rarr; G2
+"CURVE LEN L"? &rarr; L
+
+(G1 ÷ 100) &rarr; A
+(G2 ÷ 100) &rarr; B
+(B - A) ÷ L &rarr; R
+
+"TURNING POINT X=" : -A ÷ R ◢
+"TURN ELEV=" : E + (A × (-A ÷ R)) + (0.5 × R × (-A ÷ R)²) ◢
+
+Lbl 1
+"STATION DIST X"? &rarr; X
+If X > L : Then Goto 2 : IfEnd
+E + (A × X) + (0.5 × R × X²) &rarr; Y
+"ELEVATION Y=" : Y ◢
+Goto 1
+
+Lbl 2
+"END OF CURVE"
+        </pre>
+      </section>
+
+      <!-- Section 5 -->
+      <section id="section-5" class="guide-section" style="margin-bottom:44px;">
+        <h2>5. Linear Algebra: 2×2 &amp; 3×3 Matrix Determinants, Inverses &amp; Cramer's Rule</h2>
+        <p>
+          Structural frame analysis and electrical loop currents require solving simultaneous matrix systems.
+        </p>
+
+        <h3>2×2 Matrix Determinant:</h3>
+        <p>For matrix <code>A = [ [a, b], [c, d] ]</code>:</p>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; margin:12px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem;">
+          det(A) = |A| = (a × d) - (b × c)
+        </div>
+
+        <h3>3×3 Matrix Determinant via Minor Expansion:</h3>
+        <p>For matrix <code>M = [ [a, b, c], [d, e, f], [g, h, i] ]</code>:</p>
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; margin:12px 0; font-family:'JetBrains Mono', monospace; font-size:0.95rem;">
+          det(M) = a(ei - fh) - b(di - fg) + c(dh - eg)
+        </div>
+
+        <h3>Matrix Inversion Condition:</h3>
+        <p>
+          A matrix is invertible if and only if <code>det(M) &ne; 0</code>. If the determinant equals zero, the matrix is singular (degenerate), meaning simultaneous equations have either zero or infinite solutions.
+        </p>
+      </section>
+
+      <!-- Section 6 -->
+      <section id="section-6" class="guide-section" style="margin-bottom:44px;">
+        <h2>6. Base-N Number Systems &amp; Bitwise Logic Gates (HEX, BIN, OCT, DEC)</h2>
+        <p>
+          Embedded firmware engineers use the fx-5800P’s dedicated Base-N mode (<code>MODE &rarr; 4 (BASE-N)</code>) for real-time binary logic debugging:
+        </p>
+        <ul style="line-height:1.75; font-size:0.95rem; color:var(--text-secondary);">
+          <li><strong>Hexadecimal (HEX):</strong> Base-16 values (<code>0–9</code>, <code>A–F</code>). Press <code>[h]</code> to tag numbers (e.g., <code>0x3F</code>).</li>
+          <li><strong>Binary (BIN):</strong> Base-2 values (<code>0, 1</code>). Quick conversions between byte registers and masks.</li>
+          <li><strong>Bitwise Operators:</strong> <code>And</code>, <code>Or</code>, <code>Xor</code>, <code>Xnor</code>, <code>Not</code>, and <code>Neg</code> allow evaluating register bitmasks directly on the keypad.</li>
+        </ul>
+      </section>
+
+      <!-- Section 7 -->
+      <section id="section-7" class="guide-section" style="margin-bottom:44px;">
+        <h2>7. Executing Engineering Workflows on LocalDoc Web Calculator</h2>
+        <p>
+          When you're at your desk drafting CAD drawings or reports, LocalDoc's <a href="../pages/scientific-calculator.html" style="color:var(--primary); font-weight:700;">Web Scientific Calculator</a> provides complete engineering fidelity in your browser:
+        </p>
+        <ul style="line-height:1.75; font-size:0.95rem; color:var(--text-secondary);">
+          <li><strong>Arbitrary Precision Math Core:</strong> Avoids floating-point rounding errors on extreme trig functions.</li>
+          <li><strong>Continuous Formula Viewport:</strong> Edit nested parenthesis brackets, power towers, and roots interactively.</li>
+          <li><strong>Complete Memory Registers:</strong> Dedicated on-screen memory HUD chips matching physical hardware behavior.</li>
+          <li><strong>Zero Installation:</strong> Runs instantly on desktop, tablet, and mobile browsers with zero cloud uploads.</li>
+        </ul>
+        <div style="margin-top:20px;">
+          <a href="../pages/scientific-calculator.html" class="btn btn-primary btn-lg" style="padding:12px 28px; font-weight:800; font-size:1rem; background:#059669; border-color:#059669; color:#FFF; text-decoration:none; border-radius:8px; display:inline-block;">
+            Open Web Scientific Calculator &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 8: FAQ -->
+      <section id="section-8" class="guide-section" style="margin-bottom:44px;">
+        <h2>8. Frequently Asked Questions (FAQ)</h2>
+        <div class="faq-accordion">
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin-bottom:14px;">
+            <h4 style="margin:0 0 8px 0; color:var(--text-primary);">What makes the Casio fx-5800P unique compared to other scientific calculators?</h4>
+            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              The fx-5800P packs 28,500 bytes of non-volatile flash RAM, a 4-line dot-matrix screen, and a complete Casio-BASIC execution environment with loops, conditional branches, and custom variable prompts.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin-bottom:14px;">
+            <h4 style="margin:0 0 8px 0; color:var(--text-primary);">Can I solve 3×3 matrix determinants on a non-programmable calculator?</h4>
+            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              Yes. Most standard scientific calculators (like the fx-991EX or our free Web Calculator) feature a dedicated Matrix mode (<code>MODE &rarr; MATRIX</code>) where you define Matrix A and evaluate <code>det(MatA)</code> in one click.
+            </p>
+          </div>
+
+          <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:18px 22px; margin-bottom:14px;">
+            <h4 style="margin:0 0 8px 0; color:var(--text-primary);">How do you transfer programs between two Casio fx-5800P calculators?</h4>
+            <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">
+              Connect the 2.5mm SB-62 link cable between both units. On the sending unit, select <code>LINK &rarr; TRANSMIT</code>; on the receiving unit, select <code>LINK &rarr; RECEIVE</code>. All program routines and formula files transfer in seconds.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Guide Recommendation Banner -->
+      <div style="background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); border-radius:14px; padding:24px; color:#FFF; margin-top:36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <span style="font-size:0.8rem; font-weight:800; color:#BAE6FD; letter-spacing:0.04em;">🎓 LOOKING FOR BASIC SYMBOLS &amp; EXAM TRICKS?</span>
+          <h3 style="margin:4px 0 6px 0; font-size:1.2rem; color:#FFF;">The Ultimate Student Guide to Scientific Calculator Symbols &amp; Math</h3>
+          <p style="margin:0; font-size:0.88rem; color:#E0F2FE; max-width:600px;">
+            Need a breakdown of basic keypad symbols, memory keys (M+, MR, MC), fractions with steps, or high-school GCSE exam shortcuts? Read our student companion guide.
+          </p>
+        </div>
+        <a href="student-math-calculator-master-guide.html" class="btn btn-outline" style="padding:10px 20px; font-weight:800; font-size:0.88rem; color:#FFF; border-color:#FFF; text-decoration:none; border-radius:8px; background:rgba(255,255,255,0.15);">
+          Read Student Guide &rarr;
+        </a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer" style="margin-top:60px; padding:40px 0; border-top:1px solid var(--line); background:var(--bg-surface);">
+      <div class="footer-inner" style="max-width:1100px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="24" height="24">
+            <strong style="color:var(--text-primary);">LocalDoc</strong>
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">100% Client-Side Private Document &amp; Math Tools</p>
+        </div>
+        <div style="font-size:0.85rem;">
+          <a href="index.html" style="color:var(--text-secondary); text-decoration:none; margin-right:18px;">All Master Guides</a>
+          <a href="../pages/scientific-calculator.html" style="color:var(--text-secondary); text-decoration:none; margin-right:18px;">Web Calculator</a>
+          <a href="student-math-calculator-master-guide.html" style="color:var(--text-secondary); text-decoration:none;">Student Math Guide</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
