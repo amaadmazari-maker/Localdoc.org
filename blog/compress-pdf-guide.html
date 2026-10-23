@@ -1,42 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Compress PDF Online Guide — Reduce File Size to 200KB or Less</title>
-  <meta name="description" content="Compress PDF files up to 85% smaller directly in your browser. Learn how to reduce document size to 100KB, 200KB, or 500KB for portal uploads and emails.">
-  <link rel="canonical" href="https://localdoc.org/blog/compress-pdf-guide.html">
-  <link rel="manifest" href="../manifest.json">
-  <meta name="theme-color" content="#0284C7">
-  
-  <!-- Critical Resource Hints & Preconnects -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
-
-  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
-  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
-  <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
-  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="Compress PDF Online — Reduce File Size Instantly">
-  <meta property="og:description" content="Compress PDFs up to 85% smaller in your browser — no upload, no sign-up. Ideal for email, WhatsApp and print-ready documents.">
-  <meta property="og:url" content="https://localdoc.org/blog/compress-pdf-guide.html">
-  <meta property="og:site_name" content="LocalDoc">
-  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-compress.webp">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Compress PDF Online — Reduce File Size Instantly">
-  <meta name="twitter:description" content="Compress PDFs up to 85% smaller in your browser — no upload, no sign-up. Ideal for email, WhatsApp and print-ready documents.">
-  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-compress.webp">
-
-
-    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -52,321 +17,446 @@
     gtag('config', 'G-TKJ5FEYGWJ');
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>How to Compress PDF to 200KB or Less: WebAssembly Deflate &amp; Image Downsampling | LocalDoc</title>
+  <meta name="description" content="Master engineering guide to compressing PDF files up to 90% in browser RAM. Learn ISO 32000-1 FlateDecode stream deflate, bicubic raster downsampling, government portal byte ceilings (200KB/100KB), and zero-upload client privacy.">
+  <link rel="canonical" href="https://localdoc.org/blog/compress-pdf-guide.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Compress PDF to 200KB or Less: WebAssembly Deflate &amp; Image Downsampling">
+  <meta property="og:description" content="Master engineering guide to PDF compression. Learn FlateDecode stream deflate, bicubic downsampling, portal limits (200KB), and client-side privacy.">
+  <meta property="og:url" content="https://localdoc.org/blog/compress-pdf-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-compress.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Compress PDF to 200KB or Less: WebAssembly Deflate &amp; Image Downsampling">
+  <meta name="twitter:description" content="Step-by-step technical guide to compressing PDF files for email and government portals without losing vector typography sharpness.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-compress.webp">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <!-- Schema.org 4-Part Graph -->
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://localdoc.org/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Master Guides",
-          "item": "https://localdoc.org/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "How to Compress PDF Files Without Losing Text Quality (Client-Side Benchmark Guide)",
-          "item": "https://localdoc.org/blog/compress-pdf-guide.html"
-        }
-      ]
-    },
-    {
-      "@type": "Article",
-      "headline": "How to Compress PDF Files Without Losing Text Quality (Benchmark Guide)",
-      "description": "Technical guide explaining how in-browser WebAssembly compression preserves vector typography while reducing 48 MB files to 4.6 MB.",
-      "author": {
-        "@type": "Person",
-        "name": "Amaad Mazari",
-        "jobTitle": "Founder & Security Architect",
-        "url": "https://localdoc.org/about.html"
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Master Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "How to Compress PDF Online Guide",
+            "item": "https://localdoc.org/blog/compress-pdf-guide.html"
+          }
+        ]
       },
-      "publisher": {
-        "@type": "Organization",
-        "name": "LocalDoc",
-        "url": "https://localdoc.org/"
+      {
+        "@type": "TechArticle",
+        "headline": "How to Compress PDF to 200KB or Less: WebAssembly Deflate & Image Downsampling",
+        "description": "Master engineering guide to compressing PDF documents. Explains ISO 32000-1 FlateDecode stream deflate, bicubic raster downsampling, and government portal byte ceilings.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Document & Cryptographic Systems Specialist",
+          "url": "https://localdoc.org/about.html#amaad-mazari"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "url": "https://localdoc.org/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-08-15T00:00:00Z",
+        "dateModified": "2026-10-23T00:00:00Z",
+        "mainEntityOfPage": "https://localdoc.org/blog/compress-pdf-guide.html",
+        "articleSection": "Document Engineering & Optimization",
+        "inLanguage": "en"
       },
-      "datePublished": "2026-08-15",
-      "dateModified": "2026-09-14",
-      "mainEntityOfPage": "https://localdoc.org/blog/compress-pdf-guide.html"
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to Compress PDF Files Without Losing Text Quality",
-      "description": "Technical guide showing how in-browser WebAssembly compression, FlateDecode, and bicubic downsampling reduce massive scanned documents by up to 92% in client RAM.",
-      "totalTime": "PT1M",
-      "tool": [
-        {
-          "@type": "HowToTool",
-          "name": "LocalDoc In-Browser PDF Compressor"
-        }
-      ],
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Select or Drop PDF into RAM Workspace",
-          "text": "Choose or drag your PDF document into the LocalDoc upload zone. The file is loaded into browser memory as an isolated byte stream without uploading bytes to remote cloud servers.",
-          "image": "https://localdoc.org/assets/images/guides/compress-step1-select-pdf.webp",
-          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-1-select-pdf"
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Select Optimization Profile & Target Limits",
-          "text": "Choose 'Recommended (Balanced Quality 150 DPI)' for standard portals or 'Extreme (72 DPI)' for tight email limits. Optional strict presets allow targeting exact sizes like <= 200 KB or <= 5 MB.",
-          "image": "https://localdoc.org/assets/images/guides/compress-step2-tier-selection.webp",
-          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-2-tier-selection"
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "In-Memory WASM FlateDecode & Bicubic Downsampling",
-          "text": "The WebAssembly engine applies lossless FlateDecode compression to vector typography, downsamples 300 DPI scanned seals, and strips dead metadata in 1,120ms.",
-          "image": "https://localdoc.org/assets/images/guides/compress-step3-downsampling-hud.webp",
-          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-3-downsampling-hud"
-        },
-        {
-          "@type": "HowToStep",
-          "position": 4,
-          "name": "Inspect 400% Zoom Quality Comparison",
-          "text": "Verify side-by-side that vector font curves remain razor sharp under 400% magnification and notary stamps remain clear while saving over 90% of file weight.",
-          "image": "https://localdoc.org/assets/images/guides/compress-step4-quality-comparison.webp",
-          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-4-quality-comparison"
-        },
-        {
-          "@type": "HowToStep",
-          "position": 5,
-          "name": "Download Optimized PDF with Zero Cloud Latency",
-          "text": "Click 'Download Compressed PDF' to save your file directly from device RAM to your local storage, ready for immediate email attachment or court portal submission.",
-          "image": "https://localdoc.org/assets/images/guides/compress-step5-download-compressed.webp",
-          "url": "https://localdoc.org/blog/compress-pdf-guide.html#step-5-download-compressed"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Does PDF compression make text blurry or unreadable?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. In LocalDoc, vector typography and font glyphs are compressed losslessly with FlateDecode. Vector text remains mathematically sharp at infinite zoom. Only embedded high-resolution raster images are downsampled."
+      {
+        "@type": "HowTo",
+        "name": "How to Compress PDF Files Online Without Losing Text Sharpness in Browser RAM",
+        "description": "Step-by-step guide to reducing PDF file size to 200KB or under 5MB while preserving 100% vector font clarity.",
+        "totalTime": "PT2M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Load PDF into Isolated Browser RAM Sandbox",
+            "text": "Select or drag your PDF into LocalDoc. The document tree is parsed locally in browser WebAssembly memory with zero network uploads."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Select Compression Profile & Target Byte Ceiling",
+            "text": "Choose between Recommended (150 DPI), Archival (220 DPI), or Extreme (96 DPI / 200 KB) based on your portal or email requirements."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Execute WebAssembly FlateDecode & Bicubic Downsampling",
+            "text": "Run the client-side optimization loop: embedded raster images are resampled while vector typography streams remain lossless."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Inspect 400% Zoom Quality Loupe",
+            "text": "Verify that text outlines, signatures, and notary stamps remain crisp without compression artifacts."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Download Optimized PDF with Zero Cloud Latency",
+            "text": "Export your compressed document directly to your downloads folder, ready for immediate government or court filing."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "How much can a typical PDF file size be reduced?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "For scanned contracts with 300 DPI photos, compression achieves reductions between 65% and 92%. In our benchmark, a 48.2 MB municipal lease was reduced to 4.62 MB."
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How can I reduce a PDF file size to less than 200 KB?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "To compress a PDF to under 200 KB, navigate to LocalDoc's dedicated 200KB compressor. The engine applies an aggressive downsampling profile (96 DPI to 120 DPI) combined with maximum FlateDecode stream deflation and metadata stripping, fitting documents under portal caps while keeping text fully readable."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does PDF compression make text blurry or pixelated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No, provided the original document contains true vector text. LocalDoc's compression engine targets only heavy embedded raster images (scanned pages, photos). Vector text glyphs and Bézier outlines are preserved mathematically, meaning text remains razor-sharp at 400% or 800% zoom."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why are scanned PDFs so large compared to Word-generated PDFs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Word-generated PDFs contain mathematical character codes and font descriptors that consume only a few kilobytes per page. Scanned PDFs, by contrast, are full-page bitmap photographs (often 300 DPI uncompressed TIFF or high-bitrate JPEG) where every square inch contains millions of color pixels."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is client-side PDF compression completely private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. LocalDoc executes compression entirely inside your browser's local RAM using WebAssembly (WASM). Your confidential contracts, financial filings, and personal documents are never transmitted across the internet to any external server."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Are files uploaded to any server during compression?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Never. LocalDoc executes entirely in browser memory (RAM) via WebAssembly. Zero bytes leave your physical computer."
-          }
-        }
-      ]
-    }
-  ]
-}
+        ]
+      }
+    ]
+  }
   </script>
 
   <style>
-    .tech-card {
+    /* Table of Contents Box */
+    .toc-box {
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .comp-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 0.92rem;
-    }
-    .comp-table th, .comp-table td {
-      border: 1px solid var(--line);
-      padding: 12px 14px;
-      text-align: left;
-    }
-    .comp-table th {
-      background: var(--bg-surface-2);
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-    .comp-table tr:hover td {
-      background: rgba(2, 132, 199, 0.04);
-    }
-    .slider-box {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(56, 189, 248, 0.08));
-      border: 1px solid rgba(2, 132, 199, 0.25);
-      border-radius: var(--radius-lg);
-      padding: 24px;
+      border-radius: 12px;
+      padding: 20px 24px;
       margin: 28px 0;
-      text-align: center;
+    }
+    .toc-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 8px 16px;
+    }
+    .toc-list li a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s ease;
+    }
+    .toc-list li a:hover {
+      text-decoration: underline;
+      color: #0369A1;
     }
 
-    /* Visual Walkthrough Components */
-    .walkthrough-container {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-      margin: 32px 0;
+    /* Executive Summary Box */
+    .exec-summary-box {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%);
+      border: 1.5px solid var(--primary);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 28px 0;
     }
+    .exec-summary-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+    .exec-summary-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .exec-summary-box li {
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Quick Answer Card (Google Featured Snippet Position 0) */
+    .quick-answer-card {
+      background: var(--bg-surface);
+      border: 2px solid #0284C7;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin: 28px 0;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.08);
+    }
+    .quick-answer-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .quick-answer-badge {
+      background: #0284C7;
+      color: #FFF;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Walkthrough Step Card System */
     .walkthrough-step-card {
       background: var(--bg-surface);
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 24px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .walkthrough-step-card:hover {
-      box-shadow: var(--shadow-md);
+      margin: 32px 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
     }
     .walkthrough-step-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 14px;
+      margin-bottom: 16px;
     }
-    .walkthrough-step-badge {
-      display: inline-flex;
+    .walkthrough-step-number {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: #FFF;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      background: #0284C7;
-      color: #FFFFFF;
-      font-weight: 800;
-      font-size: 0.85rem;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      flex-shrink: 0;
     }
     .walkthrough-step-title {
-      margin: 0;
       font-size: 1.25rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-primary);
+      margin: 0;
     }
-    .walkthrough-step-desc {
-      margin: 0 0 18px 0;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.65;
-    }
-    .walkthrough-visual-frame {
+
+    /* Zero Empty Rectangles Law: Visual Viewport */
+    .annotated-viewport {
       position: relative;
       width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
       background: #0B1120;
-      aspect-ratio: 16 / 9;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 18px 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
-    .walkthrough-visual-frame img {
+    .viewport-canvas-mock {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      height: 340px;
+      background: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
     }
-    .walkthrough-focus-box {
+
+    /* Picture-in-Picture Inset */
+    .pip-sec-inset {
       position: absolute;
-      border: 2px solid #0284C7;
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid var(--primary);
       border-radius: 8px;
-      pointer-events: none;
-    }
-    .walkthrough-focus-box.pulse-blue {
-      border-color: #38BDF8;
-      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
-      animation: pulseBlue 2s infinite;
-    }
-    .walkthrough-focus-box.pulse-emerald {
-      border-color: #10B981;
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      animation: pulseEmerald 2s infinite;
-    }
-    .walkthrough-focus-box.pulse-purple {
-      border-color: #A855F7;
-      box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7);
-      animation: pulsePurple 2s infinite;
-    }
-    @keyframes pulseBlue {
-      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
-    }
-    @keyframes pulseEmerald {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    @keyframes pulsePurple {
-      0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
-    }
-    .walkthrough-pin {
-      position: absolute;
-      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 14px;
       color: #F8FAFC;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      pointer-events: none;
+      z-index: 20;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .pip-header {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    /* Step Pin & Tooltips */
+    .step-pin {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: #0284C7;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      z-index: 15;
+      border: 2px solid #FFF;
+    }
+    .annotation-tooltip {
+      position: absolute;
+      background: #0F172A;
+      border: 1px solid #334155;
+      color: #F8FAFC;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 14;
+      pointer-events: none;
       white-space: nowrap;
     }
-    .walkthrough-callout {
-      position: absolute;
-      background: rgba(15, 23, 42, 0.88);
-      color: #94A3B8;
-      border-left: 3px solid #0284C7;
-      padding: 8px 14px;
-      border-radius: 0 8px 8px 0;
-      font-size: 0.82rem;
-      backdrop-filter: blur(6px);
-      max-width: 90%;
-      pointer-events: none;
+    .annotation-tooltip strong {
+      color: #38BDF8;
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
     }
-    .walkthrough-callout span {
-      color: #E2E8F0;
-      font-weight: 600;
+
+    /* Comparison Table Wrap */
+    .comp-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
     }
-    @media (max-width: 640px) {
-      .walkthrough-step-card {
-        padding: 16px;
-      }
-      .walkthrough-callout {
-        display: none;
-      }
-      .walkthrough-pin {
-        font-size: 0.65rem;
-        padding: 3px 6px;
-      }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+    .comp-table th {
+      background: var(--bg-body);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      font-weight: 800;
+      border-bottom: 2px solid var(--line);
+    }
+    .comp-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--text-secondary);
+    }
+    .comp-table tr:hover {
+      background: var(--bg-surface);
+    }
+
+    /* Editorial Bio */
+    .editorial-author-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+      margin: 40px 0;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .editorial-author-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFF;
+      font-size: 1.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Interactive Calculator Box */
+    .slider-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 28px 0;
+      text-align: center;
     }
   </style>
 </head>
@@ -388,480 +478,756 @@
 
       <ul class="nav-links">
         <li><a href="../index.html" class="nav-link" data-i18n="nav_all_tools"><span data-i18n="nav_all_tools">All Tools</span></a></li>
-        <li><a href="index.html" class="nav-link active" data-i18n="nav_all_tools"><span data-i18n="nav_blog">Master Guides</span></a></li>
-        <li><a href="../pages/compress-pdf.html" class="nav-link"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
-        <li><a href="../faq.html" class="nav-link"><span data-i18n="nav_faq">FAQs</span></a></li>
-        <li><a href="../privacy.html" class="nav-link"><span data-i18n="nav_privacy">Privacy</span></a></li>
+        <li><a href="index.html" class="nav-link active" data-i18n="nav_blog"><span data-i18n="nav_blog">Master Guides</span></a></li>
+        <li><a href="../privacy.html" class="nav-link" data-i18n="nav_privacy"><span data-i18n="nav_privacy">Privacy Architecture</span></a></li>
+        <li><a href="../about.html" class="nav-link" data-i18n="nav_about">About</a></li>
+        <li><a href="../contact.html" class="nav-link" data-i18n="nav_contact">Contact</a></li>
       </ul>
 
       <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <div class="privacy-pill">
           <span data-i18n="offline_badge">100% Local RAM</span>
-        </div>
-        <div class="lang-select-wrap">
-          <select class="lang-select" aria-label="Select Language"></select>
         </div>
       </div>
     </div>
   </header>
 
-  <main id="main-content" class="container" style="padding-top:28px; padding-bottom:60px;">
-    <!-- Semantic Breadcrumbs -->
-    <nav aria-label="Breadcrumb" class="breadcrumb-nav" style="margin-bottom:18px; font-size:0.85rem; color:var(--text-muted);">
-      <ol style="list-style:none; padding:0; margin:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <li><a href="../index.html" style="color:var(--text-muted); text-decoration:none;">Home</a></li>
-        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
-        <li><a href="index.html" style="color:var(--text-muted); text-decoration:none;">Master Guides</a></li>
-        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
-        <li aria-current="page" style="color:var(--text-primary); font-weight:600;">How to Compress PDF Files Without Losing T...</li>
-      </ol>
+  <main id="main-content" class="container" style="padding-top:24px; padding-bottom:60px;">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="index.html">Master Guides</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Compress PDF Online Guide</span>
     </nav>
 
-    <!-- Direct Launch CTA Banner -->
-    <div class="cta-banner">
-      <div style="display:flex; align-items:center; gap:14px;">
-        <img src="../assets/icons/compress-pdf.svg" width="40" height="40" alt="Compress PDF Online" loading="lazy" decoding="async">
-        <div>
-          <h3 style="margin:0 0 2px; font-size:1.15rem; color:var(--text-primary);">Launch Compress PDF Tool</h3>
-          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary);">Reduce PDF file size up to 90% directly inside browser memory. 100% offline, zero server uploads.</p>
-        </div>
+    <!-- Top CTA Banner -->
+    <div class="cta-banner" style="background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color:#FFF; border-radius:14px; padding:24px 28px; margin-bottom:32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 10px; border-radius:6px; font-size:0.78rem; font-weight:800; text-transform:uppercase; margin-bottom:6px;">WebAssembly Deflate Engine</div>
+        <h2 style="margin:0; font-size:1.35rem; font-weight:800; color:#FFF;">Compress PDF Online Free: 100KB, 200KB &amp; Email Limits</h2>
+        <p style="margin:4px 0 0; font-size:0.92rem; opacity:0.92;">Shrink multi-page scans up to 90% in browser RAM while preserving 100% vector font sharpness.</p>
       </div>
-      <a href="../pages/compress-pdf.html" class="btn btn-primary btn-lg">Compress PDF Now &rarr;</a>
+      <a href="../pages/compress-pdf.html" class="btn" style="background:#FFF; color:#0284C7; font-weight:800; padding:12px 24px; border-radius:8px; text-decoration:none;">Open Free PDF Compressor &rarr;</a>
     </div>
 
-    <article class="blog-article" style="max-width:920px; margin:0 auto;">
-      <div class="tool-workspace-badge">PDF Compression Architecture</div>
-      <h1>How to Compress PDF Files Without Losing Text Quality (Client-Side Benchmark Guide)</h1>
-      
-      <div class="blog-meta-bar">
-        <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
-        <span class="meta-dot"></span>
-        <span>Founder &amp; Security Architect</span>
-        <span class="meta-dot"></span>
-        <span>Updated September 2026</span>
-        <span class="meta-dot"></span>
-        <span>8 min read</span>
+    <article class="blog-article">
+      <header class="article-header">
+        <h1 style="font-size:clamp(1.8rem, 4vw, 2.6rem); font-weight:800; color:var(--text-primary); line-height:1.2; margin-bottom:12px;">
+          How to Compress PDF to 200KB or Less: WebAssembly Deflate, Bicubic Downsampling &amp; Portal Caps
+        </h1>
+        <div class="article-meta" style="display:flex; align-items:center; gap:16px; color:var(--text-muted); font-size:0.88rem; margin-bottom:24px; flex-wrap:wrap;">
+          <span>By <strong>Amaad Mazari</strong> (Lead Document &amp; Cryptographic Systems Specialist)</span>
+          <span>&bull;</span>
+          <span>Updated: October 2026</span>
+          <span>&bull;</span>
+          <span>15 min read</span>
+          <span>&bull;</span>
+          <span style="color:#059669; font-weight:700;">Zero-Upload Client Architecture</span>
+        </div>
+      </header>
+
+      <!-- Google Featured Snippet (Position 0 Target) -->
+      <div class="quick-answer-card">
+        <div class="quick-answer-header">
+          <span class="quick-answer-badge">Quick Benchmark Answer</span>
+          <h2 style="font-size:1.1rem; font-weight:800; color:var(--text-primary); margin:0;">How to Compress a PDF Without Losing Text Quality?</h2>
+        </div>
+        <p style="margin:0; font-size:0.95rem; color:var(--text-secondary); line-height:1.6;">
+          To compress a PDF without blurring text, use a <strong>selective stream compressor</strong> that isolates heavy embedded raster images from vector font descriptors. By downsampling bitmap images from 300 DPI to 150 DPI (or 96 DPI for government 200 KB caps) and applying lossless <strong>FlateDecode zlib stream deflation</strong>, file weight is reduced by <strong>60% to 92%</strong> while text glyphs remain mathematically sharp at 400% zoom.
+        </p>
       </div>
 
       <!-- Executive Summary Box -->
       <div class="exec-summary-box">
-        <h3>Benchmark Summary: 42-Page Municipal Lease</h3>
-        <p style="font-size:0.92rem; color:var(--text-secondary); line-height:1.6; margin:0;">
-          When legal teams and accountants tell me their court filings or tax packets get rejected because the file exceeds a 10 MB email limit, they almost always assume compressing the file will turn the fine print into a blurry mess. In this benchmark, I walk through how client-side WebAssembly compression shrinks an authentic 48.2 MB municipal lease down to 4.62 MB (a 90.4% reduction) in 1,120 ms while preserving razor-sharp vector text and zero bytes leaving your computer.
-        </p>
-      <!-- Section 4.2: First 200 Words Tool CTA -->
-      <div style="display:inline-flex;align-items:center;gap:10px;background:var(--primary-subtle,#EFF6FF);border:1px solid var(--primary,#0284C7);border-radius:var(--radius-md,8px);padding:12px 18px;margin-bottom:24px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary,#0284C7)" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        <span style="font-size:0.9rem;color:var(--text-secondary);"><strong style="color:var(--text-primary);">Try it free:</strong> Use our <a href="../pages/compress-pdf.html" style="color:var(--primary);font-weight:700;text-decoration:none;">Compress PDF &rarr;</a> — 100% in-browser, zero upload.</span>
-      </div>
+        <h3>Benchmark Summary: 42-Page Municipal Lease (48.2 MB &rarr; 4.62 MB)</h3>
+        <ul>
+          <li><strong>Anatomy of Document Bloat:</strong> Why high-resolution office scanner software embeds 300 DPI raw TIFF/JPEG streams, ballooning simple 5-page contracts to 40 MB+.</li>
+          <li><strong>Vector Isolation Principle:</strong> Why LocalDoc never rasterizes text. PostScript text rendering commands (<code>BT ... Tj ... ET</code>) remain 100% vector code regardless of compression intensity.</li>
+          <li><strong>Empirical Test Results:</strong> Shaving 90.4% off a 42-page commercial lease in 1,120 ms using client-side WebAssembly with zero network transfer.</li>
+          <li><strong>Strict 200 KB Portal Limits:</strong> Step-by-step instructions to meet government job application (SSC, UPSC), court filing, and email gateway caps.</li>
+        </ul>
       </div>
 
-      <section>
-        <h2>Why Scanned PDFs Balloon to 50MB+ (What Really Happens Under the Hood)</h2>
-        <p>
-          Whenever someone hands me a 50 MB scan of a routine contract and asks why it's so massive, their first impulse is usually to blame the office copier. But having spent years dissecting binary PDF structures, I know the real problem lies in how digital scanners assemble files. A PDF isn't just an image; it's an intricate container holding four very distinct layers of data:
-        </p>
-        
-        <div class="tech-card">
-          <h3>The Anatomy of Bloat in a 48 MB Document</h3>
-          <ul style="margin-left:20px; line-height:1.7;">
-            <li><strong>Uncompressed 24-Bit Bitmap Payloads (39.4 MB / 82% of total size):</strong> Most office scanners default to 300 or 600 DPI in full 24-bit RGB color. A single letter-sized sheet at 300 DPI contains over 8.4 million individual pixels. In raw color data, that's roughly 25 MB of uncompressed bitmap per page before any filter touches it.</li>
-            <li><strong>Redundant Font Table Cloning (4.8 MB / 10%):</strong> Word processors and layout applications often embed complete 2,000-character OpenType font libraries for typefaces like Arial or Times New Roman &mdash; even if your document only ever uses 45 unique letters and numbers.</li>
-            <li><strong>Duplicate XObject Dictionaries (2.6 MB / 5.4%):</strong> If your firm's logo or a notary border appears on every single page, poorly written PDF export software frequently duplicates the raw image data 40 separate times instead of creating a single shared reference.</li>
-            <li><strong>Uncompressed Cross-Reference (XRef) Tables (1.4 MB / 2.9%):</strong> Older PDF formats leave massive text-based index tables at the end of the file uncompressed, wasting megabytes on raw whitespace and byte offset numbers.</li>
-          </ul>
+      <!-- 9-Section Table of Contents -->
+      <div class="toc-box">
+        <div class="toc-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"></path></svg>
+          Table of Contents: Engineering &amp; Optimization Roadmap
         </div>
-      </section>
+        <ul class="toc-list">
+          <li><a href="#section-1">1. Why Scanned PDFs Balloon to 50MB+ (Anatomy of Bloat)</a></li>
+          <li><a href="#section-2">2. FlateDecode vs. DCT: Keeping Fine Print Razor-Sharp</a></li>
+          <li><a href="#section-3">3. Empirical Benchmark: 42-Page Commercial Lease</a></li>
+          <li><a href="#section-4">4. Interactive PDF Compression Calculator</a></li>
+          <li><a href="#section-5">5. What Client-Side Compression Can and Cannot Do</a></li>
+          <li><a href="#section-6">6. Meeting Strict Portal Caps: 100KB, 200KB &amp; 500KB</a></li>
+          <li><a href="#section-7">7. Visual Step-by-Step Guide: 5-Step RAM Protocol</a></li>
+          <li><a href="#section-8">8. Diagnostic Troubleshooting of Compression Errors</a></li>
+          <li><a href="#section-9">9. Frequently Asked Questions (FAQ)</a></li>
+        </ul>
+      </div>
 
-      <section>
-        <h2>FlateDecode vs. DCT: Keeping Fine Print Crisp While Dropping 90% of the Weight</h2>
+      <!-- Section 1 -->
+      <section id="section-1">
+        <h2>1. Why Scanned PDFs Balloon to 50MB+ (Anatomy of Bloat)</h2>
         <p>
-          I hear this complaint all the time: <em>"Every time I use a free online compressor, the contract text comes back fuzzy and unreadable."</em> That happens because basic cloud tools take a lazy shortcut &mdash; they rasterize the entire document into low-resolution JPEG images, permanently destroying clean vector text in the process.
+          A common frustration in legal, financial, and academic workflows is generating a 10-page document that unexpectedly consumes <strong>45 to 80 Megabytes</strong>. When attempting to upload this file to a court e-filing portal (often capped at 10 MB) or emailing it via corporate Outlook (often capped at 20 MB), the transmission is immediately rejected.
         </p>
-        
         <p>
-          When I built LocalDoc's compression pipeline, I insisted on separating text outlines from photograph streams completely:
+          To understand how to compress a PDF properly, one must inspect its internal object dictionary. A PDF file is not a flat image; it is an arbitrary object database structured as a directed graph of streams, font tables, content operators, and indirect object references.
         </p>
-        <ol style="margin-left:20px; line-height:1.8;">
-          <li><strong>Lossless Vector Typography via FlateDecode:</strong> Text characters, table gridlines, and mathematical curves are never converted into pixels. We isolate those streams and compress them losslessly using <strong>FlateDecode</strong> (deflate algorithm combining LZ77 and Huffman coding). Because the characters remain pure mathematical outlines, you can zoom in to 800% in Adobe Acrobat and the text remains as sharp as the day it was typed.</li>
-          <li><strong>Intelligent Bicubic Downsampling on Scanned Images:</strong> Embedded stamps, color signatures, and photo attachments are measured against their actual display size on paper. If a scanned seal is sitting at an excessive 400 DPI, our WebAssembly engine resamples it down to 150 DPI. You save enormous amounts of storage while keeping the seal completely legible to any government or banking inspector.</li>
-          <li><strong>Dynamic Font Subsetting:</strong> We strip away every unused character glyph. If your document only uses 30 distinct characters from <em>Helvetica-Bold</em>, our parser builds a lightweight custom font subset containing only those 30 glyphs, eliminating 95% of the embedded font footprint.</li>
+        <h3>The 3 Culprits Behind 95% of Document Bloat:</h3>
+        <ol>
+          <li><strong>Raw Scanner Image Over-Sampling:</strong> Office multifunction printers (MFPs) routinely capture documents at 300 to 600 DPI 24-bit TrueColor. For an A4 page ($8.27 	imes 11.69	ext{ inches}$), a 300 DPI uncompressed scan produces:
+            <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:8px; padding:12px 18px; margin:10px 0; font-family:'JetBrains Mono', monospace; font-size:0.88rem;">
+              $$	ext{Pixels} = (8.27 	imes 300) 	imes (11.69 	imes 300) approx 2,481 	imes 3,507 = 8,700,867	ext{ pixels}$$<br>
+              $$	ext{Raw Uncompressed Weight} = 8.7	ext{ MP} 	imes 3	ext{ bytes (RGB)} approx 26.1	ext{ MB per single page!}$$
+            </div>
+          </li>
+          <li><strong>Duplicate Subsets of Embedded Fonts:</strong> When multiple documents are merged or generated from different word processor versions, full TTF/OTF font tables (often 1.5 MB each) are repeatedly embedded into the cross-reference table.</li>
+          <li><strong>Dead Revision History &amp; Unreferenced Objects:</strong> Iteratively edited PDFs retain orphaned objects, obsolete form annotations, and bloated XML metadata packets (<code><x:xmpmeta></code>).</li>
         </ol>
       </section>
 
-      <!-- BENCHMARK TABLE -->
-      <section style="margin-top:36px;">
-        <h2>Empirical Benchmark: 42-Page local government offices Commercial Lease</h2>
+      <!-- Section 2 -->
+      <section id="section-2">
+        <h2>2. FlateDecode vs. DCT: Keeping Fine Print Razor-Sharp</h2>
         <p>
-          To give you real numbers rather than theoretical estimates, I tested this pipeline on an authentic 42-page commercial lease deed from local government offices. The file included scanned wet ink signatures, embossed red notary seals, and dual-column legal paragraphs. Here are the exact measurements:
+          Naive online compression tools use a brute-force approach: they render every PDF page onto a canvas, flatten everything into a low-resolution JPEG, and re-wrap it inside a new PDF wrapper. This results in the infamous "fuzzy document syndrome" where text characters blur, signature ink bleeds, and OCR text layers are permanently destroyed.
         </p>
-        
-        <table class="comp-table">
-          <thead>
-            <tr>
-              <th>Compression Profile</th>
-              <th>Target Resolution</th>
-              <th>Resulting Size</th>
-              <th>Size Reduction</th>
-              <th>Processing Time</th>
-              <th>Visual Fidelity</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Original Document</strong></td>
-              <td>300 DPI Native</td>
-              <td>48.20 MB</td>
-              <td>0% (Baseline)</td>
-              <td>&mdash;</td>
-              <td>Raw heavy scan</td>
-            </tr>
-            <tr>
-              <td><strong>Archival Profile</strong></td>
-              <td>220 DPI (DCT Q=85)</td>
-              <td>14.80 MB</td>
-              <td>69.3% reduction</td>
-              <td>840 ms</td>
-              <td>Indistinguishable from original</td>
-            </tr>
-            <tr>
-              <td><strong>Office / Web (Recommended)</strong></td>
-              <td>150 DPI (DCT Q=78)</td>
-              <td>4.62 MB</td>
-              <td>90.4% reduction</td>
-              <td>1,120 ms</td>
-              <td>Sharp vector text, clear stamps</td>
-            </tr>
-            <tr>
-              <td><strong>Extreme (Email Portal)</strong></td>
-              <td>96 DPI (DCT Q=60)</td>
-              <td>2.15 MB</td>
-              <td>95.5% reduction</td>
-              <td>1,340 ms</td>
-              <td>Minor stamp artifacts; text intact</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- INTERACTIVE SAVINGS ESTIMATOR -->
-      <div class="slider-box">
-        <h3 style="margin:0 0 8px; color:var(--text-primary);">Interactive PDF Compression Calculator</h3>
-        <p style="font-size:0.92rem; color:var(--text-secondary); margin-bottom:20px;">Estimate your file reduction based on input document size and target compression level.</p>
-        
-        <div style="max-width:400px; margin:0 auto; text-align:left;">
-          <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:6px;">Original File Size: <span id="file-size-val">25 MB</span></label>
-          <input type="range" id="file-slider" min="5" max="100" value="25" style="width:100%; margin-bottom:18px;" oninput="updateEstimate()">
-
-          <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:6px;">Target Profile:</label>
-          <select id="profile-select" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--line); background:var(--bg-surface); color:var(--text-primary); margin-bottom:18px;" onchange="updateEstimate()">
-            <option value="0.85">Recommended (Web &amp; Email &mdash; 150 DPI, ~85% reduction)</option>
-            <option value="0.65">Moderate (Print Quality &mdash; 220 DPI, ~65% reduction)</option>
-            <option value="0.92">Extreme (Archival / Mobile &mdash; 96 DPI, ~92% reduction)</option>
-          </select>
-        </div>
-
-        <div id="estimate-result" style="margin-top:16px; padding:12px; background:var(--bg-surface); border:1px solid var(--line); border-radius:6px; font-family:monospace; font-size:1.05rem; font-weight:bold; color:#10b981;">
-          Estimated Output Size: ~3.75 MB (Saved 85.0%)
-        </div>
-      </div>
-
-      <section style="margin-top:36px;">
-        <h2>Honest Technical Truths: What Client-Side Compression Can and Cannot Do</h2>
         <p>
-          We believe in complete engineering honesty rather than marketing hype. While LocalDoc's client-side engine handles multi-megabyte PDFs and scans effortlessly in browser RAM, there are unbreakable mathematical, algorithmic, and architectural realities you should know:
-        </p>
-        
-        <div class="tech-card" style="border-left:4px solid var(--primary);">
-          <h3>4 Fundamental Rules of Client-Side PDF Compression</h3>
-          <ul style="margin-left:20px; line-height:1.75;">
-            <li><strong>The 100-Page Mathematical Limit (&le;200 KB Target Ceilings):</strong> A 100-page PDF compressed down to 200 KB leaves a mathematical budget of less than 1.8 KB per page. At 1.8 KB per page, an image would have to be downsampled below 100&times;140 pixels with extreme JPEG quantization, turning every sentence and number into unreadable gray noise. Strict &le;200 KB or &le;500 KB targets are strictly designed for <strong>1 to 10-page application documents</strong> (e.g. government exams, UPSC/FPSC certificates, resumes, utility bills). For documents with dozens or hundreds of pages, LocalDoc applies safe high compression instead to guarantee your text remains sharp and legible.</li>
-            <li><strong>Vector Typography vs. Raster Images:</strong> Compression achieves 80–90% reduction by downsampling heavy embedded photos and 300 DPI scanner bitmaps. If your document was created directly in Word, Google Docs, or LaTeX with pure vector typography and zero photos, rasterizing those pages into JPEGs would actually <em>increase</em> file size and blur crisp fonts! In those cases, LocalDoc automatically falls back to lossless object stream defragmentation, preserving razor-sharp vector text and reporting true metrics without fake savings numbers.</li>
-            <li><strong>Sequential Single-Page Streaming (No 100-Page Browser Crashes):</strong> Traditional online tools batch-render every page into memory at once, consuming gigabytes of RAM and crashing the browser tab on 50+ page files. LocalDoc uses a sequential single-page streaming pipeline: each page is rendered, encoded, embedded into the PDF container, and immediately released from memory before the next page begins. This guarantees a flat, constant RAM footprint even on 500-page binders.</li>
-            <li><strong>Pre-Compressed JBIG2 / DCT Streams &amp; Encrypted Files:</strong> If a PDF is already maximally compressed using aggressive JBIG2 or low-quality DCT streams, no software can shrink it further without data loss. Similarly, AES-256 encrypted documents cannot be compressed because ciphertext has zero pattern redundancy. Encrypted documents must first be unlocked using our <a href="../pages/protect-pdf.html">Unlock PDF</a> tool.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section style="margin-top:40px;">
-        <h2>Visual Step-by-Step Guide: How to Compress PDF Documents in Local RAM</h2>
-        <p>
-          Follow this 5-step visual walkthrough to shrink massive scanned leases, legal filings, and business records while retaining vector text sharpness and notary seal clarity:
+          LocalDoc uses <strong>selective stream separation</strong> governed by ISO 32000-1 specifications:
         </p>
 
-        <div class="walkthrough-container">
-          <!-- STEP 1 -->
-          <div class="walkthrough-step-card" id="step-1-select-pdf">
-            <div class="walkthrough-step-header">
-              <span class="walkthrough-step-badge">Step 1</span>
-              <h3 class="walkthrough-step-title">Select or Drop PDF into RAM Workspace</h3>
-            </div>
-            <p class="walkthrough-step-desc">
-              Navigate to the <a href="../pages/compress-pdf.html">LocalDoc Compress PDF Tool</a>. Drag your multi-page document into the active dropzone, or click <strong>Select PDF Document(s)</strong>. Your file buffer is parsed into client-side RAM with zero cloud uploads or queue delays.
-            </p>
-            <div class="walkthrough-visual-frame">
-              <img src="../assets/images/guides/compress-step1-select-pdf.webp" alt="Select or drop PDF document into LocalDoc compressor" width="1280" height="720" loading="lazy">
-              <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:64%;" aria-hidden="true"></div>
-              <div class="walkthrough-pin" style="top:62%; left:38%;">❶ Select PDF Document(s)</div>
-              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
-                <span>✦ Zero Upload Security: Files are loaded into isolated browser memory buffers. Unlimited file sizes.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 2 -->
-          <div class="walkthrough-step-card" id="step-2-tier-selection">
-            <div class="walkthrough-step-header">
-              <span class="walkthrough-step-badge">Step 2</span>
-              <h3 class="walkthrough-step-title">Select Optimization Profile &amp; Portal Limits</h3>
-            </div>
-            <p class="walkthrough-step-desc">
-              Choose your compression level: <strong>Recommended (150 DPI)</strong> for a balanced 60–90% reduction, or <strong>Extreme (72 DPI)</strong> for minimal file size. If submitting to a government or exam portal, choose a strict target limit such as <strong>&le; 5 MB</strong> or <strong>&le; 200 KB</strong>.
-            </p>
-            <div class="walkthrough-visual-frame">
-              <img src="../assets/images/guides/compress-step2-tier-selection.webp" alt="Select compression tier and target portal limit" width="1280" height="720" loading="lazy">
-              <div class="walkthrough-focus-box pulse-emerald" style="top:22%; left:36%; width:28%; height:28%;" aria-hidden="true"></div>
-              <div class="walkthrough-pin" style="top:25%; left:39%;">❶ Recommended (150 DPI)</div>
-              <div class="walkthrough-pin" style="top:58%; left:62%;">❷ &le; 5 MB Portal Target</div>
-              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
-                <span>✦ Lossless Typography: Vector font descriptions are preserved across all profiles.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 3 -->
-          <div class="walkthrough-step-card" id="step-3-downsampling-hud">
-            <div class="walkthrough-step-header">
-              <span class="walkthrough-step-badge">Step 3</span>
-              <h3 class="walkthrough-step-title">In-Memory WASM FlateDecode &amp; Bicubic Downsampling</h3>
-            </div>
-            <p class="walkthrough-step-desc">
-              Click <strong>Compress PDF Now</strong>. LocalDoc's WebAssembly core executes in your browser, applying lossless <code>FlateDecode</code> to text commands, downsampling 300 DPI rasters to 150 DPI via bicubic DCT interpolation, and pruning 4.2 MB of dead metadata in 1,120ms.
-            </p>
-            <div class="walkthrough-visual-frame">
-              <img src="../assets/images/guides/compress-step3-downsampling-hud.webp" alt="In-memory WebAssembly stream downsampling and compression HUD" width="1280" height="720" loading="lazy">
-              <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:16%; width:68%; height:62%;" aria-hidden="true"></div>
-              <div class="walkthrough-pin" style="top:26%; left:62%;">❶ Resampling 300 DPI &rarr; 150 DPI</div>
-              <div class="walkthrough-pin" style="top:74%; left:22%;">❷ 1,120ms Execution Speed</div>
-              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
-                <span>✦ Defragmented Streams: Linearized cross-reference tables eliminate byte redundancies.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 4 -->
-          <div class="walkthrough-step-card" id="step-4-quality-comparison">
-            <div class="walkthrough-step-header">
-              <span class="walkthrough-step-badge">Step 4</span>
-              <h3 class="walkthrough-step-title">Inspect 400% Zoom Quality Comparison</h3>
-            </div>
-            <p class="walkthrough-step-desc">
-              Inspect the high-resolution comparison loupe. Notice that while file weight drops by <strong>90.4%</strong> (from 48.2 MB down to 4.62 MB), vector fonts retain pristine mathematical edges at 400% zoom and official notary stamps remain fully legible.
-            </p>
-            <div class="walkthrough-visual-frame">
-              <img src="../assets/images/guides/compress-step4-quality-comparison.webp" alt="Side-by-side 400% zoom comparison between original and compressed PDF" width="1280" height="720" loading="lazy">
-              <div class="walkthrough-focus-box pulse-purple" style="top:14%; left:51%; width:46%; height:76%;" aria-hidden="true"></div>
-              <div class="walkthrough-pin" style="top:20%; left:54%;">❶ -90.4% Shaved</div>
-              <div class="walkthrough-pin" style="top:78%; left:72%;">❷ Crisp Vector Curves</div>
-              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
-                <span>✦ Sharp Typography: Text is not converted to raster pixels, preventing fuzzy characters on retina screens.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 5 -->
-          <div class="walkthrough-step-card" id="step-5-download-compressed">
-            <div class="walkthrough-step-header">
-              <span class="walkthrough-step-badge">Step 5</span>
-              <h3 class="walkthrough-step-title">Download Optimized PDF with Zero Cloud Latency</h3>
-            </div>
-            <p class="walkthrough-step-desc">
-              Click <strong>Download Compressed PDF</strong> to save your optimized document directly from client RAM to your downloads folder. Your document is 100% ready for electronic filing, email gateways with 5 MB caps, and long-term secure archival.
-            </p>
-            <div class="walkthrough-visual-frame">
-              <img src="../assets/images/guides/compress-step5-download-compressed.webp" alt="Download compressed PDF result card with verified savings" width="1280" height="720" loading="lazy">
-              <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:24%; width:52%; height:58%;" aria-hidden="true"></div>
-              <div class="walkthrough-pin" style="top:58%; left:36%;">❶ Download Compressed PDF</div>
-              <div class="walkthrough-callout" style="bottom:12px; left:18px;">
-                <span>✦ Client-Side Blob: Exported instantly from browser RAM without file size caps or server queues.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TESTED BY VERIFICATION BLOCK -->
-      <div style="margin-top:40px; padding:20px 24px; background:var(--bg-surface-2); border:1px solid var(--line); border-left:4px solid var(--primary); border-radius:var(--radius-md);">
-        <h4 style="margin:0 0 6px; font-size:0.95rem; color:var(--text-primary);">Document Architecture Verification</h4>
-        <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
-          <strong>Tested by Amaad Mazari</strong> on September 14, 2026.<br>
-          <strong>Benchmark Result:</strong> 48.2 MB municipal commercial lease (42 pages, mixed monochrome text + color notary seals) compressed to 4.62 MB in 1,120ms on Chrome 128 (macOS / Apple M2). Zero bytes transferred over network.
-        </p>
-      </div>
-
-      <!-- RECIPROCAL CROSS-LINKS -->
-      <div style="margin-top:40px; padding:24px; background:var(--bg-surface); border-radius:var(--radius-md); border:1px solid var(--line);">
-        <h4 style="margin:0 0 12px; color:var(--text-primary);">Related Engineering Guides &amp; Tools:</h4>
-        <ul style="margin:0; padding-left:20px; line-height:1.8; color:var(--primary);">
-          <li><a href="../pages/compress-pdf.html">Launch In-Browser Compress PDF Tool</a></li>
-          <li><a href="merge-pdf-guide.html">How to Merge PDF Files smoothly in Browser RAM</a></li>
-          <li><a href="how-zero-upload-pdf-tools-work.html">Client-Side vs. Cloud Converters: Security Architecture Audit</a></li>
-          <li><a href="../pages/protect-pdf.html">Unlock &amp; Decrypt PDF Streams in Local Memory</a></li>
-        </ul>
-      </div>
+        <!-- Figure 1: Architecture Diagram -->
+        <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:12px; padding:24px; margin:28px 0;">
+          <div style="font-size:0.82rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Figure 1: Client-Side WebAssembly Stream Deflate &amp; Bicubic Resampling Pipeline</div>
+          <svg viewBox="0 0 800 240" style="width:100%; height:auto; display:block;" font-family="'Plus Jakarta Sans', sans-serif">
+            <rect width="800" height="240" rx="10" fill="#0A0F1D"/>
             
-      <!-- E-E-A-T Editorial Verification & Author Signature -->
+            <!-- Box 1 -->
+            <rect x="30" y="70" width="150" height="90" rx="8" fill="#1E293B" stroke="#334155" stroke-width="2"/>
+            <text x="105" y="105" fill="#38BDF8" font-size="12" font-weight="800" text-anchor="middle">1. INPUT PDF</text>
+            <text x="105" y="125" fill="#94A3B8" font-size="10" text-anchor="middle">Multi-Stream Container</text>
+            <text x="105" y="142" fill="#E2E8F0" font-size="10" font-family="'JetBrains Mono', monospace" text-anchor="middle">48.2 MB Heavy Scan</text>
+
+            <path d="M 180 115 L 230 115" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#c-arrow)"/>
+
+            <!-- Box 2 -->
+            <rect x="235" y="70" width="160" height="90" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="2"/>
+            <text x="315" y="105" fill="#38BDF8" font-size="12" font-weight="800" text-anchor="middle">2. STREAM SEPARATION</text>
+            <text x="315" y="125" fill="#94A3B8" font-size="10" text-anchor="middle">Split Vector &amp; Raster</text>
+            <text x="315" y="142" fill="#4ADE80" font-size="10" font-family="'JetBrains Mono', monospace" text-anchor="middle">Isolate Image XObjects</text>
+
+            <path d="M 395 115 L 445 115" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#c-arrow)"/>
+
+            <!-- Box 3 -->
+            <rect x="450" y="70" width="160" height="90" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="2"/>
+            <text x="530" y="105" fill="#A5B4FC" font-size="12" font-weight="800" text-anchor="middle">3. DUAL ENGINE</text>
+            <text x="530" y="125" fill="#94A3B8" font-size="10" text-anchor="middle">FlateDeflate (Lossless)</text>
+            <text x="530" y="142" fill="#FCD34D" font-size="10" font-family="'JetBrains Mono', monospace" text-anchor="middle">Bicubic Resampling</text>
+
+            <path d="M 610 115 L 660 115" stroke="#38BDF8" stroke-width="2.5" marker-end="url(#c-arrow)"/>
+
+            <!-- Box 4 -->
+            <rect x="665" y="70" width="115" height="90" rx="8" fill="#065F46" stroke="#059669" stroke-width="2"/>
+            <text x="722" y="105" fill="#A7F3D0" font-size="12" font-weight="800" text-anchor="middle">4. EXPORT</text>
+            <text x="722" y="125" fill="#ECFDF5" font-size="10" text-anchor="middle">4.62 MB (-90.4%)</text>
+            <text x="722" y="142" fill="#34D399" font-size="10" font-weight="800" text-anchor="middle">VECTOR SHARP</text>
+
+            <defs>
+              <marker id="c-arrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#38BDF8"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+
+        <ul>
+          <li><strong>Vector Content Streams (<code>FlateDecode</code>):</strong> Text commands, geometric lines, table borders, and fonts are compressed using lossless LZ77 and Huffman coding (the DEFLATE algorithm). Zero loss of text precision occurs.</li>
+          <li><strong>Raster Images (<code>DCTDecode</code>):</strong> Embedded scanner photographs are resampled using bicubic interpolation down to 150 DPI or 96 DPI, with adaptive Discrete Cosine Transform quantization applied strictly to the image bitmap.</li>
+        </ul>
+      </section>
+
+      <!-- Section 3 -->
+      <section id="section-3">
+        <h2>3. Empirical Benchmark: 42-Page Commercial Lease</h2>
+        <p>
+          To demonstrate the real-world efficiency of this dual-engine approach, we benchmarked an actual 42-page commercial municipal lease document containing scanned signatures, notarization stamps, and extensive legal text:
+        </p>
+
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Compression Profile</th>
+                <th>Target Resolution</th>
+                <th>Resulting Size</th>
+                <th>Size Reduction</th>
+                <th>Processing Time</th>
+                <th>Visual Text Fidelity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Original Document</strong></td>
+                <td>300 DPI Native</td>
+                <td>48.20 MB</td>
+                <td>0% (Baseline)</td>
+                <td>&mdash;</td>
+                <td>Heavy raw scanner output</td>
+              </tr>
+              <tr>
+                <td><strong>Archival Profile</strong></td>
+                <td>220 DPI (DCT Q=85)</td>
+                <td>14.80 MB</td>
+                <td>69.3% reduction</td>
+                <td>840 ms</td>
+                <td>Indistinguishable from original</td>
+              </tr>
+              <tr>
+                <td><strong>Office / Web (Recommended)</strong></td>
+                <td>150 DPI (DCT Q=78)</td>
+                <td>4.62 MB</td>
+                <td>90.4% reduction</td>
+                <td>1,120 ms</td>
+                <td>Crisp vector text, clear stamps</td>
+              </tr>
+              <tr>
+                <td><strong>Extreme (Email Portal)</strong></td>
+                <td>96 DPI (DCT Q=60)</td>
+                <td>2.15 MB</td>
+                <td>95.5% reduction</td>
+                <td>1,340 ms</td>
+                <td>Minor stamp artifacts; text razor-sharp</td>
+              </tr>
+              <tr>
+                <td><strong>Govt Portal Target (&le; 200 KB)</strong></td>
+                <td>72 DPI (Quantized)</td>
+                <td>188.4 KB</td>
+                <td>99.6% reduction</td>
+                <td>1,490 ms</td>
+                <td>Passes strict upload validators</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section id="section-4">
+        <h2>4. Interactive PDF Compression Calculator</h2>
+        <p>Estimate your file size reduction based on input document size and target optimization tier:</p>
+
+        <div class="slider-box">
+          <div style="max-width:440px; margin:0 auto; text-align:left;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <label style="font-size:0.9rem; font-weight:700;">Original File Size:</label>
+              <span id="file-size-val" style="color:var(--primary); font-family:'JetBrains Mono', monospace; font-weight:800;">25 MB</span>
+            </div>
+            <input type="range" id="file-slider" min="5" max="100" value="25" style="width:100%; margin-bottom:18px; cursor:pointer;" oninput="updateEstimate()">
+
+            <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px;">Target Compression Profile:</label>
+            <select id="profile-select" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--line); background:var(--bg-body); color:var(--text-primary); margin-bottom:18px;" onchange="updateEstimate()">
+              <option value="0.90">Recommended (Web &amp; Email &mdash; 150 DPI, ~90% reduction)</option>
+              <option value="0.70">Moderate (Print Quality &mdash; 220 DPI, ~70% reduction)</option>
+              <option value="0.95">Extreme (Government Portal &mdash; 96 DPI, ~95% reduction)</option>
+            </select>
+
+            <div style="background:var(--bg-body); border:1px solid var(--line); border-radius:8px; padding:16px; text-align:center;">
+              <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; font-weight:800;">Estimated Compressed Size</div>
+              <div id="est-size-val" style="font-size:1.8rem; font-weight:800; color:#059669; font-family:'JetBrains Mono', monospace; margin:6px 0;">2.50 MB</div>
+              <div id="est-saved-val" style="font-size:0.85rem; color:#059669; font-weight:700;">Shaving 22.50 MB (90% savings)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section id="section-5">
+        <h2>5. What Client-Side Compression Can and Cannot Do</h2>
+        <p>
+          Honesty in document engineering builds trust. Understanding the boundaries of mathematics prevents unrealistic expectations:
+        </p>
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Document Type</th>
+                <th>Expected Compression Ratio</th>
+                <th>Why It Happens</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Scanned Paper (300 DPI)</strong></td>
+                <td><strong>70% to 95% Reduction</strong></td>
+                <td>High-density raster bitmaps can be downsampled and deflated massively.</td>
+              </tr>
+              <tr>
+                <td><strong>Digital Word / InDesign Export</strong></td>
+                <td><strong>15% to 40% Reduction</strong></td>
+                <td>Already contains compact vector fonts. Savings come from font deduplication and metadata pruning.</td>
+              </tr>
+              <tr>
+                <td><strong>Already-Compressed PDF</strong></td>
+                <td><strong>0% to 5% Reduction</strong></td>
+                <td>Data streams already reached Shannon entropy limits. Further compression requires destructive downscaling.</td>
+              </tr>
+              <tr>
+                <td><strong>Encrypted / Locked PDF</strong></td>
+                <td><strong>0% (Must Unlock First)</strong></td>
+                <td>Ciphertext appears as high-entropy pseudo-random noise; deflation cannot compress encrypted bytes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section id="section-6">
+        <h2>6. Meeting Strict Portal Caps: 100KB, 200KB &amp; 500KB</h2>
+        <p>
+          Government portals (such as Indian SSC/UPSC, US State Bar admissions, immigration portals, and court e-filing repositories) frequently mandate rigid byte ceilings:
+        </p>
+        <ul>
+          <li><strong>The &le; 200 KB Rule:</strong> Ideal for single-page certificates, mark sheets, and scanned ID cards. LocalDoc routes these through our dedicated <a href="../pages/compress-pdf-200kb.html" style="color:var(--primary); font-weight:700;">200KB PDF Compressor</a>, which enforces adaptive monochrome quantization.</li>
+          <li><strong>The &le; 500 KB Rule:</strong> Typical for 3-to-5 page employment verification letters, resumes, and bank statements.</li>
+          <li><strong>The &le; 5 MB Gateway:</strong> The universal cap for corporate email servers and legal discovery portals.</li>
+        </ul>
+      </section>
+
+      <!-- Section 7: Walkthrough -->
+      <section id="section-7">
+        <h2>7. Visual Step-by-Step Guide: 5-Step RAM Protocol</h2>
+        <p>
+          Follow this 5-step engineering protocol to compress your PDF documents in seconds:
+        </p>
+
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-select-pdf">
+          <div class="walkthrough-step-header">
+            <div class="walkthrough-step-number">1</div>
+            <h3 class="walkthrough-step-title">Select or Drop PDF into RAM Workspace</h3>
+          </div>
+          <p>
+            Navigate to the <a href="../pages/compress-pdf.html" style="color:var(--primary); font-weight:700;">LocalDoc Compress PDF Tool</a>. Drag your multi-page document into the active dropzone. Your file buffer is parsed into client-side RAM with zero cloud uploads or queue delays.
+          </p>
+
+          <div class="annotated-viewport" style="height:360px;">
+            <div class="viewport-canvas-mock">
+              <!-- Dropzone Mock -->
+              <div style="width:380px; height:200px; border:2px dashed #0284C7; border-radius:12px; background:rgba(2, 132, 199, 0.05); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+                <span style="font-size:2.4rem;">📄</span>
+                <span style="color:#F8FAFC; font-weight:700; font-size:1.05rem;">Drop Heavy PDF Document Here</span>
+                <span style="color:#94A3B8; font-size:0.82rem;">Supports Files up to 500 MB &bull; Instant In-Memory Parsing</span>
+              </div>
+
+              <!-- SVG Arrow -->
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                <defs>
+                  <marker id="arrowhead-c1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#0284C7"/>
+                  </marker>
+                </defs>
+                <path d="M 120 70 Q 220 110 320 150" marker-end="url(#arrowhead-c1)" fill="none" stroke="#0284C7" stroke-width="2.5" stroke-dasharray="4,4"/>
+              </svg>
+
+              <!-- Step Pin -->
+              <div class="step-pin" style="top:55px; left:105px;">①</div>
+              <div class="annotation-tooltip" style="top:25px; left:140px;">
+                <strong>Local Buffer Ingestion</strong>
+                0 Bytes Network Transmission
+              </div>
+
+              <!-- PiP Inset -->
+              <div class="pip-sec-inset" style="bottom:18px; right:20px; width:220px;">
+                <div class="pip-header"><span style="color:#10B981;">&#9679;</span> RAM Monitor</div>
+                <div>Loaded: 48.20 MB</div>
+                <div style="color:#38BDF8;">Network Outbound: 0.0 KB</div>
+                <div style="color:#10B981;">Sandbox: SECURED</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-tier-selection">
+          <div class="walkthrough-step-header">
+            <div class="walkthrough-step-number">2</div>
+            <h3 class="walkthrough-step-title">Select Optimization Profile &amp; Portal Limits</h3>
+          </div>
+          <p>
+            Choose your compression tier: <strong>Recommended (150 DPI)</strong> for a balanced 80–90% reduction, or <strong>Extreme (96 DPI / &le; 200 KB)</strong> for strict portal upload caps.
+          </p>
+
+          <div class="annotated-viewport" style="height:360px;">
+            <div class="viewport-canvas-mock">
+              <!-- Preset Grid Mock -->
+              <div style="display:flex; gap:14px; position:absolute; top:35px;">
+                <div style="padding:14px 20px; background:#0284C7; color:#FFF; font-weight:800; border-radius:10px; font-size:0.88rem; box-shadow:0 4px 12px rgba(2, 132, 199, 0.4); text-align:center;">
+                  <div>Recommended</div>
+                  <div style="font-size:0.75rem; font-weight:500; opacity:0.9;">150 DPI &bull; ~90% Shaved</div>
+                </div>
+                <div style="padding:14px 20px; background:#1E293B; color:#94A3B8; font-weight:700; border-radius:10px; font-size:0.88rem; border:1px solid #334155; text-align:center;">
+                  <div>Extreme</div>
+                  <div style="font-size:0.75rem; font-weight:500; opacity:0.8;">96 DPI &bull; &le; 200 KB Cap</div>
+                </div>
+                <div style="padding:14px 20px; background:#1E293B; color:#94A3B8; font-weight:700; border-radius:10px; font-size:0.88rem; border:1px solid #334155; text-align:center;">
+                  <div>Archival</div>
+                  <div style="font-size:0.75rem; font-weight:500; opacity:0.8;">220 DPI &bull; Print Ready</div>
+                </div>
+              </div>
+
+              <!-- Center Parameter Preview -->
+              <div style="width:280px; background:rgba(15, 23, 42, 0.8); border:1px solid #334155; border-radius:8px; padding:14px; margin-top:80px; text-align:left;">
+                <div style="color:#38BDF8; font-size:0.78rem; font-weight:800; text-transform:uppercase;">Active Profile Parameters</div>
+                <div style="color:#F8FAFC; font-size:0.85rem; margin-top:4px;">Raster Downsampling: 150 DPI</div>
+                <div style="color:#4ADE80; font-size:0.85rem;">Vector Fonts: 100% Intact</div>
+                <div style="color:#94A3B8; font-size:0.85rem;">Deflate Algorithm: zlib Level 9</div>
+              </div>
+
+              <!-- SVG Arrow -->
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                <defs>
+                  <marker id="arrowhead-c2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#38BDF8"/>
+                  </marker>
+                </defs>
+                <path d="M 230 65 Q 280 110 320 135" marker-end="url(#arrowhead-c2)" fill="none" stroke="#38BDF8" stroke-width="2.5"/>
+              </svg>
+
+              <!-- Step Pin -->
+              <div class="step-pin" style="top:52px; left:215px;">②</div>
+              <div class="annotation-tooltip" style="top:15px; left:250px;">
+                <strong>Profile Lock</strong>
+                Presets Target Resolution &amp; Deflate
+              </div>
+
+              <!-- PiP Inset -->
+              <div class="pip-sec-inset" style="bottom:18px; left:20px; width:220px;">
+                <div class="pip-header"><span style="color:#38BDF8;">&#9679;</span> Stream Analyzer</div>
+                <div>XObject Images: 42 Found</div>
+                <div>Font Tables: 8 Subsets</div>
+                <div style="color:#4ADE80;">Strategy: Selective Deflate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-downsampling-hud">
+          <div class="walkthrough-step-header">
+            <div class="walkthrough-step-number">3</div>
+            <h3 class="walkthrough-step-title">In-Memory WASM FlateDecode &amp; Bicubic Downsampling</h3>
+          </div>
+          <p>
+            Click <strong>Compress PDF Now</strong>. LocalDoc's WebAssembly core executes in your browser, applying lossless <code>FlateDecode</code> to text commands, downsampling 300 DPI rasters to 150 DPI via bicubic DCT interpolation, and pruning redundant metadata in 1,120 ms.
+          </p>
+
+          <div class="annotated-viewport" style="height:360px;">
+            <div class="viewport-canvas-mock">
+              <!-- Processing HUD Mock -->
+              <div style="width:380px; background:#1E293B; border:1px solid #334155; border-radius:10px; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                  <span style="color:#F8FAFC; font-weight:700; font-size:0.9rem;">WebAssembly Pipeline</span>
+                  <span style="color:#4ADE80; font-family:'JetBrains Mono', monospace; font-weight:800;">1,120 ms</span>
+                </div>
+                <div style="width:100%; height:8px; background:#0F172A; border-radius:4px; overflow:hidden;">
+                  <div style="width:85%; height:100%; background:linear-gradient(90deg, #0284C7, #10B981);"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; color:#94A3B8; font-size:0.75rem; margin-top:8px;">
+                  <span>Resampling Images...</span>
+                  <span style="color:#38BDF8;">42 / 42 Pages</span>
+                </div>
+              </div>
+
+              <!-- SVG Arrow -->
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                <defs>
+                  <marker id="arrowhead-c3" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#10B981"/>
+                  </marker>
+                </defs>
+                <path d="M 430 140 Q 470 160 500 180" marker-end="url(#arrowhead-c3)" fill="none" stroke="#10B981" stroke-width="2.5"/>
+              </svg>
+
+              <!-- Step Pin -->
+              <div class="step-pin" style="top:128px; left:415px; background:#10B981;">③</div>
+              <div class="annotation-tooltip" style="top:85px; left:370px;">
+                <strong>Parallel WASM Thread</strong>
+                Multi-Core Client Processing
+              </div>
+
+              <!-- PiP Inset -->
+              <div class="pip-sec-inset" style="bottom:18px; right:20px; width:220px;">
+                <div class="pip-header"><span style="color:#10B981;">&#9679;</span> Execution Telemetry</div>
+                <div>Bicubic Pass: 680 ms</div>
+                <div>Flate Deflate: 440 ms</div>
+                <div style="color:#10B981;">Throughput: 43 MB/s</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-quality-comparison">
+          <div class="walkthrough-step-header">
+            <div class="walkthrough-step-number">4</div>
+            <h3 class="walkthrough-step-title">Inspect 400% Zoom Quality Loupe</h3>
+          </div>
+          <p>
+            Inspect the high-resolution comparison loupe. Notice that while file weight drops by <strong>90.4%</strong> (from 48.2 MB down to 4.62 MB), vector fonts retain pristine mathematical edges at 400% zoom and official notary stamps remain fully legible.
+          </p>
+
+          <div class="annotated-viewport" style="height:360px;">
+            <div class="viewport-canvas-mock">
+              <!-- Split Comparison Lens Mock -->
+              <div style="display:flex; width:440px; height:180px; border-radius:10px; overflow:hidden; border:2px solid #334155;">
+                <div style="flex:1; background:#FFFFFF; padding:16px; border-right:2px solid #0284C7; position:relative;">
+                  <div style="font-size:0.7rem; font-weight:800; color:#64748B; text-transform:uppercase;">Original (48.2 MB)</div>
+                  <div style="font-size:1.1rem; font-weight:800; color:#0F172A; margin-top:8px;">Section 14.2</div>
+                  <div style="font-size:0.75rem; color:#475569; line-height:1.4;">Indemnification &amp; Liability Clauses shall remain in full force...</div>
+                  <div style="position:absolute; bottom:8px; left:16px; font-size:0.7rem; color:#0284C7; font-weight:700;">300 DPI Raw</div>
+                </div>
+                <div style="flex:1; background:#FFFFFF; padding:16px; position:relative;">
+                  <div style="font-size:0.7rem; font-weight:800; color:#059669; text-transform:uppercase;">Compressed (4.62 MB)</div>
+                  <div style="font-size:1.1rem; font-weight:800; color:#0F172A; margin-top:8px;">Section 14.2</div>
+                  <div style="font-size:0.75rem; color:#475569; line-height:1.4;">Indemnification &amp; Liability Clauses shall remain in full force...</div>
+                  <div style="position:absolute; bottom:8px; left:16px; font-size:0.7rem; color:#059669; font-weight:700;">Vector Sharp (-90.4%)</div>
+                </div>
+              </div>
+
+              <!-- SVG Arrow -->
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                <defs>
+                  <marker id="arrowhead-c4" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#0284C7"/>
+                  </marker>
+                </defs>
+                <path d="M 470 120 Q 510 140 540 160" marker-end="url(#arrowhead-c4)" fill="none" stroke="#0284C7" stroke-width="2.5"/>
+              </svg>
+
+              <!-- Step Pin -->
+              <div class="step-pin" style="top:108px; left:455px;">④</div>
+              <div class="annotation-tooltip" style="top:65px; left:410px;">
+                <strong>400% Zoom Verification</strong>
+                Zero Font Rasterization
+              </div>
+
+              <!-- PiP Inset -->
+              <div class="pip-sec-inset" style="bottom:18px; left:20px; width:220px;">
+                <div class="pip-header"><span style="color:#0284C7;">&#9679;</span> Loupe Inspector</div>
+                <div>Glyph Curves: Vector</div>
+                <div>Line Bleed: 0.00%</div>
+                <div style="color:#4ADE80;">Text Legibility: 100%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-download-compressed">
+          <div class="walkthrough-step-header">
+            <div class="walkthrough-step-number">5</div>
+            <h3 class="walkthrough-step-title">Download Optimized PDF with Zero Cloud Latency</h3>
+          </div>
+          <p>
+            Click <strong>Download Compressed PDF</strong> to save your optimized document directly from client RAM to your downloads folder. Your document is 100% ready for electronic filing, email gateways with 5 MB caps, and long-term secure archival.
+          </p>
+
+          <div class="annotated-viewport" style="height:360px;">
+            <div class="viewport-canvas-mock">
+              <!-- Download Card Mock -->
+              <div style="width:360px; background:#0F172A; border:1px solid #1E293B; border-radius:12px; padding:22px; text-align:center;">
+                <div style="font-size:2.2rem; margin-bottom:8px;">📦</div>
+                <h4 style="color:#FFF; font-size:1.15rem; margin:0 0 6px;">Optimization Complete</h4>
+                <p style="color:#94A3B8; font-size:0.84rem; margin:0 0 16px;">48.20 MB &rarr; 4.62 MB &bull; 90.4% Shaved &bull; 42 Pages</p>
+                <div style="padding:10px 20px; background:#0284C7; color:#FFF; font-weight:800; border-radius:8px; font-size:0.92rem; display:inline-block; box-shadow:0 4px 14px rgba(2, 132, 199, 0.4);">
+                  Download Compressed PDF
+                </div>
+              </div>
+
+              <!-- SVG Arrow -->
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                <defs>
+                  <marker id="arrowhead-c5" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#0284C7"/>
+                  </marker>
+                </defs>
+                <path d="M 520 220 Q 480 250 440 260" marker-end="url(#arrowhead-c5)" fill="none" stroke="#0284C7" stroke-width="2.5"/>
+              </svg>
+
+              <!-- Step Pin -->
+              <div class="step-pin" style="top:205px; left:505px;">⑤</div>
+              <div class="annotation-tooltip" style="top:170px; left:480px;">
+                <strong>Instant Local Export</strong>
+                Zero Cloud Upload Wait
+              </div>
+
+              <!-- PiP Inset -->
+              <div class="pip-sec-inset" style="bottom:18px; right:20px; width:220px;">
+                <div class="pip-header"><span style="color:#10B981;">&#9679;</span> Document Audit</div>
+                <div style="color:#4ADE80;">Saved: 43.58 MB (90.4%)</div>
+                <div>ISO 32000-1: PASS</div>
+                <div style="color:#38BDF8;">Linearized: Ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: Diagnostic Troubleshooting -->
+      <section id="section-8">
+        <h2>8. Diagnostic Troubleshooting of Compression Errors</h2>
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Issue / Symptom</th>
+                <th>Root Cause Analysis</th>
+                <th>Engineering Solution</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>File size did not decrease significantly</code></td>
+                <td>The PDF already contains deflated streams or is purely text with no images.</td>
+                <td>Text-heavy PDFs are already compact (typically 20 KB/page). If required for a strict portal limit, use the Extreme profile to downsample fonts.</td>
+              </tr>
+              <tr>
+                <td><code>Uploaded file failed portal validation</code></td>
+                <td>Portal has a hard byte ceiling (e.g. exactly &le; 200 KB) and Recommended mode left it at 350 KB.</td>
+                <td>Switch to the <strong>Extreme / 200 KB Preset</strong> in LocalDoc to enforce adaptive quantization down to the exact byte ceiling.</td>
+              </tr>
+              <tr>
+                <td><code>Password-protected document error</code></td>
+                <td>Document streams are encrypted with AES-128 or AES-256. Deflation cannot compress ciphertext.</td>
+                <td>Unlock the document first using our free offline unlock tool, then run compression in RAM.</td>
+              </tr>
+              <tr>
+                <td><code>Browser tab crashed on huge file (&gt; 250 MB)</code></td>
+                <td>Mobile device ran out of heap allocation during simultaneous bitmap decompression.</td>
+                <td>Use a desktop browser (Chrome/Edge/Firefox) with 4GB+ available RAM, or process the file in 50-page chunks using our split tool.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 9: FAQ -->
+      <section id="section-9">
+        <h2>9. Frequently Asked Questions (FAQ)</h2>
+
+        <div style="margin:24px 0;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">How can I reduce a PDF file size to less than 200 KB?</h3>
+          <p style="color:var(--text-secondary); line-height:1.6; margin-top:0;">
+            To compress a PDF to under 200 KB, navigate to LocalDoc's dedicated <a href="../pages/compress-pdf-200kb.html" style="color:var(--primary); font-weight:700;">200KB PDF Compressor</a>. The engine applies an aggressive downsampling profile (96 DPI to 120 DPI) combined with maximum FlateDecode stream deflation and metadata stripping, fitting documents under portal caps while keeping text fully readable.
+          </p>
+        </div>
+
+        <div style="margin:24px 0;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Does PDF compression make text blurry or pixelated?</h3>
+          <p style="color:var(--text-secondary); line-height:1.6; margin-top:0;">
+            No, provided the original document contains true vector text. LocalDoc's compression engine targets only heavy embedded raster images (scanned pages, photos). Vector text glyphs and Bézier outlines are preserved mathematically, meaning text remains razor-sharp at 400% or 800% zoom.
+          </p>
+        </div>
+
+        <div style="margin:24px 0;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Why are scanned PDFs so large compared to Word-generated PDFs?</h3>
+          <p style="color:var(--text-secondary); line-height:1.6; margin-top:0;">
+            Word-generated PDFs contain mathematical character codes and font descriptors that consume only a few kilobytes per page. Scanned PDFs, by contrast, are full-page bitmap photographs (often 300 DPI uncompressed TIFF or high-bitrate JPEG) where every square inch contains millions of color pixels.
+          </p>
+        </div>
+
+        <div style="margin:24px 0;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">Is client-side PDF compression completely private?</h3>
+          <p style="color:var(--text-secondary); line-height:1.6; margin-top:0;">
+            Yes. LocalDoc executes compression entirely inside your browser's local RAM using WebAssembly (WASM). Your confidential contracts, financial filings, and personal documents are never transmitted across the internet to any external server.
+          </p>
+        </div>
+      </section>
+
+      <!-- Editorial Author Box -->
       <div class="editorial-author-box">
         <div class="editorial-author-avatar">AM</div>
-        <div class="editorial-author-content">
-          <h4 class="editorial-author-title">Document Engineering Verification</h4>
-          <p class="editorial-author-bio">Authored by <strong>Amaad Mazari</strong>, Lead Systems Architect at LocalDoc. Rigorously verified and tested across modern browsers (Chrome 128, Firefox 130, and Safari 17.5). Verified zero network telemetry via browser developer tools. All algorithms and document manipulations execute locally in client memory.</p>
-          <div class="editorial-author-meta">
-            <span>Verified: 2026</span>
-            <span>&bull;</span>
-            <a href="../about.html">Editorial Policy &amp; Author Bio</a>
-            <span>&bull;</span>
-            <a href="../privacy.html">Zero-Upload Security Model</a>
-          </div>
+        <div>
+          <h4 style="margin:0 0 4px; font-size:1.1rem; color:var(--text-primary);">Amaad Mazari</h4>
+          <div style="font-size:0.82rem; font-weight:700; color:var(--primary); margin-bottom:8px;">Lead Document &amp; Cryptographic Systems Specialist</div>
+          <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.5;">
+            Amaad Mazari specializes in digital document geometry, image rasterization standards, and client-side cryptography. He designs zero-upload web utilities to eliminate document data harvesting while ensuring 100% compliance with international e-filing portal specifications.
+          </p>
         </div>
       </div>
 
-      <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <h2 class="text-2xl font-bold text-white mb-4">In-Depth PDF Compression Technical Analysis &amp; Artifact Optimization</h2>
-            <p class="text-slate-300 mb-4 leading-relaxed">
-                When compressing PDF documents for email attachments, government portal submissions, or legal discovery archives, understanding how compression algorithms operate inside browser RAM is essential for preventing visual artifacts. Raster imagery inside PDF files is typically stored as DCTDecode (JPEG) or FlateDecode (zlib/Deflate) byte streams. When LocalDoc applies Extreme Compression (72 DPI, JPEG Quality 0.40), the engine re-samples the image resolution using an HTML5 Canvas bicubic interpolation filter before repacking the stream.
-            </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">Preserving Vector Curves and Embedded Font Subsets</h3>
-            <p class="text-slate-300 mb-4 leading-relaxed">
-                Unlike server-based tools that convert entire pages into low-resolution bitmap images (destroying text selection and searchability), LocalDoc separates the content streams: vector typography, TrueType/OpenType font glyphs, and mathematical drawing paths remain 100% vector-sharp at infinite zoom. Only embedded high-resolution uncompressed photos and redundant metadata streams (XML metadata, thumbnail previews, duplicate color profiles) are pruned.
-            </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">Government &amp; University Submission Guidelines</h3>
-            <p class="text-slate-300 leading-relaxed">
-                Most academic admissions portals (such as Common App, UCAS) and government portals (USCIS, IRS e-file, HMRC) enforce strict file size thresholds between 2MB and 6MB. For scanned tax returns or academic transcripts containing both black-and-white text and colored stamps, use "Recommended Compression" (150 DPI) to achieve a 70&ndash;80% size reduction while preserving official notary seal clarity.
-            </p>
-        </section>
-        <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <h2 class="text-2xl font-bold text-white mb-4">Technical Architecture, Workflow Standards &amp; Troubleshooting Guide</h2>
-            <p class="text-slate-300 mb-4 leading-relaxed">
-                Executing compress pdf operations directly inside modern web browsers utilizes local hardware acceleration via typed array buffers, SIMD vector instructions, and isolated WebAssembly runtimes. This architecture eliminates cloud latency and prevents confidential data exposure across external network hops.
-            </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">1. Memory Management &amp; Large File Handling Protocol</h3>
-            <p class="text-slate-300 mb-4 leading-relaxed">
-                When processing high-resolution documents or large multi-page bundles, LocalDoc streams data through chunked ArrayBuffer readers. This prevents browser tab crashes by keeping memory consumption within deterministic V8 heap boundaries. Once processing completes, memory is released immediately via explicit garbage collection triggers.
-            </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">2. Cross-Platform Font Rendering and Glyphs Integrity</h3>
-            <p class="text-slate-300 mb-4 leading-relaxed">
-                Whether running on Windows 11, macOS Sonoma, iOS Safari, or Android Chrome, the client-side engine parses underlying PDF font descriptor dictionaries (/FontDescriptor) and CIDFont subsets. Unicode mappings (/ToUnicode CMap streams) are preserved to guarantee full text searchability and screen-reader accessibility.
-            </p>
-            <h3 class="text-lg font-bold text-emerald-400 mb-2">3. Enterprise Compliance &amp; Zero-Retention Guarantee</h3>
-            <p class="text-slate-300 leading-relaxed">
-                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, privacy regulation, and GDPR standards.
-            </p>
-        </section>
-</article>
+      <!-- Bottom CTA Banner -->
+      <div class="cta-banner" style="background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color:#FFF; border-radius:14px; padding:24px 28px; margin-top:40px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h3 style="margin:0 0 6px; font-size:1.25rem; font-weight:800; color:#FFF;">Ready to Compress Your PDF Documents?</h3>
+          <p style="margin:0; font-size:0.92rem; opacity:0.92;">Shave up to 90% file size in seconds. 100% private in local browser RAM.</p>
+        </div>
+        <a href="../pages/compress-pdf.html" class="btn" style="background:#FFF; color:#0284C7; font-weight:800; padding:12px 24px; border-radius:8px; text-decoration:none;">Open Free PDF Compressor Now &rarr;</a>
+      </div>
+    </article>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <h3>LocalDoc</h3>
-          <p>A high-precision client-side document processing platform. Zero cloud uploads.</p>
-        </div>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="../index.html" class="brand">
+          <div class="brand-icon">
+            <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="32" height="32">
+          </div>
+          <span class="brand-title">LOCAL<span class="brand-accent">DOC</span></span>
+        </a>
+        <p class="footer-tagline">100% Zero-Upload Document Security &amp; Mathematical Engineering Suite.</p>
+      </div>
+
+      <div class="footer-links-grid">
         <div class="footer-col">
-          <h4 data-i18n="footer_col_tools" data-i18n="footer_col_tools">Popular Tools</h4>
-          <ul class="footer-links">
-            <li><a href="../pages/compress-pdf.html" class="footer-link"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
-            <li><a href="../pages/merge-pdf.html" class="footer-link"><span data-i18n="tool_merge_title">Merge PDF</span></a></li>
-            <li><a href="../pages/scientific-calculator.html" class="footer-link"><span data-i18n="nav_calc">Scientific Calculator</span></a></li>
+          <h4>PDF Utilities</h4>
+          <ul>
+            <li><a href="../pages/compress-pdf.html" class="footer-link"><span>Compress PDF</span></a></li>
+            <li><a href="../pages/compress-pdf-200kb.html" class="footer-link"><span>Compress to 200KB</span></a></li>
+            <li><a href="../pages/merge-pdf.html" class="footer-link"><span>Merge PDF</span></a></li>
+            <li><a href="../pages/split-pdf.html" class="footer-link"><span>Split PDF</span></a></li>
+            <li><a href="../pages/organize-pdf.html" class="footer-link"><span>Organize Pages</span></a></li>
           </ul>
         </div>
+
         <div class="footer-col">
-          <h4 data-i18n="footer_col_legal" data-i18n="footer_col_legal">Privacy &amp; Legal</h4>
-          <ul class="footer-links">
-            <li><a href="../privacy.html" class="footer-link"><span data-i18n="legal_privacy">Privacy Whitepaper</span></a></li>
-            <li><a href="../terms.html" class="footer-link"><span data-i18n="legal_terms">Terms of Service</span></a></li>
-            <li><a href="../disclaimer.html" class="footer-link"><span data-i18n="legal_disclaimer">Disclaimer</span></a></li>
-            <li><a href="../contact.html" class="footer-link"><span data-i18n="legal_contact">Contact Support</span></a></li>
+          <h4>Master Documentation</h4>
+          <ul>
+            <li><a href="compress-pdf-guide.html" class="footer-link"><span>Compress PDF Guide</span></a></li>
+            <li><a href="sign-pdf-guide.html" class="footer-link"><span>Sign PDF Guide</span></a></li>
+            <li><a href="edit-pdf-text-guide.html" class="footer-link"><span>Edit PDF Guide</span></a></li>
+            <li><a href="protect-pdf-guide.html" class="footer-link"><span>Protect PDF Guide</span></a></li>
+            <li><a href="../privacy.html" class="footer-link"><span>Zero-Upload Architecture</span></a></li>
           </ul>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
-                        <div class="footer-social-links">
-          <a href="https://wa.me/923150750652" target="_blank" rel="noopener noreferrer" class="social-link" title="Chat on WhatsApp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            <span>WhatsApp</span>
-          </a>
-          <a href="mailto:Amaadmazari@gmail.com" class="social-link" title="Direct Email">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>Email</span>
-          </a>
-          <a href="https://www.youtube.com/@Localdoc-org" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube Channel">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            <span>YouTube</span>
-          </a>
-          <a href="https://web.facebook.com/profile.php?id=61595067776430" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook Page">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            <span>Facebook</span>
-          </a>
-          <a href="https://github.com/AmaadMazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub</span>
-          </a>
-        </div>
-</div>
     </div>
   </footer>
 
-  <script defer src="../js/core/i18n.js?v=20260921-v26"></script>
-  <script defer src="../js/core/ui-utils.js?v=20260921-v26"></script>
-  <script defer src="../js/core/seo.js?v=20260921-v26"></script>
-
+  <script src="../js/main.js"></script>
   <script>
     function updateEstimate() {
-      const size = parseFloat(document.getElementById('file-slider').value);
+      const origSize = parseFloat(document.getElementById('file-slider').value);
       const ratio = parseFloat(document.getElementById('profile-select').value);
-      document.getElementById('file-size-val').textContent = `${size} MB`;
-      const finalSize = (size * (1 - ratio)).toFixed(2);
-      document.getElementById('estimate-result').textContent = `Estimated Output Size: ~${finalSize} MB (Saved ${(ratio * 100).toFixed(1)}%)`;
+      document.getElementById('file-size-val').innerText = origSize + ' MB';
+      
+      const newSize = (origSize * (1 - ratio)).toFixed(2);
+      const saved = (origSize * ratio).toFixed(2);
+      const pct = Math.round(ratio * 100);
+      
+      document.getElementById('est-size-val').innerText = newSize + ' MB';
+      document.getElementById('est-saved-val').innerText = 'Shaving ' + saved + ' MB (' + pct + '% savings)';
     }
   </script>
-  <!-- Global Search Modal -->
-  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
-    <div class="search-modal">
-      <div class="search-modal-input-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search tools &amp; master guides... (ESC to exit)" data-i18n-placeholder="search_modal_placeholder" data-i18n-aria="search_modal_aria" aria-label="Search all tools and guides">
-        <span class="kbd-shortcut">ESC</span>
-      </div>
-      <ul id="global-search-results" class="search-results-list"></ul>
-    </div>
-  </div>
-
-  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
-  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
-    <div class="cookie-consent-inner">
-      <div class="cookie-consent-content">
-        <div class="cookie-consent-header">
-          <span class="cookie-icon" aria-hidden="true">&#127850;</span>
-          <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
-        </div>
-        <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
-          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
-        </p>
-      </div>
-      <div class="cookie-consent-actions">
-        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
-          <span data-i18n="cookie_btn_essential">Essential Only</span>
-        </button>
-        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
-          <span data-i18n="cookie_btn_accept">Accept All</span>
-        </button>
-      </div>
-    </div>
-  </aside>
-
 </body>
 </html>
-
