@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -19,8 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Image to Text OCR — Extract Text Free | LocalDoc</title>
-  <meta name="description" content="Extract text from photos and scanned documents using in-browser OCR. Supports 100+ languages. No uploads or sign-up required. Fast, accurate results.">
+  <title>Image to Text OCR &mdash; Extract Text & Make Scanned PDF Searchable | LocalDoc</title>
+  <meta name="description" content="Extract text from photos and convert scanned images into Searchable PDFs using in-browser neural OCR. 100+ languages, invisible text layer, 100% private in RAM.">
   <link rel="canonical" href="https://localdoc.org/pages/image-to-text.html">
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#0284C7">
@@ -28,16 +28,16 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Image to Text OCR Studio &mdash; 100% Zero-Upload | LocalDoc">
-  <meta property="og:description" content="Extract editable text from document photos and receipts in browser RAM. 100% private.">
+  <meta property="og:title" content="Image to Text OCR Studio &amp; Searchable PDF Converter | LocalDoc">
+  <meta property="og:description" content="Extract editable text and export searchable PDFs from document photos in browser RAM. 100% private, zero uploads.">
   <meta property="og:url" content="https://localdoc.org/pages/image-to-text.html">
   <meta property="og:image" content="https://localdoc.org/assets/images/og/og-scanner-ocr.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Image to Text OCR Studio (Extract Text from Photos & Scans) | LocalDoc">
-  <meta name="twitter:description" content="Extract editable text from images, receipts, and book scans using local Tesseract WebAssembly. Copy text, download TXT, or export to Word (.docx) in RAM.">
+  <meta name="twitter:title" content="Image to Text OCR Studio & Searchable PDF Converter | LocalDoc">
+  <meta name="twitter:description" content="Extract editable text from images and create searchable PDFs with invisible text layers in browser RAM using WebAssembly.">
   <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-scanner-ocr.webp">
 
 
@@ -341,7 +341,11 @@
         </div>
 
         <div style="display:flex; justify-content:center; gap:16px; margin-top:20px; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-lg" id="download-txt-btn">
+          <button class="btn btn-primary btn-lg" id="download-searchable-pdf-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span data-i18n="action_download_searchable_pdf">Download Searchable PDF</span>
+          </button>
+          <button class="btn btn-outline btn-lg" id="download-txt-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span data-i18n="action_download_txt">Download Plain Text (.txt)</span>
           </button>
@@ -359,8 +363,8 @@
 
       <!-- Section 1: Practical Step-by-Step Guide -->
       <section class="tool-guide-section">
-        <h2>How to Extract Text from Images with 100% Client-Side Privacy</h2>
-        <p>LocalDoc's Image to Text OCR Studio extracts clean, selectable text from camera snapshots, screenshots, scanned receipts, and multi-page books without uploading a single pixel to external servers. Whether you are digitizing legal contracts, archiving medical records, or copying code snippets from presentation slides, here is how to achieve 99%+ character recognition accuracy:</p>
+        <h2>How to Extract Text from Images &amp; Make Scanned PDFs Searchable</h2>
+        <p>LocalDoc's Image to Text OCR Studio extracts clean, selectable text and generates searchable "Sandwich PDFs" from camera snapshots, screenshots, scanned receipts, and multi-page books without uploading a single pixel to external servers. Whether you are digitizing legal contracts, archiving medical records, or copying code snippets from presentation slides, here is how to achieve 99%+ character recognition accuracy:</p>
         
         <div class="tool-steps-grid">
           <div class="tool-step-card">
@@ -377,8 +381,8 @@
 
           <div class="tool-step-card">
             <div class="tool-step-number">3</div>
-            <h3>Extract, Review &amp; Export</h3>
-            <p>Click <strong>Extract Text via Neural OCR</strong>. Review the transcribed output in the real-time editor with word and character tallies. Edit inline, copy directly to your system clipboard, or export as structured <code>.txt</code> or formatted Microsoft Word <code>.docx</code>.</p>
+            <h3>Extract, Review &amp; Export Searchable PDF</h3>
+            <p>Click <strong>Extract Text via Neural OCR</strong>. Review the transcribed output in the real-time editor. Download as a genuine <strong>Searchable PDF</strong> with an invisible OCR text layer over your scans, copy directly to your clipboard, or export as structured <code>.txt</code> or Microsoft Word <code>.docx</code>.</p>
           </div>
         </div>
       </section>
@@ -417,6 +421,11 @@
           <div class="tool-tech-card">
             <h3>Zero-Leak Client Memory Lifecycle &amp; Canvas Bounds</h3>
             <p>Image bitmaps, canvas contexts, and intermediate inference buffers are allocated within ephemeral JavaScript closures and detached typed arrays (<code>ArrayBuffer</code>). While desktop Chrome and Edge support up to 4 GB linear memory per worker, mobile WebKit (iOS Safari) restricts single canvas buffers to 16.7 megapixels (4096 &times; 4096 px). LocalDoc automatically computes aspect-preserved bounds to prevent mobile memory eviction. Once your session ends, garbage collection reclaims 100% of memory with zero persistent disk footprint.</p>
+          </div>
+
+          <div class="tool-tech-card">
+            <h3>Searchable PDF (Sandwich PDF) Invisible Text Overlay</h3>
+            <p>Rather than discarding original scan aesthetics, LocalDoc synthesizes genuine searchable "Sandwich PDFs" directly in browser RAM via PDF-Lib. The engine places the high-resolution scanned raster image on the bottom visual layer and projects an invisible text layer (<code>opacity: 0</code>) aligned with exact bounding box coordinates (<code>x, y, width, height</code>). This produces a pristine visual document that supports native keyword search (<code>Ctrl+F</code>), screen-reader text-to-speech, and full mouse selection copying without cloud uploads.</p>
           </div>
         </div>
       </section>
@@ -697,6 +706,7 @@
 
   <script src="../js/core/i18n.js?v=20260921-v26"></script>
   <script src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <script src="../js/lib/pdf-lib.min.js?v=20260921-v26"></script>
   <script src="../js/lib/tesseract.min.js?v=20260921-v26"></script>
   <script src="../js/lib/docx.min.js?v=20260921-v26"></script>
   <script src="../js/tools/ocr.js?v=20260921-v26"></script>
@@ -704,6 +714,7 @@
   <script>
     let queueFiles = [];
     let transcribedText = '';
+    let ocrPageResults = [];
 
     const dropZone = document.getElementById("drop-zone");
     const fileInput = document.getElementById("file-input");
@@ -718,6 +729,7 @@
     const resultTextArea = document.getElementById("result-text-area");
     const resultStats = document.getElementById("result-stats");
     const copyBtn = document.getElementById("copy-btn");
+    const downloadSearchablePdfBtn = document.getElementById("download-searchable-pdf-btn");
     const downloadTxtBtn = document.getElementById("download-txt-btn");
     const downloadDocxBtn = document.getElementById("download-docx-btn");
     const filterSelect = document.getElementById("ocr-filter-select");
@@ -746,6 +758,7 @@
     UIUtils.setupDropZone(dropZone, fileInput, function(files) {
       if (files.length > 0) {
         queueFiles = Array.from(files);
+        ocrPageResults = [];
         queueName.textContent = queueFiles.length > 1 ? `${queueFiles.length} images selected` : queueFiles[0].name;
         const totalSize = queueFiles.reduce((acc, f) => acc + f.size, 0);
         queueSize.textContent = UIUtils.formatBytes(totalSize);
@@ -761,6 +774,7 @@
 
     clearBtn.addEventListener("click", () => {
       queueFiles = [];
+      ocrPageResults = [];
       transcribedText = '';
       dropZone.style.display = "block";
       fileQueue.style.display = "none";
@@ -771,7 +785,7 @@
     });
 
     function progressCb(pct, status) {
-      const step = pct < 35  ?  1 : (pct < 90  ?  2 : 3);
+      const step = pct < 35 ? 1 : (pct < 90 ? 2 : 3);
       UIUtils.setWorkflowStep(step, pct, status);
     }
 
@@ -782,17 +796,19 @@
         processBtn.disabled = true;
         UIUtils.setWorkflowStep(0, 10, "Initializing neural OCR worker in local memory...");
         let combinedText = '';
+        ocrPageResults = [];
 
-        const filterVal = filterSelect  ?  filterSelect.value : 'adaptive-bw';
-        const langVal = langSelect  ?  langSelect.value : 'eng';
+        const filterVal = filterSelect ? filterSelect.value : 'adaptive-bw';
+        const langVal = langSelect ? langSelect.value : 'eng';
 
         for (let i = 0; i < queueFiles.length; i++) {
           const file = queueFiles[i];
-          const text = await OCRUtils.imageToText(file, progressCb, { filter: filterVal, lang: langVal });
+          const detailed = await OCRUtils.recognizeDetailed(file, progressCb, { filter: filterVal, lang: langVal });
+          ocrPageResults.push({ file, ocrData: detailed });
           if (queueFiles.length > 1) {
-            combinedText += `--- IMAGE ${i + 1}: ${file.name} ---\n` + text + "\n\n";
+            combinedText += `--- IMAGE ${i + 1}: ${file.name} ---\n` + detailed.text + "\n\n";
           } else {
-            combinedText += text;
+            combinedText += detailed.text;
           }
         }
 
@@ -804,7 +820,7 @@
         UIUtils.setWorkflowStep(3, 100, "Text extraction complete!");
         resultCard.style.display = "block";
         const ocrBlob = new Blob([transcribedText], { type: 'text/plain;charset=utf-8' });
-        UIUtils.renderQuickActions(resultCard, ocrBlob, (queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-ocr") + ".txt");
+        UIUtils.renderQuickActions(resultCard, ocrBlob, (queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-ocr") + ".txt");
         UIUtils.showToast("OCR transcription completed successfully!", "success");
       } catch (err) {
         console.error(err);
@@ -816,7 +832,7 @@
 
     function updateStats() {
       const val = resultTextArea.value.trim();
-      const words = val  ?  val.split(/\s+/).filter(Boolean).length : 0;
+      const words = val ? val.split(/\s+/).filter(Boolean).length : 0;
       const chars = val.length;
       resultStats.textContent = `${words} words &bull; ${chars} characters`;
     }
@@ -843,10 +859,33 @@
       }
     });
 
+    downloadSearchablePdfBtn.addEventListener("click", async () => {
+      if (!ocrPageResults || ocrPageResults.length === 0) {
+        UIUtils.showToast("Please extract text first before downloading Searchable PDF", "info");
+        return;
+      }
+      try {
+        downloadSearchablePdfBtn.disabled = true;
+        UIUtils.setWorkflowStep(2, 60, "Generating Searchable PDF with invisible text layer...");
+        const pdfBlob = await OCRUtils.createSearchablePDF(ocrPageResults, (pct, status) => {
+          UIUtils.setWorkflowStep(pct < 80 ? 2 : 3, pct, status);
+        });
+        const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-searchable";
+        UIUtils.downloadBlob(pdfBlob, `${baseName}-searchable.pdf`);
+        UIUtils.setWorkflowStep(3, 100, "Searchable PDF generated!");
+        UIUtils.showToast("Searchable PDF downloaded with selectable text layer!", "success");
+      } catch (err) {
+        console.error(err);
+        UIUtils.showToast(err.message || "Failed to generate Searchable PDF", "error");
+      } finally {
+        downloadSearchablePdfBtn.disabled = false;
+      }
+    });
+
     downloadTxtBtn.addEventListener("click", () => {
       if (resultTextArea.value) {
         const blob = new Blob([resultTextArea.value], { type: 'text/plain;charset=utf-8' });
-        const baseName = queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
         UIUtils.downloadBlob(blob, `${baseName}-ocr.txt`);
       }
     });
@@ -858,7 +897,7 @@
           return { type: 'paragraph', text: line };
         });
         const docxBlob = DocxBuilder.createDocxFromContent(paragraphs, { title: 'OCR Transcription' });
-        const baseName = queueFiles[0]  ?  queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
+        const baseName = queueFiles[0] ? queueFiles[0].name.replace(/\.[^/.]+$/, "") : "localdoc-transcription";
         UIUtils.downloadBlob(docxBlob, `${baseName}-ocr.docx`);
         UIUtils.showToast("Word document downloaded!", "success");
       } catch (e) {

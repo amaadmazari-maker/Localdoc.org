@@ -196,13 +196,14 @@ const OCRUtils = {
   },
 
   /**
-   * Run neural OCR recognition on image file or canvas
+   * Run detailed neural OCR recognition on image file or canvas,
+   * returning full text and spatial bounding boxes for words/lines.
    * @param {File|Blob|HTMLCanvasElement|string} source
    * @param {Function} onProgress
    * @param {Object} options - { lang, filter, workerPath }
-   * @returns {Promise<string>}
+   * @returns {Promise<{ text: string, words: Array, lines: Array, width: number, height: number, canvas: HTMLCanvasElement }>}
    */
-  async imageToText(source, onProgress = null, options = {}) {
+  async recognizeDetailed(source, onProgress = null, options = {}) {
     const filter = options.filter || 'adaptive-bw';
     const lang = options.lang || 'eng';
 
@@ -251,7 +252,140 @@ const OCRUtils = {
     );
 
     if (onProgress) onProgress(100, 'Recognition complete');
-    return (result && result.data && result.data.text)  ?  result.data.text : '';
+
+    const data = (result && result.data) ? result.data : {};
+    return {
+      text: data.text || '',
+      words: data.words || [],
+      lines: data.lines || [],
+      width: preprocessedCanvas.width,
+      height: preprocessedCanvas.height,
+      canvas: preprocessedCanvas
+    };
+  },
+
+  /**
+   * Run neural OCR recognition on image file or canvas (backward compatible wrapper)
+   * @param {File|Blob|HTMLCanvasElement|string} source
+   * @param {Function} onProgress
+   * @param {Object} options - { lang, filter, workerPath }
+   * @returns {Promise<string>}
+   */
+  async imageToText(source, onProgress = null, options = {}) {
+    const detailed = await this.recognizeDetailed(source, onProgress, options);
+    return detailed.text;
+  },
+
+  /**
+   * Create a Multi-Page Searchable PDF (Sandwich PDF) with invisible text layer
+   * over original or preprocessed document images using PDF-Lib.
+   * @param {Array<{ file: File|Blob, ocrData: Object }>} items
+   * @param {Function} onProgress
+   * @returns {Promise<Blob>}
+   */
+  async createSearchablePDF(items, onProgress = null) {
+    if (typeof PDFLib === 'undefined') {
+      throw new Error('PDF-Lib engine is not loaded. Please ensure pdf-lib.min.js is included.');
+    }
+
+    const { PDFDocument, StandardFonts, rgb } = PDFLib;
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    for (let idx = 0; idx < items.length; idx++) {
+      if (onProgress) {
+        const pct = Math.round(((idx) / items.length) * 100);
+        onProgress(pct, `Synthesizing searchable PDF page ${idx + 1} of ${items.length}...`);
+      }
+
+      const item = items[idx];
+      const file = item.file;
+      const ocrData = item.ocrData;
+
+      // 1. Read image data
+      let imageEmbed;
+      const fileBuffer = await file.arrayBuffer();
+      const fileType = file.type || '';
+
+      if (fileType.includes('png')) {
+        imageEmbed = await pdfDoc.embedPng(fileBuffer);
+      } else if (fileType.includes('jpeg') || fileType.includes('jpg')) {
+        imageEmbed = await pdfDoc.embedJpg(fileBuffer);
+      } else {
+        // Convert to standard JPEG dataURL via canvas (supports WebP, BMP, etc.)
+        const helperImg = await UIUtils.loadImage(await UIUtils.readFileAsDataURL(file));
+        const helperCanvas = document.createElement('canvas');
+        helperCanvas.width = helperImg.naturalWidth || helperImg.width;
+        helperCanvas.height = helperImg.naturalHeight || helperImg.height;
+        const hCtx = helperCanvas.getContext('2d');
+        hCtx.drawImage(helperImg, 0, 0);
+        const jpegDataUrl = helperCanvas.toDataURL('image/jpeg', 0.92);
+        const base64Data = jpegDataUrl.split(',')[1];
+        const bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        imageEmbed = await pdfDoc.embedJpg(bytes);
+      }
+
+      const imgW = imageEmbed.width;
+      const imgH = imageEmbed.height;
+
+      // Create PDF page matching exact image aspect ratio
+      const page = pdfDoc.addPage([imgW, imgH]);
+
+      // Draw original image on base layer
+      page.drawImage(imageEmbed, {
+        x: 0,
+        y: 0,
+        width: imgW,
+        height: imgH
+      });
+
+      // 2. Overlay invisible text layer aligned to word bounding boxes
+      if (ocrData && ocrData.words && ocrData.words.length > 0) {
+        const scaleX = imgW / (ocrData.width || imgW);
+        const scaleY = imgH / (ocrData.height || imgH);
+
+        for (const word of ocrData.words) {
+          if (!word.text || !word.bbox) continue;
+          const cleanText = word.text.replace(/[\r\n\t]+/g, ' ').trim();
+          if (!cleanText) continue;
+
+          const bbox = word.bbox;
+          const wX = bbox.x0 * scaleX;
+          const wH = Math.max(1, (bbox.y1 - bbox.y0) * scaleY);
+          const wY = imgH - (bbox.y1 * scaleY);
+          const fontSize = Math.max(4, Math.min(60, wH * 0.82));
+
+          try {
+            page.drawText(cleanText, {
+              x: wX,
+              y: wY + (wH * 0.12),
+              size: fontSize,
+              font: font,
+              color: rgb(0, 0, 0),
+              opacity: 0
+            });
+          } catch (encodeErr) {
+            try {
+              const sanitized = cleanText.replace(/[^\x20-\x7E\xA0-\xFF]/g, ' ');
+              if (sanitized.trim()) {
+                page.drawText(sanitized, {
+                  x: wX,
+                  y: wY + (wH * 0.12),
+                  size: fontSize,
+                  font: font,
+                  color: rgb(0, 0, 0),
+                  opacity: 0
+                });
+              }
+            } catch (ignore) {}
+          }
+        }
+      }
+    }
+
+    if (onProgress) onProgress(100, 'Searchable PDF generation complete!');
+    const pdfBytes = await pdfDoc.save();
+    return new Blob([pdfBytes], { type: 'application/pdf' });
   }
 };
 
