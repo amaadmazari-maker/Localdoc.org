@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -348,7 +348,7 @@
         <li><strong>Asynchronous Web Worker Execution:</strong> Heavy rasterization, text glyph shaping, and font decompaction run on dedicated background Web Worker threads, ensuring 60 frames per second smooth scrolling on the main UI thread.</li>
       </ol>
 
-      <h2>4. Empirical Performance & Privacy Benchmark</h2>
+      <h2 id="section-4-security-benchmark">4. Empirical Performance & Privacy Benchmark</h2>
       <p>To evaluate cross-format speed, memory usage, and privacy compliance, we benchmarked a multi-format M&amp;A due diligence package across desktop software, cloud viewers, and LocalDoc.</p>
       <table class="spec-table">
         <thead>
@@ -708,7 +708,7 @@
       </div>
 
       <!-- Section 5B: The 5 Pillars of Modern Offline Document Reading -->
-      <h2>5. The 5-Pillar Offline Reading &amp; Annotation Architecture</h2>
+      <h2 id="section-6-memory-management">5. The 5-Pillar Offline Reading &amp; Annotation Architecture</h2>
       <p>
         Most online file viewers are passive: they display a static page and require you to upload your confidential files to remote servers if you want to highlight text, make handwritten margin notes, or listen aloud. LocalDoc completely eliminates this privacy compromise with an autonomous, client-side workspace engineered around five architectural pillars:
       </p>
@@ -771,7 +771,7 @@
         Unlike tools that flatten your entire PDF into blurry JPEG images when you save your notes, LocalDoc uses <code>pdf-lib</code> in client RAM to load the original high-resolution vector PDF, rasterize only your active stroke paths as transparent alpha overlays, and embed them directly onto each corresponding page. The resulting exported PDF retains razor-sharp typography, full searchability, and 100% vector printing quality.
       </p>
 
-      <h2>6. Honest Technical Limitations</h2>
+      <h2 id="section-7-technical-boundaries">6. Honest Technical Limitations</h2>
       <p>While client-side multi-format parsing delivers unmatched security and convenience, engineers should consider three architectural boundaries:</p>
       <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
         <li><strong>VBA Macros & Executable Scripts:</strong> For security reasons, the browser sandbox deliberately prevents the execution of Visual Basic for Applications (VBA) macros, embedded dynamic SQL connectors, and active ActiveX controls found in legacy <code>.docm</code> or <code>.xlsm</code> files.</li>
@@ -779,7 +779,7 @@
         <li><strong>Unbounded Archive Files (>200 MB):</strong> Opening extremely large multi-hundred-megabyte archives containing thousands of high-resolution raster images on mobile devices can strain tab memory allocations. On low-memory smartphones, keep individual files under 100 MB.</li>
       </ol>
 
-      <h2>7. Frequently Asked Questions (FAQ)</h2>
+      <h2 id="section-8-faq-and-verification">7. Frequently Asked Questions (FAQ)</h2>
       <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
         <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I view confidential corporate contracts without violating NDAs?</h4>
         <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Because 100% of the document parsing and rendering occurs directly inside your local browser's volatile memory sandbox, your files never touch external servers or cloud storage. This strictly preserves confidentiality mandates.</p>
