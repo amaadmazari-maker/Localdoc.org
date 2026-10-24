@@ -7,11 +7,11 @@
   /* =========================================================================
      1. BRAND COLORS & CHROMATIC SCALES (Lead 1 - Design Tokens)
      ========================================================================= */
-  --primary: #0D9488;
-  --primary-glow: rgba(13, 148, 136, 0.22);
-  --primary-hover: #0F766E;
+  --primary: #0F766E;
+  --primary-glow: rgba(15, 118, 110, 0.22);
+  --primary-hover: #115E59;
   --primary-subtle: #F0FDFA;
-  --primary-dark: #115E59;
+  --primary-dark: #134E4A;
   --primary-cyan: #06B6D4;
   --primary-indigo: #6366F1;
 
@@ -1277,7 +1277,7 @@ a:hover {
 .site-footer {
   margin-top: auto;
   background: #111827 !important;
-  color: #94A3B8;
+  color: #CBD5E1 !important;
   border-top: 1px solid #1F2937;
   padding: 60px 0 32px;
   position: relative;
@@ -1287,6 +1287,7 @@ a:hover {
 [data-theme="dark"] .site-footer {
   background: #0B0F19 !important;
   border-top: 1px solid #1E293B;
+  color: #CBD5E1 !important;
 }
 
 .footer-top {
@@ -1333,9 +1334,10 @@ a:hover {
 }
 
 .footer-link,
-.footer-col ul li a {
+.footer-col ul li a,
+.site-footer a {
   font-size: 0.85rem;
-  color: #94A3B8 !important;
+  color: #CBD5E1 !important;
   line-height: 1.6;
   display: inline-flex;
   align-items: center;
@@ -1346,7 +1348,8 @@ a:hover {
 }
 
 .footer-link:hover,
-.footer-col ul li a:hover {
+.footer-col ul li a:hover,
+.site-footer a:hover {
   color: #38BDF8 !important;
   transform: translateX(3px);
 }
@@ -1358,15 +1361,30 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   font-size: 0.84rem;
-  color: #64748B;
+  color: #CBD5E1 !important;
   flex-wrap: wrap;
   gap: 16px;
 }
 
 .footer-bottom p {
   margin: 0;
-  color: #94A3B8;
+  color: #CBD5E1 !important;
   font-size: 0.84rem;
+}
+
+.site-footer a.author-link,
+.site-footer a[href*="about-author"],
+.author-footer-link {
+  color: #38BDF8 !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+.site-footer a.author-link:hover,
+.site-footer a[href*="about-author"]:hover,
+.author-footer-link:hover {
+  color: #7DD3FC !important;
 }
 
 .footer-lang-pill {
@@ -3014,17 +3032,29 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
 }
 
 .filter-tab-btn.active {
-  background: var(--primary) !important;
+  background: #0F766E !important;
   color: #FFFFFF !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 4px 14px var(--primary-glow);
+  border-color: #0F766E !important;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
 }
 
 [data-theme="dark"] .filter-tab-btn.active {
-  background: var(--primary) !important;
+  background: #0F766E !important;
   color: #FFFFFF !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 4px 14px var(--primary-glow);
+  border-color: #0F766E !important;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+}
+
+.filter-tab-btn[data-filter="favorites"] {
+  border-color: #D97706 !important;
+  color: #92400E !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="dark"] .filter-tab-btn[data-filter="favorites"] {
+  border-color: #F59E0B !important;
+  color: #FBBF24 !important;
+  background: rgba(217, 119, 6, 0.12) !important;
 }
 
 .filter-count-badge {
@@ -4424,6 +4454,34 @@ button, .btn, .filter-tab-btn, .quick-pill, .tool-card, .calc-key {
   border-radius: var(--radius-sm);
   white-space: nowrap;
   font-weight: 600;
+}
+
+#cookie-btn-accept,
+.cookie-btn.btn-primary {
+  background: #0F766E !important;
+  color: #FFFFFF !important;
+  border-color: #115E59 !important;
+  font-weight: 700 !important;
+}
+
+#cookie-btn-accept:hover,
+.cookie-btn.btn-primary:hover {
+  background: #115E59 !important;
+}
+
+#cookie-btn-essential,
+.cookie-btn.btn-outline {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #64748B !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="dark"] #cookie-btn-essential,
+[data-theme="dark"] .cookie-btn.btn-outline {
+  background: #1E293B !important;
+  color: #F8FAFC !important;
+  border: 1px solid #475569 !important;
 }
 
 @media (max-width: 768px) {
