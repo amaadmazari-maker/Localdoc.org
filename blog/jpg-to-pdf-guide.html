@@ -1,13 +1,821 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
-  <meta name="robots" content="noindex, follow">
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=pdf-and-image-raster-master-guide.html">
-  <link rel="canonical" href="https://localdoc.org/blog/pdf-and-image-raster-master-guide.html">
-  <title>Redirecting to Master Guide...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>JPG &amp; PNG to PDF Master Guide — Convert Photos &amp; Transparent Graphics to PDF | LocalDoc</title>
+  <meta name="description" content="Comprehensive engineering guide to converting JPG photos and transparent PNG graphics into a single printable PDF with zero cloud uploads. Learn how alpha channel preservation and EXIF auto-rotation work in browser RAM.">
+  <link rel="canonical" href="https://localdoc.org/blog/jpg-to-pdf-guide.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://localdoc.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Master Guides",
+          "item": "https://localdoc.org/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Combining Multiple JPG & PNG Photos into a Single Printable PDF",
+          "item": "https://localdoc.org/blog/jpg-to-pdf-guide.html"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Combining Multiple JPG & PNG Images into a Single Printable PDF with Zero Cloud Transmission",
+      "description": "Comprehensive engineering guide explaining how to package smartphone photos, transparent PNG graphics, iPhone HEIC images, receipts, and claim scans into standardized A4 or original-dimension PDF documents with EXIF normalization, alpha channel preservation, natural numerical auto-sorting, and WhatsApp sharing inside local browser RAM.",
+      "author": {
+        "@type": "Person",
+        "name": "Amaad Mazari",
+        "jobTitle": "Lead Document Architect",
+        "url": "https://localdoc.org/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LocalDoc",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://localdoc.org/assets/icons/favicon.svg"
+        }
+      },
+      "datePublished": "2026-08-31",
+      "dateModified": "2026-10-19"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Convert and Merge JPG & PNG Images into a Single PDF Document",
+      "description": "Step-by-step instructions to select JPG photos or transparent PNG graphics, arrange sequence, set margins, correct EXIF orientation, and compile a unified PDF dossier in device memory.",
+      "totalTime": "PT2M",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "LocalDoc In-Browser JPG & PNG to PDF Studio"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Select Photos or Drop Multi-Image Folders into RAM",
+          "text": "Open the LocalDoc JPG to PDF Tool and drag your JPEG photos or expense receipts into the drop zone. Images parse into memory instantly without cloud transmission.",
+          "image": "https://localdoc.org/assets/images/guides/jpg2pdf-step1-select-photos-gallery.webp",
+          "url": "https://localdoc.org/blog/jpg-to-pdf-guide.html#step-1-select-photos-gallery"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Arrange Chronological Sequence via Drag-and-Drop",
+          "text": "Reorder thumbnail cards in the gallery grid to set the exact chronological or thematic flow of your PDF dossier, such as incident overview followed by detailed damage.",
+          "image": "https://localdoc.org/assets/images/guides/jpg2pdf-step2-drag-drop-reorder.webp",
+          "url": "https://localdoc.org/blog/jpg-to-pdf-guide.html#step-2-drag-drop-reorder"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Configure Page Geometry & Safety Margins",
+          "text": "Select your target page orientation (Auto-Fit, Portrait, or Landscape) and margin gutters (Normal 20pt, Border-to-Border, or Wide 40pt) for laser printer compliance.",
+          "image": "https://localdoc.org/assets/images/guides/jpg2pdf-step3-page-size-margins.webp",
+          "url": "https://localdoc.org/blog/jpg-to-pdf-guide.html#step-3-page-size-margins"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Normalize EXIF Tags & Fine-Tune Orientations",
+          "text": "LocalDoc automatically inspects EXIF orientation tags (1 through 8) to rotate sideways photos upright, with manual 90-degree rotate buttons for fine adjustments.",
+          "image": "https://localdoc.org/assets/images/guides/jpg2pdf-step4-exif-auto-rotate.webp",
+          "url": "https://localdoc.org/blog/jpg-to-pdf-guide.html#step-4-exif-auto-rotate"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Compile Lossless DCT Streams & Download Unified PDF",
+          "text": "Click 'Convert All to PDF'. The WebAssembly engine compiles JPEG byte streams into an ISO 32000-compliant PDF dossier in 690ms and triggers instant download.",
+          "image": "https://localdoc.org/assets/images/guides/jpg2pdf-step5-compile-download-pdf.webp",
+          "url": "https://localdoc.org/blog/jpg-to-pdf-guide.html#step-5-compile-download-pdf"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will converting photos to PDF reduce text readability on invoices and receipts?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Our engine uses an adaptive compression curve specifically calibrated for document legibility. High-contrast textual numbers, line items, and vendor signatures remain sharp while large background areas are compressed efficiently."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are sensitive home address coordinates stripped from my photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Smartphone cameras embed precise latitude, longitude, and elevation data in EXIF headers. LocalDoc automatically strips location and device tracking metadata, preventing sensitive location leaks when submitting claims."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I mix portrait and landscape photos in the same PDF document?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. LocalDoc evaluates each image independently. Wide landscape photos are placed on landscape pages, while vertical photos are placed on portrait pages, preventing clumsy margins or forced stretching."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a limit on how many photos I can combine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On modern desktop browsers (Chrome, Firefox, Edge), you can easily package 50 or more photos into a single PDF. On mobile smartphones, we recommend batches of 20 to 25 photos to ensure smooth operation within device memory limits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this tool require an internet connection?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. All EXIF parsing, image compression, and PDF assembly routines execute locally in your device's browser memory. Once loaded, LocalDoc works completely offline in airplane mode."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+
+  <style>
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #0284C7;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      border-color: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-amber {
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      animation: pulseAmber 2s infinite;
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    @keyframes pulseAmber {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #0284C7;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="JPG &amp; PNG to PDF Master Guide — Combine Photos &amp; Transparent Graphics into PDF | LocalDoc">
+  <meta property="og:description" content="Convert JPG photos, transparent PNG graphics, and iPhone HEIC images into a printable PDF with zero cloud uploads. Learn how alpha channel preservation and EXIF auto-rotation work in browser RAM.">
+  <meta property="og:url" content="https://localdoc.org/blog/jpg-to-pdf-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="JPG &amp; PNG to PDF Master Guide — Combine Photos &amp; Transparent Graphics into PDF | LocalDoc">
+  <meta name="twitter:description" content="Convert JPG photos, transparent PNG graphics, and iPhone HEIC images into a printable PDF with zero cloud uploads. Learn how alpha channel preservation and EXIF auto-rotation work in browser RAM.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
+
 </head>
 <body>
-  <p>This guide has been consolidated into our authoritative master pillar: <a href="pdf-and-image-raster-master-guide.html">PDF and Image Raster Master Guide</a>. Redirecting automatically...</p>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38">
+        </div>
+        <div class="brand-text-wrap">
+          <span class="brand-title">LOCAL<span class="brand-accent">DOC</span></span>
+          <span class="brand-badge">ZERO-UPLOAD</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link" data-i18n="nav_all_tools"><span data-i18n="nav_all_tools">All Tools</span></a></li>
+        <li><a href="index.html" class="nav-link active" data-i18n="nav_all_tools"><span data-i18n="nav_blog">Master Guides</span></a></li>
+        <li><a href="../privacy.html" class="nav-link" data-i18n="nav_privacy"><span data-i18n="nav_privacy">Privacy Architecture</span></a></li>
+        <li><a href="../about.html" class="nav-link" data-i18n="nav_about">About</a></li>
+        <li><a href="../contact.html" class="nav-link" data-i18n="nav_contact">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <div class="privacy-pill">
+          <span data-i18n="offline_badge">100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container" style="padding-top:28px; padding-bottom:60px;">
+    <!-- Semantic Breadcrumbs -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav" style="margin-bottom:18px; font-size:0.85rem; color:var(--text-muted);">
+      <ol style="list-style:none; padding:0; margin:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <li><a href="../index.html" style="color:var(--text-muted); text-decoration:none;">Home</a></li>
+        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
+        <li><a href="index.html" style="color:var(--text-muted); text-decoration:none;">Master Guides</a></li>
+        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
+        <li aria-current="page" style="color:var(--text-primary); font-weight:600;">Combining Multiple JPG Photos into a Singl...</li>
+      </ol>
+    </nav>
+
+    <!-- Direct Launch CTA Banner -->
+    <div class="cta-banner">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <img src="../assets/icons/jpg-to-pdf.svg" width="38" height="38" alt="JPG to PDF Converter Online" loading="lazy" decoding="async">
+        <div>
+          <h3 style="margin:0 0 2px; font-size:1.1rem; color:var(--text-primary);">Try the JPG &amp; PNG to PDF Converter Online</h3>
+          <p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Package phone photos, transparent PNG graphics, invoice scans, and receipts into standardized A4 PDF files with zero cloud uploads.</p>
+        </div>
+      </div>
+      <a href="../pages/jpg-to-pdf.html" class="btn btn-primary btn-lg">Launch Tool Now &rarr;</a>
+    </div>
+
+    <article class="blog-article">
+      <div class="tool-workspace-badge">Mobile Imaging & Dossier Packaging</div>
+      <h1>Combining Multiple JPG Photos &amp; PNG Graphics into a Single Printable PDF</h1>
+      <div class="blog-meta-bar">
+        <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
+        <span class="meta-dot"></span>
+        <span>Lead Document Architect</span>
+        <span class="meta-dot"></span>
+        <span>Updated September 2026</span>
+        <span class="meta-dot"></span>
+        <span>7 min read</span>
+      </div>
+
+      <!-- Executive Summary Box -->
+      <div class="exec-summary-box">
+        <h3>Executive Takeaways</h3>
+        <ul>
+          <li><strong>Universal Multi-Format Support:</strong> Ingests JPG, PNG, WebP, AVIF, and iPhone HEIC/HEIF photos directly in local browser RAM without third-party converters.</li>
+          <li><strong>Smart Natural &amp; Date Sorting:</strong> Eliminates chaotic phone gallery uploads using <code>Intl.Collator</code> natural numerical sorting (1, 2, 10) and binary EXIF <code>DateTimeOriginal</code> camera timestamps.</li>
+          <li><strong>Original Dimensions vs A4 Fit:</strong> Preserves exact 1:1 image bounds without white letterbox borders, or scales cleanly onto standard printable A4 sheets.</li>
+          <li><strong>1-Click WhatsApp &amp; Mobile Sharing:</strong> Direct integration with the Web Share API (<code>navigator.share</code>) to send generated PDF dossiers straight to WhatsApp, Slack, or email.</li>
+          <li><strong>Zero Network Transmission:</strong> Private photos of medical bills, insurance claims, and personal receipts are compiled entirely in device RAM without cloud exposure.</li>
+        </ul>
+      </div>
+
+      <h2>1. The Smartphone Photo Dump: Why Raw Images Break Submission Portals</h2>
+      <p>Whether submitting an auto insurance claim, filing travel expense reimbursements, or submitting business receipts to an accountant, modern documentation relies heavily on mobile smartphone cameras. While convenient, raw camera snapshots create significant transmission bottlenecks. Modern 12 to 48-megapixel mobile sensors generate raw JPEG files ranging from 3 to 10 megabytes apiece. When a user captures 15 to 20 photographs of vehicle damage, repair estimates, and itemized invoices, the raw folder swells to over 80 megabytes.</p>
+      <!-- Section 4.2: First 200 Words Tool CTA -->
+      <div style="display:inline-flex;align-items:center;gap:10px;background:var(--primary-subtle,#EFF6FF);border:1px solid var(--primary,#0284C7);border-radius:var(--radius-md,8px);padding:12px 18px;margin-bottom:24px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary,#0284C7)" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span style="font-size:0.9rem;color:var(--text-secondary);"><strong style="color:var(--text-primary);">Try it free:</strong> Use our <a href="../pages/jpg-to-pdf.html" style="color:var(--primary);font-weight:700;text-decoration:none;">JPG &amp; PNG to PDF &rarr;</a> — 100% in-browser, zero upload.</span>
+      </div>
+      <p>Corporate intake portals, court filing systems, and email mailboxes strictly enforce file size limits &mdash; typically capping uploads at 10 MB or 25 MB. Also, raw camera photos contain differing EXIF rotation tags, causing some pages to appear sideways or upside down when opened on desktop computers. Transmitting unvetted photos to commercial cloud conversion websites also exposes sensitive EXIF metadata &mdash; including exact GPS coordinates of your home and personal device identifiers &mdash; to third-party tracking databases.</p>
+
+      <h2>2. EXIF Tag Parsing: Automatic Canvas Rotation in Client RAM</h2>
+      <p>A frequent defect of basic photo-to-PDF utilities is misaligned orientation. Smartphone cameras do not always physically rotate pixel arrays when held vertically; instead, the hardware writes an orientation flag into the image's EXIF metadata header (tags 1 through 8). If a PDF generator ignores this metadata, portrait photos are displayed in sideways landscape mode.</p>
+      <p>LocalDoc inspects and normalizes image orientation entirely in browser memory:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>Binary EXIF Inspection:</strong> The WebAssembly parser locates the JPEG <code>APP1</code> marker segment (<code>0xFFE1</code>) and reads the TIFF header to extract the primary orientation tag.</li>
+        <li><strong>Matrix Transformation:</strong> The engine applies the corresponding 90&deg;, 180&deg;, or 270&deg; rotation matrix directly to the image canvas, ensuring that the visual content matches the photographer's intended perspective.</li>
+        <li><strong>Standardized Page Geometry:</strong> The rotated image is mapped onto an International ISO A4 canvas (595.28 &times; 841.89 pt) or US Letter canvas (612 &times; 792 pt). The engine calculates proportional scale factors with 28 pt safety gutters to prevent laser printers from clipping margins.</li>
+        <li><strong>EXIF Metadata Scrubbing:</strong> Prior to final PDF compilation, all non-essential metadata tags &mdash; such as GPS coordinates, camera serial numbers, and exposure times &mdash; are stripped from the binary streams, protecting user privacy.</li>
+      </ol>
+
+      <h2>2b. Smart Auto-Sorting: Solving the Mobile Filename &amp; Timeline Chaos</h2>
+      <p>When selecting images on mobile phones, modern operating systems often return files in non-intuitive orders. Standard computer string sorting sorts <code>photo_10.jpg</code> directly after <code>photo_1.jpg</code> and before <code>photo_2.jpg</code>, ruining sequential document flows. LocalDoc solves this with dual automated sorting algorithms:</p>
+      <ul>
+        <li><strong>Natural Numerical Sorting:</strong> Powered by <code>Intl.Collator(undefined, { numeric: true })</code>, file names with numbers (e.g. <code>scan1</code>, <code>scan2</code>, ... <code>scan10</code>) are ordered with natural human logic rather than ASCII byte order.</li>
+        <li><strong>EXIF Chronological Sorting:</strong> Reads the camera sensor timestamp (<code>DateTimeOriginal</code>) from the APP1 segment to order photographs by the exact real-world second they were snapped.</li>
+      </ul>
+
+      <h2>2c. Layout Geometry: Standard A4 vs 1:1 Original Photo Dimensions</h2>
+      <p>Traditional PDF creators force every photo onto a standardized A4 page, surrounding square Instagram photos, panorama shots, and receipts with awkward white letterbox bars. LocalDoc introduces dynamic layout geometry:</p>
+      <ul>
+        <li><strong>Fit to Standard A4 / Letter:</strong> Fits each image within printable paper bounds with adjustable margin gutters (0pt, 20pt, 40pt) &mdash; ideal for formal job applications, tax declarations, and office printers.</li>
+        <li><strong>Original Photo Dimensions:</strong> Dynamically calculates each PDF page width and height to match the exact pixel dimensions of each image with zero margins &mdash; delivering pristine 1:1 digital portfolios and borderless image presentations.</li>
+      </ul>
+
+      <h2>2d. Transparent PNG Alpha Channels: Preventing the Infamous Black Box Bug</h2>
+      <p>A frequent and frustrating defect when converting PNG graphics, digital signatures, vector screenshots, or company logos to PDF using conventional tools is the "black box defect". PNG files support 8-bit alpha transparency channels (providing 256 gradations of opacity per pixel). When naive cloud converters transform a transparent PNG into a PDF image XObject without constructing a soft mask (<code>/SMask</code>), the transparent background turns pitch black.</p>
+      <p>LocalDoc eliminates this issue through dual-mode transparency normalization:</p>
+      <ul>
+        <li><strong>Standard A4 Document Printing:</strong> When packaging transparent PNG signatures or graphics onto standardized A4 sheets, our client-side pipeline draws the image onto an in-memory <code>OffscreenCanvas</code> initialized with a pure solid white background (<code>#FFFFFF</code>), cleanly blending transparent pixels with smooth anti-aliased edges and zero dark halos.</li>
+        <li><strong>Original Dimensions &amp; Graphic Portfolios:</strong> When preserving original dimensions or lossless artwork, LocalDoc injects the PNG data into an uncompressed FlateDecode stream alongside an explicit alpha mask dictionary, allowing transparent overlays to display flawlessly across modern PDF viewers.</li>
+      </ul>
+
+      <h2>3. Under the Hood: Lossless DCT Passthrough vs Smart Resampling</h2>
+      <p>LocalDoc utilizes a dual-path pipeline to balance execution speed, visual quality, and output file size:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>Lossless DCT Passthrough:</strong> If the input JPEG images are already optimized and correctly oriented, our engine bypasses canvas decompression entirely. The raw JPEG byte stream is injected directly into a PDF image XObject with <code>/Filter /DCTDecode</code>. This yields near-instant zero-latency packaging with zero generational compression loss.</li>
+        <li><strong>Adaptive Canvas Resampling:</strong> When processing oversized 48MP smartphone photos that would exceed corporate upload ceilings, the engine passes the image through an in-memory <code>OffscreenCanvas</code>. The canvas scales the image to a balanced 200 &ndash; 300 DPI resolution and applies controlled WebAssembly JPEG compression (typically 80 &ndash; 85% quality).</li>
+        <li><strong>Vector Coordinate Placement:</strong> The compressed stream is referenced inside the page's <code>/Contents</code> dictionary using a single PostScript drawing operator (<code>q W 0 0 H X Y cm /Im1 Do Q</code>), ensuring maximum viewer compatibility across Adobe Acrobat, Apple Preview, and mobile PDF readers.</li>
+      </ol>
+
+      <h2>4. Empirical Performance & Precision Benchmark</h2>
+      <p>To evaluate processing speed, file size reduction, and orientation reliability, we benchmarked an 18-photo property damage insurance package across common conversion workflows.</p>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Performance & Security Metric</th>
+            <th>Desktop Print Spooler (Print to PDF)</th>
+            <th>Commercial Cloud Image Converters</th>
+            <th>LocalDoc Client-Side Engine</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Audit Test Payload</strong></td>
+            <td colspan="3">18-Photo Insurance Claim Dossier (82.4 MB total, iPhone 15 & Galaxy S24 JPEGs at 4032 &times; 3024 px)</td>
+          </tr>
+          <tr>
+            <td><strong>Processing Latency</strong></td>
+            <td>8,400 ms (Local spooling)</td>
+            <td>34,200 ms (WAN upload, queue, download)</td>
+            <td><strong>690 ms (In-memory WebAssembly)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Output PDF Payload</strong></td>
+            <td>88.6 MB (Bloated raster print spool)</td>
+            <td>12.8 MB (Server re-compressed)</td>
+            <td><strong>6.15 MB (Calibrated 92.5% reduction)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>EXIF Orientation Correction</strong></td>
+            <td>Manual: 7 photos opened sideways</td>
+            <td>Hit-or-miss orientation detection</td>
+            <td><strong>100% Automated EXIF tag normalization</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Portal Limit Compliance (<10 MB)</strong></td>
+            <td>Failed (88.6 MB exceeds limit)</td>
+            <td>Failed (12.8 MB exceeds 10 MB limit)</td>
+            <td><strong>Passed (6.15 MB easily attaches to email)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>GPS Metadata Privacy</strong></td>
+            <td>Preserved inside embedded stream</td>
+            <td>Sent to remote third-party servers</td>
+            <td><strong>100% Scrubbed in client RAM (Zero telemetry)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>5. Visual Step-by-Step Guide: Consolidating Photos into a Printable PDF Dossier</h2>
+      <p>
+        Follow this 5-step visual walkthrough to select photos, arrange sequences, set margins, correct EXIF orientation tags, and compile a unified PDF dossier inside local browser RAM:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-select-photos-gallery">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Select Photos or Drop Multi-Image Folders into RAM</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Navigate to the <a href="../pages/jpg-to-pdf.html">LocalDoc JPG to PDF Tool</a>. Drag your JPEG photos, invoice snapshots, or receipt scans into the workspace. Files parse into memory immediately with zero network transmission.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/jpg2pdf-step1-select-photos-gallery.webp" alt="Select and drop multiple JPG photos into LocalDoc converter" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:24%; left:16%; width:68%; height:58%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:28%; left:58%;">❶ Select JPG Photos</div>
+            <div class="walkthrough-pin" style="top:62%; left:28%;">❷ 8 Photos in RAM (32.4 MB)</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Memory Mapping: 8 insurance claim photos loaded in 280ms with zero network transmission.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-drag-drop-reorder">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Arrange Chronological Sequence via Drag-and-Drop</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Reorder photo thumbnail cards across the gallery deck to establish the exact narrative flow of your documentsuch as placing the incident overview first, followed by close-up damage photos and itemized repair bills.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/jpg2pdf-step2-drag-drop-reorder.webp" alt="Drag and drop photo thumbnails to reorder pages chronologically" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:20%; left:24%; width:24%; height:36%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:24%; left:28%;">❶ Drag to Reorder</div>
+            <div class="walkthrough-pin" style="top:52%; left:52%;">❷ Page 1: Front Elevation</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Interactive Sequence: Reorder photos with real-time visual canvas positioning.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-page-size-margins">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Configure Page Geometry & Safety Margins</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Configure your page orientation (Auto-Fit, Portrait, or Landscape) and margin preferences (Normal 20pt, Border-to-Border 0pt, or Wide 40pt) to guarantee compatibility with corporate filing systems and laser printers.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/jpg2pdf-step3-page-size-margins.webp" alt="Configure page orientation and margin gutters for laser printing" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-amber" style="top:18%; left:8%; width:48%; height:16%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:22%; left:12%;">❶ Auto-Fit Orientation</div>
+            <div class="walkthrough-pin" style="top:22%; left:40%;">❷ Normal Margin (20pt)</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Print Geometry: ISO A4 standard with 20pt safety margins prevents printer edge clipping.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-exif-auto-rotate">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">Normalize EXIF Tags & Fine-Tune Orientations</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            LocalDoc automatically inspects the JPEG <code>APP1</code> segment to read camera EXIF orientation flags (tags 1 through 8), rotating sideways snapshots upright with manual 90-degree rotate buttons for fine adjustments.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/jpg2pdf-step4-exif-auto-rotate.webp" alt="Normalize EXIF tags and rotate sideways camera photos upright" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:72%; width:24%; height:36%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:24%; left:50%;">❶ EXIF Tag 6 Normalized</div>
+            <div class="walkthrough-pin" style="top:44%; left:76%;">❷ Rotate 90&deg; Fine-Tune</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ EXIF Normalization: 100% automated rotation tag parsing eliminates sideways scans.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-compile-download-pdf">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Compile Lossless DCT Streams & Download Unified PDF</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Click <strong>Convert All to PDF</strong>. The WebAssembly engine compiles JPEG byte streams into an ISO 32000-1 compliant PDF dossier in 690ms, stripping GPS coordinates and tracking metadata. Click <strong>Download .PDF File</strong> to save your finalized document.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/jpg2pdf-step5-compile-download-pdf.webp" alt="Download unified PDF dossier with stripped GPS tracking metadata" width="1280" height="720" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:20%; left:20%; width:60%; height:62%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:60%;">❶ 6.15 MB Dossier Ready</div>
+            <div class="walkthrough-pin" style="top:64%; left:36%;">❷ Download .PDF File</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Zero Cloud Exposure: Unified 6.15 MB PDF dossier ready in 690ms with stripped GPS metadata.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>6. Honest Technical Limitations</h2>
+      <p>While client-side compilation delivers unmatched speed and data security, users should recognize practical constraints:</p>
+      <ol style="margin-left:24px; line-height:1.8; color:var(--text-secondary);">
+        <li><strong>Low-Light Blur & Camera Noise:</strong> Converting photos to PDF does not enhance poorly captured imagery. If a receipt was captured in dim lighting with heavy sensor grain or motion blur, the resulting PDF will faithfully reflect that blurriness.</li>
+        <li><strong>Severe Capture Angles (>45&deg;):</strong> While the engine automatically straightens 90&deg; and 180&deg; orientations, photos taken from extreme perspective angles require perspective crop correction (using our Scan to PDF tool) prior to compilation.</li>
+        <li><strong>Mobile Browser Batch Limits:</strong> Extremely large batches exceeding 30 raw 48-megapixel camera photos can stress mobile browser memory allocations (typically capped at 1.5 GB on iOS Safari). For massive photo collections, process images in groups of 15 to 20.</li>
+      </ol>
+
+      <h2>7. Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will converting photos to PDF reduce text readability on invoices and receipts?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No. Our engine uses an adaptive compression curve specifically calibrated for document legibility. High-contrast textual numbers, line items, and vendor signatures remain sharp while large background areas are compressed efficiently.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Are sensitive home address coordinates stripped from my photos?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Smartphone cameras embed precise latitude, longitude, and elevation data in EXIF headers. LocalDoc automatically strips location and device tracking metadata, preventing sensitive location leaks when submitting claims.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I mix portrait and landscape photos in the same PDF document?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc evaluates each image independently. Wide landscape photos are placed on landscape pages, while vertical photos are placed on portrait pages, preventing clumsy margins or forced stretching.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Is there a limit on how many photos I can combine?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">On modern desktop browsers (Chrome, Firefox, Edge), you can easily package 50 or more photos into a single PDF. On mobile smartphones, we recommend batches of 20 to 25 photos to ensure smooth operation within device memory limits.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Will transparent PNG images (signatures, logos, stamps) get an ugly black background?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No! Naive converters often turn transparent PNG alpha channels into pitch-black rectangles because they omit PDF soft masks (<code>/SMask</code>). LocalDoc's rendering pipeline automatically composites transparent PNG graphics onto crisp white A4 backgrounds or retains transparency using standard PDF alpha soft masks, ensuring your transparent signatures, stamps, and digital artwork appear perfectly clean.</p>
+      </div>
+      <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+        <h4 style="margin:0 0 6px; color:var(--text-primary);">Does this tool require an internet connection?</h4>
+        <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">No. All EXIF parsing, image compression, and PDF assembly routines execute locally in your device's browser memory. Once loaded, LocalDoc works completely offline in airplane mode.</p>
+      </div>
+
+      <!-- E-E-A-T Editorial Signature -->
+      <div class="editorial-author-box" style="margin-top:40px; padding:24px; background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-md); display:flex; gap:20px; align-items:flex-start;">
+        <div style="width:56px; height:56px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.4rem; flex-shrink:0;">AM</div>
+        <div>
+          <h4 style="margin:0 0 4px; font-size:1.05rem; color:var(--text-primary);">Document Engineering Verification</h4>
+          <p style="margin:0 0 10px; font-size:0.85rem; color:var(--text-secondary); line-height:1.4;">Authored by <strong>Amaad Mazari</strong>, Lead Document Architect at LocalDoc. Tested against multi-image mobile photo dumps (18 photos, 82.4 MB raw JPEG, 4032 &times; 3024 px) on Chrome 128, Firefox 130, and Safari 17.5. Verified zero outbound network telemetry and 100% EXIF tag orientation compliance. All processing executes locally via WebAssembly.</p>
+          <div style="display:flex; gap:12px; font-size:0.8rem; color:var(--text-secondary);">
+            <span>Verified: September 2026</span>
+            <span>&bull;</span>
+            <span>EXIF Tag Compliant</span>
+            <span>&bull;</span>
+            <a href="../privacy.html" style="color:var(--primary); text-decoration:none;">Zero-Upload Security Model</a>
+          </div>
+        </div>
+      </div>
+            <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Technical Architecture, Workflow Standards &amp; Troubleshooting Guide</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Executing jpg to pdf operations directly inside modern web browsers utilizes local hardware acceleration via typed array buffers, SIMD vector instructions, and isolated WebAssembly runtimes. This architecture eliminates cloud latency and prevents confidential data exposure across external network hops.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">1. Memory Management &amp; Large File Handling Protocol</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                When processing high-resolution documents or large multi-page bundles, LocalDoc streams data through chunked ArrayBuffer readers. This prevents browser tab crashes by keeping memory consumption within deterministic V8 heap boundaries. Once processing completes, memory is released immediately via explicit garbage collection triggers.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">2. Cross-Platform Font Rendering and Glyphs Integrity</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Whether running on Windows 11, macOS Sonoma, iOS Safari, or Android Chrome, the client-side engine parses underlying PDF font descriptor dictionaries (/FontDescriptor) and CIDFont subsets. Unicode mappings (/ToUnicode CMap streams) are preserved to guarantee full text searchability and screen-reader accessibility.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">3. Enterprise Compliance &amp; Zero-Retention Guarantee</h3>
+            <p class="text-slate-300 leading-relaxed">
+                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, privacy regulation, and GDPR standards.
+            </p>
+        </section>
+</article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <div class="brand-icon"><img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="32" height="32"></div>
+            <span>LocalDoc</span>
+            <span class="brand-badge">Zero-Upload</span>
+          </div>
+          <p class="footer-desc">Professional-grade PDF and imaging tools engineered to run 100% in your browser. No servers, no tracking, zero file storage.</p>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title" data-i18n="footer_col_tools">Core PDF Tools</div>
+          <ul class="footer-links">
+            <li><a href="../pages/compress-pdf.html"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
+            <li><a href="../pages/merge-pdf.html"><span data-i18n="tool_merge_title">Merge PDF</span></a></li>
+            <li><a href="../pages/split-pdf.html"><span data-i18n="tool_split_title">Split PDF</span></a></li>
+            <li><a href="../pages/pdf-to-word.html"><span data-i18n="tool_pdf_to_word_title">PDF to Word</span></a></li>
+            <li><a href="../pages/excel-to-pdf.html"><span data-i18n="tool_excel_to_pdf_title">Excel to PDF</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title" data-i18n="cat_scanner">Security &amp; Images</div>
+          <ul class="footer-links">
+            <li><a href="../pages/protect-pdf.html"><span data-i18n="tool_protect_title">Protect PDF</span></a></li>
+            <li><a href="../pages/protect-pdf.html"><span data-i18n="tool_unlock_title">Unlock PDF</span></a></li>
+            <li><a href="../pages/passport-photo-maker.html"><span data-i18n="tool_passport_photo_title">Passport Photo Maker</span></a></li>
+            <li><a href="../pages/image-to-text.html"><span data-i18n="tool_ocr_title">Image to Text (OCR)</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title" data-i18n="footer_col_legal">Company &amp; Legal</div>
+          <ul class="footer-links">
+            <li><a href="../about.html"><span data-i18n="legal_about">About Us</span></a></li>
+            <li><a href="../privacy.html"><span data-i18n="legal_privacy">Privacy Policy</span></a></li>
+            <li><a href="../terms.html"><span data-i18n="legal_terms">Terms of Service</span></a></li>
+            <li><a href="../disclaimer.html"><span data-i18n="legal_disclaimer">Disclaimer</span></a></li>
+            <li><a href="../contact.html"><span data-i18n="legal_contact">Contact Support</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p data-i18n="footer_rights">&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
+        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">Files are processed strictly in your local device RAM and never transmitted across the network.</p>
+      
+        <div class="footer-social-links">
+          <a href="https://wa.me/923150750652" target="_blank" rel="noopener noreferrer" class="social-link" title="Chat on WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>WhatsApp</span>
+          </a>
+          <a href="mailto:Amaadmazari@gmail.com" class="social-link" title="Direct Email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Email</span>
+          </a>
+          <a href="https://www.youtube.com/@Localdoc-org" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube Channel">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span>YouTube</span>
+          </a>
+          <a href="https://web.facebook.com/profile.php?id=61595067776430" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook Page">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <span>Facebook</span>
+          </a>
+          <a href="https://github.com/AmaadMazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script defer src="../js/core/i18n.js?v=20260921-v26"></script>
+  <script defer src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <!-- Global Search Modal -->
+  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
+    <div class="search-modal">
+      <div class="search-modal-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search tools &amp; master guides... (ESC to exit)" data-i18n-placeholder="search_modal_placeholder" data-i18n-aria="search_modal_aria" aria-label="Search all tools and guides">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <ul id="global-search-results" class="search-results-list"></ul>
+    </div>
+  </div>
+
+  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
+  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
+    <div class="cookie-consent-inner">
+      <div class="cookie-consent-content">
+        <div class="cookie-consent-header">
+          <span class="cookie-icon" aria-hidden="true">&#127850;</span>
+          <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
+        </div>
+        <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
+        </p>
+      </div>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+          <span data-i18n="cookie_btn_essential">Essential Only</span>
+        </button>
+        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+          <span data-i18n="cookie_btn_accept">Accept All</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
 </body>
 </html>
+

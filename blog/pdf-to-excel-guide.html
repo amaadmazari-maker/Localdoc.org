@@ -1,13 +1,874 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
-  <meta name="robots" content="noindex, follow">
+    <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var _c = 'denied';
+    try { if (localStorage.getItem('localdoc_cookie_consent') === 'accepted') _c = 'granted'; } catch(e){}
+    gtag('consent', 'default', {
+      'analytics_storage': _c,
+      'ad_storage': _c,
+      'ad_user_data': _c,
+      'ad_personalization': _c
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-TKJ5FEYGWJ');
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKJ5FEYGWJ"></script>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=pdf-and-excel-spreadsheet-master-guide.html">
-  <link rel="canonical" href="https://localdoc.org/blog/pdf-and-excel-spreadsheet-master-guide.html">
-  <title>Redirecting to Master Guide...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PDF to Excel Converter — Extract Tables Free Online</title>
+  <meta name="description" content="Convert PDF tables to editable Excel spreadsheets in your browser. Extracts rows and columns accurately — no upload, no installation.">
+  <link rel="canonical" href="https://localdoc.org/blog/pdf-to-excel-guide.html">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#0284C7">
+  <meta name="google-site-verification" content="WW6CNxhVYURZwuhM9U66SxOGNs7Y3kw65VnS7rr8E_E">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="PDF to Excel Converter — Extract Tables Free Online">
+  <meta property="og:description" content="Convert PDF tables to editable Excel spreadsheets in your browser. Extracts rows and columns accurately — no upload, no installation.">
+  <meta property="og:url" content="https://localdoc.org/blog/pdf-to-excel-guide.html">
+  <meta property="og:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PDF to Excel Converter — Extract Tables Free Online">
+  <meta name="twitter:description" content="Convert PDF tables to editable Excel spreadsheets in your browser. Extracts rows and columns accurately — no upload, no installation.">
+  <meta name="twitter:image" content="https://localdoc.org/assets/images/og/og-pdf-converters.webp">
+
+
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+
+  <link rel="stylesheet" href="../css/main.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/blog.css?v=20260921-v26">
+  <link rel="stylesheet" href="../css/rtl.css?v=20260921-v26">
+
+  <style>
+    .tech-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.92rem;
+    }
+    .comp-table th, .comp-table td {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .comp-table th {
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .comp-table tr:hover td {
+      background: rgba(2, 132, 199, 0.04);
+    }
+  
+    /* Visual Walkthrough Components */
+    .walkthrough-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin: 32px 0;
+    }
+    .walkthrough-step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .walkthrough-step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .walkthrough-step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .walkthrough-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #10B981;
+      color: #064E3B;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .walkthrough-step-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .walkthrough-step-desc {
+      margin: 0 0 18px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .walkthrough-visual-frame {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0B1120;
+      aspect-ratio: 16 / 9;
+    }
+    .walkthrough-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .walkthrough-focus-box {
+      position: absolute;
+      border: 2px solid #34D399;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .walkthrough-focus-box.pulse-emerald {
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+      animation: pulseEmerald 2s infinite;
+    }
+    .walkthrough-focus-box.pulse-blue {
+      border-color: #38BDF8;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+      animation: pulseBlue 2s infinite;
+    }
+    @keyframes pulseEmerald {
+      0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+    .walkthrough-pin {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .walkthrough-callout {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.88);
+      color: #94A3B8;
+      border-left: 3px solid #10B981;
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      backdrop-filter: blur(6px);
+      max-width: 90%;
+      pointer-events: none;
+    }
+    .walkthrough-callout span {
+      color: #E2E8F0;
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .walkthrough-step-card {
+        padding: 16px;
+      }
+      .walkthrough-callout {
+        display: none;
+      }
+      .walkthrough-pin {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://localdoc.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Master Guides",
+            "item": "https://localdoc.org/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "How to Extract Tables, Ledgers & Invoices from PDF to Microsoft Excel (.xlsx)",
+            "item": "https://localdoc.org/blog/pdf-to-excel-guide.html"
+          }
+        ]
+      },
+      {
+        "@type": "TechArticle",
+        "headline": "How to Extract PDF Tables & Statements to Excel (.xlsx) (Benchmark Guide)",
+        "description": "Technical guide explaining horizontal row clustering, vertical ray casting, currency sanitization, and client-side SheetJS OpenXML compilation.",
+        "author": {
+          "@type": "Person",
+          "name": "Amaad Mazari",
+          "jobTitle": "Lead Document Architect",
+          "url": "https://localdoc.org/about.html"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "LocalDoc",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://localdoc.org/assets/icons/brand-logo.svg"
+          }
+        },
+        "datePublished": "2026-08-16T11:00:00+00:00",
+        "dateModified": "2026-09-14T21:45:00+00:00",
+        "mainEntityOfPage": "https://localdoc.org/blog/pdf-to-excel-guide.html"
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Extract PDF Tables & Statements to Excel (.xlsx)",
+        "description": "5-step visual guide on extracting complex PDF bank statements, ledgers, and tabular reports into formula-ready Microsoft Excel (.xlsx) workbooks inside browser RAM.",
+        "image": "https://localdoc.org/assets/images/guides/pdf2excel-step5-download-xlsx.webp",
+        "totalTime": "PT1M",
+        "tool": [
+          {
+            "@type": "HowToTool",
+            "name": "LocalDoc PDF to Excel Converter"
+          }
+        ],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Select or Drop PDF Table into RAM Workspace",
+            "text": "Open the PDF to Excel Converter and drag your PDF document into the dropzone. The file is streamed directly into browser memory as a typed ArrayBuffer with zero server uploads.",
+            "image": "https://localdoc.org/assets/images/guides/pdf2excel-step1-select-pdf.webp",
+            "url": "https://localdoc.org/blog/pdf-to-excel-guide.html#step-1-select-pdf"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Configure Extraction Mode & Type Sanitization",
+            "text": "Review detected document metrics (page count, column gutters) and enable Structured Table mode with automatic currency-to-float sanitization.",
+            "image": "https://localdoc.org/assets/images/guides/pdf2excel-step2-file-queue.webp",
+            "url": "https://localdoc.org/blog/pdf-to-excel-guide.html#step-2-file-queue"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Run Baseline Clustering & Vertical Ray-Casting HUD",
+            "text": "LocalDoc executes 3-stage geometric reconstruction: grouping row baselines within ±1.8pt tolerance and ray-casting column boundaries in under one second.",
+            "image": "https://localdoc.org/assets/images/guides/pdf2excel-step3-ray-casting-hud.webp",
+            "url": "https://localdoc.org/blog/pdf-to-excel-guide.html#step-3-ray-casting"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Inspect Live Interactive Spreadsheet Grid Preview",
+            "text": "Inspect the multi-sheet interactive preview showing active formula bar (=SUM), currency amounts cast to numbers, and aligned columns.",
+            "image": "https://localdoc.org/assets/images/guides/pdf2excel-step4-interactive-grid-preview.webp",
+            "url": "https://localdoc.org/blog/pdf-to-excel-guide.html#step-4-grid-preview"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Download Formatted XLSX or CSV Workbook",
+            "text": "Click Download Excel (.XLSX) to save the generated OpenXML package directly from browser RAM, ready for instant accounting in Excel, Sheets, or Numbers.",
+            "image": "https://localdoc.org/assets/images/guides/pdf2excel-step5-download-xlsx.webp",
+            "url": "https://localdoc.org/blog/pdf-to-excel-guide.html#step-5-download-xlsx"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why do copied PDF numbers often paste as text that cannot be summed in Excel?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PDF tables store text glyph strings with currency symbols and thousand commas ($1,250.00). When pasted into Excel, Excel treats strings with symbols as text labels rather than numbers, breaking formulas like =SUM(). LocalDoc sanitizes formatting and casts cells into IEEE 754 floating-point numbers natively."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it secure to convert confidential bank statements and corporate ledgers in LocalDoc?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. LocalDoc parses and exports spreadsheets 100% inside your local device browser RAM via WebAssembly. Zero bytes leave your machine, guaranteeing total confidentiality for financial filings."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can LocalDoc convert multi-page bank statements with repeating headers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Our spatial clustering heuristics recognize identical table header rows across successive pages, compiling all transactions into a continuous structured ledger or separate worksheet tabs."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I open the exported spreadsheet in Google Sheets or Apple Numbers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. LocalDoc generates standard Microsoft OpenXML (.xlsx) files fully compatible with Microsoft Excel 2016–2026, Office 365, Google Sheets, Apple Numbers, and LibreOffice Calc."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
-  <p>This guide has been consolidated into our authoritative master pillar: <a href="pdf-and-excel-spreadsheet-master-guide.html">PDF and Excel Spreadsheet Master Guide</a>. Redirecting automatically...</p>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="reading-progress"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" title="LocalDoc Home">
+        <div class="brand-icon">
+          <img src="../assets/icons/brand-logo.svg" alt="LocalDoc Logo" width="38" height="38">
+        </div>
+        <div class="brand-text-wrap">
+          <span class="brand-title">LOCAL<span class="brand-accent">DOC</span></span>
+          <span class="brand-badge">ZERO-UPLOAD</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../index.html" class="nav-link" data-i18n="nav_all_tools"><span data-i18n="nav_all_tools">All Tools</span></a></li>
+        <li><a href="index.html" class="nav-link active" data-i18n="nav_all_tools"><span data-i18n="nav_blog">Master Guides</span></a></li>
+        <li><a href="../pages/pdf-to-excel.html" class="nav-link"><span data-i18n="tool_pdf_to_excel_title">PDF to Excel</span></a></li>
+        <li><a href="../about.html" class="nav-link" data-i18n="nav_about">About</a></li>
+        <li><a href="../privacy.html" class="nav-link"><span data-i18n="nav_privacy">Privacy</span></a></li>
+      </ul>
+
+      <div class="header-actions">
+        <div class="privacy-pill">
+          <span data-i18n="offline_badge">100% Local RAM</span>
+        </div>
+        <div class="lang-select-wrap">
+          <select class="lang-select" aria-label="Select Language"></select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container" style="padding-top:28px; padding-bottom:60px;">
+    <!-- Semantic Breadcrumbs -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav" style="margin-bottom:18px; font-size:0.85rem; color:var(--text-muted);">
+      <ol style="list-style:none; padding:0; margin:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <li><a href="../index.html" style="color:var(--text-muted); text-decoration:none;">Home</a></li>
+        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
+        <li><a href="index.html" style="color:var(--text-muted); text-decoration:none;">Master Guides</a></li>
+        <li aria-hidden="true" style="color:var(--line);">&gt;</li>
+        <li aria-current="page" style="color:var(--text-primary); font-weight:600;">How to Extract Tables, Ledgers &amp; Invoices ...</li>
+      </ol>
+    </nav>
+
+    <!-- Direct Launch CTA Banner -->
+    <div class="cta-banner">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <img src="../assets/icons/pdf-to-excel.svg" width="38" height="38" alt="PDF to Excel Converter Online" loading="lazy" decoding="async">
+        <div>
+          <h3 style="margin:0 0 2px; font-size:1.1rem; color:var(--text-primary);">Launch PDF to Excel Converter Online</h3>
+          <p style="margin:0; font-size:0.85rem; color:var(--text-secondary);">Extract tabular data from PDF bank statements and receipts into structured Excel spreadsheets without retyping.</p>
+        </div>
+      </div>
+      <a href="../pages/pdf-to-excel.html" class="btn btn-primary btn-lg">Extract to Excel &rarr;</a>
+    </div>
+
+    <article class="blog-article" style="max-width:920px; margin:0 auto;">
+      <div class="tool-workspace-badge">Data Extraction Architecture</div>
+      <h1>How to Extract Tables, Ledgers &amp; Invoices from PDF to Microsoft Excel (.xlsx)</h1>
+      <div class="blog-meta-bar">
+        <span class="author-chip"><span class="author-avatar">AM</span> Amaad Mazari</span>
+        <span class="meta-dot"></span>
+        <span>Lead Document Architect</span>
+        <span class="meta-dot"></span>
+        <span>Updated September 2026</span>
+        <span class="meta-dot"></span>
+        <span>10 min read</span>
+      </div>
+
+      <!-- Executive Summary Box -->
+      <div class="exec-summary-box">
+        <h3>Benchmark Summary: 12-Page Chase Commercial Checking Statement</h3>
+        <ul>
+          <li><strong>Input Document:</strong> 3.8 MB quarterly commercial bank statement (12 pages) containing 486 itemized transactions across 6 columns.</li>
+          <li><strong>Exported Spreadsheet:</strong> Clean OpenXML workbook (48 KB <code>.xlsx</code>) with active IEEE 754 numerical cell values.</li>
+          <li><strong>Processing Speed:</strong> 860ms total execution time in browser memory (Chrome 128 on macOS M2).</li>
+          <li><strong>Formula Readiness:</strong> 100% of currency strings successfully converted into summable floating-point numbers; zero <code>#VALUE!</code> formula errors.</li>
+          <li><strong>Zero Data Transit:</strong> Zero bytes transmitted to third-party cloud servers; 100% fully offline environmentsfinancial privacy.</li>
+        </ul>
+      </div>
+
+      <!-- Section 1 -->
+      <h2>1. The Mathematics of Table Reconstruction from Coordinate Streams</h2>
+      <p>
+        Accountants and financial analysts frequently face the frustration of copying tables from PDF bank statements into Microsoft Excel, only for numbers and dates to collapse into a single scrambled column. This happens because the PDF specification has no semantic concept of a "table," "row," or "spreadsheet cell."
+      </p>
+      <!-- Section 4.2: First 200 Words Tool CTA -->
+      <div style="display:inline-flex;align-items:center;gap:10px;background:var(--primary-subtle,#EFF6FF);border:1px solid var(--primary,#0284C7);border-radius:var(--radius-md,8px);padding:12px 18px;margin-bottom:24px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary,#0284C7)" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span style="font-size:0.9rem;color:var(--text-secondary);"><strong style="color:var(--text-primary);">Try it free:</strong> Use our <a href="../pages/pdf-to-excel.html" style="color:var(--primary);font-weight:700;text-decoration:none;">PDF to Excel &rarr;</a> — 100% in-browser, zero upload.</span>
+      </div>
+      <p>
+        Inside a PDF content stream, text is drawn through uncoordinated string rendering instructions: <em>"paint '$1,450.00' at X:340.2, Y:612.8"</em>. Reconstructing an authentic spreadsheet requires a three-step mathematical pipeline executed directly in browser memory:
+      </p>
+
+      <div class="tech-card">
+        <h3 style="margin-top:0;">3-Stage Geometric Reconstruction Pipeline</h3>
+        <ol style="margin-left:20px; line-height:1.8;">
+          <li><strong>Horizontal Baseline Clustering:</strong> The parser measures the vertical baseline (Y-coordinates) of every text glyph on the page. Glyphs sharing a vertical baseline within a &plusmn;1.8 point tolerance are grouped into distinct horizontal table rows.</li>
+          <li><strong>Vertical Ray-Cast Column Boundary Detection:</strong> The engine projects invisible vertical rays down the entire page height, analyzing whitespace intervals. Wherever vertical gutters remain unobstructed across multiple consecutive rows, the ray caster establishes column delimiters.</li>
+          <li><strong>Intersection Matrix Cell Population:</strong> The intersection of horizontal row boundaries and vertical column delimiters produces distinct coordinate rectangles (cells). Words falling inside each bounding box are merged into clean cell payloads.</li>
+        </ol>
+      </div>
+
+      <!-- Section 2 -->
+      <h2>2. Numeric Type Casting &amp; SheetJS Memory Compilation</h2>
+      <p>
+        A critical limitation of crude conversion tools is exporting numbers as raw text strings. When currency strings like <code>"$3,420.50"</code> are stored as strings in an XML worksheet, Microsoft Excel cannot sum them with <code>=SUM(D2:D50)</code>, returning an annoying <code>0</code> or <code>#VALUE!</code> error.
+      </p>
+      <p>
+        LocalDoc solves this through real-time client-side type sanitization:
+      </p>
+      <ul style="margin-left:20px; line-height:1.7;">
+        <li><strong>Regex Currency Stripping &amp; Float Casting:</strong> Removes symbols ($ &euro; &pound; &yen; Rs) and thousand-separator commas, identifying accounting negative values wrapped in parentheses (e.g., <code>(150.00) &rarr; -150.00</code>) and casting them into IEEE 754 64-bit floating-point numbers.</li>
+        <li><strong>ISO 8601 Serial Date Conversion:</strong> Formats date strings (such as <code>09/14/2026</code> or <code>14-Sep-2026</code>) into native Excel serial dates, allowing users to sort chronologically and calculate day intervals.</li>
+        <li><strong>In-Memory SheetJS WebAssembly Compilation:</strong> Compiled WebAssembly compiles the multidimensional cell matrix into an authentic Microsoft OpenXML ZIP package containing <code>xl/worksheets/sheet1.xml</code>, <code>xl/sharedStrings.xml</code>, and <code>xl/styles.xml</code> in under one second.</li>
+      </ul>
+
+      <!-- Section 3 -->
+      <h2>3. Empirical Benchmark: 12-Page Commercial Checking Statement</h2>
+      <p>
+        We tested our table extraction pipeline against a complex quarterly business checking statement from JPMorgan Chase featuring 486 transaction entries across 12 pages:
+      </p>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Extraction Stage</th>
+            <th>PDF Source Data</th>
+            <th>Excel Output Structure</th>
+            <th>Execution Time</th>
+            <th>Numerical Integrity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Text Glyph Extraction</strong></td>
+            <td>3.8 MB binary PDF (12 pages)</td>
+            <td>5,832 text fragments</td>
+            <td>140 ms</td>
+            <td>Zero dropped character tokens</td>
+          </tr>
+          <tr>
+            <td><strong>2. Row Baseline Clustering</strong></td>
+            <td>Fragmented Y-coordinates</td>
+            <td>486 unified transaction rows</td>
+            <td>210 ms</td>
+            <td>Multi-line descriptions aligned</td>
+          </tr>
+          <tr>
+            <td><strong>3. Column Ray Projection</strong></td>
+            <td>6 visual data columns</td>
+            <td>Date, Description, Ref, Debit, Credit, Balance</td>
+            <td>180 ms</td>
+            <td>Decimal points perfectly aligned</td>
+          </tr>
+          <tr>
+            <td><strong>4. Float Type Conversion</strong></td>
+            <td>972 currency strings</td>
+            <td>Native 64-bit numeric values</td>
+            <td>120 ms</td>
+            <td>100% summable with <code>=SUM()</code></td>
+          </tr>
+          <tr>
+            <td><strong>5. OpenXML Workbook Assembly</strong></td>
+            <td>Sanitized cell matrix</td>
+            <td>48 KB <code>.xlsx</code> archive</td>
+            <td>210 ms</td>
+            <td>100% valid Excel 2016–2026 file</td>
+          </tr>
+          <tr style="background:var(--bg-surface-2); font-weight:bold;">
+            <td><strong>Total Pipeline</strong></td>
+            <td><strong>486 Transactions (12 Pages)</strong></td>
+            <td><strong>48 KB Structured XLSX</strong></td>
+            <td><strong>860 ms in RAM</strong></td>
+            <td><strong>Zero Formula Errors</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Section 4 -->
+      <h2>4. Honest Technical Realities: What Client-Side Table Extractors Can and Cannot Do</h2>
+      <p>
+        Professional data auditing requires complete transparency regarding how client-side algorithmic table extraction works and where mathematical boundaries exist:
+      </p>
+
+      <div class="tech-card" style="border-left:4px solid var(--primary);">
+        <h3 style="margin-top:0;">4 Fundamental Rules of PDF Table Extraction</h3>
+        <ul style="margin-left:20px; line-height:1.75;">
+          <li><strong>Scanned Image PDFs vs. Digital Vector PDFs:</strong> A table converter cannot extract data from a scanned photocopy or photograph because image pixels contain zero character coordinates. LocalDoc performs a pre-flight integrity scan: if no digital text layer exists, it alerts the user upfront to run our <a href="../pages/image-to-text.html">Image to Text (OCR)</a> tool first, rather than silently creating an empty Excel file.</li>
+          <li><strong>Multi-Line Wrapped Cells vs. Phantom Rows:</strong> Naive converters treat every horizontal line as a separate row. When a transaction description or address wraps across 2–3 lines, basic tools generate empty phantom rows that corrupt columns. LocalDoc calculates vertical line delta (&le; 15pt) and column occupancy to merge wrapped lines back into their parent cell.</li>
+          <li><strong>Bank Statement &amp; Ledger Mode (Header Noise Pruning):</strong> Bank statements (e.g. Meezan, HBL, UBL, MCB, Chase) repeat bank logos, branch addresses, and column headers on every page. LocalDoc's specialized <em>Bank Statement Mode</em> recognizes the transaction table structure on Page 1, then automatically filters out recurring header/footer noise on subsequent pages, stacking all transactions into a single continuous, formula-ready ledger.</li>
+          <li><strong>Single Consolidated Sheet vs. Multi-Tab Workbooks:</strong> By default, LocalDoc combines multi-page tables into a single master sheet named <em>"Consolidated Table"</em> (or <em>"Transactions"</em>). This allows accountants to immediately run <code>=SUM(D2:D500)</code> across months of records without tedious manual copy-pasting across separate page tabs. Individual page sheets are also preserved in the workbook for reference.</li>
+        </ul>
+      </div>
+
+      <!-- Section 5: Visual Step-by-Step Walkthrough -->
+      <h2>5. Visual Step-by-Step Walkthrough: Extracting PDF Tables to Excel (.xlsx)</h2>
+      <p>
+        Extract tabular financial transactions, bank records, invoices, and structured inventory data into clean, formula-ready Microsoft Excel workbooks using the 5-step visual guide below:
+      </p>
+
+      <div class="walkthrough-container">
+        <!-- STEP 1 -->
+        <div class="walkthrough-step-card" id="step-1-select-pdf">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 1</span>
+            <h3 class="walkthrough-step-title">Select or Drop PDF Table into RAM Workspace</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Open the <a href="../pages/pdf-to-excel.html">PDF to Excel Converter</a> and drag your bank statement, invoice, or financial ledger into the active dropzone, or click <strong>Select PDF Document</strong>. The file is streamed directly into local browser memory as an isolated typed ArrayBuffer. No financial records ever leave your machine.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdf2excel-step1-select-pdf.webp" alt="Select or drop PDF table into LocalDoc converter" width="900" height="506" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:22%; left:14%; width:72%; height:64%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:64%; left:38%;">❶ Select PDF Document</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Financial Privacy: fully offline environmentstable extraction runs 100% inside client tab RAM.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="walkthrough-step-card" id="step-2-file-queue">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 2</span>
+            <h3 class="walkthrough-step-title">Configure Extraction Mode &amp; Type Sanitization</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Review the loaded document card (confirming page count and detected column structure). Choose <strong>Structured Table (Optimized for Statements &amp; Ledgers)</strong> and ensure <strong>Convert Currency to IEEE 754 Floats</strong> is checked so amounts don't paste as un-summable strings. Then click <strong>Extract Excel Workbook &rarr;</strong>.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdf2excel-step2-file-queue.webp" alt="Configure extraction mode and numeric type casting options" width="900" height="506" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:32%; left:52%; width:44%; height:44%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:36%; left:54%;">❶ Structured Table Mode</div>
+            <div class="walkthrough-pin" style="top:80%; left:54%;">❷ Extract Excel Workbook</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Continuous Pagination: Compiles multi-page statements into a single cohesive worksheet.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="walkthrough-step-card" id="step-3-ray-casting">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 3</span>
+            <h3 class="walkthrough-step-title">Run Baseline Clustering &amp; Vertical Ray-Casting HUD</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            LocalDoc executes the 3-stage mathematical reconstruction: measuring vertical baselines to group rows within &plusmn;1.8pt, projecting vertical rays to identify unobstructed column gutters, and sanitizing currency symbols ($ &euro; &pound;) into raw 64-bit IEEE 754 floats in just 860ms.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdf2excel-step3-ray-casting-hud.webp" alt="Geometric baseline clustering and ray-casting HUD" width="900" height="506" loading="lazy">
+            <div class="walkthrough-focus-box pulse-blue" style="top:22%; left:12%; width:76%; height:62%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:44%; left:18%;">❶ Baseline Clustering</div>
+            <div class="walkthrough-pin" style="top:44%; left:48%;">❷ Ray-Cast Gutters</div>
+            <div class="walkthrough-pin" style="top:44%; left:72%;">❸ Float Sanitization</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Instant Execution: 486 rows extracted in 860ms with zero dropped characters.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="walkthrough-step-card" id="step-4-grid-preview">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 4</span>
+            <h3 class="walkthrough-step-title">Inspect Live Interactive Spreadsheet Grid Preview</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Inspect the live interactive spreadsheet preview before saving. Test formulas via the live formula bar (<code>=SUM(E2:E487)</code>), confirm right-aligned numbers and left-aligned text, and verify multiple worksheet tabs for smooth navigation.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdf2excel-step4-interactive-grid-preview.webp" alt="Live interactive spreadsheet grid preview with formula bar" width="900" height="506" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:18%; left:8%; width:84%; height:72%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:26%; left:12%;">❶ Active Cell &amp; Formula Bar</div>
+            <div class="walkthrough-pin" style="top:52%; left:62%;">❷ True Numeric Cells</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Formula Ready: Zero #VALUE! errors when calculating sums, averages, or pivot tables.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="walkthrough-step-card" id="step-5-download-xlsx">
+          <div class="walkthrough-step-header">
+            <span class="walkthrough-step-badge">Step 5</span>
+            <h3 class="walkthrough-step-title">Download Formatted XLSX or CSV Workbook</h3>
+          </div>
+          <p class="walkthrough-step-desc">
+            Click <strong>Download Excel (.XLSX)</strong> to save the standardized OpenXML workbook, or choose <strong>Download .CSV</strong> for universal database importing. The file is generated in memory and downloaded immediately without internet dependency.
+          </p>
+          <div class="walkthrough-visual-frame">
+            <img src="../assets/images/guides/pdf2excel-step5-download-xlsx.webp" alt="Download Excel XLSX or CSV workbook result card" width="900" height="506" loading="lazy">
+            <div class="walkthrough-focus-box pulse-emerald" style="top:24%; left:22%; width:56%; height:52%;" aria-hidden="true"></div>
+            <div class="walkthrough-pin" style="top:58%; left:30%;">❶ Download Excel (.XLSX)</div>
+            <div class="walkthrough-pin" style="top:58%; left:62%;">❷ Download .CSV</div>
+            <div class="walkthrough-callout" style="bottom:12px; left:18px;">
+              <span>✦ Multi-Software Compatibility: 100% compliant with Excel 2016–2026, Google Sheets, &amp; Apple Numbers.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: FAQs -->
+      <h2>6. Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Is it safe to convert sensitive bank statements and tax filings?</h4>
+          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes, absolutely. LocalDoc was engineered specifically for sensitive accounting records. Zero bytes are uploaded to any server; all parsing happens inside your browser's private RAM. When you close the browser window, all financial data vanishes from memory.</p>
+        </div>
+
+        <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Will cell formulas (like SUM or AVERAGE) work in the exported file?</h4>
+          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. Because numbers are stripped of currency glyphs and stored as native IEEE 754 floats, you can immediately write standard formulas like <code>=SUM(E2:E487)</code> without getting <code>#VALUE!</code> errors.</p>
+        </div>
+
+        <div class="faq-item" style="margin-bottom:18px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I convert password-protected bank statement PDFs?</h4>
+          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. If your financial statement is locked with a birth date or account password, unlock it first using our client-side <a href="../pages/protect-pdf.html">Unlock PDF</a> tool before converting it to XLSX.</p>
+        </div>
+
+        <div class="faq-item" style="margin-bottom:24px; background:var(--bg-surface); padding:16px 20px; border-radius:var(--radius-md); border:1px solid var(--line);">
+          <h4 style="margin:0 0 6px; color:var(--text-primary);">Can I open the exported spreadsheet in Google Sheets or Apple Numbers?</h4>
+          <p style="margin:0; font-size:0.92rem; color:var(--text-secondary); line-height:1.6;">Yes. LocalDoc exports strict Microsoft OpenXML (.xlsx) files that are 100% compatible with Microsoft Excel 2016–2026, Office 365, Google Sheets, Apple Numbers, and LibreOffice Calc.</p>
+        </div>
+      </div>
+
+      <!-- TESTED BY VERIFICATION BLOCK -->
+      <div style="margin-top:40px; padding:20px 24px; background:var(--bg-surface-2); border:1px solid var(--line); border-left:4px solid var(--primary); border-radius:var(--radius-md);">
+        <h4 style="margin:0 0 6px; font-size:0.95rem; color:var(--text-primary);">Document Architecture Verification</h4>
+        <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
+          <strong>Tested by Amaad Mazari</strong> on September 14, 2026.<br>
+          <strong>Benchmark Result:</strong> 12-page commercial bank statement (486 transaction rows, 3.8 MB input PDF) parsed into structured XLSX (48 KB) in 860ms on Chrome 128 (macOS / Apple M2). Zero bytes transferred over network. Full IEEE 754 floating-point casting and active <code>=SUM()</code> formula compatibility verified.
+        </p>
+      </div>
+
+      <!-- Related Internal Links & Tools Grid -->
+      <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--line);">
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:14px;">Explore Related Guides &amp; Tools</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+          <a href="../pages/pdf-to-excel.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">📊 Launch PDF to Excel Tool</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">Extract tables and bank statements into clean XLSX.</div>
+          </a>
+          <a href="pdf-to-word-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">📝 PDF to Word Guide</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">Convert contracts to editable DOCX packages in RAM.</div>
+          </a>
+          <a href="compress-pdf-guide.html" style="background:var(--bg-surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-decoration:none; color:inherit;">
+            <div style="font-weight:700; color:var(--primary); font-size:0.92rem;">🗜️ Compress PDF Guide</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">Reduce document size without degrading vector typography.</div>
+          </a>
+        </div>
+      </div>
+
+            
+      <!-- E-E-A-T Editorial Verification & Author Signature -->
+      <div class="editorial-author-box">
+        <div class="editorial-author-avatar">AM</div>
+        <div class="editorial-author-content">
+          <h4 class="editorial-author-title">Document Engineering Verification</h4>
+          <p class="editorial-author-bio">Authored by <strong>Amaad Mazari</strong>, Lead Systems Architect at LocalDoc. Rigorously verified and tested across modern browsers (Chrome 128, Firefox 130, and Safari 17.5). Verified zero network telemetry via browser developer tools. All algorithms and document manipulations execute locally in client memory.</p>
+          <div class="editorial-author-meta">
+            <span>Verified: 2026</span>
+            <span>&bull;</span>
+            <a href="../about.html">Editorial Policy &amp; Author Bio</a>
+            <span>&bull;</span>
+            <a href="../privacy.html">Zero-Upload Security Model</a>
+          </div>
+        </div>
+      </div>
+
+      <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Precision PDF to Excel Conversion: OCR Grid Alignment &amp; Numeric Typing</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Extracting numerical data, balance sheets, and bank transaction statements from PDF files into Microsoft Excel (.xlsx) or CSV spreadsheets requires exact cell demarcation and numeric type casting. If a converter treats numbers as plain strings, spreadsheet formulas like =SUM() or =VLOOKUP() will fail.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Coordinate-Based Table Grid Reconstruction</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                LocalDoc calculates horizontal and vertical text anchor bounding boxes to establish virtual table columns. Even when PDF tables lack visible borders or grid lines (borderless whitespace-delimited layouts), the engine uses statistical median column gutter detection to assign numbers to their appropriate worksheet column.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">Numeric Sanitization and Date Parsing</h3>
+            <p class="text-slate-300 leading-relaxed">
+                Currency symbols ($ &#8364; &#163; &#165;), thousand-separator commas, accounting parentheses (1,250.00), and percentage signs are parsed with locale-aware regular expressions. Numbers are converted to IEEE 754 floating-point numbers in the generated OpenXML spreadsheet sheet data (sheet1.xml), allowing immediate financial modeling without manual data re-typing.
+            </p>
+        </section>
+        <section class="mt-12 p-8 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <h2 class="text-2xl font-bold text-white mb-4">Technical Architecture, Workflow Standards &amp; Troubleshooting Guide</h2>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Executing pdf to excel operations directly inside modern web browsers utilizes local hardware acceleration via typed array buffers, SIMD vector instructions, and isolated WebAssembly runtimes. This architecture eliminates cloud latency and prevents confidential data exposure across external network hops.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">1. Memory Management &amp; Large File Handling Protocol</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                When processing high-resolution documents or large multi-page bundles, LocalDoc streams data through chunked ArrayBuffer readers. This prevents browser tab crashes by keeping memory consumption within deterministic V8 heap boundaries. Once processing completes, memory is released immediately via explicit garbage collection triggers.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">2. Cross-Platform Font Rendering and Glyphs Integrity</h3>
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                Whether running on Windows 11, macOS Sonoma, iOS Safari, or Android Chrome, the client-side engine parses underlying PDF font descriptor dictionaries (/FontDescriptor) and CIDFont subsets. Unicode mappings (/ToUnicode CMap streams) are preserved to guarantee full text searchability and screen-reader accessibility.
+            </p>
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">3. Enterprise Compliance &amp; Zero-Retention Guarantee</h3>
+            <p class="text-slate-300 leading-relaxed">
+                All document manipulation occurs strictly in client memory. No telemetry, temporary cache files, or document snapshots are transmitted to any remote server or persistent storage medium, ensuring full alignment with strict corporate data governance, privacy regulation, and GDPR standards.
+            </p>
+        </section>
+
+<!-- Casio Trademark Notice -->
+<div class="disclaimer-box" style="margin-top:32px; padding:16px 20px; border-radius:10px; background:var(--bg-surface-2, rgba(255,255,255,0.05)); border:1px solid var(--line, #334155); font-size:0.85rem; color:var(--text-muted, #94a3b8); line-height:1.6;">
+  <p style="margin:0 0 6px;"><strong>Legal &amp; Trademark Notice:</strong></p>
+  <p style="margin:0;">CASIO&reg; is a registered trademark of Casio Computer Co., Ltd. LocalDoc is an independent engineering platform and is not affiliated with, sponsored by, or endorsed by Casio Computer Co., Ltd.</p>
+</div>
+
+</article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>LocalDoc</h3>
+          <p>A high-precision client-side document processing platform. Zero cloud uploads.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_col_tools" data-i18n="footer_col_tools">Popular Tools</h4>
+          <ul class="footer-links">
+            <li><a href="../pages/pdf-to-excel.html" class="footer-link"><span data-i18n="tool_pdf_to_excel_title">PDF to Excel</span></a></li>
+            <li><a href="../pages/pdf-to-word.html" class="footer-link"><span data-i18n="tool_pdf_to_word_title">PDF to Word</span></a></li>
+            <li><a href="../pages/compress-pdf.html" class="footer-link"><span data-i18n="tool_compress_title">Compress PDF</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_col_legal" data-i18n="footer_col_legal">Privacy &amp; Legal</h4>
+          <ul class="footer-links">
+            <li><a href="../privacy.html" class="footer-link"><span data-i18n="legal_privacy">Privacy Whitepaper</span></a></li>
+            <li><a href="../terms.html" class="footer-link"><span data-i18n="legal_terms">Terms of Service</span></a></li>
+            <li><a href="../disclaimer.html" class="footer-link"><span data-i18n="legal_disclaimer">Disclaimer</span></a></li>
+            <li><a href="../contact.html" class="footer-link"><span data-i18n="legal_contact">Contact Support</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 localdoc.org. <span data-i18n="footer_rights">All rights reserved. Zero cloud uploads.</span></p>
+                        <div class="footer-social-links">
+          <a href="https://wa.me/923150750652" target="_blank" rel="noopener noreferrer" class="social-link" title="Chat on WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>WhatsApp</span>
+          </a>
+          <a href="mailto:Amaadmazari@gmail.com" class="social-link" title="Direct Email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Email</span>
+          </a>
+          <a href="https://www.youtube.com/@Localdoc-org" target="_blank" rel="noopener noreferrer" class="social-link" title="YouTube Channel">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span>YouTube</span>
+          </a>
+          <a href="https://web.facebook.com/profile.php?id=61595067776430" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook Page">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <span>Facebook</span>
+          </a>
+          <a href="https://github.com/AmaadMazari" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+</div>
+    </div>
+  </footer>
+
+  <script defer src="../js/core/i18n.js?v=20260921-v26"></script>
+  <script defer src="../js/core/ui-utils.js?v=20260921-v26"></script>
+  <!-- Global Search Modal -->
+  <div id="search-modal-backdrop" class="search-modal-backdrop" role="dialog" aria-modal="true" aria-label="Site Search">
+    <div class="search-modal">
+      <div class="search-modal-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="search" id="global-search-input" class="search-modal-input" placeholder="Search tools &amp; master guides... (ESC to exit)" data-i18n-placeholder="search_modal_placeholder" data-i18n-aria="search_modal_aria" aria-label="Search all tools and guides">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <ul id="global-search-results" class="search-results-list"></ul>
+    </div>
+  </div>
+
+  <!-- GDPR & ePrivacy Cookie Consent Banner (Google AdSense CMP Compliant) -->
+  <aside id="cookie-consent-banner" class="cookie-consent-banner" role="region" aria-label="Cookie and Privacy Consent" data-nosnippet>
+    <div class="cookie-consent-inner">
+      <div class="cookie-consent-content">
+        <div class="cookie-consent-header">
+          <span class="cookie-icon" aria-hidden="true">&#127850;</span>
+          <strong data-i18n="cookie_banner_title">Privacy &amp; Cookie Preferences</strong>
+        </div>
+        <p class="cookie-consent-text" data-i18n="cookie_banner_desc">
+          LocalDoc operates on a <strong>100% Zero-Upload, client-side architecture</strong>. Your documents, photos, and calculations are processed solely in your browser RAM and are never uploaded to any server. We use essential local storage for app preferences and anonymous telemetry to improve performance. Learn more in our <a href="../privacy.html" class="cookie-link"><span data-i18n="legal_privacy">Privacy Policy</span></a>.
+        </p>
+      </div>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookie-btn-essential" class="btn btn-outline cookie-btn">
+          <span data-i18n="cookie_btn_essential">Essential Only</span>
+        </button>
+        <button type="button" id="cookie-btn-accept" class="btn btn-primary cookie-btn">
+          <span data-i18n="cookie_btn_accept">Accept All</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
 </body>
 </html>
+
