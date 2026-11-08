@@ -314,40 +314,14 @@
           <p>Click the <code>&#8635; 90&deg;</code> buttons on individual thumbnails, or use our bulk action toolbar: <strong>Rotate All 90&deg; CW</strong>, <strong>Rotate All 90&deg; CCW</strong>, <strong>180&deg; Flip All</strong>, or select <strong>Odd / Even Pages</strong>.</p>
         </div>
         <div class="tool-step-card">
-          <div class="tool-step-number">3</div>
+          
           <h3>Save &amp; Download Rotated PDF</h3>
           <p>Click <strong>Apply Rotations &amp; Save PDF</strong>. The engine rewrites the internal rotation dictionary tags in fractions of a second. Download your permanently corrected document instantly.</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: Deep Technical Architecture -->
-    <section class="tool-guide-section">
-      <h2>Technical Architecture: In-Memory /Rotate Metadata Mutation vs Destructive Rasterization</h2>
-      <p>Under the <strong>ISO 32000-1</strong> specification (§ 7.7.3.3), each page dictionary within a PDF defines an optional <code>/Rotate</code> entry specifying the number of degrees by which the page should be rotated clockwise when displayed or printed. Valid values are exact integer multiples of 90 (<code>0</code>, <code>90</code>, <code>180</code>, <code>270</code>). Understanding how LocalDoc updates this metadata reveals why our approach is vastly superior to generic online tools:</p>
-
-<div class="tool-tech-grid">
-        <div class="tool-tech-card">
-          <h3>Lossless Dictionary Mutation</h3>
-          <p>Generic web utilities often rasterize entire PDF pages into lossy JPEGs, rotate the canvas, and re-compress them into a new PDF. This destructive process destroys selectable vector text, degrades line sharpness, and drastically bloats file size. LocalDoc mutates only the 4-byte <code>/Rotate</code> integer tag within the page object dictionary in memory. Typography, font metrics, and embedded image streams remain completely untouched.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>Coordinate Transformation Matrix (CTM)</h3>
-          <p>PDF viewers calculate the visual presentation by combining the page's <code>/MediaBox</code> coordinates with a 2D affine transformation matrix: <code>[cos &theta;, sin &theta;, &minus;sin &theta;, cos &theta;, t<sub>x</sub>, t<sub>y</sub>]</code>. LocalDoc calculates cumulative angles: if a page already possesses <code>/Rotate 90</code> and you rotate 90&deg; clockwise, our engine writes <code>/Rotate 180</code>, guaranteeing flawless rendering in Adobe Acrobat, Apple Preview, and physical printer drivers.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>Independent Odd &amp; Even Page Control</h3>
-          <p>Automatic document feeder (ADF) scanners frequently invert alternating sides during duplex scanning. LocalDoc implements modulo index filtering (<code>i % 2 === 0</code> for even pages, <code>i % 2 !== 0</code> for odd pages), allowing users to invert every second page in 1 click without manually inspecting 50 individual cards.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>In-RAM Cross-Reference Serialization</h3>
-          <p>Once rotation angles are resolved, the modified document graph is re-serialized in typed <code>Uint8Array</code> buffers. LocalDoc recalculates byte offsets, writes a compliant cross-reference table (<code>xref</code>), and produces an instant in-memory Blob URL with zero disk writes and zero external network calls.</p>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- Section 3: Comparison Table -->
     <section class="tool-guide-section">

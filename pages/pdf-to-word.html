@@ -325,19 +325,7 @@
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: OpenXML Synthesis in RAM -->
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: In-Memory PDF Vector Extraction &amp; OpenXML Compilation</h2>
-        <p>Portable Document Format (<strong>ISO 32000-1</strong>) files do not contain semantic word processing concepts such as "paragraphs", "flowable lines", or "bulleted lists". Instead, a PDF content stream consists of discrete low-level drawing instructions painting isolated glyph runs at absolute coordinates (e.g., <code>BT /F1 12 Tf 72 712.5 Td (Executive) Tj 52 0 Td (Summary) Tj ET</code>). Reconstructing an authentic, editable Microsoft Word document (.docx) entirely inside client browser memory requires a multi-stage geometric heuristic pipeline:</p>
-
-<ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
-          <li><strong>Baseline Y-Coordinate Quantization &amp; Spatial Clustering:</strong> Using Mozilla PDF.js compiled into the browser runtime, LocalDoc extracts all raw text items alongside their 2D affine transformation matrices [a, b, c, d, e, f]. Characters whose baseline vertical coordinates satisfy |y<sub>1</sub> &minus; y<sub>2</sub>| &le; &epsilon; (where &epsilon; &approx; 2.5 pt) are grouped into single horizontal lines. Horizontal inter-character gaps (&Delta;x) exceeding the character font bounding box advance (w<sub>0</sub>) trigger automatic space token insertion.</li>
-          <li><strong>Font Descriptor Extraction &amp; Heading Hierarchy:</strong> LocalDoc analyzes the embedded <code>/FontDescriptor</code> dictionaries within the PDF. Font weights &ge; 700 or font flags indicating <code>ForceBold</code> / <code>Italic</code> are extracted. By computing the statistical median font size (&mu;<sub>body</sub>) across the entire document, text runs with scale &gt; 1.25&times;&mu;<sub>body</sub> are semantically mapped to Word headings (<code>Heading 1</code>, <code>Heading 2</code>), while standard sizes become body paragraphs.</li>
-          <li><strong>Paragraph Boundary &amp; Bullet List Reconstruction:</strong> Vertical distances between consecutive lines (&Delta;y) are measured against the baseline line-height. Line spacings &gt; 1.35&times; baseline indicate paragraph terminations. Leading characters matching bullet glyphs (&bull;, &ndash;, 1., a.) are transformed into native OpenXML numbering properties (<code>&lt;w:numPr&gt;</code> and <code>&lt;w:ilvl&gt;</code>) rather than static, unindented text.</li>
-          <li><strong>Native ISO/IEC 29500 OpenXML Package Synthesis:</strong> The reconstructed document AST (Abstract Syntax Tree) is converted into an authentic Office OpenXML schema. Client-side JavaScript synthesizes the complete XML hierarchy (<code>word/document.xml</code>, <code>word/styles.xml</code>, <code>word/numbering.xml</code>, <code>[Content_Types].xml</code>, and relationship graphs <code>_rels/.rels</code>). The files are compressed into a standard PKZip binary stream using typed <code>Uint8Array</code> buffers, ensuring native compatibility with Microsoft Word 2007 through Microsoft 365, Google Docs, Apple Pages, and LibreOffice.</li>
-          <li><strong>Confidential Data Isolation &amp; Zero-Egress Memory Heap:</strong> The entire parsing, clustering, and OpenXML compilation lifecycle takes place exclusively in volatile browser RAM. Not a single string or byte is written to persistent disk or transmitted across network interfaces, ensuring strict compliance with GDPR, privacy regulation, and corporate confidentiality policies.</li>
-        </ul>
-      </div>
+      
 
       <!-- 5. Comparison Table: LocalDoc vs Cloud PDF-to-Word Converters -->
       <h2>LocalDoc vs Cloud PDF to Word Converters</h2>

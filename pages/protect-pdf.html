@@ -659,28 +659,7 @@
         </div>
       </div>
 
-      <!-- Deep Technical Architecture -->
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: ISO 32000-1 Security Handlers &amp; In-Memory Cryptographic Hardening</h2>
-        <p>Under the <strong>ISO 32000-1 Section 7.6</strong> and <strong>ISO 32000-2 Section 7.6</strong> standards, PDF documents control access rights through standardized encryption dictionaries (<code>/Encrypt</code>), cryptographic password hashes, and a signed 32-bit permissions bitmask (<code>/P</code>). While commercial cloud converters upload plaintext contracts to remote servers to apply security filters—exposing proprietary data to breach vectors—LocalDoc executes all cryptographic key derivation and stream protection inside client browser RAM:</p>
-
-        <ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
-          <li><strong>ISO 32000-1 Permissions Bitmask Math (<code>/P</code> Flag):</strong> Access rights are governed by a signed 32-bit integer. Compliant PDF readers (Adobe Acrobat, Apple Preview, Google Chrome) evaluate specific bit flags:
-            <ul style="margin: 8px 0 8px 20px; font-size: 0.88rem; line-height: 1.6;">
-              <li><strong>Bit 3 (Print Permission):</strong> Governs normal quality printing rights.</li>
-              <li><strong>Bit 4 (Modify Contents):</strong> Controls document editing, form page insertion, and rotation.</li>
-              <li><strong>Bit 5 (Extract Text &amp; Graphics):</strong> Controls clipboard copying and text extraction.</li>
-              <li><strong>Bit 6 (Annotations &amp; Form Fields):</strong> Authorizes digital signatures and interactive comment markup.</li>
-              <li><strong>Bit 9 (Fill In Existing Forms):</strong> Authorizes interactive form filling even when general editing is disabled.</li>
-              <li><strong>Bit 12 (High-Fidelity Printing):</strong> Governs digital press and high-resolution print reproduction.</li>
-            </ul>
-          </li>
-          <li><strong>AES-256 (Revision 6) Encryption Architecture:</strong> LocalDoc generates 256-bit AES encryption keys using browser-native <code>crypto.subtle</code> primitives. The document catalog, content cross-reference tables, and all stream objects are re-encrypted object-by-object.</li>
-          <li><strong>Decryption &amp; Password Removal:</strong> When an encrypted file is uploaded with valid credentials, LocalDoc parses the encryption dictionary, validates the user or owner password hash, batch-decrypts all binary streams, removes the <code>/Encrypt</code> trailer reference, and produces a completely unlocked PDF.</li>
-          <li><strong>Metadata Sanitization &amp; Privacy Scrubbing:</strong> Prior to compiling the final binary, LocalDoc provides automatic stripping of lingering document metadata (<code>/Author</code>, <code>/Creator</code>, <code>/Producer</code>, creation timestamps, and hidden XML packets in <code>/Metadata</code>), preventing inadvertent leakage of author names, internal corporate server paths, or printer serial numbers.</li>
-          <li><strong>Zero-Egress In-Memory Quarantine:</strong> All cryptographic operations, typed <code>Uint8Array</code> buffers, and intermediate encryption states exist exclusively within ephemeral JavaScript closures. Once the encrypted document Blob URL is generated, all memory structures are marked for immediate V8 engine garbage collection with zero disk or telemetry footprint.</li>
-        </ul>
-      </div>
+      
 
       <!-- Comparison Table -->
       <h2>LocalDoc vs Cloud PDF Protection Services</h2>

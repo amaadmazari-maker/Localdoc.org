@@ -841,17 +841,7 @@
         </div>
       </div>
 
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: In-Memory /CropBox Geometry &amp; Vector Stream Composition</h2>
-        <p>In accordance with <strong>ISO 32000-1</strong>, a PDF document represents its layout hierarchy as an acyclic directed graph rooted at the document catalog (<code>/Catalog</code>). LocalDoc performs non-destructive page surgery in browser RAM without quality loss:</p>
-
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Lossless <code>/CropBox</code> vs <code>/MediaBox</code> Adjustment:</strong> When cropping pages, generic tools rasterize vector layouts into blurry JPEG images. LocalDoc leaves the underlying vector stream and TrueType font glyphs 100% untouched, instead rewriting the page dictionary's <code>/CropBox [xLL yLL xUR yUR]</code> array. PDF viewers display only the cropped region while preserving crystal-clear vector text.</li>
-          <li><strong>Fluorescent Multi-Layer Blending:</strong> Highlighter annotations utilize hardware-accelerated <code>multiply</code> composite blend mode at 45% alpha opacity. This guarantees that underlying black text, table gridlines, and signatures remain 100% visible and sharp underneath yellow, green, pink, or cyan highlights.</li>
-          <li><strong>Directional Vector Arrows &amp; Shapes:</strong> Straight lines, single arrows, and double-headed arrows are calculated with polar trigonometry (<code>atan2</code>) and projected with sub-millimeter precision into the document overlay stream.</li>
-          <li><strong>Zero-Cloud Memory Isolation:</strong> All calculations execute in sandboxed WebAssembly and JavaScript threads. No documents or thumbnails are posted to external web servers, protecting sensitive financial audits and legal records.</li>
-        </ul>
-      </div>
+      
 
       <h2>LocalDoc vs Cloud PDF Editors</h2>
       <div class="tool-comparison-table-wrap">

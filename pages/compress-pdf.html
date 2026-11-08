@@ -390,21 +390,7 @@
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture (ISO 32000-1 & FlateDecode) -->
-      <div class="tool-tech-card">
-        <h2>In-Depth Technical Architecture: How LocalDoc Compresses PDFs in RAM</h2>
-        <p>Portable Document Format (PDF) specifications under <strong>ISO 32000-1</strong> dictate an indirect object graph indexed by a cross-reference table (<code>xref</code>) or cross-reference stream (introduced in PDF 1.5). Most desktop exporters (Microsoft Word, Adobe InDesign, scanner drivers) introduce massive data overhead: uncompressed content streams, unreferenced object revisions, duplicate <code>/ICCBased</code> color profile packets, and high-frequency 600 DPI raster artwork where 150 DPI would be optically indistinguishable.</p>
-        
-        <p>LocalDoc uses a sandboxed WebAssembly execution thread and typed array binary parsers (<code>Uint8Array</code>) to traverse the document tree entirely within your browser's private V8 memory heap. Not a single packet leaves your machine. Here is the exact low-level pipeline:</p>
-
-<ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
-          <li><strong>DCT Stream Re-Quantization &amp; Color Space Guarding:</strong> Embedded raster bitmaps (<code>/Subtype /Image</code>) are isolated from content dictionaries. For continuous-tone JPEG streams (<code>/DCTDecode</code>), we re-quantize the 8&times;8 Discrete Cosine Transform high-frequency matrix coefficients. Crucially, we inspect the color space descriptor: <code>/DeviceRGB</code> and <code>/DeviceCMYK</code> channels are preserved with their respective gamma curves to prevent muddy, desaturated print-proof shifts on official contracts.</li>
-          <li><strong>Lossless Vector Font &amp; Glyph Outline Preservation:</strong> Vector typography is never rasterized. Embedded TrueType (<code>/FontFile2</code>) and Compact Font Format CFF (<code>/FontFile3</code>) streams contain cubic Bézier coordinate instructions. LocalDoc strips unreferenced character glyphs from the font subset dictionary while leaving text geometry mathematically crisp at infinite zoom.</li>
-          <li><strong>Object Stream De-duplication &amp; Garbage Collection:</strong> Documents edited across multiple software revisions frequently leave dangling unreferenced objects (orphaned revisions, thumbnail caches, and legacy Adobe Illustrator application metadata). LocalDoc performs mark-and-sweep object garbage collection, re-packs loose indirect dictionaries into compressed object streams (<code>/ObjStm</code>), and regenerates a contiguous binary <code>/XRef</code> stream.</li>
-          <li><strong>Deflate Stream Recompression (RFC 1951):</strong> Content stream operators (<code>cm</code> coordinate matrices, <code>BT...ET</code> text blocks, and vector clipping paths) are re-deflated using maximum window search bounds, squeezing redundant whitespace and carriage returns out of structural bodies.</li>
-          <li><strong>Hardware Memory Safety &amp; Browser Heap Bounds:</strong> Processing massive documents inside client RAM is governed by device memory ceilings. While 64-bit desktop Chrome and Edge allocate up to 2&ndash;4 GB per tab, iOS Safari aggressively throttles single-page canvas buffers at approximately 1.2 GB to 1.5 GB. If you are compressing an oversized architectural CAD export (&gt; 400 MB) on an iPad or iPhone, we recommend splitting the document into smaller page bundles first to prevent the browser engine from terminating the tab.</li>
-        </ul>
-      </div>
+      
 
       <!-- 5. Comparison Table: LocalDoc vs Cloud Tools -->
       <h2>Client-Side LocalDoc vs Traditional Cloud Compressors</h2>

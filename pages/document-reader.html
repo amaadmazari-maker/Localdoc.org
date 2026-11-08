@@ -728,68 +728,7 @@
         </div>
 
         <!-- Section 1: Practical Step-by-Step Guide -->
-        <section class="tool-guide-section">
-          <h2>How to Open &amp; Read Documents with 100% Privacy in Your Browser</h2>
-          <p>LocalDoc's Universal Document Reader enables you to inspect, read, and print PDF manuals, Word contracts, and Excel spreadsheets directly inside your web browser without installing Adobe Acrobat Reader or subscribing to Microsoft 365. Because all parsing runs locally inside browser memory, your private business records are completely secure:</p>
-          
-          <div class="tool-steps-grid">
-            <div class="tool-step-card">
-              <div class="tool-step-number">1</div>
-              <h3>Open Any Document File</h3>
-              <p>Drag and drop your file into the reading zone or click <em>Select Document from Device</em>. Supports <strong>PDF, Word (.docx), Excel (.xlsx, .csv), Markdown, and TXT</strong> files.</p>
-            </div>
-
-            <div class="tool-step-card">
-              <div class="tool-step-number">2</div>
-              <h3>Navigate, Zoom &amp; Inspect</h3>
-              <p>Use the page navigation buttons or jump directly to specific page numbers. Adjust zoom from 50% to 300%, rotate landscape orientation sheets, and switch between multi-tab spreadsheets.</p>
-            </div>
-
-            <div class="tool-step-card">
-              <div class="tool-step-number">3</div>
-              <h3>Print or Copy Content</h3>
-              <p>Select and copy text directly from the rendered document stage, click <strong>Print</strong> to send directly to your home printer, or download clean offline copies without watermarks.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Section 2: Deep Technical Architecture -->
-        <section class="tool-guide-section">
-          <h2>Technical Architecture: Multi-Engine Client-Side Document Parsing &amp; Sandboxing</h2>
-          <p>Traditional web-based document viewers require transmitting your confidential contracts, medical scans, and company spreadsheets to remote cloud servers (such as Google Docs Viewer or Microsoft Office Online), where documents are cached and processed on third-party server farms. LocalDoc embeds specialized, sandboxed client-side parsers directly into your browser runtime:</p>
-
-<div class="tool-tech-grid">
-            <div class="tool-tech-card">
-              <h3>Mozilla PDF.js Vector Engine &amp; Font Decoders</h3>
-              <p>PDF documents are parsed using Mozilla's open-source PDF.js engine. Raw byte streams are unpacked into indirect object graphs, resolving cross-reference (<code>xref</code>) tables, embedded CMap character tables, and TrueType / CFF font glyph outlines. Vector paths and typography are rasterized onto an HTML5 Canvas scaled to your screen's exact hardware device pixel ratio (<code>window.devicePixelRatio</code>), ensuring crystal-clear sharpness on high-DPI retina screens.</p>
-            </div>
-
-            <div class="tool-tech-card">
-              <h3>Mammoth.js DOCX Semantic Compilation</h3>
-              <p>Microsoft Word <code>.docx</code> archives are uncompressed in memory using pure JavaScript PKZip decoders. The engine parses the internal <code>word/document.xml</code> OpenXML package, mapping runs (<code>&lt;w:r&gt;</code>), paragraph properties (<code>&lt;w:pPr&gt;</code>), tables (<code>&lt;w:tbl&gt;</code>), and numbering hierarchies into sanitized semantic HTML5 elements (<code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;table&gt;</code>) without executing untrusted external scripts.</p>
-            </div>
-
-            <div class="tool-tech-card">
-              <h3>SheetJS In-Memory Spreadsheet Engine</h3>
-              <p>Excel workbooks (<code>.xlsx</code>, <code>.xls</code>, and <code>.csv</code>) are parsed cell-by-cell into a structured memory matrix. LocalDoc constructs dynamic sheet tabs matching the original workbook's sheet hierarchy, supporting thousands of rows with zero latency. Number format masks, accounting currency symbols, and date serial numbers are correctly formatted for instant viewing.</p>
-            </div>
-
-            <div class="tool-tech-card">
-              <h3>Page Virtualization &amp; Canvas Memory Reclamation</h3>
-              <p>To prevent browser memory bloat when viewing 500+ page technical manuals or large blueprints, LocalDoc implements viewport page virtualization. Only visible and adjacent pages are rendered into active memory. When pages scroll out of view, canvas memory buffers are wiped (<code>canvas.width = 0; canvas.height = 0</code>) and temporary blob URLs are immediately revoked via <code>URL.revokeObjectURL()</code>, keeping browser heap usage strictly bounded.</p>
-            </div>
-
-            <div class="tool-tech-card">
-              <h3>DOM Containment &amp; XSS Sandboxing</h3>
-              <p>All rendered document markup is isolated using strict CSS layout containment (<code>contain: content</code>) and rigorous DOM sanitization. Inline script execution is blocked, preventing malicious macros, embedded tracking pixels, or cross-site scripting (XSS) vectors often present in weaponized corporate attachments.</p>
-            </div>
-
-            <div class="tool-tech-card">
-              <h3>Zero Cloud Transmissions &amp; PWA Offline Cache</h3>
-              <p>Every parser runs entirely within local browser closures. After your initial page visit, our Progressive Web App (PWA) service worker caches all parser engines locally. You can open and inspect confidential documents on an airplane, in high-security facilities, or during subway commutes with zero cellular or Wi-Fi connectivity.</p>
-            </div>
-          </div>
-        </section>
+        
 
         <!-- Section 3: Performance & Feature Comparison Table -->
         <section class="tool-guide-section">

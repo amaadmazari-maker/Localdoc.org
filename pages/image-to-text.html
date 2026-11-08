@@ -362,73 +362,7 @@
       </div>
 
       <!-- Section 1: Practical Step-by-Step Guide -->
-      <section class="tool-guide-section">
-        <h2>How to Extract Text from Images &amp; Make Scanned PDFs Searchable</h2>
-        <p>LocalDoc's Image to Text OCR Studio extracts clean, selectable text and generates searchable "Sandwich PDFs" from camera snapshots, screenshots, scanned receipts, and multi-page books without uploading a single pixel to external servers. Whether you are digitizing legal contracts, archiving medical records, or copying code snippets from presentation slides, here is how to achieve 99%+ character recognition accuracy:</p>
-        
-        <div class="tool-steps-grid">
-          <div class="tool-step-card">
-            <div class="tool-step-number">1</div>
-            <h3>Upload High-Resolution Scan</h3>
-            <p>Drag and drop your image file or click <em>Select Image Files</em>. LocalDoc supports JPEG, PNG, and WebP formats. For optimal recognition, ensure document text is well-lit, free of severe motion blur, and oriented right-side up.</p>
-          </div>
-
-          <div class="tool-step-card">
-            <div class="tool-step-number">2</div>
-            <h3>Configure Pre-Processing Filter</h3>
-            <p>Select your image pre-filter: <strong>High-Contrast B&amp;W</strong> automatically executes Otsu dynamic thresholding to eliminate shadow gradients and paper wrinkles. <strong>Magic Color</strong> sharpens ink contours while preserving colored stamps and logos.</p>
-          </div>
-
-          <div class="tool-step-card">
-            <div class="tool-step-number">3</div>
-            <h3>Extract, Review &amp; Export Searchable PDF</h3>
-            <p>Click <strong>Extract Text via Neural OCR</strong>. Review the transcribed output in the real-time editor. Download as a genuine <strong>Searchable PDF</strong> with an invisible OCR text layer over your scans, copy directly to your clipboard, or export as structured <code>.txt</code> or Microsoft Word <code>.docx</code>.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 2: Deep Technical Architecture -->
-      <section class="tool-guide-section">
-        <h2>Technical Architecture: LSTM Neural Networks &amp; Client-Side WebAssembly OCR</h2>
-        <p>Traditional web-based OCR tools transmit your sensitive invoices, medical records, and personal identification to remote cloud clusters (such as Google Cloud Vision API or AWS Textract), exposing private financial and personal details to third-party data pipelines. LocalDoc is fundamentally engineered to perform 100% of image normalization, binarization, and optical character parsing inside your local browser memory space without emitting a single network packet.</p>
-
-<div class="tool-tech-grid">
-          <div class="tool-tech-card">
-            <h3>Canvas Binarization &amp; Otsu Discriminant Analysis</h3>
-            <p>Before neural inference begins, the image is rendered onto an off-screen HTML5 Canvas. Each pixel is transformed into 8-bit grayscale luminance using the ITU-R BT.601 standard: <code>Y = 0.299R + 0.587G + 0.114B</code>. An automated Otsu thresholding algorithm evaluates the 256-bin grayscale histogram, calculating inter-class variance &sigma;<sub>b</sub><sup>2</sup>(t) = &omega;<sub>0</sub>(t)&omega;<sub>1</sub>(t)[&mu;<sub>0</sub>(t) &minus; &mu;<sub>1</sub>(t)]<sup>2</sup> to determine the optimal binarization threshold <em>t*</em>. This cleanly isolates foreground ink glyphs from background paper noise, shadows, and scanner paper tint.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Compiled WASM SIMD &amp; Bidirectional LSTM</h3>
-            <p>Character classification runs via an optimized C++ Tesseract engine compiled directly to WebAssembly (WASM) with SIMD vector acceleration. LocalDoc utilizes a bidirectional Long Short-Term Memory (LSTM) recurrent neural network that processes horizontal line slices without brittle character-level pre-segmentation. Forward and backward recurrent hidden state passes evaluate sequential typographical context, recognizing complex ligatures, accented glyphs, mathematical symbols, and multi-line paragraph wraps with high statistical fidelity.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>CTC Decoding &amp; Word Confidence Metrics</h3>
-            <p>The network applies Connectionist Temporal Classification (CTC) decoding to align continuous frame activations with target character sequences. Each recognized word is accompanied by a normalized confidence score (0.0&ndash;1.0) and precise bounding box spatial coordinates (<code>x0, y0, x1, y1</code>). This spatial layout model enables the engine to preserve indentation, column gutters, and hard line breaks rather than dumping unstructured text.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>In-Memory OpenXML (.docx) Synthesis</h3>
-            <p>When exporting to Microsoft Word, the engine does not merely concatenate plain text strings. An in-memory OpenXML compiler generates genuine ISO/IEC 29500 packages (<code>word/document.xml</code>, <code>word/styles.xml</code>, <code>[Content_Types].xml</code>) directly inside a compressed PKZip stream in client RAM. The resulting .docx file opens natively in Word, Google Docs, Apple Pages, and LibreOffice with proper typographic runs and paragraph hierarchies.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Off-Thread Web Worker Isolation</h3>
-            <p>Intensive neural matrix convolutions and floating-point dot products are offloaded to an isolated background Web Worker. This isolates CPU-heavy compute cycles from the main browser UI thread, completely eliminating frame drops, scroll stutter, or "Page Unresponsive" dialogs while transcribing multi-megapixel document scans.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Zero-Leak Client Memory Lifecycle &amp; Canvas Bounds</h3>
-            <p>Image bitmaps, canvas contexts, and intermediate inference buffers are allocated within ephemeral JavaScript closures and detached typed arrays (<code>ArrayBuffer</code>). While desktop Chrome and Edge support up to 4 GB linear memory per worker, mobile WebKit (iOS Safari) restricts single canvas buffers to 16.7 megapixels (4096 &times; 4096 px). LocalDoc automatically computes aspect-preserved bounds to prevent mobile memory eviction. Once your session ends, garbage collection reclaims 100% of memory with zero persistent disk footprint.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Searchable PDF (Sandwich PDF) Invisible Text Overlay</h3>
-            <p>Rather than discarding original scan aesthetics, LocalDoc synthesizes genuine searchable "Sandwich PDFs" directly in browser RAM via PDF-Lib. The engine places the high-resolution scanned raster image on the bottom visual layer and projects an invisible text layer (<code>opacity: 0</code>) aligned with exact bounding box coordinates (<code>x, y, width, height</code>). This produces a pristine visual document that supports native keyword search (<code>Ctrl+F</code>), screen-reader text-to-speech, and full mouse selection copying without cloud uploads.</p>
-          </div>
-        </div>
-      </section>
+      
 
       <!-- Section 3: Performance & Feature Comparison Table -->
       <section class="tool-guide-section">

@@ -394,58 +394,7 @@
       </div>
 
       <!-- Section 1: Practical Step-by-Step Guide -->
-      <section class="tool-guide-section">
-        <h2>How to Create Multi-Page PDFs from Images with 100% Privacy</h2>
-        <p>LocalDoc's Create PDF Studio converts individual images, smartphone snapshots, receipts, and book scans into standardized, beautifully formatted multi-page PDF documents. All file parsing, dimension normalization, and binary PDF encoding happen directly in your browser's memory without sending a single byte across the internet:</p>
-        
-        <div class="tool-steps-grid">
-          <div class="tool-step-card">
-            <div class="tool-step-number">1</div>
-            <h3>Batch Import Images</h3>
-            <p>Drag and drop multiple JPEG, PNG, or WebP files into the upload workspace, or click <em>Browse Files</em>. You can import receipts, assignment pages, contracts, or photo portfolios simultaneously.</p>
-          </div>
-
-          <div class="tool-step-card">
-            <div class="tool-step-number">2</div>
-            <h3>Sequence, Rotate &amp; Format</h3>
-            <p>Use the move arrows to reorder pages into the exact reading sequence. Rotate any sideways landscape photos by 90&deg;. Select your target paper standard (ISO A4, US Letter, or Fit to Image) and adjust margin spacing.</p>
-          </div>
-
-          <div class="tool-step-card">
-            <div class="tool-step-number">3</div>
-            <h3>Compile &amp; Download</h3>
-            <p>Click <strong>Create &amp; Download PDF</strong>. The tool synthesizes a valid ISO 32000-1 PDF document in milliseconds, generating an instant download link directly from browser memory.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 2: Deep Technical Architecture -->
-      <section class="tool-guide-section">
-        <h2>Technical Architecture: In-RAM ISO 32000-1 PDF Synthesis</h2>
-        <p>Most online "JPG to PDF" converters require uploading your high-resolution images to remote cloud servers where third-party scripts execute conversions and queue temporary downloads. LocalDoc avoids cloud exposure entirely through a native JavaScript binary generation pipeline:</p>
-
-        <div class="tool-tech-grid">
-          <div class="tool-tech-card">
-            <h3>Binary Stream Embedding Without Re-compression</h3>
-            <p>When you add JPEG images, LocalDoc extracts the raw DCT (Discrete Cosine Transform) compressed stream directly and embeds it into the PDF's <code>/XObject /Subtype /Image</code> dictionary. By bypassing lossy re-encoding, original photograph sharpness is preserved with zero generational quality loss.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Standardized MediaBox Coordinate Geometry</h3>
-            <p>LocalDoc calculates exact PostScript typographic point dimensions for each page. Standard ISO 216 A4 is mapped to <code>[0 0 595.28 841.89]</code> points, while US Letter is calibrated to <code>[0 0 612 792]</code> points. Images are scaled proportionally using uniform aspect ratio matrix math so no distortion or stretching occurs.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>FlateDecode Lossless PNG Integration</h3>
-            <p>PNG graphics and screenshots with transparent alpha channels are parsed into raw RGBA color arrays. The RGB channels are compressed via lossless zlib / FlateDecode, while the alpha transparency layer is compiled as a dedicated <code>/SMask</code> (Soft Mask) dictionary, maintaining pristine graphic fidelity.</p>
-          </div>
-
-          <div class="tool-tech-card">
-            <h3>Zero Disk Writes &amp; Ephemeral Memory Lifespan</h3>
-            <p>Every PDF cross-reference table (<code>xref</code>), trailer dictionary, and catalog hierarchy is constructed directly within a typed <code>Uint8Array</code> buffer. Once downloaded, memory pointers are released and cleaned up by the JavaScript V8 garbage collector.</p>
-          </div>
-        </div>
-      </section>
+      
 
       <!-- Section 3: Performance & Feature Comparison Table -->
       <section class="tool-guide-section">

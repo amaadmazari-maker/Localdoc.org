@@ -381,40 +381,14 @@
           <p>Select your presentation display standard: <strong>16:9 Widescreen</strong> for modern boardroom displays and laptop screens, or <strong>4:3 Standard</strong> for legacy classroom projectors.</p>
         </div>
         <div class="tool-step-card">
-          <div class="tool-step-number">3</div>
+          
           <h3>Compile &amp; Download PPTX</h3>
           <p>Click <strong>Convert to PowerPoint</strong>. The client-side OpenXML compiler generates an authentic .pptx slide deck. Open immediately in PowerPoint, Google Slides, or Keynote.</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: Deep Technical Architecture -->
-    <section class="tool-guide-section">
-      <h2>Technical Architecture: In-Memory PresentationML Packaging &amp; High-DPI Rendering</h2>
-      <p>Under the <strong>ISO 32000-1</strong> format specification, PDF documents contain no native understanding of presentation slide hierarchies, transition timings, or projector aspect ratios. LocalDoc bridges this divide through high-resolution vector coordinate scaling and native OpenXML PresentationML packaging inside browser memory:</p>
-
-<div class="tool-tech-grid">
-        <div class="tool-tech-card">
-          <h3>Coordinate Projection &amp; EMU Normalization</h3>
-          <p>Microsoft PowerPoint coordinates are structured in English Metric Units (EMUs, where 1 inch = 914,400 EMUs). LocalDoc calculates the PDF page's <code>MediaBox</code> and <code>CropBox</code> boundaries, mapping them into precise OpenXML slide coordinate bounds: 12,192,000 &times; 6,858,000 EMUs for 16:9 widescreen or 9,144,000 &times; 6,858,000 EMUs for 4:3 standard slides.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>High-DPI Off-Screen Canvas Rasterization</h3>
-          <p>Each PDF slide is rendered onto an off-screen HTML5 Canvas scaled at 2.0&times; to 3.0&times; device pixel ratio (200&ndash;300 DPI). Vector text outlines, mathematical notations, and SVG curves are anti-aliased with high-frequency bicubic interpolation, ensuring charts and diagrams remain razor-sharp on 4K conference room displays.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>Native PresentationML (.pptx) Compilation</h3>
-          <p>The slide deck is synthesized as an authentic ISO/IEC 29500 OpenXML package. In-memory JavaScript builds the structural XML components: <code>ppt/presentation.xml</code>, slide definitions (<code>ppt/slides/slide{N}.xml</code>), slide layouts (<code>ppt/slideLayouts/slideLayout1.xml</code>), relationship graphs (<code>_rels/.rels</code>), and embeds high-resolution PNG slide streams in <code>ppt/media/</code>.</p>
-        </div>
-
-        <div class="tool-tech-card">
-          <h3>Zero-Leak Client Memory Isolation</h3>
-          <p>Every canvas context, binary buffer, and slide stream is scoped strictly within volatile JavaScript heap allocations. Once the PPTX blob URL is generated and downloaded, all object references are released for immediate garbage collection, leaving zero traces on disk or network interfaces.</p>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- Section 3: Comparison Table -->
     <section class="tool-guide-section">

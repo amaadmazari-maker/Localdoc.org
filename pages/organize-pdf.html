@@ -870,18 +870,7 @@
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: ISO 32000-1 Page Tree Surgery -->
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: In-Memory PDF Page Tree Restructuring</h2>
-        <p>In accordance with <strong>ISO 32000-1</strong>, a PDF document represents its layout hierarchy as an acyclic directed graph rooted at the document catalog (<code>/Catalog</code>). The pages are linked through an internal balanced B-tree dictionary (<code>/Pages</code>) containing an ordered array of object references (<code>/Kids [12 0 R 15 0 R ...]</code>).</p>
-
-        <ul style="margin: 12px 0 16px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-          <li><strong>Lossless <code>/Rotate</code> Metadata Injection:</strong> When you rotate a page 90 degrees in LocalDoc, the underlying raster images and font vectors are not recompressed or rasterized. Instead, the page dictionary's <code>/Rotate</code> integer tag is updated (0, 90, 180, 270 degrees). This guarantees 100% lossless visual preservation.</li>
-          <li><strong><code>/Kids</code> Array Index Splicing:</strong> Reordering pages involves rearranging the indirect object reference pointers inside the parent <code>/Pages</code> dictionary. Deleting a page removes its pointer from <code>/Kids</code> and decrements the cumulative <code>/Count</code> integer.</li>
-          <li><strong>Cross-Document Page Transplantation:</strong> When you append supplementary PDF files, LocalDoc imports foreign page nodes, remaps indirect object IDs to prevent collisions, and links them smoothly into the active page tree.</li>
-          <li><strong>Volatile Memory Isolation:</strong> All calculations execute in sandboxed WebAssembly and JavaScript threads. No documents or thumbnails are posted to external web servers, protecting sensitive financial audits and legal records.</li>
-        </ul>
-      </div>
+      
 
       <!-- 5. Comparison Table: LocalDoc vs Cloud PDF Organizers -->
       <h2>LocalDoc vs Cloud PDF Organizers</h2>

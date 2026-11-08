@@ -311,19 +311,7 @@
         </div>
       </div>
 
-      <!-- 4. Deep Technical Architecture: Bisection Search & High-Contrast Thresholding -->
-      <div class="tool-tech-card">
-        <h2>Technical Architecture: Deterministic Bisection Search for Exact Byte Limits (&le; 20 KB and &le; 10 KB)</h2>
-        <p>Online recruitment and civil service exam portals (including UPSC, SSC, IBPS, State PSCs, and FPSC) enforce rigorous server-side upload validators. An applicant image exceeding 20,480 bytes by even a single byte or displaying compression-induced face blurring is rejected automatically. LocalDoc solves this inverse optimization challenge entirely within your local browser memory space:</p>
-
-<ul style="margin: 16px 0 20px 20px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.75;">
-          <li><strong>Monotonic File-Size Bisection Algorithm:</strong> Compressed JPEG byte size is a strictly monotonic non-linear function of quality parameter <em>Q</em> &isin; [0.01, 1.00]. LocalDoc initiates a fast binary search: <code>Q_mid = (Q_low + Q_high) / 2</code>. Across 6 to 7 iterations (&lt; 65 milliseconds total execution time), the engine measures encoded byte lengths (<code>Uint8Array.byteLength</code>) to converge on the exact maximum quality factor that satisfies <code>ByteLength &le; TargetKB &times; 1024</code>.</li>
-          <li><strong>Adaptive Luminance Thresholding for Signatures (&le; 10 KB):</strong> Handwritten signatures scanned from paper often contain uneven shadows, yellowish tint, and high-frequency paper grain noise that consumes 60&ndash;80% of JPEG Huffman entropy space. LocalDoc calculates per-pixel luminance <code>Y = 0.299R + 0.587G + 0.114B</code>. Background pixels above threshold (<em>Y</em> &gt; 215) are dynamically clamped to pure white (#FFFFFF), eliminating noise and allowing baseline run-length encoding to achieve crisp, dark ink strokes within a featherweight 6&ndash;9 KB payload.</li>
-          <li><strong>Pyramid Downsampling &amp; Anti-Aliasing:</strong> Direct single-step resizing of 12 MP or 48 MP smartphone portraits down to 138 &times; 177 px generates severe nearest-neighbor aliasing and pixel distortion. LocalDoc performs progressive multi-stage half-step (&frac12; scale) decimation using bicubic smoothing in an off-screen HTML5 Canvas, keeping facial geometry sharp and compliant with biometric identity matchers.</li>
-          <li><strong>Physical Millimeter to Pixel Mapping at Exact Aspect Ratios:</strong> Standard 3.5 &times; 4.5 cm passport proportions are locked during canvas generation. Pixel coordinates are computed via <code>Pixels = (Millimeters / 25.4) &times; DPI</code>, preventing horizontal stretching or chin truncation that causes exam hall disqualification.</li>
-          <li><strong>Guaranteed Zero Cloud Ingestion:</strong> Sensitive biometric face portraits and legal signatures are never dispatched to external cloud servers or temporary file stores. Every byte is allocated and recycled strictly within ephemeral browser RAM.</li>
-        </ul>
-      </div>
+      
 
       <!-- Comprehensive Portal Guidelines -->
       <h2>How to Pass Strict Government &amp; Exam Portal Upload Checks</h2>
