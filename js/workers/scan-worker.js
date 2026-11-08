@@ -19,14 +19,18 @@ self.onmessage = function (e) {
   const t0 = performance.now();
 
   try {
-    if (msg.type === 'DETECT_DOCUMENT_CORNERS') {
-      const { id, buffer, width, height, options } = msg;
-      const opts = options || {};
+    const isDetectAction = msg.action === 'detectEdges' || msg.type === 'DETECT_DOCUMENT_CORNERS';
+    if (isDetectAction) {
+      const id = msg.id || 'msg_' + Date.now();
+      const rawBuffer = msg.buffer || (msg.imageData && msg.imageData.data ? msg.imageData.data.buffer : (msg.imageData && msg.imageData.buffer ? msg.imageData.buffer : msg.imageData));
+      const width = msg.width;
+      const height = msg.height;
+      const opts = msg.options || {};
       const highThresh = opts.highThreshold || 75;
       const lowThresh = opts.lowThreshold || 30;
 
       // 1. Run Canny Edge Pipeline
-      const edgeMap = runCannyPipeline(new Uint8ClampedArray(buffer), width, height, highThresh, lowThresh);
+      const edgeMap = runCannyPipeline(new Uint8ClampedArray(rawBuffer), width, height, highThresh, lowThresh);
 
       // 2. Extract Document Boundary & Fit 4-Point Convex Quadrilateral
       const quadResult = extractDocumentQuad(edgeMap, width, height);
@@ -34,11 +38,14 @@ self.onmessage = function (e) {
 
       self.postMessage({
         type: 'DETECT_DOCUMENT_CORNERS_RESULT',
+        action: 'detectEdges',
         id: id,
         success: true,
-        found: quadResult.found,
-        corners: quadResult.corners,
-        confidence: quadResult.confidence,
+        found: !!(quadResult && quadResult.found),
+        corners: quadResult && quadResult.corners ? quadResult.corners : null,
+        convex: !!(quadResult && quadResult.convex),
+        areaRatio: quadResult && quadResult.areaRatio ? quadResult.areaRatio : 0,
+        confidence: quadResult && quadResult.confidence ? quadResult.confidence : 0,
         durationMs: durationMs
       });
       return;
@@ -261,6 +268,196 @@ function runCannyPipeline(rgba, width, height, highThresh, lowThresh) {
 }
 
 /**
+ * Canonical 4-Corner Clockwise Sorting with Near-Square Tie-Breaking (Feature F6)
+ * Guaranteed output order: [Top-Left, Top-Right, Bottom-Right, Bottom-Left]
+ * @param {Array<{x: number, y: number}>|object} pts - Exactly 4 points
+ * @returns {Array<{x: number, y: number}>} - 4 points canonically ordered clockwise with named properties
+ */
+function orderCornersCanonical(pts) {
+  if (!pts) return pts;
+  let arr;
+  if (Array.isArray(pts)) {
+    arr = pts;
+  } else if (pts.topLeft && pts.topRight && pts.bottomRight && pts.bottomLeft) {
+    arr = [pts.topLeft, pts.topRight, pts.bottomRight, pts.bottomLeft];
+  } else {
+    return pts;
+  }
+  if (arr.length !== 4) return pts;
+
+  // 1. Compute Centroid
+  const cx = (arr[0].x + arr[1].x + arr[2].x + arr[3].x) / 4;
+  const cy = (arr[0].y + arr[1].y + arr[2].y + arr[3].y) / 4;
+
+  // 2. Polar angle sort around centroid
+  const sorted = [...arr].sort((a, b) => {
+    return Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx);
+  });
+
+  // 3. Enforce strict clockwise winding via 2D cross product
+  // In screen coordinates (y down), cross > 0 means clockwise (right turn)
+  const cross = (sorted[1].x - sorted[0].x) * (sorted[2].y - sorted[1].y) -
+                (sorted[1].y - sorted[0].y) * (sorted[2].x - sorted[1].x);
+  const cw = cross > 0 ? sorted : [sorted[0], sorted[3], sorted[2], sorted[1]];
+
+  // 4. Anchor at Top-Left: TL = argmin(x + y) with deterministic tie-breaking
+  let tlIdx = 0;
+  let minSum = Infinity;
+  for (let i = 0; i < 4; i++) {
+    const s = cw[i].x + cw[i].y;
+    if (s < minSum - 1e-4) {
+      minSum = s;
+      tlIdx = i;
+    } else if (Math.abs(s - minSum) <= 1e-4) {
+      // Tie-breaker: prefer smaller y (higher in frame), then smaller x
+      if (cw[i].y < cw[tlIdx].y || (cw[i].y === cw[tlIdx].y && cw[i].x < cw[tlIdx].x)) {
+        minSum = s;
+        tlIdx = i;
+      }
+    }
+  }
+
+  const tl = cw[tlIdx];
+  const tr = cw[(tlIdx + 1) % 4];
+  const br = cw[(tlIdx + 2) % 4];
+  const bl = cw[(tlIdx + 3) % 4];
+
+  const result = [tl, tr, br, bl];
+  result.topLeft = tl;
+  result.topRight = tr;
+  result.bottomRight = br;
+  result.bottomLeft = bl;
+  return result;
+}
+
+/**
+ * Calculates Shoelace polygon area for a quadrilateral (Feature F7)
+ * @param {Array<{x: number, y: number}>|object} quad - 4 vertices in cyclic order
+ * @returns {number} - Absolute polygon area
+ */
+function computeShoelaceArea(quad) {
+  if (!quad) return 0;
+  let pts;
+  if (Array.isArray(quad)) {
+    pts = quad;
+  } else if (quad.topLeft && quad.topRight && quad.bottomRight && quad.bottomLeft) {
+    pts = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
+  } else {
+    return 0;
+  }
+  if (pts.length !== 4) return 0;
+  const area = 0.5 * Math.abs(
+    pts[0].x * (pts[1].y - pts[3].y) +
+    pts[1].x * (pts[2].y - pts[0].y) +
+    pts[2].x * (pts[3].y - pts[1].y) +
+    pts[3].x * (pts[0].y - pts[2].y)
+  );
+  return area;
+}
+
+/**
+ * Comprehensive Geometric Validity Suite (Feature F7)
+ * Validates strict convexity, Shoelace area ratio (0.04-0.98),
+ * collinearity guard (30°-150° internal angles), and aspect ratio (0.18-5.5).
+ * @param {Array<{x: number, y: number}>|object} quad - Candidate quadrilateral
+ * @param {number} totalW - Reference frame width (1 if normalized)
+ * @param {number} totalH - Reference frame height (1 if normalized)
+ * @returns {{ valid: boolean, convex: boolean, areaRatio: number, minAngle: number, maxAngle: number, ratio: number }}
+ */
+function validateQuadGeometry(quad, totalW = 1, totalH = 1) {
+  if (!quad) {
+    return { valid: false, convex: false, areaRatio: 0, minAngle: 0, maxAngle: 0, ratio: 0 };
+  }
+  let pts;
+  if (Array.isArray(quad)) {
+    pts = quad;
+  } else if (quad.topLeft && quad.topRight && quad.bottomRight && quad.bottomLeft) {
+    pts = [quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft];
+  } else {
+    return { valid: false, convex: false, areaRatio: 0, minAngle: 0, maxAngle: 0, ratio: 0 };
+  }
+  if (pts.length !== 4) {
+    return { valid: false, convex: false, areaRatio: 0, minAngle: 0, maxAngle: 0, ratio: 0 };
+  }
+
+  // 1. Strict Convexity (all consecutive edge cross products share the same non-zero sign)
+  function edgeCross(p0, p1, p2) {
+    return (p1.x - p0.x) * (p2.y - p1.y) - (p1.y - p0.y) * (p2.x - p1.x);
+  }
+  const c0 = edgeCross(pts[0], pts[1], pts[2]);
+  const c1 = edgeCross(pts[1], pts[2], pts[3]);
+  const c2 = edgeCross(pts[2], pts[3], pts[0]);
+  const c3 = edgeCross(pts[3], pts[0], pts[1]);
+
+  const allPositive = c0 > 1e-7 && c1 > 1e-7 && c2 > 1e-7 && c3 > 1e-7;
+  const allNegative = c0 < -1e-7 && c1 < -1e-7 && c2 < -1e-7 && c3 < -1e-7;
+  const isConvex = allPositive || allNegative;
+  if (!isConvex) {
+    return { valid: false, convex: false, areaRatio: 0, minAngle: 0, maxAngle: 0, ratio: 0 };
+  }
+
+  // 2. Shoelace Area Validation: 0.04 <= areaRatio <= 0.98 per PROJECT.md § F7
+  const area = computeShoelaceArea(pts);
+  const totalArea = Math.max(1e-6, totalW * totalH);
+  const areaRatio = area / totalArea;
+  if (areaRatio < 0.04 || areaRatio > 0.98) {
+    return { valid: false, convex: true, areaRatio: areaRatio, minAngle: 0, maxAngle: 0, ratio: 0 };
+  }
+
+  // 3. Collinearity Guard: 30° <= internal angle <= 150° for all 4 vertices
+  let minAngle = 180;
+  let maxAngle = 0;
+  for (let i = 0; i < 4; i++) {
+    const prev = pts[(i + 3) % 4];
+    const curr = pts[i];
+    const next = pts[(i + 1) % 4];
+
+    const v1x = prev.x - curr.x;
+    const v1y = prev.y - curr.y;
+    const v2x = next.x - curr.x;
+    const v2y = next.y - curr.y;
+
+    const len1 = Math.hypot(v1x, v1y);
+    const len2 = Math.hypot(v2x, v2y);
+    if (len1 < 1e-6 || len2 < 1e-6) {
+      return { valid: false, convex: true, areaRatio: areaRatio, minAngle: 0, maxAngle: 180, ratio: 0 };
+    }
+
+    const cosTheta = (v1x * v2x + v1y * v2y) / (len1 * len2);
+    const clampedCos = Math.max(-1, Math.min(1, cosTheta));
+    const angleDeg = Math.acos(clampedCos) * (180 / Math.PI);
+
+    if (angleDeg < minAngle) minAngle = angleDeg;
+    if (angleDeg > maxAngle) maxAngle = angleDeg;
+
+    if (angleDeg < 30 || angleDeg > 150) {
+      return { valid: false, convex: true, areaRatio: areaRatio, minAngle: minAngle, maxAngle: maxAngle, ratio: 0 };
+    }
+  }
+
+  // 4. Aspect Ratio Plausibility: 0.18 <= ratio <= 5.5
+  const topW = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+  const botW = Math.hypot(pts[2].x - pts[3].x, pts[2].y - pts[3].y);
+  const leftH = Math.hypot(pts[3].x - pts[0].x, pts[3].y - pts[0].y);
+  const rightH = Math.hypot(pts[2].x - pts[1].x, pts[2].y - pts[1].y);
+  const avgW = (topW + botW) / 2;
+  const avgH = (leftH + rightH) / 2;
+  const ratio = avgW / Math.max(1e-6, avgH);
+  if (ratio < 0.18 || ratio > 5.5) {
+    return { valid: false, convex: true, areaRatio: areaRatio, minAngle: minAngle, maxAngle: maxAngle, ratio: ratio };
+  }
+
+  return {
+    valid: true,
+    convex: true,
+    areaRatio: areaRatio,
+    minAngle: Math.round(minAngle * 10) / 10,
+    maxAngle: Math.round(maxAngle * 10) / 10,
+    ratio: Math.round(ratio * 100) / 100
+  };
+}
+
+/**
  * 6. Edge Extraction & 7-8. Convex Hull + Dual-Chain RDP 4-Point Quad Fitting
  */
 function fitQuadFromPoints(pts, width, height) {
@@ -280,8 +477,8 @@ function fitQuadFromPoints(pts, width, height) {
   area = Math.abs(area) * 0.5;
   const relArea = area / totalArea;
 
-  // Document must occupy between 4% and 97% of the camera frame
-  if (relArea < 0.04 || relArea > 0.97) {
+  // Document must occupy between 4% and 98% of the camera frame per PROJECT.md § F7
+  if (relArea < 0.04 || relArea > 0.98) {
     return null;
   }
 
@@ -323,54 +520,17 @@ function fitQuadFromPoints(pts, width, height) {
     return null;
   }
 
-  // Check Convexity
-  function cross(p1, p2, p3) {
-    return (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
-  }
-  const c1 = cross(quad[0], quad[1], quad[2]);
-  const c2 = cross(quad[1], quad[2], quad[3]);
-  const c3 = cross(quad[2], quad[3], quad[0]);
-  const c4 = cross(quad[3], quad[0], quad[1]);
-  const isConvex = (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) || (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
-  if (!isConvex) {
+  // 1. Order 4 corners canonically clockwise: [TL, TR, BR, BL]
+  const canonicalQuad = orderCornersCanonical(quad);
+
+  // 2. Strict Geometric Validation Suite (Convexity, Shoelace Area, Collinearity, Aspect Ratio)
+  const geom = validateQuadGeometry(canonicalQuad, width, height);
+  if (!geom.valid) {
     return null;
   }
 
-  // Check Aspect Ratio Plausibility
-  const topW = Math.hypot(quad[1].x - quad[0].x, quad[1].y - quad[0].y);
-  const botW = Math.hypot(quad[2].x - quad[3].x, quad[2].y - quad[3].y);
-  const leftH = Math.hypot(quad[3].x - quad[0].x, quad[3].y - quad[0].y);
-  const rightH = Math.hypot(quad[2].x - quad[1].x, quad[2].y - quad[1].y);
-  const avgW = (topW + botW) / 2;
-  const avgH = (leftH + rightH) / 2;
-  const ratio = avgW / Math.max(1, avgH);
-
-  if (ratio < 0.18 || ratio > 5.5) {
-    return null;
-  }
-
-  // Sort 4 vertices clockwise starting from Top-Left: TL, TR, BR, BL
-  const cx = (quad[0].x + quad[1].x + quad[2].x + quad[3].x) / 4;
-  const cy = (quad[0].y + quad[1].y + quad[2].y + quad[3].y) / 4;
-
-  const sorted = [...quad].sort((a, b) => {
-    return Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx);
-  });
-
-  let tlIdx = 0;
-  let minSum = Infinity;
-  for (let i = 0; i < 4; i++) {
-    const s = sorted[i].x + sorted[i].y;
-    if (s < minSum) {
-      minSum = s;
-      tlIdx = i;
-    }
-  }
-
-  const tl = sorted[tlIdx];
-  const tr = sorted[(tlIdx + 1) % 4];
-  const br = sorted[(tlIdx + 2) % 4];
-  const bl = sorted[(tlIdx + 3) % 4];
+  const cx = (canonicalQuad[0].x + canonicalQuad[1].x + canonicalQuad[2].x + canonicalQuad[3].x) / 4;
+  const cy = (canonicalQuad[0].y + canonicalQuad[1].y + canonicalQuad[2].y + canonicalQuad[3].y) / 4;
 
   // Convert to normalized coordinates with subtle +1.2% outward safety breathing room
   function expandCorner(p) {
@@ -390,15 +550,24 @@ function fitQuadFromPoints(pts, width, height) {
     };
   }
 
+  const expTL = expandCorner(canonicalQuad[0]);
+  const expTR = expandCorner(canonicalQuad[1]);
+  const expBR = expandCorner(canonicalQuad[2]);
+  const expBL = expandCorner(canonicalQuad[3]);
+
+  // Construct dual-compatible Array / Object per PROJECT.md interface contract
+  const cornersResult = [expTL, expTR, expBR, expBL];
+  cornersResult.topLeft = expTL;
+  cornersResult.topRight = expTR;
+  cornersResult.bottomRight = expBR;
+  cornersResult.bottomLeft = expBL;
+
   return {
     found: true,
-    confidence: Math.round(relArea * 100),
-    corners: {
-      topLeft: expandCorner(tl),
-      topRight: expandCorner(tr),
-      bottomRight: expandCorner(br),
-      bottomLeft: expandCorner(bl)
-    }
+    convex: true,
+    areaRatio: Math.round(geom.areaRatio * 1000) / 1000,
+    confidence: Math.min(1.0, Math.round(geom.areaRatio * 100) / 100),
+    corners: cornersResult
   };
 }
 
@@ -550,3 +719,16 @@ function perpendicularDistance(p, lineP1, lineP2) {
   if (len < 1e-6) return Math.hypot(p.x - lineP1.x, p.y - lineP1.y);
   return Math.abs(dy * p.x - dx * p.y + lineP2.x * lineP1.y - lineP2.y * lineP1.x) / len;
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    orderCornersCanonical,
+    computeShoelaceArea,
+    validateQuadGeometry,
+    fitQuadFromPoints,
+    extractDocumentQuad,
+    computeConvexHull,
+    runCannyPipeline
+  };
+}
+

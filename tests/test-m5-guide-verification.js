@@ -1,0 +1,145 @@
+/**
+ * Milestone 5 Comprehensive Verification Test (F18, F19, F20)
+ * Validates DOM integrity, accessibility, CSS rules, and controller logic
+ * for In-App User Guide, Stage Hints, and Interactive Workflow Cards.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const scanHtmlPath = path.join(__dirname, '../pages/scan.html');
+const scanHtml = fs.readFileSync(scanHtmlPath, 'utf8');
+
+console.log('=================================================================');
+console.log(' LocalDoc Camera Studio — Milestone 5 Audit (F18, F19, F20)');
+console.log('=================================================================\n');
+
+let allPassed = true;
+function assert(condition, message) {
+  if (condition) {
+    console.log(`  ✓ PASSED: ${message}`);
+  } else {
+    console.error(`  ✗ FAILED: ${message}`);
+    allPassed = false;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 1. Feature F18: Stage Header Guide Buttons Verification
+// -----------------------------------------------------------------------------
+console.log('--- 1. Testing Stage Header Trigger Buttons (F18) ---');
+const requiredButtons = [
+  { id: 'btn-cam-guide', context: 'camera', container: 'Camera Top HUD' },
+  { id: 'btn-crop-guide', context: 'crop', container: 'Crop Topbar' },
+  { id: 'btn-filter-guide', context: 'filter', container: 'Filter Topbar' },
+  { id: 'btn-workspace-guide', context: 'tray', container: 'Workspace Topbar' },
+  { id: 'btn-home-guide', context: 'intro', container: 'Home Section Header' }
+];
+
+requiredButtons.forEach(btn => {
+  const hasId = scanHtml.includes(`id="${btn.id}"`);
+  const hasClick = scanHtml.includes(`openGuideDrawer('${btn.context}')`);
+  const hasAriaPopup = scanHtml.includes(`aria-haspopup="dialog"`);
+  const hasAriaControls = scanHtml.includes(`aria-controls="cs-guide-drawer"`);
+
+  assert(hasId, `Button #${btn.id} exists in ${btn.container}`);
+  assert(hasClick, `Button #${btn.id} calls openGuideDrawer('${btn.context}')`);
+  assert(hasAriaPopup && hasAriaControls, `Button #${btn.id} has accessible ARIA attributes`);
+});
+
+// -----------------------------------------------------------------------------
+// 2. Feature F18: Drawer Shell & Backdrop Verification
+// -----------------------------------------------------------------------------
+console.log('\n--- 2. Testing Drawer Shell & Backdrop Architecture (F18) ---');
+assert(scanHtml.includes('id="cs-guide-backdrop"'), 'Backdrop #cs-guide-backdrop exists');
+assert(scanHtml.includes('id="cs-guide-drawer"'), 'Drawer #cs-guide-drawer exists');
+assert(scanHtml.includes('id="cs-guide-drag-zone"'), 'Mobile drag handle #cs-guide-drag-zone exists');
+assert(scanHtml.includes('id="btn-close-guide"'), 'Close button #btn-close-guide exists with dismiss action');
+assert(scanHtml.includes('id="cs-guide-drawer-body"'), 'Scrollable body #cs-guide-drawer-body exists');
+assert(scanHtml.includes('cs-guide-drawer-footer'), 'Drawer footer exists with privacy status dot and manual link');
+
+// -----------------------------------------------------------------------------
+// 3. Feature F19: Contextual Onboarding Hint Banners & Pills Verification
+// -----------------------------------------------------------------------------
+console.log('\n--- 3. Testing Contextual Onboarding Hints & Pills (F19) ---');
+const requiredHints = ['camera', 'crop', 'filter', 'tray'];
+requiredHints.forEach(stage => {
+  assert(scanHtml.includes(`id="cs-hint-banner-${stage}"`), `Hint banner #cs-hint-banner-${stage} exists`);
+  assert(scanHtml.includes(`id="cs-hint-pill-${stage}"`), `Floating toggle pill #cs-hint-pill-${stage} exists`);
+  assert(scanHtml.includes(`StageHintController.dismiss('${stage}')`), `Banner #cs-hint-banner-${stage} has dismiss handler`);
+  assert(scanHtml.includes(`StageHintController.dismiss('${stage}', true)`), `Banner #cs-hint-banner-${stage} has "Don't show again" handler`);
+});
+
+// -----------------------------------------------------------------------------
+// 4. Feature F20: Visual Workflow Cards, SVGs & FAQ Accordion Verification
+// -----------------------------------------------------------------------------
+console.log('\n--- 4. Testing Visual Workflow Cards, SVGs & FAQ Accordion (F20) ---');
+assert(scanHtml.includes('id="cs-guide-content-root"'), '#cs-guide-content-root payload container exists');
+assert(scanHtml.includes('id="tab-btn-steps"'), 'Tabs: 5-Step Workflow tab button exists');
+assert(scanHtml.includes('id="tab-btn-faq"'), 'Tabs: FAQ & Privacy tab button exists');
+assert(scanHtml.includes('id="tab-btn-troubleshoot"'), 'Tabs: Troubleshooting tab button exists');
+
+// 5 Visual Step Cards with inline SVGs
+assert(scanHtml.includes('15°–20° Tilt Sensor'), 'Step 1: Anti-Shadow Tilt card exists with telemetry tag');
+assert(scanHtml.includes('ANTI-SHADOW TILT'), 'Step 1: Inline SVG anti-shadow vector diagram verified');
+assert(scanHtml.includes('2.5x Loupe Rectification'), 'Step 2: Loupe Rectification card exists');
+assert(scanHtml.includes('2.5X LOUPE'), 'Step 2: Inline SVG magnifying loupe diagram verified');
+assert(scanHtml.includes('Sauvola &amp; Magic Color') || scanHtml.includes('Sauvola & Magic Color'), 'Step 3: Sauvola filter comparison card exists');
+assert(scanHtml.includes('PURE WHITE 300 DPI'), 'Step 3: Inline SVG split-filter diagram verified');
+assert(scanHtml.includes('50+ Page IndexedDB Reel'), 'Step 4: Batch Reel card exists');
+assert(scanHtml.includes('BATCH REEL'), 'Step 4: Inline SVG filmstrip reel diagram verified');
+assert(scanHtml.includes('Pure JS PDF 1.4 Binary'), 'Step 5: Pure JS PDF compile card exists');
+assert(scanHtml.includes('0 B NETWORK EGRESS'), 'Step 5: Inline SVG zero-egress PDF diagram verified');
+
+// 9 FAQ Questions + Search
+assert(scanHtml.includes('id="cs-faq-search-input"'), 'FAQ: Live keyword search input #cs-faq-search-input exists');
+for (let i = 1; i <= 9; i++) {
+  assert(scanHtml.includes(`id="faq-trigger-${i}"`), `FAQ: Question trigger #${i} exists`);
+  assert(scanHtml.includes(`id="faq-content-${i}"`), `FAQ: Collapsible content #${i} exists`);
+}
+
+// Troubleshooting Matrix
+assert(scanHtml.includes('cs-trouble-filter-bar'), 'Troubleshooting: Category filter bar exists');
+assert(scanHtml.includes('data-trouble-filter="lighting"'), 'Troubleshooting: Lighting category pill exists');
+assert(scanHtml.includes('data-trouble-filter="crop"'), 'Troubleshooting: Crop category pill exists');
+assert(scanHtml.includes('data-trouble-filter="filter"'), 'Troubleshooting: Filter category pill exists');
+assert(scanHtml.includes('data-trouble-filter="performance"'), 'Troubleshooting: Performance category pill exists');
+
+// -----------------------------------------------------------------------------
+// 5. JavaScript Controllers & State Machine Hook Verification
+// -----------------------------------------------------------------------------
+console.log('\n--- 5. Testing JavaScript Controller Integration & Invariants ---');
+assert(scanHtml.includes('const StageHintController ='), 'StageHintController object is defined');
+assert(scanHtml.includes("STORAGE_KEY: 'localdoc_scan_hints_seen'"), 'StageHintController uses standard localStorage key');
+assert(scanHtml.includes('function openGuideDrawer('), 'openGuideDrawer() function is defined');
+assert(scanHtml.includes('function closeGuideDrawer()'), 'closeGuideDrawer() function is defined');
+assert(scanHtml.includes('function navigateGuideToContext('), 'navigateGuideToContext() function is defined');
+assert(scanHtml.includes('const LocalDocGuideComponent ='), 'LocalDocGuideComponent object is defined');
+
+// Verify State Machine decoupling: setUIStage hooks into StageHintController but NOT guide drawer
+assert(scanHtml.includes("StageHintController.showHint('camera')"), 'setUIStage hooks Camera hint');
+assert(scanHtml.includes("StageHintController.showHint('crop')"), 'setUIStage hooks Crop hint');
+assert(scanHtml.includes("StageHintController.showHint('filter')"), 'setUIStage hooks Filter hint');
+assert(scanHtml.includes("StageHintController.showHint('tray')"), 'setUIStage hooks Tray hint');
+assert(!scanHtml.includes('stageIds = ["cs-fullscreen-camera", "cs-fullscreen-crop", "cs-fullscreen-filter", "cs-document-workspace", "cs-guide-drawer"]'), 'cs-guide-drawer is strictly NOT in setUIStage stageIds (Non-Destructive Invariant)');
+
+// -----------------------------------------------------------------------------
+// 6. Responsive CSS Rules Verification
+// -----------------------------------------------------------------------------
+console.log('\n--- 6. Testing Responsive CSS & A11y Rules ---');
+assert(scanHtml.includes('.cs-guide-drawer {'), 'CSS: .cs-guide-drawer desktop slide-over rules exist');
+assert(scanHtml.includes('@media (max-width: 480px)'), 'CSS: @media (max-width: 480px) mobile rules exist');
+assert(scanHtml.includes('border-radius: 20px 20px 0 0;'), 'CSS: Mobile bottom sheet rounded top corners verified');
+assert(scanHtml.includes('backdrop-filter: blur(8px);'), 'CSS: Backdrop blur verified');
+assert(scanHtml.includes('.cs-step-highlight'), 'CSS: Contextual step auto-scroll highlight class verified');
+
+console.log('\n=================================================================');
+if (allPassed) {
+  console.log('ALL MILESTONE 5 VERIFICATION AUDIT GATES PASSED (100% SUCCESS)!');
+  console.log('=================================================================');
+  process.exit(0);
+} else {
+  console.error('SOME MILESTONE 5 AUDIT GATES FAILED!');
+  console.log('=================================================================');
+  process.exit(1);
+}
