@@ -5247,3 +5247,210 @@ a.synonym-pill:hover {
   font-weight: 600;
 }
 
+
+
+/* === APPLE BENTO STUDIO === */
+/* ==========================================================================
+   APPLE BENTO STUDIO — HOMEPAGE ASYMMETRIC GRID & LUXURY DUAL-THEME STYLING
+   ========================================================================== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-flow: dense;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Bento Card Base */
+.tool-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px 20px 18px;
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.25s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  min-height: 140px;
+  isolation: isolate;
+}
+
+/* Luxury Light Mode Cards */
+[data-theme="light"] .tool-card {
+  background: #FFFFFF;
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .tool-card:hover {
+  background: #FFFFFF;
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px -8px rgba(15, 23, 42, 0.12), 0 0 0 1px var(--primary-glow);
+}
+
+/* High-Tech Obsidian Dark Mode Cards */
+[data-theme="dark"] .tool-card {
+  background: #0F172A;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .tool-card:hover {
+  background: #131E35;
+  border-color: rgba(56, 189, 248, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 44px -8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Bento Hero (PDF Camera Studio) */
+.tool-card.bento-hero {
+  grid-column: span 2;
+  min-height: 200px;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.04) 0%, rgba(6, 182, 212, 0.04) 100%), var(--bg-surface);
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  padding: 22px 24px;
+}
+
+[data-theme="dark"] .tool-card.bento-hero {
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.14) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(20, 184, 166, 0.38);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(20, 184, 166, 0.1);
+}
+
+/* Bento Wide (JPG & PNG to PDF and Scientific Calculator) */
+.tool-card.bento-wide {
+  grid-column: span 2;
+  min-height: 190px;
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.03) 0%, rgba(249, 115, 22, 0.03) 100%), var(--bg-surface);
+  border: 1px solid rgba(234, 88, 12, 0.24);
+  padding: 22px 24px;
+}
+
+[data-theme="dark"] .tool-card.bento-wide {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+.tool-card.bento-calc {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%), var(--bg-surface);
+  border-color: rgba(6, 182, 212, 0.28);
+}
+
+[data-theme="dark"] .tool-card.bento-calc {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(6, 182, 212, 0.38);
+}
+
+/* Bento Header Layout */
+.bento-hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.bento-hero-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bento-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="dark"] .bento-status-pill {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.bento-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: bento-pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes bento-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.bento-badge {
+  position: static !important;
+  display: inline-block;
+  padding: 4px 10px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  border-radius: 9999px !important;
+}
+
+.bento-hero-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.bento-feature-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.bento-chip {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--bg-body);
+  color: var(--text-secondary);
+  border: 1px solid var(--line);
+  transition: all 0.2s ease;
+}
+
+.tool-card:hover .bento-chip {
+  border-color: var(--primary);
+  color: var(--text-primary);
+}
+
+/* Responsive Grid Breakdown */
+@media (max-width: 1024px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .tool-card.bento-hero,
+  .tool-card.bento-wide {
+    grid-column: span 1 !important;
+  }
+}
