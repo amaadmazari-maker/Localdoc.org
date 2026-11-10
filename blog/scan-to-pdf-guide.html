@@ -963,26 +963,26 @@
       </div>
 
       <!-- Balanced Auto-Enhancement & Filter Studio Deep Dive -->
-      <h2 id="section-4-filter-benchmark">4. Balanced Natural Auto-Enhancement &amp; The Interactive Filter Studio</h2>
+      <h2 id="section-4-filter-benchmark">4. Magic Color Engine vs. CamScanner: Studio-Grade Document Whitening 100% In-Browser</h2>
       <p>
-        A frequent issue with traditional mobile scanning apps is <strong>harsh, over-brightened filtering</strong>. Standard thresholding algorithms often over-saturate images, bleaching out light blue ballpoint ink, faint pencil sketches, and colored watermarks into an illegible white blur.
+        A frequent issue with traditional mobile scanning apps is <strong>harsh, over-brightened filtering or lingering muddy gray shadows</strong>. Standard thresholding algorithms either over-saturate images—bleaching out light blue ballpoint ink, faint pencil sketches, and colored seals—or leave the background looking like dull, dingy gray paper.
       </p>
       <p>
-        LocalDoc solves this with a <strong>two-stage adaptive enhancement pipeline</strong>:
+        LocalDoc solves this with our <strong>Magic Color Illumination Engine</strong>, engineered to match and exceed the visual fidelity of standalone native scanner apps like CamScanner without sending a single byte to remote servers:
       </p>
 
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin:20px 0;">
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--primary); border-radius:10px; padding:18px;">
-          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">⚖️ Stage 1: Balanced Auto-Enhancement</h4>
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">✨ Stage 1: Flat-Field Illumination Division (I / B &times; 255)</h4>
           <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
-            Upon taking or importing a snapshot, LocalDoc automatically analyzes the luminance histogram. It stretches the dynamic range to brighten muddy shadows and normalize the paper white point <em>without</em> blowing out mid-tones or clipping high-frequency ink strokes.
+            LocalDoc estimates the ambient background lighting surface across a coarse 2D grid using 95th-percentile sample windows. Dividing the raw image by this illumination map normalizes uneven desk shadows, dim room corners, and yellow phone light casts into a uniform optical plane.
           </p>
         </div>
 
         <div style="background:var(--bg-surface); border:1px solid var(--line); border-left:4px solid var(--accent-emerald); border-radius:10px; padding:18px;">
-          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">🎨 Stage 2: Interactive Filter Studio</h4>
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:1rem;">🎨 Stage 2: Hermite Paper Bleach &amp; Ink Toe Gamma</h4>
           <p style="margin:0; font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
-            Rather than locking you into one irreversible filter, LocalDoc displays live thumbnail previews of 5 distinct rendering presets so you can choose the ideal optical look for your document.
+            A non-linear Hermite shoulder smoothly accelerates near-white paper tones (&gt;88%) to spotless pure white (<code>#FFFFFF</code> / 255), while an aggressive ink toe curve (&gamma; = 1.45) deepens faint typography and handwriting into rich, pitch-black characters (<code>#000000</code>).
           </p>
         </div>
       </div>
@@ -991,40 +991,40 @@
         <thead>
           <tr>
             <th>Filter Preset</th>
-            <th>Algorithm Type</th>
+            <th>Algorithm Engine</th>
             <th>Best Used For</th>
-            <th>Visual Characteristic</th>
+            <th>Visual Output</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Auto-Enhanced Color</strong></td>
-            <td>Luminance normalization + unsharp mask</td>
-            <td>Color contracts, IDs, passports, receipts</td>
-            <td>Natural paper white, vivid colored ink, zero blowout</td>
+            <td><strong>Magic White (Default)</strong></td>
+            <td>2D flat-field illumination division + Hermite shoulder</td>
+            <td>Invoices, tests, notes, forms, and receipts</td>
+            <td>Pure #FFFFFF bleached background, deep #000000 ink, vibrant stamps</td>
           </tr>
           <tr>
-            <td><strong>Magic Color</strong></td>
-            <td>Vibrant chroma stretch + high-contrast curve</td>
-            <td>Marketing flyers, brochures, utility bills</td>
-            <td>High contrast, punchy text, bold saturation</td>
+            <td><strong>Crisp B&amp;W</strong></td>
+            <td>Sauvola integral image adaptive binarization</td>
+            <td>Contracts, legal filings, printed typography</td>
+            <td>Strict binary monochrome (0 or 255), zero shadow artifacts</td>
           </tr>
           <tr>
-            <td><strong>Clean B&amp;W</strong></td>
-            <td>Sauvola adaptive dynamic binarization</td>
-            <td>Handwritten notes, black ink forms, legal briefs</td>
-            <td>Pure monochrome (0 or 255), zero shadow artifacts</td>
+            <td><strong>Natural Clear</strong></td>
+            <td>Luminance normalization + soft shadow lift</td>
+            <td>Color photos, diplomas, certificates, historical paper</td>
+            <td>Preserves authentic paper parchment warmth and tint</td>
           </tr>
           <tr>
             <td><strong>Clean Grayscale</strong></td>
-            <td>High-dynamic-range monochromatic mapping</td>
-            <td>Pencil sketches, shaded tables, schematics</td>
-            <td>Smooth 256-tone gradient, sharp legible text</td>
+            <td>Rec. 601 dynamic range contrast stretch</td>
+            <td>Pencil sketches, shaded tables, architectural schematics</td>
+            <td>Smooth 256-tone gradient with razor-sharp legible lines</td>
           </tr>
           <tr>
             <td><strong>Original</strong></td>
-            <td>Passthrough unaltered bitmap</td>
-            <td>Artwork, historical photos, raw evidence</td>
+            <td>Direct camera sensor passthrough</td>
+            <td>Raw legal evidence, unprocessed artwork</td>
             <td>Exact camera sensor data without modification</td>
           </tr>
         </tbody>
@@ -1081,6 +1081,51 @@
             <td><strong>3.1 MB Clean PDF</strong></td>
             <td><strong>740 ms in RAM</strong></td>
             <td><strong>Flatbed Scanner Quality Verified</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Section 5: Competitor Comparison Matrix -->
+      <h3 style="margin-top:28px;">LocalDoc vs. CamScanner vs. Adobe Scan: Architectural Comparison</h3>
+      <table class="comp-table" style="margin:16px 0;">
+        <thead>
+          <tr>
+            <th>Feature / Metric</th>
+            <th>LocalDoc (Web)</th>
+            <th>CamScanner (Mobile App)</th>
+            <th>Adobe Scan (Mobile App)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Cloud Upload Required?</strong></td>
+            <td><span style="color:#10B981; font-weight:bold;">0% Zero Upload</span> (100% In-Browser)</td>
+            <td><span style="color:#EF4444;">Mandatory Cloud Sync</span></td>
+            <td><span style="color:#EF4444;">Mandatory Cloud Sync</span></td>
+          </tr>
+          <tr>
+            <td><strong>Watermarks on Free Scans</strong></td>
+            <td><span style="color:#10B981; font-weight:bold;">None (100% Free)</span></td>
+            <td><span style="color:#EF4444;">"Scanned with CamScanner" footer</span></td>
+            <td>None (with Adobe login)</td>
+          </tr>
+          <tr>
+            <td><strong>Paper Background Whitening</strong></td>
+            <td><strong>Pure #FFFFFF</strong> (Magic Color Engine)</td>
+            <td><strong>Pure #FFFFFF</strong> (Magic Color)</td>
+            <td>Auto-whitened</td>
+          </tr>
+          <tr>
+            <td><strong>Account or Sign-up Needed</strong></td>
+            <td><span style="color:#10B981; font-weight:bold;">No Account Needed</span></td>
+            <td>Account required for high-res</td>
+            <td>Adobe ID required</td>
+          </tr>
+          <tr>
+            <td><strong>Processing Engine</strong></td>
+            <td>Pure WebAssembly &amp; Web Worker</td>
+            <td>Native C++ Core</td>
+            <td>Cloud API + Mobile Framework</td>
           </tr>
         </tbody>
       </table>

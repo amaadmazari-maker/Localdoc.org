@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <!-- Google tag (gtag.js) with Google Consent Mode v2 -->
@@ -3886,11 +3886,11 @@
           <span>Base Tone Preset</span>
         </div>
         <div class="cs-filter-scroll" id="filter-presets-row">
-          <button type="button" class="cs-filter-pill-btn active" data-filter="natural" onclick="applyEnhanceFilter('natural')">
-            <span>🌿 Natural Clear</span>
-          </button>
-          <button type="button" class="cs-filter-pill-btn" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
+          <button type="button" class="cs-filter-pill-btn active" data-filter="magic-color" onclick="applyEnhanceFilter('magic-color')">
             <span>✨ Magic White</span>
+          </button>
+          <button type="button" class="cs-filter-pill-btn" data-filter="natural" onclick="applyEnhanceFilter('natural')">
+            <span>🌿 Natural Clear</span>
           </button>
           <button type="button" class="cs-filter-pill-btn" data-filter="clean-bw" onclick="applyEnhanceFilter('clean-bw')">
             <span>📄 Crisp B&W</span>
@@ -5019,7 +5019,7 @@
                 rawImg: img,
                 corners: p.corners || DocumentScanner.getDefaultCorners(),
                 docType: p.docType || 'a4',
-                filter: p.filter || 'natural',
+                filter: p.filter || 'magic-color',
                 rotation: p.rotation || 0,
                 orientation: p.orientation || ((p.rotation % 180 !== 0) ? 'landscape' : 'portrait'),
                 thumbDataUrl: p.thumbDataUrl || p.processedDataUrl,
@@ -5126,7 +5126,7 @@
           rawImg: img,
           corners: p.corners || DocumentScanner.getDefaultCorners(),
           docType: p.docType || 'a4',
-          filter: p.filter || 'natural',
+          filter: p.filter || 'magic-color',
           rotation: p.rotation || 0,
           orientation: p.orientation || ((p.rotation % 180 !== 0) ? 'landscape' : 'portrait'),
           thumbDataUrl: p.thumbDataUrl || p.processedDataUrl,
@@ -5949,7 +5949,7 @@
           rawImg: rawImg,
           corners: corners,
           rotation: 0,
-          filter: 'natural'
+          filter: 'magic-color'
         };
         stagingIsEditingIndex = -1;
 
@@ -5974,7 +5974,7 @@
           const docType = DocumentScanner.classifyDocumentType(corners, rawImg.naturalWidth, rawImg.naturalHeight);
 
           if (dataUrls.length === 1 && camMode === 'single') {
-            stagingPage = { rawImg: rawImg, corners: corners, docType: docType, rotation: 0, filter: 'natural' };
+            stagingPage = { rawImg: rawImg, corners: corners, docType: docType, rotation: 0, filter: 'magic-color' };
             stagingIsEditingIndex = -1;
             fullscreenCam.style.display = "none";
             scanner.stopCamera();
@@ -5982,13 +5982,13 @@
             return;
           }
 
-          const processed = DocumentScanner.processImage(rawImg, 'natural', 0, corners, { docType });
+          const processed = DocumentScanner.processImage(rawImg, 'magic-color', 0, corners, { docType });
           docPages.push({
             id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
             rawImg: rawImg,
             corners: corners,
             docType: docType,
-            filter: 'natural',
+            filter: 'magic-color',
             rotation: 0,
             processedDataUrl: processed
           });
@@ -6083,7 +6083,7 @@
           corners: corners,
           docType: docType,
           rotation: 0,
-          filter: (stagingPage && stagingPage.filter) ? stagingPage.filter : 'natural',
+          filter: (stagingPage && stagingPage.filter) ? stagingPage.filter : 'magic-color',
           clahe: stagingPage ? !!stagingPage.clahe : false,
           claheClipLimit: stagingPage ? (stagingPage.claheClipLimit || 2.0) : 2.0,
           demoir: stagingPage ? !!stagingPage.demoir : false,
@@ -6200,12 +6200,12 @@
       const img = await UIUtils.loadImage(dataUrl);
       const corners = DocumentScanner.normalizeCorners(await DocumentScanner.detectDocumentEdges(img, 'a4'));
       const docType = DocumentScanner.classifyDocumentType(corners, img.naturalWidth, img.naturalHeight);
-      const processed = DocumentScanner.processImage(img, 'natural', 0, corners, { docType });
+      const processed = DocumentScanner.processImage(img, 'magic-color', 0, corners, { docType });
       return {
         rawImg: img,
         corners: corners,
         docType: docType,
-        filter: 'natural',
+        filter: 'magic-color',
         rotation: 0,
         processedDataUrl: processed
       };
@@ -7070,7 +7070,7 @@
     }
 
     function renderFilterPreview() {
-      const filterKey = stagingPage.filter || 'natural';
+      const filterKey = stagingPage.filter || 'magic-color';
 
       // Feature F13: Ensure base warped canvas exists in cache
       if (!stagingPage.baseWarpedCanvas && stagingPage.rawImg) {
@@ -7235,7 +7235,7 @@
             height: filterCanvas.height,
             rotation: pageRotation,
             orientation: pageOrientation,
-            filter: stagingPage.filter || 'natural',
+            filter: stagingPage.filter || 'magic-color',
             docType: stagingPage.docType || 'a4'
           });
         } catch (idbErr) {
@@ -7393,7 +7393,7 @@
       const totalPages = docPages.length;
       docPages.forEach((p, idx) => {
         const isActive = (idx === currentViewingPageIndex) ? 'active' : '';
-        const filterName = filterLabels[p.filter || 'natural'] || 'Natural Clear';
+        const filterName = filterLabels[p.filter || 'magic-color'] || 'Magic White';
         const isFirst = (idx === 0);
         const isLast = (idx === totalPages - 1);
         const thumbSrc = p.thumbDataUrl || p.processedDataUrl;
@@ -7503,11 +7503,11 @@
       setWorkspaceViewMode('single');
     }
 
-    const availableFilters = ['natural', 'original', 'magic-color', 'no-shadow', 'clean-bw', 'grayscale', 'lighten'];
+    const availableFilters = ['magic-color', 'clean-bw', 'natural', 'original', 'no-shadow', 'grayscale', 'lighten'];
     const filterLabels = {
+      'magic-color': 'Magic White',
       'natural': 'Natural Clear',
       'original': 'Original Color',
-      'magic-color': 'Magic White',
       'no-shadow': 'No Shadow',
       'clean-bw': 'Crisp B&W',
       'bw': 'Crisp B&W',
@@ -7585,7 +7585,7 @@
           height: fullH,
           rotation: page.rotation,
           orientation: page.orientation,
-          filter: page.filter || 'natural',
+          filter: page.filter || 'magic-color',
           docType: page.docType || 'a4'
         });
       }
@@ -7618,7 +7618,7 @@
       const page = docPages[idx];
       if (!page) return;
 
-      const currentFilter = page.filter || 'natural';
+      const currentFilter = page.filter || 'magic-color';
       const nextIndex = (availableFilters.indexOf(currentFilter) + 1) % availableFilters.length;
       page.filter = availableFilters[nextIndex];
 
@@ -7764,7 +7764,7 @@
         rawImg: rawImg,
         corners: page.corners || DocumentScanner.getDefaultCorners(),
         rotation: page.rotation || 0,
-        filter: page.filter || 'natural',
+        filter: page.filter || 'magic-color',
         docType: page.docType || 'a4'
       };
       stagingIsEditingIndex = idx;
@@ -7923,7 +7923,7 @@
         corners: page.corners || DocumentScanner.getDefaultCorners(),
         docType: page.docType || 'a4',
         rotation: page.rotation || 0,
-        filter: page.filter || 'natural',
+        filter: page.filter || 'magic-color',
         clahe: !!page.clahe,
         claheClipLimit: page.claheClipLimit || 2.0,
         demoir: !!page.demoir,
@@ -7953,7 +7953,7 @@
         }
         const raw = page.rawImg;
         if (raw) {
-          const processed = DocumentScanner.processImage(raw, page.filter || 'natural', page.rotation || 0, page.corners, {
+          const processed = DocumentScanner.processImage(raw, page.filter || 'magic-color', page.rotation || 0, page.corners, {
             docType: page.docType,
             clahe: !!page.clahe,
             claheClipLimit: page.claheClipLimit || 2.0,
@@ -8018,7 +8018,7 @@
 
         const filterTextEl = document.getElementById("single-active-filter-text");
         if (filterTextEl) {
-          filterTextEl.textContent = `Filter (${filterLabels[page.filter || 'natural'] || 'Natural Clear'})`;
+          filterTextEl.textContent = `Filter (${filterLabels[page.filter || 'magic-color'] || 'Magic White'})`;
         }
       }
 

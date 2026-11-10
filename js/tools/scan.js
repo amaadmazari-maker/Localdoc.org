@@ -573,10 +573,12 @@ class DocumentScanner {
   // 4. Robust 4-Corner Paper Detection for Tilted, Angled & Camera Pages
   // =========================================================================
   static getDefaultCorners() {
-    const tl = { x: 0.008, y: 0.008 };
-    const tr = { x: 0.992, y: 0.008 };
-    const br = { x: 0.992, y: 0.992 };
-    const bl = { x: 0.008, y: 0.992 };
+    const marginX = 0.05;
+    const marginY = 0.04;
+    const tl = { x: marginX, y: marginY };
+    const tr = { x: 1.0 - marginX, y: marginY };
+    const br = { x: 1.0 - marginX, y: 1.0 - marginY };
+    const bl = { x: marginX, y: 1.0 - marginY };
     const corners = [tl, tr, br, bl];
     corners.topLeft = tl;
     corners.topRight = tr;
@@ -987,7 +989,7 @@ class DocumentScanner {
           }, [buffer]);
         });
 
-        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 600));
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 1800));
         const workerCorners = await Promise.race([workerPromise, timeoutPromise]);
 
         if (workerCorners) {
@@ -2049,14 +2051,14 @@ class DocumentScanner {
         const pLum = (rNorm * 77 + gNorm * 150 + bNorm * 29) >> 8;
         const ratio = pLum / 255;
 
-        // CamScanner Tone Curve: smooth paper whitening to 255, ink deepening
+        // CamScanner Tone Curve: high-contrast paper whitening to 255, ink deepening
         let targetLum;
-        if (ratio >= 0.92) {
-          const t = Math.min(1, (ratio - 0.92) / 0.08);
-          targetLum = 246 + 9 * (3 * t * t - 2 * t * t * t);
+        if (ratio >= 0.88) {
+          const t = Math.min(1.0, (ratio - 0.88) / 0.12);
+          targetLum = 245 + 10 * (3 * t * t - 2 * t * t * t);
         } else {
-          const norm = ratio / 0.92;
-          targetLum = Math.pow(norm, 1.35) * 246;
+          const norm = ratio / 0.88;
+          targetLum = Math.pow(norm, 1.45) * 245;
         }
         normLum[pIdx] = Math.min(255, Math.round(targetLum));
 
@@ -2143,7 +2145,7 @@ class DocumentScanner {
     // 5. Paper-White Guarantee: Spotless pure white for clean background
     for (let i = 0; i < len; i += 4) {
       const l = (data[i] * 77 + data[i + 1] * 150 + data[i + 2] * 29) >> 8;
-      if (l >= 253) {
+      if (l >= 246) {
         data[i] = 255;
         data[i + 1] = 255;
         data[i + 2] = 255;
@@ -2381,7 +2383,7 @@ class DocumentScanner {
   /**
    * Dispatches the Base Tone Filter mode directly onto an RGBA buffer in-place
    */
-  static applyBaseToneFilter(data, width, height, filterName = 'natural', options = {}) {
+  static applyBaseToneFilter(data, width, height, filterName = 'magic-color', options = {}) {
     const len = width * height * 4;
 
     switch (filterName) {
@@ -2433,7 +2435,7 @@ class DocumentScanner {
   /**
    * Executes the full document enhancement pipeline (Base Tone + Stackable CLAHE, De-Moiré, Sharpen, Contrast)
    */
-  static applyFilterDirect(data, width, height, filterName = 'natural', options = {}) {
+  static applyFilterDirect(data, width, height, filterName = 'magic-color', options = {}) {
     // 1. Base Tone Preset
     DocumentScanner.applyBaseToneFilter(data, width, height, filterName, options);
 
@@ -2473,7 +2475,7 @@ class DocumentScanner {
    * Fast In-Memory Filter Runner on Canvas (Direct Preview, Sub-40ms)
    * Feature F13
    */
-  static renderFilteredCanvas(baseCanvas, filterKey = 'natural', options = {}, targetCanvas = null) {
+  static renderFilteredCanvas(baseCanvas, filterKey = 'magic-color', options = {}, targetCanvas = null) {
     const canvas = targetCanvas || document.createElement('canvas');
     if (canvas.width !== baseCanvas.width || canvas.height !== baseCanvas.height) {
       canvas.width = baseCanvas.width;
@@ -2497,14 +2499,14 @@ class DocumentScanner {
    * Apply enhancement filter to a canvas and return a Promise resolving to a new Canvas
    * Satisfies PROJECT.md line 73: DocumentScanner.applyFilter(sourceCanvas, filterName, options)
    */
-  static async applyFilter(sourceCanvas, filterName = 'natural', options = {}) {
+  static async applyFilter(sourceCanvas, filterName = 'magic-color', options = {}) {
     return DocumentScanner.renderFilteredCanvas(sourceCanvas, filterName, options);
   }
 
   /**
    * Helper to process image with crop, rotation, and filter in one step
    */
-  static processImage(sourceImg, filterName = 'natural', rotation = 0, corners = null, options = {}) {
+  static processImage(sourceImg, filterName = 'magic-color', rotation = 0, corners = null, options = {}) {
     if (!sourceImg) return '';
     let canvas;
     if (corners) {
