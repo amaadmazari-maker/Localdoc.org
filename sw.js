@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v79-seo-zero-redirect-links';
+const CACHE_NAME = 'localdoc-v80-invisible-character-suite';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -50,6 +50,7 @@ const ASSETS_TO_CACHE = [
   '/js/tools/organize-pdf.js',
   '/js/tools/edit-pdf.js',
   '/js/tools/calculator.js',
+  '/js/tools/invisible-character.js',
   '/pages/compress-pdf.html',
   '/pages/merge-pdf.html',
   '/pages/split-pdf.html',
@@ -68,6 +69,7 @@ const ASSETS_TO_CACHE = [
   '/pages/visa-photo-maker.html',
   '/pages/cnic-photo-maker.html',
   '/pages/image-to-text.html',
+  '/pages/invisible-character.html',
   '/pages/rotate-pdf.html',
   '/pages/page-numbers.html',
   '/pages/watermark.html',
