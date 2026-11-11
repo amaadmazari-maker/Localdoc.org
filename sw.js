@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v78-natural-titles-seo';
+const CACHE_NAME = 'localdoc-v79-seo-zero-redirect-links';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -138,7 +138,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch(() => {});
+      return cache.addAll(ASSETS_TO_CACHE).catch(() => { });
     })
   );
 });
