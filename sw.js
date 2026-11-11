@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v81-compare-pdf-suite';
+const CACHE_NAME = 'localdoc-v82-knowledge-hub-guides';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -92,6 +92,8 @@ const ASSETS_TO_CACHE = [
   '/assets/images/guides/editpdf-step5-export-download-pdf.webp',
   '/blog/edit-pdf-text-guide.html',
   '/blog/sign-pdf-guide.html',
+  '/blog/compare-pdf-contract-diff-guide.html',
+  '/blog/invisible-character-blank-space-guide.html',
   '/assets/icons/favicon.svg',
   '/assets/icons/brand-logo.svg',
   '/assets/icons/zero-upload-badge.svg',
