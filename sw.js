@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v80-invisible-character-suite';
+const CACHE_NAME = 'localdoc-v81-compare-pdf-suite';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -49,8 +49,10 @@ const ASSETS_TO_CACHE = [
   '/js/tools/pdf-to-pptx.js',
   '/js/tools/organize-pdf.js',
   '/js/tools/edit-pdf.js',
+  '/js/tools/compare-pdf.js',
   '/js/tools/calculator.js',
   '/js/tools/invisible-character.js',
+  '/pages/compare-pdf.html',
   '/pages/compress-pdf.html',
   '/pages/merge-pdf.html',
   '/pages/split-pdf.html',
