@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v82-knowledge-hub-guides';
+const CACHE_NAME = 'localdoc-v83-pixel-perfect-cards';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -85,6 +85,8 @@ const ASSETS_TO_CACHE = [
   '/pages/organize-pdf.html',
   '/assets/icons/edit-pdf.svg',
   '/assets/icons/sign-pdf.svg',
+  '/assets/icons/compare-pdf.svg',
+  '/assets/icons/invisible-character.svg',
   '/assets/images/guides/editpdf-step1-load-document-ram.webp',
   '/assets/images/guides/editpdf-step2-select-text-whiteout.webp',
   '/assets/images/guides/editpdf-step3-customize-typography.webp',
