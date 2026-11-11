@@ -2,7 +2,7 @@
  * localdoc.org — PWA Service Worker (sw.js)
  */
 
-const CACHE_NAME = 'localdoc-v76-dedicated-edit-studio';
+const CACHE_NAME = 'localdoc-v77-clean-master-guides';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
